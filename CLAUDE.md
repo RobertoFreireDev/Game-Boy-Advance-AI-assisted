@@ -1,492 +1,611 @@
-# CLAUDE.md — AI-Generated Game Boy Advance Games
+# CLAUDE.md — AI-Built Game Boy Advance Games
 
-This file is the single source of truth for how Claude builds and maintains this project.
-Read it fully before every task. If a request conflicts with this file, ask the human first.
+This repository builds Game Boy Advance (GBA) games in C, written **100% by AI**.
+The human never edits a file. The human describes what they want, reviews the result
+in a read-only visualizer, and clicks `build.bat` / `run.bat`.
 
----
-
-## 1. Core principles
-
-1. **The human never edits anything manually.** Every file in this repo (code, JSON, assets, scripts,
-   this file) is created and changed by the AI. The human only: asks for changes, looks at the
-   visualizer, double-clicks `build.bat` / `run.bat` / `view.bat`.
-2. **Everything is a node.** The game is described as JSON nodes (objects and scenes). C code
-   implements the generic engine and reusable behaviors; game content lives in nodes.
-3. **Readable over clever.** Structure, names and JSON must be easy for a non-programmer to read in
-   the visualizer and to describe in a request ("make the player jump higher", "add a tree to level 2").
-4. **Text-only assets.** Art, palettes, maps, music and sfx are stored as human-readable text inside
-   node JSON. No binary assets are hand-made. The generator converts them to C data at build time.
-5. **Always leave the project building.** After any change, run the generator check and the build.
-   Never finish a task with a broken build.
+Read this whole file before every task. It is the contract for the node format, the
+engine structure, the tools, and the visualizer.
 
 ---
 
-## 2. Target & toolchain
+## 1. Golden rules
 
-| Item | Choice |
-|---|---|
-| Platform | Game Boy Advance (240×160, 60 fps) |
-| Language | C11 for engine and behaviors (C++ not used, to keep one style) |
-| Compiler | devkitPro **devkitARM** (`gba-dev` package group) |
-| Library | **libtonc** (registers, OAM, interrupts, BIOS calls) |
-| Header fix | `gbafix` (from devkitPro) |
-| Generator | Python 3 — `tools/gen.py` (no third-party packages) |
-| Emulator | **mGBA** |
-| OS | Windows (`.bat` entry points) |
-| Editor | VS Code (human only reads; AI writes) |
-
-One-time setup (the only manual step): install devkitPro with `gba-dev`, Python 3, and mGBA.
-Paths are stored in `config.bat`; the AI edits it if paths differ.
+1. **The human never changes anything manually.** You own every file: nodes, art, audio,
+   C code, tools, `.bat` files, the visualizer and this `CLAUDE.md`. Never ask the human to
+   edit a file, paste code or type commands. Their only actions are: install the
+   prerequisites once (§3), open the visualizer, click `build.bat`, click `run.bat`, and talk to you.
+2. **Nodes are the source of truth.** All game content lives as JSON in `nodes/`. C code only
+   reads data generated from nodes. Never hard-code content in C (positions, text, pixels,
+   notes, speeds) that belongs in a node.
+3. **Everything is text.** Art is pixel strings, audio is note strings, maps are character
+   grids. No binary assets (PNG, WAV, MOD…) are ever added. Every asset stays readable,
+   diffable, editable by AI and drawable by the visualizer.
+4. **Generated files are never edited.** `generated/`, `build/`, `dist/` and
+   `visualizer/data.js` are rebuilt by tools. Change the source, then regenerate.
+5. **`nodes/nodes.json` is always in sync.** Every add, rename, move or delete of a node
+   updates the index in the same change.
+6. **Every node explains itself.** `name` and `notes` are mandatory, written in plain language
+   for a non-programmer: what it is, where it is used, why it looks/behaves that way.
+7. **Finish with green checks.** A task is not done until validation and build pass (§12).
+8. **Keep the four mirrors in sync.** A node type exists in four places: this file (§6),
+   `tools/validate.py`, `tools/codegen.py` and `visualizer/visualizer.html`. Adding or changing
+   a type means updating all four in the same change. **Ask the human before** adding a new
+   node type or changing the engine architecture.
+9. **Respect the hardware.** Stay inside GBA limits (§9). If a request doesn't fit, say so and
+   propose the closest thing that does.
 
 ---
 
-## 3. Repository layout
+## 2. Pipeline
 
+### What the human does
+1. Asks the AI to generate nodes:
+   - **objects**: hud, icon, sfx, music, animation, particle, body, player, enemy, tree,
+     moving platform, …
+   - **scenes**: intro, menu, levels, inventory, …
+2. Opens the visualizer (`view.bat`) and explores everything as a tree. **Read-only.**
+3. Asks the AI for changes: nodes, assets (art, sprites, animations, sfx, music), code, anything.
+4. Clicks `build.bat` to build the ROM.
+5. Clicks `run.bat` to play it in the emulator.
+
+### What happens underneath
 ```
-/CLAUDE.md                  ← this file
-/nodes.json                 ← registry of ALL nodes (the index)
-/nodes/
-  scenes/                   ← one JSON file per scene node
-  objects/
-    art/                    ← palette, sprite, tileset, tilemap, font, icon
-    audio/                  ← sfx, music
-    fx/                     ← particle (and shared animations, rare)
-    entities/               ← player, enemy, npc, prop, platform, pickup, trigger
-    ui/                     ← hud, dialog
-/src/
-  engine/                   ← generic runtime (never game-specific)
-  behaviors/                ← reusable logic modules, one .c per behavior
-    behaviors.json          ← registry: name, description, params (shown in visualizer)
-/tools/
-  gen.py                    ← validate nodes + generate C data + visualizer data
-  visualizer/
-    index.html              ← read-only visualizer (HTML + CSS + JS in ONE file)
-    data.js                 ← GENERATED snapshot of all nodes (never edit)
-/build/                     ← GENERATED (never edit): gen/*.c/*.h, objects, game.gba, build.log
-/Makefile
-/config.bat                 ← tool paths (DEVKITPRO, MGBA, PYTHON)
-/build.bat                  ← human: build the ROM
-/run.bat                    ← human: run the ROM in mGBA
-/view.bat                   ← human: regenerate data.js and open the visualizer
+nodes/**/*.json
+   ├─ tools/validate.py ── checks every rule in this file (stops on error)
+   ├─ tools/codegen.py ─── writes generated/*.c / *.h (const data, lives in ROM)
+   ├─ tools/bundle.py ──── writes visualizer/data.js (everything the visualizer shows)
+   └─ tools/build.py ───── runs the three above, compiles src/ + generated/ with devkitARM,
+                           links libtonc, runs gbafix → dist/<rom_name>.gba
 ```
 
-Rules:
-- `build/` and `tools/visualizer/data.js` are always generated. Never edit them; regenerate them.
-- Game-specific logic never goes in `src/engine/`. If a feature is reusable, it's a behavior.
+---
+
+## 3. Toolchain and one-time setup
+
+| Piece    | Choice                                   | Notes |
+|----------|------------------------------------------|-------|
+| OS       | Windows 10/11                            | Human entry points are `.bat` files. |
+| Compiler | devkitPro → devkitARM (`gba-dev` group)  | Default install `C:\devkitPro`. |
+| Library  | libtonc (ships with `gba-dev`)           | Low-level hardware access only; the engine is ours. |
+| Language | C11                                      | No C++ unless the human asks. |
+| Tools    | Python 3.10+, **standard library only**  | Never `pip install` anything. |
+| Emulator | mGBA                                     | Launched by `run.bat`. |
+
+**One-time human setup** (the only install steps ever): devkitPro installer with GBA
+development selected, Python 3 (with "Add to PATH"), mGBA.
+
+Build details (owned by `tools/build.py`, no Makefile, no MSYS shell, so it works from a double-click):
+- Calls `arm-none-eabi-gcc` directly. Reference flags:
+  `-mthumb -mcpu=arm7tdmi -mtune=arm7tdmi -O2 -std=c11 -Wall -Wextra -ffunction-sections -fdata-sections`
+- Links with `-specs=gba.specs -ltonc -Wl,--gc-sections`, then `objcopy -O binary`, then `gbafix`.
+- Only recompiles changed files.
+- Path resolution: `tools/config.json` → env `DEVKITPRO` (map `/opt/devkitpro` to `C:\devkitPro`)
+  → `C:\devkitPro`. Emulator: `tools/config.json` → common install folders → `PATH`.
+- If anything is missing, print one short friendly message saying exactly what to install and
+  from where. The human will paste it to you.
 
 ---
 
-## 4. Node system
+## 4. Folder structure
 
-### 4.1 Two kinds of node
+```
+.
+├── CLAUDE.md                ← this file (AI-maintained)
+├── CHANGELOG.md             ← one entry per human request, plain language
+├── build.bat                ← human: build the ROM
+├── run.bat                  ← human: play the ROM in mGBA
+├── view.bat                 ← human: refresh data and open the visualizer
+├── nodes/
+│   ├── nodes.json           ← index of every node + game settings
+│   ├── scenes/<id>.json     ← one file per scene
+│   └── objects/<type>/<id>.json   ← one file per object, one folder per type
+├── catalog/
+│   ├── behaviors.json       ← every behavior: description + params (§7)
+│   └── actions.json         ← every action: description + params (§7)
+├── src/
+│   ├── main.c               ← boots the engine, nothing else
+│   ├── engine/              ← generic, game-agnostic engine (§8)
+│   ├── behaviors/           ← one .c/.h per behavior
+│   └── game/                ← game-specific code, only when nodes can't express it
+├── tools/
+│   ├── validate.py  codegen.py  bundle.py  build.py  run.py
+│   └── config.json          ← local paths (devkitPro, emulator)
+├── visualizer/
+│   ├── visualizer.html      ← single file: HTML + CSS + JS inline, no dependencies
+│   └── data.js              ← GENERATED by bundle.py
+├── generated/               ← GENERATED C data
+├── build/                   ← GENERATED object files
+└── dist/                    ← GENERATED ROM
+```
 
-| Kind | What it is | Nesting |
-|---|---|---|
-| `scene` | A screen of the game: intro, menu, level, inventory, game over… | **Always root-level. Never nested.** |
-| `object` | Anything else: art, audio, animation, body, particle, entity, HUD, dialog… | Root-level by default; nested only when owned (see 4.4) |
+---
 
-### 4.2 `nodes.json` — the registry
+## 5. The node system
 
-Every root-level node has exactly one entry and exactly one file. Nested children are NOT listed
-(they live inside their parent's file).
+### 5.1 Concepts
+- A **node** is one JSON file describing one thing. Two kinds:
+  - **scene** — a screen of the game (intro, title, menu, level, inventory, game over…).
+    **Scenes are always root nodes.** Never a child, never nested.
+  - **object** — anything reusable: art, audio, animations, particles, bodies, actors, UI.
+- A scene **places** objects through `instances` (position + optional overrides). An instance
+  is not a node; it is a line inside the scene that points at an object node.
+- An object can **own** other objects through `children`. **Nest only when the child exists
+  solely for that parent** — e.g. a `body` owns its `animation`s and its `sprite` sheet; a
+  `player` owns its `body`. If a second node needs the same thing, it is not a child: make it
+  a root node and reference it.
+- Any node can **reference** any other node by id (`"music": "mus_level_1"`). A reference is
+  not nesting.
 
+Mental model for humans: scenes at the top, the things placed in them, and each thing
+broken into the parts it is made of.
+
+### 5.2 `nodes/nodes.json`
 ```json
 {
-  "schema": 1,
+  "format": 1,
   "game": {
-    "title": "MY GAME",
-    "gameCode": "AMGE",
-    "startScene": "scene.intro"
+    "title": "HERO QUEST",
+    "game_code": "AHQE",
+    "rom_name": "hero_quest",
+    "start_scene": "scn_intro",
+    "save": false,
+    "variables": [
+      { "name": "coins",   "type": "int",  "initial": 0,     "notes": "Coins collected." },
+      { "name": "health",  "type": "int",  "initial": 3,     "notes": "Hearts left." },
+      { "name": "has_key", "type": "flag", "initial": false, "notes": "Found the castle key." }
+    ]
   },
   "nodes": [
-    { "id": "scene.intro",   "kind": "scene",  "type": "intro",  "file": "nodes/scenes/intro.json" },
-    { "id": "scene.level_1", "kind": "scene",  "type": "level",  "file": "nodes/scenes/level_1.json" },
-    { "id": "pal.player",    "kind": "object", "type": "palette","file": "nodes/objects/art/pal_player.json" },
-    { "id": "spr.player",    "kind": "object", "type": "sprite", "file": "nodes/objects/art/spr_player.json" },
-    { "id": "ent.player",    "kind": "object", "type": "player", "file": "nodes/objects/entities/player.json" },
-    { "id": "sfx.jump",      "kind": "object", "type": "sfx",    "file": "nodes/objects/audio/sfx_jump.json" }
+    { "id": "scn_intro",      "kind": "scene",  "type": "intro",     "path": "scenes/scn_intro.json",                 "parent": null },
+    { "id": "plr_hero",       "kind": "object", "type": "player",    "path": "objects/player/plr_hero.json",          "parent": null },
+    { "id": "body_hero",      "kind": "object", "type": "body",      "path": "objects/body/body_hero.json",           "parent": "plr_hero" },
+    { "id": "anim_hero_run",  "kind": "object", "type": "animation", "path": "objects/animation/anim_hero_run.json",  "parent": "body_hero" }
   ]
 }
 ```
+`title` ≤ 12 chars, `game_code` exactly 4 chars (ROM header). Variables are the game's global
+state; HUD, behaviors and actions read and write them by name.
 
-### 4.3 Common fields (every node file)
+### 5.3 Common fields (every node file)
 
+| Field      | Required | Meaning |
+|------------|----------|---------|
+| `id`       | yes | Unique snake_case id with the type prefix (§6). Equals the file name. |
+| `kind`     | yes | `scene` or `object`. |
+| `type`     | yes | One of the types in §6. |
+| `name`     | yes | Human-friendly name. |
+| `notes`    | yes | Plain-language explanation for the human. |
+| `tags`     | no  | Free labels for filtering in the visualizer. |
+| `children` | no  | Ordered list of owned child ids. Objects only; never contains a scene. |
+| `code`     | no  | Path to custom C in `src/game/` when nodes can't express the logic (§7.3). |
+
+Structural rules (enforced by `validate.py`):
+- Path is `scenes/<id>.json` or `objects/<type>/<id>.json`.
+- A node has at most one parent; no cycles; child types must be allowed by the "May own" column in §6.
+- `children` in the parent file and `parent` in `nodes.json` must agree.
+- Every reference must exist and have the expected type. No orphan files, no missing files.
+
+### 5.4 Units and text formats
+- **Position**: integer pixels. x → right, y → down, (0,0) = top-left of the scene.
+- **Time**: ticks. 1 tick = 1 frame ≈ 1/60 s.
+- **Speed**: pixels per tick, decimals allowed (codegen converts to fixed-point 24.8).
+- **Angle**: degrees, 0 = right, 90 = up.
+- **Color**: `"#RRGGBB"`. Codegen and visualizer both quantize to 15-bit BGR555.
+- **Pixels**: array of strings, one string per row, one char per pixel. `.` = transparent
+  (palette index 0), `1`–`9`, `a`–`f` = palette index 1–15. All rows the same length.
+- **Notes (audio)**: `C3`…`B7`, sharps as `C#5`. `--` = hold, `..` = silence, `|` = bar line
+  (ignored, readability only). Tokens separated by spaces. Noise channel uses `X0`…`Xf` (noise pitch).
+- **Tile maps**: one char per 8×8 tile, legend defined in the tileset. `.` is always the empty tile.
+
+---
+
+## 6. Node types
+
+### 6.1 Catalog
+
+| Type | Prefix | What it is | Key fields | May own |
+|------|--------|------------|-----------|---------|
+| **Scenes** | | | | |
+| `intro` `title` `menu` `level` `inventory` `cutscene` `game_over` `credits` | `scn_` | A screen of the game. Same structure for all; the type sets defaults and the visualizer icon. | `backdrop`, `music`, `camera`, `instances[]`, `on_start[]` | — (root only) |
+| **Art** | | | | |
+| `palette` | `pal_` | Up to 16 colors. Index 0 = transparent. | `colors[]` | — |
+| `sprite` | `spr_` | Sprite sheet for moving things (OBJ layer). | `palette`, `width`, `height` (valid OBJ size, §9), `frames{name: pixels}` | — |
+| `tileset` | `ts_` | 8×8 background tiles keyed by one char. | `palette`, `tiles{char: {pixels, solid, one_way, hazard, ladder}}` | — |
+| `tilemap` | `map_` | A background layer drawn with a tileset. | `tileset`, `layer` (1–3), `rows[]`, `parallax` (1 = moves with camera) | `tileset` |
+| `font` | `font_` | 8×8 glyphs for text. | `palette`, `glyphs{char: pixels}` | — |
+| `icon` | `icon_` | Small single UI image (8×8 or 16×16). | `palette`, `pixels` | — |
+| **Audio** | | | | |
+| `sfx` | `sfx_` | Short sound effect on one PSG channel. | `channel`, `duty`, `steps[{note│pitch, ticks, volume}]`, `priority` | — |
+| `music` | `mus_` | Looping song on the 4 PSG channels. | `bpm`, `rows_per_beat`, `loop`, `instruments{}`, `patterns{}`, `order[]` | — |
+| **Visual** | | | | |
+| `animation` | `anim_` | Frames from one sprite sheet over time. | `sprite`, `loop`, `frames[{frame, ticks, flip_x, flip_y}]`, `events[{at, action}]` | — |
+| `particle` | `ptc_` | Particle emitter (dust, sparks, splash). | `animation`, `mode` (burst/stream), `count`, `rate`, `lifetime`, `speed[min,max]`, `angle[min,max]`, `gravity` | `animation` |
+| **Things in the world** | | | | |
+| `body` | `body_` | What an actor looks like + its collision shape. | `origin[x,y]`, `hitbox{x,y,w,h}` (relative to origin), `physics{gravity, solid, collides_with[]}`, `animations{slot: id}`, `default_animation` | `sprite`, `animation`, `particle` |
+| `player` | `plr_` | Controlled by the human. | `body`, `logic[]`, `sounds{}` | `body`, `particle`, `sfx` |
+| `enemy` | `enm_` | Hostile actor. | same as player | same |
+| `npc` | `npc_` | Friendly actor, usually talks. | same | same |
+| `prop` | `prop_` | Static or decorative thing: tree, rock, sign, door. | same | same |
+| `platform` | `plat_` | Moving / falling platform. | same | same |
+| `pickup` | `item_` | Collectible: coin, key, heart. | same | same |
+| `trigger` | `trg_` | Invisible zone that runs actions (exit, checkpoint). | `zone{w,h}`, `logic[]` | — |
+| **UI** | | | | |
+| `hud` | `hud_` | Always-on overlay bound to variables. | `font`, `elements[{kind: text│icon│icon_repeat│bar, x, y, …}]`; text uses `{var}` placeholders | `icon` |
+| `menu` | `menu_` | List of options the player picks from. | `font`, `title`, `options[{label, actions[]}]`, `cursor` (icon), `layout`, `on_cancel[]` | `icon` |
+| `dialog` | `dlg_` | Text box conversation. | `font`, `box{x,y,w,h}`, `lines[{speaker, portrait, text}]`, `choices[{label, actions[]}]`, `on_end[]` | `icon` |
+
+Actor types (`player` … `pickup`) share one structure; the type gives sensible defaults and
+groups them for humans. **What an actor does comes only from its `logic` list.**
+
+### 6.2 Examples
+
+**Sprite** (8×8 coin, 2 frames):
 ```json
 {
-  "id": "ent.player",
-  "kind": "object",
-  "type": "player",
-  "name": "Player",
-  "notes": "Free text for humans. Explain intent, not implementation.",
-  "tags": ["hero"],
-  "props": { },
-  "children": [ ]
-}
-```
-
-- `id`: unique, lowercase, `<prefix>.<snake_name>`. Prefixes: `scene` `pal` `spr` `tiles` `map`
-  `font` `icon` `sfx` `mus` `anim` `body` `fx` `ent` `hud` `dlg`.
-- Nested child ids are `parentId/localName`, e.g. `ent.player/body`, `ent.player/body/walk`.
-- References to other nodes are always by `id` string, in fields ending in `Ref` or `Refs`
-  (e.g. `"paletteRef": "pal.player"`). The generator validates every reference.
-- `notes` is mandatory and must be kept up to date when the node changes.
-
-### 4.4 When to nest
-
-Nest a child inside its parent **only** when it is owned by that parent and never reused:
-- `body` → nested `animation` list ✅
-- `hud` → nested `widget` list ✅
-- `dialog` → nested `page` list ✅
-- `music` / `sfx` / `palette` / `sprite` / `particle` → **root-level**, referenced by id (they are reused)
-
-If a nested child later needs to be shared, promote it to a root-level node, register it in
-`nodes.json`, and replace the nested copy with a `Ref`.
-
-### 4.5 Object types
-
-| Type | Purpose | Key fields |
-|---|---|---|
-| `palette` | 16 colors (4bpp). Index 0 is transparent. | `colors[16]` as `"#RRGGBB"` |
-| `sprite` | Sprite sheet: frames of pixel art | `paletteRef`, `size` (`"16x16"`), `frames{name: rows[]}` |
-| `icon` | Small single image for HUD/inventory | same as sprite, one frame |
-| `tileset` | 8×8 background tiles | `paletteRef`, `tiles{name: rows[]}` |
-| `tilemap` | Background layer + collision | `tilesetRef`, `legend`, `rows[]`, `collisionLegend`, `collision[]` |
-| `font` | 8×8 glyphs for HUD/dialog text | `paletteRef`, `glyphs{char: rows[]}` |
-| `animation` | Frame sequence (usually nested in body) | `frames[]`, `fps`, `loop` |
-| `body` | Visual + physical shape of an entity | `spriteRef`, `origin`, `hitboxes[]`, `children: [animation…]`, `defaultAnim` |
-| `particle` | Particle emitter | `spriteRef`, `frame`, `count`, `lifetime`, `speed`, `spread`, `gravity` |
-| `sfx` | Short sound effect (PSG) | `channel`, `priority`, `steps[]` |
-| `music` | Looping music (PSG) | `bpm`, `rowsPerBeat`, `instruments`, `tracks{sq1,sq2,wave,noise}` |
-| `player` `enemy` `npc` `prop` `platform` `pickup` `trigger` | **Entities.** All share ONE generic runtime struct; the type is a label for humans. | `bodyRef` or nested `body`, `behaviors[]`, `layer`, `sfxRefs`, `particleRefs` |
-| `hud` | On-screen overlay | `fontRef`, `children: [widget…]` (text, icon, bar, counter) |
-| `dialog` | Text box conversation | `fontRef`, `box`, `children: [page…]` |
-
-To add a new object type: first add it to this table (with key fields), then to `gen.py` validation,
-then to the visualizer renderer. Never invent an undocumented type.
-
-### 4.6 Text pixel format
-
-Pixel rows are strings; each character is a palette index `0-9A-F` (`0` = transparent).
-Width and height must be multiples of 8. GBA sprite sizes only: 8×8, 16×16, 32×32, 64×64,
-16×8, 32×8, 32×16, 64×32, 8×16, 8×32, 16×32, 32×64.
-
-```json
-{
-  "id": "spr.player",
-  "kind": "object",
-  "type": "sprite",
-  "name": "Player sprite sheet",
-  "notes": "Hero, blue shirt. Facing right; engine flips for left.",
-  "paletteRef": "pal.player",
-  "size": "16x16",
+  "id": "spr_coin", "kind": "object", "type": "sprite",
+  "name": "Coin", "notes": "Gold coin. Front view and edge view for the spin.",
+  "palette": "pal_items", "width": 8, "height": 8,
   "frames": {
-    "idle_0": [
-      "0000011111100000",
-      "0000122222210000",
-      "...14 more rows..."
-    ]
+    "front": ["..1111..", ".122221.", "12233221", "12322321", "12322321", "12233221", ".122221.", "..1111.."],
+    "edge":  ["...11...", "...12...", "...12...", "...12...", "...12...", "...12...", "...12...", "...11..."]
   }
 }
 ```
 
-### 4.7 Entity example (with nested body + animations)
-
+**Animation:**
 ```json
 {
-  "id": "ent.player",
-  "kind": "object",
-  "type": "player",
-  "name": "Player",
-  "notes": "Main character. Runs, jumps, collects coins.",
-  "layer": "main",
-  "children": [
-    {
-      "id": "ent.player/body",
-      "kind": "object",
-      "type": "body",
-      "name": "Player body",
-      "notes": "Hitbox is narrower than the sprite so edges feel fair.",
-      "spriteRef": "spr.player",
-      "origin": [8, 16],
-      "hitboxes": [ { "name": "hurt", "x": -5, "y": -14, "w": 10, "h": 14 } ],
-      "defaultAnim": "idle",
-      "children": [
-        { "id": "ent.player/body/idle", "kind": "object", "type": "animation", "name": "Idle",
-          "notes": "Breathing loop.", "frames": ["idle_0", "idle_1"], "fps": 4, "loop": true },
-        { "id": "ent.player/body/walk", "kind": "object", "type": "animation", "name": "Walk",
-          "notes": "4-frame run cycle.", "frames": ["walk_0", "walk_1", "walk_2", "walk_3"], "fps": 10, "loop": true }
-      ]
-    }
+  "id": "anim_coin_spin", "kind": "object", "type": "animation",
+  "name": "Coin spin", "notes": "Loops forever while the coin sits in the level.",
+  "sprite": "spr_coin", "loop": true,
+  "frames": [
+    { "frame": "front", "ticks": 10 },
+    { "frame": "edge",  "ticks": 6 },
+    { "frame": "front", "ticks": 10, "flip_x": true },
+    { "frame": "edge",  "ticks": 6 }
   ],
-  "behaviors": [
-    { "use": "platformer_move", "params": { "speed": 1.5, "accel": 0.25 } },
-    { "use": "platformer_jump", "params": { "jumpSpeed": 4.0, "gravity": 0.25 } },
-    { "use": "camera_follow",   "params": { "deadzoneW": 32, "deadzoneH": 24 } }
-  ],
-  "sfxRefs": { "jump": "sfx.jump" },
-  "particleRefs": { "land": "fx.dust" }
+  "events": []
 }
 ```
 
-### 4.8 Scene example
-
+**Body** (owns its sprite, animations and dust particles):
 ```json
 {
-  "id": "scene.level_1",
-  "kind": "scene",
-  "type": "level",
-  "name": "Level 1 — Forest",
-  "notes": "Tutorial level. Teaches jumping before the first enemy.",
-  "background": {
-    "bg3": { "mapRef": "map.forest_sky",  "scroll": [0.25, 0] },
-    "bg2": { "mapRef": "map.level_1_main", "scroll": [1, 1] }
-  },
-  "musicRef": "mus.forest",
-  "hudRef": "hud.game",
-  "camera": { "boundsFromMap": "map.level_1_main" },
-  "instances": [
-    { "name": "player",   "ref": "ent.player",   "x": 24,  "y": 120 },
-    { "name": "tree_1",   "ref": "ent.tree",     "x": 80,  "y": 120 },
-    { "name": "slime_1",  "ref": "ent.slime",    "x": 200, "y": 120,
-      "overrides": { "patrol": { "range": 48 } } },
-    { "name": "lift_1",   "ref": "ent.platform_lift", "x": 300, "y": 100 }
+  "id": "body_hero", "kind": "object", "type": "body",
+  "name": "Hero body",
+  "notes": "How the hero looks and the box used for collisions. The hitbox is narrower than the art so jumps feel fair.",
+  "origin": [8, 16],
+  "hitbox": { "x": -5, "y": -14, "w": 10, "h": 14 },
+  "physics": { "gravity": true, "solid": true, "collides_with": ["tiles", "platform", "enemy", "pickup", "trigger"] },
+  "animations": { "idle": "anim_hero_idle", "run": "anim_hero_run", "jump": "anim_hero_jump", "hurt": "anim_hero_hurt" },
+  "default_animation": "idle",
+  "children": ["spr_hero", "anim_hero_idle", "anim_hero_run", "anim_hero_jump", "anim_hero_hurt", "ptc_hero_dust"]
+}
+```
+`origin` is the point in the art (from its top-left) that sits on the instance's x,y — usually the feet.
+
+**Player:**
+```json
+{
+  "id": "plr_hero", "kind": "object", "type": "player",
+  "name": "Hero", "notes": "The character the human controls. Runs, jumps, has 3 hearts.",
+  "body": "body_hero",
+  "logic": [
+    { "behavior": "platformer_controller", "params": { "speed": 1.5, "jump_height": 40, "jump_button": "A" } },
+    { "behavior": "health", "params": { "var": "health", "invincible_ticks": 60,
+      "on_death": [{ "do": "goto_scene", "scene": "scn_game_over" }] } },
+    { "behavior": "camera_target", "params": {} }
   ],
-  "behaviors": [
-    { "use": "scene_goal_exit", "params": { "x": 600, "nextScene": "scene.level_2" } }
+  "sounds": { "jump": "sfx_jump", "hurt": "sfx_hurt" },
+  "children": ["body_hero"]
+}
+```
+
+**Tilemap** (rows use the tileset's chars):
+```json
+{
+  "id": "map_level_1", "kind": "object", "type": "tilemap",
+  "name": "Level 1 ground", "notes": "Main layer the hero walks on. '#' is solid ground, '=' is a one-way ledge.",
+  "tileset": "ts_grass", "layer": 1, "parallax": 1,
+  "rows": [
+    "................................",
+    "..........====..................",
+    "################....############"
   ]
 }
 ```
 
-- `instances` place entities; `overrides` change behavior params for that instance only.
-- Scene logic (menus, transitions, win/lose) is also behaviors, prefixed `scene_`.
-
-### 4.9 Audio format (PSG channels only)
-
-Music and sfx use the 4 GB-compatible PSG channels (`sq1`, `sq2`, `wave`, `noise`). No sample playback
-(Direct Sound) in schema 1 — it keeps audio text-editable and previewable in the browser.
-
+**Scene:**
 ```json
 {
-  "id": "mus.forest",
-  "kind": "object",
-  "type": "music",
-  "name": "Forest theme",
-  "notes": "Calm, loops every 8 bars.",
-  "bpm": 120,
-  "rowsPerBeat": 4,
+  "id": "scn_level_1", "kind": "scene", "type": "level",
+  "name": "Level 1 – Green Hills",
+  "notes": "First level. Teaches running and jumping over small gaps. Ends at the flag.",
+  "backdrop": "#78c8f8",
+  "music": "mus_level_1",
+  "camera": { "follow": "player", "bounds": "map" },
+  "instances": [
+    { "id": "map",    "object": "map_level_1" },
+    { "id": "player", "object": "plr_hero",  "x": 24,  "y": 112 },
+    { "id": "tree_1", "object": "prop_tree", "x": 96,  "y": 112 },
+    { "id": "lift_1", "object": "plat_lift", "x": 160, "y": 104,
+      "overrides": { "follow_path": { "points": [[0, 0], [0, -48]] } } },
+    { "id": "coin_1", "object": "item_coin", "x": 168, "y": 40 },
+    { "id": "exit",   "object": "trg_exit",  "x": 480, "y": 96,
+      "overrides": { "trigger_zone": { "on_enter": [{ "do": "goto_scene", "scene": "scn_level_2" }] } } },
+    { "id": "hud",    "object": "hud_main" }
+  ],
+  "on_start": [{ "do": "fade_in", "ticks": 20 }]
+}
+```
+`overrides` are keyed by behavior name and replace only the listed params for that one instance.
+Instance ids are unique inside the scene; `camera.follow` uses an instance id.
+
+**SFX:**
+```json
+{
+  "id": "sfx_jump", "kind": "object", "type": "sfx",
+  "name": "Jump", "notes": "Short rising blip when the hero jumps.",
+  "channel": "square1", "duty": 2, "priority": 1,
+  "steps": [
+    { "note": "C5", "ticks": 2, "volume": 12 },
+    { "note": "E5", "ticks": 2, "volume": 10 },
+    { "note": "G5", "ticks": 4, "volume": 7 }
+  ]
+}
+```
+`channel`: `square1` `square2` `wave` `noise`. `duty`: 0=12.5% 1=25% 2=50% 3=75%.
+`volume`: 0–15 (wave channel: 0–4). Noise steps use `"pitch": 0–15` instead of `note`.
+
+**Music:**
+```json
+{
+  "id": "mus_level_1", "kind": "object", "type": "music",
+  "name": "Green Hills theme", "notes": "Cheerful loop. Melody on square1, bass on wave, light drums on noise.",
+  "bpm": 132, "rows_per_beat": 4, "loop": true,
   "instruments": {
-    "lead": { "channel": "sq1", "duty": 2, "volume": 12, "envelope": -1 },
-    "bass": { "channel": "wave", "waveform": "triangle", "volume": 2 },
-    "hat":  { "channel": "noise", "volume": 6, "envelope": -3 }
+    "square1": { "duty": 2, "volume": 10, "decay": 2 },
+    "square2": { "duty": 1, "volume": 7,  "decay": 3 },
+    "wave":    { "wave": "0123456789abcdeffedcba9876543210", "volume": 4 },
+    "noise":   { "volume": 6, "decay": 1 }
   },
-  "tracks": {
-    "sq1":   "lead: C5 4, E5 4, G5 8, R 4, G5 4, E5 8",
-    "wave":  "bass: C3 8, G2 8, A2 8, F2 8",
-    "noise": "hat: X 2, R 2, X 2, R 2"
+  "patterns": {
+    "A": {
+      "square1": "C5 -- E5 -- G5 -- E5 -- | D5 -- F5 -- A5 -- F5 --",
+      "wave":    "C3 -- -- -- C3 -- -- -- | D3 -- -- -- D3 -- -- --",
+      "noise":   "X2 .. X8 .. X2 .. X8 .. | X2 .. X8 .. X2 X2 X8 .."
+    }
   },
-  "loop": true
+  "order": ["A", "A"]
 }
 ```
-
-Track syntax: `instrument: NOTE LENGTH, NOTE LENGTH, …` — length in rows, `R` = rest, `X` = noise hit.
-`sfx` uses the same syntax in a single `steps` string plus `channel` and `priority`.
-When an sfx plays, it borrows its channel from the music and returns it when done.
+Every channel in a pattern has the same number of rows. Missing channels are silent.
+`wave` is 32 hex nibbles (one 4-bit waveform). SFX borrow a channel; music resumes after.
 
 ---
 
-## 5. Behaviors (logic)
+## 7. Logic: behaviors, actions, custom code
 
-All game logic is reusable C modules in `src/behaviors/`. Entities and scenes enable them by name.
+### 7.1 Behaviors (what objects do)
+- A behavior is a reusable logic module: `src/behaviors/<name>.c/.h` + an entry in
+  `catalog/behaviors.json` (plain description, params with type, default and description).
+- Objects enable behaviors in `logic[]`; scenes can override params per instance.
+- Interface: `init(actor, params)`, `update(actor, params)`, optional `on_touch(actor, other, params)`.
+- Param types: `int`, `fixed`, `bool`, `ticks`, `button`, `var`, `node:<type>`, `actions`, `points`.
+- Movement behaviors pick body animation slots by convention: `idle`, `walk`, `run`, `jump`,
+  `fall`, `hurt`, `die`, `attack` (missing slots fall back to `default_animation`).
+- Starter set: `platformer_controller`, `topdown_controller`, `patrol`, `chase_player`,
+  `follow_path`, `solid_platform`, `health`, `damage_on_touch`, `stompable`, `collectible`,
+  `trigger_zone`, `talk`, `camera_target`, `spawn_particles`. Add more as games need them.
+- Prefer a new reusable behavior over custom code.
 
-Registry `src/behaviors/behaviors.json` (the visualizer shows this text to the human):
+### 7.2 Actions (what happens when something occurs)
+Action lists appear in `on_start`, `on_enter`, `on_death`, menu options, dialog choices,
+animation events, etc. Format: `{ "do": "<action>", ...params }`, run in order; `wait` pauses
+the list. Catalog in `catalog/actions.json`. Starter set:
+`goto_scene`, `fade_in`, `fade_out`, `wait`, `play_sfx`, `play_music`, `stop_music`,
+`set_var`, `add_var`, `if_var` (`then[]`/`else[]`), `show_dialog`, `open_menu`, `close_menu`,
+`spawn`, `destroy_self`, `shake_camera`, `save_game`, `load_game`, `call` (custom C, §7.3).
 
-```json
-{
-  "platformer_jump": {
-    "description": "Press A to jump when on ground. Holding A longer jumps higher.",
-    "appliesTo": ["player"],
-    "params": {
-      "jumpSpeed": { "type": "fixed", "default": 4.0, "desc": "Initial upward speed (px/frame)" },
-      "gravity":   { "type": "fixed", "default": 0.25, "desc": "Downward accel (px/frame²)" }
-    },
-    "file": "src/behaviors/platformer_jump.c"
-  }
-}
-```
-
-Each behavior file implements:
-
-```c
-void bhv_platformer_jump_init(Obj *o, const BhvParams *p);
-void bhv_platformer_jump_update(Obj *o, const BhvParams *p);
-// optional:
-void bhv_platformer_jump_on_hit(Obj *o, Obj *other, const BhvParams *p);
-```
-
-- `gen.py` generates the dispatch table and named param accessors
-  (e.g. `PLATFORMER_JUMP_JUMPSPEED(p)`) from `behaviors.json`.
-- Param types: `int`, `fixed` (converted to 24.8), `bool`, `nodeRef` (converted to node enum).
-- Per-behavior runtime state lives in the object's fixed `state[16]` byte slot for that behavior.
-- Max 4 behaviors per entity. A behavior must not know about any specific node id; it receives
-  everything through params.
-- Prefer composing existing behaviors over writing new ones. Before creating a behavior, check
-  the registry for one that already does the job.
+### 7.3 Custom code (last resort)
+When something truly can't be expressed with behaviors and actions, set `"code":
+"src/game/<id>.c"` on the node. Codegen registers its hooks (`<id>_on_start`, `<id>_on_update`).
+Explain in the node's `notes` what the code does, so the visualizer shows it in plain words.
 
 ---
 
-## 6. Engine structure (`src/engine/`)
+## 8. Engine structure (C)
 
-Each module is one `.c` + `.h` pair with one clear job:
-
-| Module | Job |
-|---|---|
-| `main.c` | Init hardware, run the 60 fps loop: input → scene update → objects update → render → audio, wait VBlank |
-| `fixed.h` | 24.8 fixed-point type `fx32` and math macros (**no floats anywhere**) |
-| `input.c` | Button state: held / pressed / released |
-| `scene.c` | Load/unload scenes, spawn instances, transitions (fade), scene behaviors |
-| `obj.c` | Fixed pool of `Obj` (max 64), spawn/destroy, behavior dispatch |
-| `body.c` | Animation playback, flip, hitbox world positions |
-| `collide.c` | AABB vs AABB, AABB vs tilemap collision layer |
-| `render.c` | BG layers, camera scroll, OAM shadow buffer (128 sprites), VRAM tile allocation |
-| `particles.c` | Small particle pool (max 32) using OAM |
-| `hud.c` | HUD widgets drawn on BG0 |
-| `dialog.c` | Text box on BG0, paging with A |
-| `audio.c` | PSG music sequencer + sfx channel borrowing, ticked once per frame |
-| `save.c` | SRAM save/load (only if a node requests saving) |
-
-Layer convention: **BG0** = HUD/dialog text, **BG1** = foreground, **BG2** = main level,
-**BG3** = parallax background. Display mode 0, 4bpp tiles everywhere.
-
-Generated data (`build/gen/`): `nodes.h` (enum of all node ids), `assets.c` (tiles, palettes, maps,
-audio as `const` arrays in ROM), `scenes.c`, `entities.c`, `behaviors_table.c`.
-
----
-
-## 7. Hardware budgets (gen.py must report these)
-
-| Resource | Limit | Notes |
-|---|---|---|
-| Screen | 240×160 | Visualizer shows this as the camera frame |
-| OAM sprites | 128 on screen | engine + particles share it |
-| Sprite tiles | 1024 × 4bpp (32 KB) | frames are streamed per entity type when a scene loads |
-| BG palettes / OBJ palettes | 16 + 16, 16 colors each | |
-| BG layers | 4 | see layer convention |
-| IWRAM | 32 KB | hot code + stack |
-| EWRAM | 256 KB | object pool, buffers |
-| ROM | aim < 4 MB | |
-
-If a request exceeds a budget, explain it to the human in plain words and propose an alternative.
-
----
-
-## 8. Read-only visualizer (`tools/visualizer/index.html`)
-
-**One file** containing HTML, CSS and JS. Vanilla JS, no libraries, no network, no build step.
-It loads `data.js` (generated by `gen.py`: `window.GAME_DATA = {...}`) via a `<script>` tag so it
-works by double-clicking (no local server, no `fetch`).
-
-**Read-only for everything.** There are no edit buttons, no inputs that change data, no save.
-View controls are allowed (select, zoom, play/pause, toggle overlays). If `data.js` is missing,
-show: "Run view.bat to generate the data."
-
-### Layout
+Designed so a human can follow "what runs when" without reading code.
 
 ```
-┌──────────────┬──────────────────────────────┬──────────────────┐
-│ LEFT SIDEBAR │          MAIN AREA           │  RIGHT SIDEBAR   │
-│ 1. Nodes     │  renders the selected node   │  properties      │
-│ 2. Tree      │                              │  notes           │
-│              │                              │  references      │
-└──────────────┴──────────────────────────────┴──────────────────┘
+src/engine/
+├── config.h       pool sizes and limits (MAX_ACTORS, MAX_PARTICLES, …)
+├── core.c/.h      main loop, VBlank wait, frame counter
+├── input.c/.h     pressed / held / released for every button
+├── fixed.h        fixed-point 24.8 math, sin/cos table, rng
+├── vars.c/.h      game variables (get / set / add by id)
+├── scene.c/.h     load / unload scenes, spawn instances, transitions and fades
+├── actor.c/.h     actor pool, runs each actor's logic list every tick
+├── physics.c/.h   gravity, tile collision (solid/one_way/hazard/ladder), actor overlaps
+├── anim.c/.h      animation players and frame events
+├── particles.c/.h particle pool
+├── camera.c/.h    follow target, clamp to bounds, shake
+├── bg.c/.h        tiles/palettes upload, tilemap scrolling, streaming for big maps
+├── sprites.c/.h   OAM shadow buffer and OBJ VRAM allocation
+├── audio.c/.h     PSG driver: music sequencer + sfx
+├── ui.c/.h        text, hud, menus, dialogs
+├── actions.c/.h   action list interpreter
+└── save.c/.h      SRAM save/load of variables (only if game.save)
 ```
 
-### Left sidebar
-- **Section 1 — Nodes:** flat list of all root nodes grouped by kind → type, with a search box.
-- **Section 2 — Tree:** hierarchy: Game → Scenes → instances → entity → nested children
-  (body → animations, hud → widgets, dialog → pages). A final group "Unused" lists nodes no scene
-  references. Clicking any item selects it everywhere.
+**Every frame:**
+1. Wait for VBlank → copy OAM shadow, scroll registers, palette fades
+2. `input_update`
+3. `scene_update` → each actor runs its `logic` in instance order
+4. `physics_update` → move, collide, fire `on_touch`
+5. `anim_update`, `particles_update`
+6. `camera_update`
+7. `ui_update` (hud, menu, dialog)
+8. `audio_update`
+9. Build the OAM shadow for the next VBlank
 
-### Main area (by selected node)
-- **Scene:** draws BG layers and every instance (default animation, first frame) at integer zoom,
-  camera frame rectangle (240×160), toggles for grid / hitboxes / collision layer. Clicking an
-  instance selects it.
-- **Sfx / music:** audio player (play/stop, loop) synthesized with WebAudio from the PSG data
-  (square with duty, wave, noise), channel mute toggles, and a simple per-channel note timeline.
-  Label it "approximate preview".
-- **Entity / object:** all animations playing side by side with names and fps, hitbox overlays,
-  particle preview loop, the list of enabled behaviors as cards (description + params, overrides
-  highlighted), linked sfx/particles.
-- **HUD:** renders the widgets at their screen positions over a 240×160 frame.
-- **Dialog:** renders the box and lets the human step through pages (view only).
-- **Palette / sprite / tileset / tilemap / font / icon:** swatches, frame grid, tile grid, map render, glyph grid.
-
-### Right sidebar
-- All properties of the selected node (nested objects collapsible), the `notes` text prominently,
-  file path, **Uses** (refs out) and **Used by** (refs in), and any `gen.py` warnings for that node.
+**Code rules:**
+- The engine is game-agnostic: it never mentions a specific node id. Game-specific code lives in `src/game/`.
+- No `malloc`. Fixed pools sized in `config.h`.
+- No `float`/`double`. Fixed-point only.
+- Node data is `const` and lives in ROM. Runtime state lives in RAM structs.
+- Every node gets an enum `NODE_<ID_IN_CAPS>` in `generated/node_ids.h`; variables get `VAR_<NAME>`.
+- One module, one job. Each public function has a one-line comment in plain English.
+- Move hot code to IWRAM (ARM mode) only when a measured slowdown requires it.
+- Zero warnings in our code.
 
 ---
 
-## 9. Generator (`tools/gen.py`)
+## 9. GBA limits (validator enforces what it can)
 
-Commands:
-- `python tools/gen.py --check` → validate only (schema, unique ids, every ref resolves, files exist,
-  pixel sizes, palette indices, sprite sizes, behavior names/params, scene nesting rule, budgets).
-- `python tools/gen.py` → validate, then write `build/gen/*` and `tools/visualizer/data.js`.
-
-Errors must be in plain language with the node id and file, e.g.
-`ERROR scene.level_1 (nodes/scenes/level_1.json): instance "slime_1" refers to "ent.slim" which does not exist.`
-
----
-
-## 10. Human pipeline
-
-1. **Ask AI to generate nodes** — objects (hud, icon, sfx, music, animation, particle, body, player,
-   enemy, tree, movable platform…) and scenes (intro, menu, levels, inventory…).
-2. **Look at them** — double-click `view.bat`; browse the tree in the visualizer (read-only).
-3. **Ask AI for changes** — nodes, assets (art, sprites, animations, sfx, music), code, anything.
-4. **Build** — double-click `build.bat`.
-5. **Play** — double-click `run.bat` (opens the ROM in mGBA).
-
-If a build fails, the human says "build failed"; the AI reads `build/build.log` and fixes it.
-
-### Batch file contracts
-- `config.bat` — sets `DEVKITPRO`, `DEVKITARM`, `MGBA`, `PYTHON`. Only file with machine paths.
-- `build.bat` — `call config.bat` → `gen.py` → `make` → `gbafix` → `build/game.gba`. All output also
-  written to `build/build.log`. Prints `BUILD OK` or `BUILD FAILED` and pauses on failure.
-- `run.bat` — calls `build.bat` if `build/game.gba` is missing, then starts mGBA with the ROM.
-- `view.bat` — runs `gen.py` and opens `tools/visualizer/index.html` in the default browser.
+- **Screen** 240×160, ~60 fps. All work for a frame must fit in that frame.
+- **Video mode 0**, 4 tiled BG layers. Default plan: BG0 = UI (hud/menu/dialog text),
+  BG1 = main tilemap (collision), BG2 = background, BG3 = far background.
+- **Sprites (OBJ)**: max 128 on screen, per-scanline limits apply. Valid sizes:
+  8×8, 16×16, 32×32, 64×64, 16×8, 32×8, 32×16, 64×32, 8×16, 8×32, 16×32, 32×64.
+  OBJ VRAM 32 KB = 1024 4bpp tiles.
+- **Palettes**: 16 BG + 16 OBJ palettes, 16 colors each (4bpp), 15-bit color, index 0 transparent.
+- **BG VRAM** 64 KB shared by tiles and maps. Regular BGs max 512×512 px; bigger maps are
+  streamed by `bg.c`. One char per tile limits a tileset to ~90 tiles.
+- **Memory**: 32 KB IWRAM (fast), 256 KB EWRAM, ROM up to 32 MB.
+- **Audio**: 4 PSG channels (square1 with sweep, square2, wave, noise). Direct Sound is not used in v1.
+- **Input**: D-pad, A, B, L, R, START, SELECT.
+- **Text**: 8×8 font → 30 chars per line. Validator checks dialog/menu/hud text fits its box.
 
 ---
 
-## 11. AI workflow for every request
+## 10. AI work visualizer
 
-1. Read `nodes.json` and the relevant node files before changing anything.
-2. Restate the request in node terms if it's ambiguous ("I'll add a `jump` animation to
-   `ent.player/body` and a `sfx.jump` node") — ask only when a choice really changes the game.
-3. Make the change: JSON first, then behaviors/engine code if needed.
-4. Keep `nodes.json` in sync (add/remove/rename entries; update every `Ref` on rename).
-5. Update `notes` on every node you touched.
-6. Run `python tools/gen.py --check`, then the full build. Fix all errors and warnings.
-7. Reply to the human with a short summary in node terms: nodes added / changed / removed, and
-   what to look at in the visualizer or in game. No code dumps unless asked.
+### 10.1 Files and loading
+- `visualizer/visualizer.html` — the whole app in **one file** (HTML, CSS, JS inline).
+  No frameworks, no CDN, no internet. Works by double-clicking (`file://`).
+- `visualizer/data.js` — generated by `tools/bundle.py`:
+  `window.GAME_DATA = { generated_at, game, index, nodes: {id: json}, catalog: {behaviors, actions}, validation: {ok, errors[], warnings[]} }`.
+  Loaded with `<script src="data.js">` because `fetch` doesn't work on `file://`.
+- `bundle.py` runs after every AI change, so a browser refresh shows the latest work.
+- Missing `data.js` → friendly message "Run view.bat". Validation errors → red banner listing
+  them; the visualizer still shows everything it can.
 
-Never:
-- edit `build/` or `data.js` by hand,
-- put game-specific ids or numbers inside `src/engine/`,
-- use floats, `malloc` during gameplay, or libraries outside devkitARM/libtonc,
-- create binary asset files by hand,
-- nest a scene, or nest a reusable object,
-- add a node type or field that isn't documented here (update this file first).
+### 10.2 Read-only, always
+- No editing UI of any kind: no fields that change data, no drag-to-move, no save, no export of changes.
+- Controls only change *how you look*: select, search, filter, expand/collapse, zoom,
+  play/pause/step, overlays (grid, hitboxes, origins, labels, camera frame), volume.
+- Header hint: "Read-only — ask the AI to change anything." Every node shows its id and file
+  path with a "Copy id" button so the human can name it when asking for changes.
+
+### 10.3 Layout
+```
+┌──────────────────┬────────────────────────────────┬───────────────────┐
+│ LEFT SIDEBAR     │ MAIN AREA                      │ RIGHT SIDEBAR     │
+│ 1. Nodes (list)  │ preview of the selected node   │ properties, notes │
+│ 2. Tree          │                                │                   │
+└──────────────────┴────────────────────────────────┴───────────────────┘
+```
+**Header**: game title, last generated time, validation status, node counts.
+
+**Left sidebar**
+- *Section 1 — Nodes*: flat list of every node, search box, filter chips by kind and type,
+  each row = type icon + name + id.
+- *Section 2 — Tree*: two root groups. **Scenes** → each scene expands to its instances
+  (instance id → object name; click selects the object). **Objects** → root objects expand to
+  their children, recursively. The selected node is highlighted in both sections and the tree
+  auto-expands to it.
+
+**Right sidebar**
+- Name, id, kind/type, file path.
+- **Notes** at the top, prominent.
+- **Properties**: every field, made readable — colors as swatches, references as clickable links,
+  actions as plain sentences, behaviors with their catalog description and params
+  (marking defaults vs. per-instance overrides).
+- **Children** and **Used by** (every node/scene that references this node).
+- Custom code path if `code` is set.
+- Raw JSON (collapsible).
+
+**Main area — what each type shows**
+
+| Type | Preview |
+|------|---------|
+| scene | Whole scene on a canvas: backdrop, tilemaps with parallax, every instance drawn with its default animation (animated), HUD on top. Overlays: tile grid, hitboxes, origins, instance labels, platform paths, trigger zones, 240×160 screen frame at camera start. Click an instance → selects its object. Instance list below. |
+| palette | Swatches with index, hex and 15-bit value. |
+| sprite, icon, font | Pixel-perfect zoom of every frame/glyph; optional index grid. |
+| tileset | Every tile with its char and flags (solid, one-way, hazard, ladder). |
+| tilemap | Full map render with collision overlay. |
+| animation | Live playback at real speed, frame strip with ticks, play/pause/step, flips, events on a timeline. |
+| particle | Live emitter simulation with restart button. |
+| body | Animation slots as tabs, live playback with hitbox and origin overlay, physics summary. |
+| player, enemy, npc, prop, platform, pickup, trigger | Body preview, hitbox, **logic list** (each behavior: plain description + params), sounds with play buttons, path preview for `follow_path`, zone for triggers. |
+| hud, menu, dialog | Rendered inside a 240×160 GBA screen with the real font and icons. HUD uses variables' initial values; dialog has prev/next line; menu shows the cursor on each option. |
+| sfx, music | **Audio player**: play/stop/loop + visual (step list for sfx; tracker grid per channel with playhead for music). Web Audio synth approximating the PSG: square with duty, 4-bit wave, noise, 0–15 volume. |
+
+### 10.4 Fidelity and navigation
+- Quantize every color to 15-bit before drawing. Integer zoom, `image-rendering: pixelated`.
+- Same timing (1 tick = 1/60 s), origin, hitbox and flip rules as the engine. If they ever
+  disagree, the engine is right — fix the visualizer.
+- Deep links: `visualizer.html#scn_level_1` selects that node.
+- Keyboard: ↑/↓ moves through the list, Space = play/pause.
 
 ---
 
-## 12. First task: scaffold (if the repo is empty)
+## 11. The `.bat` files
 
-1. Create the folder layout, `config.bat`, `build.bat`, `run.bat`, `view.bat`, `Makefile`
-   (devkitARM `gba_rules`, sources `src/engine src/behaviors build/gen`, link `-ltonc`).
-2. Write `tools/gen.py` with full validation and generation.
-3. Write the engine modules listed in section 6 (minimal but working).
-4. Write `tools/visualizer/index.html` per section 8.
-5. Create a sample game: `pal.*`, `spr.player`, `font.default`, `ent.player` (move + jump),
-   `ent.tree` (prop), `scene.intro` (title + "PRESS START"), `scene.level_1`, `sfx.jump`, `mus.title`.
-6. Verify: `gen.py --check` passes, `build.bat` produces `build/game.gba`, the visualizer shows every node.
+All three: `@echo off`, `cd /d "%~dp0"`, find Python (`py -3`, then `python`), call one
+Python script, print a clear ✔ / ✖ result, `pause` at the end, non-zero exit code on failure.
+The AI runs the Python scripts directly; the `.bat` files exist for the human.
+
+- `build.bat` → `tools\build.py` (validate → codegen → bundle → compile → `dist\<rom_name>.gba`)
+- `run.bat` → `tools\run.py` (builds first if the ROM is missing or older than any source;
+  launches mGBA only if the build succeeded)
+- `view.bat` → `tools\bundle.py`, then `start "" "visualizer\visualizer.html"`
+
+---
+
+## 12. How the AI handles every request
+
+1. Read `nodes/nodes.json` and the nodes involved. Read code only when needed.
+2. If the request is ambiguous in a way that changes the result, ask **one** short question.
+   Otherwise choose sensibly and say what you chose.
+3. Make the change: nodes first; catalog / behaviors / engine code only if needed.
+4. Update `nodes.json`. If you change something shared (a palette, a font, a behavior), list what else it affects.
+5. Run `python tools/validate.py` and fix everything.
+6. Run `python tools/build.py` and fix every error and warning.
+7. Make sure `visualizer/data.js` is regenerated.
+8. Add a `CHANGELOG.md` entry: date, the request in one line, node ids changed.
+9. If git is set up, commit with a clear message so "undo the last change" is easy.
+10. Report to the human in plain language: what you made/changed (name + id), what to click
+    in the visualizer, what to try in the game (controls), anything you couldn't do and why.
+    No code or JSON in the report unless asked.
+
+**Done means:** validation passes, the ROM builds, `data.js` is fresh, changelog updated, report sent.
+
+---
+
+## 13. Art and audio style
+
+- **Pixel art**: 4–8 colors per sprite, dark outline, one light source (top-left), readable
+  silhouette at 1×, consistent style across the game. Animations 2–6 frames, 4–10 ticks each.
+- **Palettes**: share palettes across related objects to save palette slots.
+- **SFX**: short (≤ 30 ticks), distinct per event.
+- **Music**: melody on square1, harmony on square2, bass on wave, drums on noise; melodies in C3–C7;
+  build songs from short patterns reused in `order`.
+
+---
+
+## 14. Bootstrap (empty repository)
+
+Build in milestones. Each one ends with a ROM that builds and runs and a visualizer that opens.
+
+1. **M0 – Skeleton**: folders, `config.json`, `.bat` files, `validate.py`, `bundle.py`, `build.py`,
+   `run.py`, empty `nodes.json`, `CHANGELOG.md`.
+2. **M1 – Hello GBA**: engine core + input + text; `font_default`, `pal_ui`, `scn_intro` showing the game title.
+3. **M2 – Visualizer**: list, tree, properties, palette/sprite/font/animation previews.
+4. **M3 – World**: tileset, tilemap, camera, body, physics, player with `platformer_controller`.
+5. **M4 – Sound**: PSG driver, sfx, music, visualizer audio player.
+6. **M5 – UI**: hud, menu, dialog, scene transitions.
+7. **M6 – Rest**: particles, remaining starter behaviors and actions, save.
