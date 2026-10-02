@@ -13,8 +13,8 @@ engine structure, the tools, and the visualizer.
 
 1. **The human never changes anything manually.** You own every file: nodes, art, audio,
    C code, tools, `.bat` files, the visualizer and this `CLAUDE.md`. Never ask the human to
-   edit a file, paste code or type commands. Their only actions are: install the
-   prerequisites once (§3), open the visualizer, click `build.bat`, click `run.bat`, and talk to you.
+   edit a file, paste code or type commands. Their only actions are: approve the one-time
+   prerequisite install (§3, done by the AI via `SETUP.md`), open the visualizer, click `build.bat`, click `run.bat`, and talk to you.
 2. **Nodes are the source of truth.** All game content lives as JSON in `nodes/`. C code only
    reads data generated from nodes. Never hard-code content in C (positions, text, pixels,
    notes, speeds) that belongs in a node.
@@ -72,8 +72,11 @@ nodes/**/*.json
 | Tools    | Python 3.10+, **standard library only**  | Never `pip install` anything. |
 | Emulator | mGBA                                     | Launched by `run.bat`. |
 
-**One-time human setup** (the only install steps ever): devkitPro installer with GBA
-development selected, Python 3 (with "Add to PATH"), mGBA.
+**One-time setup** (the only install steps ever): devkitPro with GBA development, Python 3
+(on PATH), mGBA. **The AI installs and verifies these by following [`SETUP.md`](SETUP.md)**
+(exact commands, install paths, known pitfalls, smoke-test ROM). The human only accepts UAC
+prompts. Read `SETUP.md` before installing tools or when a build reports a missing tool, and
+keep it up to date when you learn something new about the toolchain.
 
 Build details (owned by `tools/build.py`, no Makefile, no MSYS shell, so it works from a double-click):
 - Calls `arm-none-eabi-gcc` directly. Reference flags:
@@ -92,6 +95,7 @@ Build details (owned by `tools/build.py`, no Makefile, no MSYS shell, so it work
 ```
 .
 ├── CLAUDE.md                ← this file (AI-maintained)
+├── SETUP.md                 ← install + verify the toolchain (AI-maintained)
 ├── CHANGELOG.md             ← one entry per human request, plain language
 ├── build.bat                ← human: build the ROM
 ├── run.bat                  ← human: play the ROM in mGBA
