@@ -1,0 +1,177 @@
+{
+  "id": "scn_arena",
+  "kind": "scene",
+  "type": "level",
+  "name": "Warden's arena",
+  "notes": "The Brood Warden's hall. Walking in announces the boss, slams an iron gate shut behind you and starts the battle music; beating it opens the gate and reveals the Shade Cloak (dash). Exit west back to the Crossroads.",
+  "backdrop": "#0a0e18",
+  "music": null,
+  "camera": {
+    "follow": "player",
+    "bounds": "map"
+  },
+  "instances": [
+    {
+      "id": "layer_arena",
+      "object": "map_arena"
+    },
+    {
+      "id": "layer_arena_bg",
+      "object": "map_arena_bg"
+    },
+    {
+      "id": "player",
+      "object": "plr_vessel",
+      "x": 28,
+      "y": 160
+    },
+    {
+      "id": "entry_1",
+      "object": "prop_entry",
+      "x": 28,
+      "y": 160,
+      "overrides": {
+        "entry_point": {
+          "value": 1,
+          "face_left": false
+        }
+      }
+    },
+    {
+      "id": "warden_1",
+      "object": "enm_warden",
+      "x": 244,
+      "y": 160
+    },
+    {
+      "id": "cloak",
+      "object": "item_cloak",
+      "x": 164,
+      "y": 160
+    },
+    {
+      "id": "gate",
+      "object": "prop_gate",
+      "x": 44,
+      "y": 160
+    },
+    {
+      "id": "entry_map",
+      "object": "prop_entry",
+      "x": 0,
+      "y": 0,
+      "overrides": {
+        "entry_point": {
+          "value": 98,
+          "x_var": "safe_x",
+          "y_var": "safe_y"
+        }
+      }
+    },
+    {
+      "id": "shade",
+      "object": "enm_shade",
+      "x": 0,
+      "y": 0
+    },
+    {
+      "id": "exit_1",
+      "object": "trg_exit_side",
+      "x": 0,
+      "y": 120,
+      "overrides": {
+        "trigger_zone": {
+          "on_enter": [
+            {
+              "do": "set_var",
+              "var": "door",
+              "value": 3
+            },
+            {
+              "do": "fade_out",
+              "ticks": 12
+            },
+            {
+              "do": "goto_scene",
+              "scene": "scn_cross"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "exit_2",
+      "object": "trg_boss_intro",
+      "x": 64,
+      "y": 104,
+      "overrides": {
+        "trigger_zone": {
+          "on_enter": [
+            {
+              "do": "if_var",
+              "var": "warden_dead",
+              "op": "==",
+              "value": 0,
+              "then": [
+                {
+                  "do": "set_var",
+                  "var": "arena_fight",
+                  "value": 1
+                },
+                {
+                  "do": "play_sfx",
+                  "sfx": "sfx_slam"
+                },
+                {
+                  "do": "shake_camera",
+                  "ticks": 10,
+                  "strength": 2
+                },
+                {
+                  "do": "show_dialog",
+                  "dialog": "dlg_warden"
+                },
+                {
+                  "do": "play_music",
+                  "music": "mus_boss"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "hud",
+      "object": "hud_game"
+    }
+  ],
+  "on_start": [
+    {
+      "do": "set_var",
+      "var": "room",
+      "value": 3
+    },
+    {
+      "do": "set_var",
+      "var": "arena_fight",
+      "value": 0
+    },
+    {
+      "do": "if_var",
+      "var": "warden_dead",
+      "op": "==",
+      "value": 1,
+      "then": [
+        {
+          "do": "play_music",
+          "music": "mus_cross"
+        }
+      ]
+    },
+    {
+      "do": "fade_in",
+      "ticks": 20
+    }
+  ]
+}

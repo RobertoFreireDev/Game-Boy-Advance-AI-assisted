@@ -1,0 +1,31 @@
+{
+  "id": "sfx_cast",
+  "kind": "object",
+  "type": "sfx",
+  "name": "Void Bolt",
+  "notes": "A deep whoosh as the bolt flies.",
+  "channel": "noise",
+  "priority": 3,
+  "steps": [
+    {
+      "pitch": 4,
+      "ticks": 3,
+      "volume": 13
+    },
+    {
+      "pitch": 6,
+      "ticks": 3,
+      "volume": 10
+    },
+    {
+      "pitch": 8,
+      "ticks": 6,
+      "volume": 7
+    },
+    {
+      "pitch": 10,
+      "ticks": 8,
+      "volume": 4
+    }
+  ]
+}

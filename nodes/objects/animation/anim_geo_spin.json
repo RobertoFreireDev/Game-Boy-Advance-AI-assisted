@@ -1,0 +1,29 @@
+{
+  "id": "anim_geo_spin",
+  "kind": "object",
+  "type": "animation",
+  "name": "Geo spin",
+  "notes": "Turns slowly.",
+  "sprite": "spr_geo",
+  "loop": true,
+  "frames": [
+    {
+      "frame": "geo1",
+      "ticks": 20
+    },
+    {
+      "frame": "geo2",
+      "ticks": 6
+    },
+    {
+      "frame": "geo1",
+      "ticks": 20,
+      "flip_x": true
+    },
+    {
+      "frame": "geo2",
+      "ticks": 6
+    }
+  ],
+  "events": []
+}

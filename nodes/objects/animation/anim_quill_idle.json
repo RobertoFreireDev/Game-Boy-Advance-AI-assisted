@@ -1,0 +1,20 @@
+{
+  "id": "anim_quill_idle",
+  "kind": "object",
+  "type": "animation",
+  "name": "Quill idle",
+  "notes": "Hums and bobs while drawing maps.",
+  "sprite": "spr_townsfolk",
+  "loop": true,
+  "frames": [
+    {
+      "frame": "quill1",
+      "ticks": 20
+    },
+    {
+      "frame": "quill2",
+      "ticks": 20
+    }
+  ],
+  "events": []
+}

@@ -1,0 +1,25 @@
+{
+  "id": "pal_cross",
+  "kind": "object",
+  "type": "palette",
+  "name": "Ashen Crossroads colors",
+  "notes": "Blue-grey stone of the old crossroads, pale fungus on the ledges, orange Glare blisters and old bones.",
+  "colors": [
+    "#000000",
+    "#070910",
+    "#1c2233",
+    "#2c3549",
+    "#3f4b63",
+    "#6a7a94",
+    "#3a4a52",
+    "#8aa0b0",
+    "#0c1018",
+    "#141b28",
+    "#1e2838",
+    "#f07818",
+    "#e8e0d0",
+    "#3a3a48",
+    "#a0a0b8",
+    "#5a4030"
+  ]
+}

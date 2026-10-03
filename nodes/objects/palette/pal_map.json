@@ -1,0 +1,25 @@
+{
+  "id": "pal_map",
+  "kind": "object",
+  "type": "palette",
+  "name": "Map colors",
+  "notes": "Quill's parchment map: ink lines on old paper.",
+  "colors": [
+    "#000000",
+    "#2a1c10",
+    "#e8d8b0",
+    "#c8b088",
+    "#9a7a50",
+    "#6a5030",
+    "#f8f0d8",
+    "#a83820",
+    "#405870",
+    "#000000",
+    "#000000",
+    "#000000",
+    "#000000",
+    "#000000",
+    "#000000",
+    "#000000"
+  ]
+}

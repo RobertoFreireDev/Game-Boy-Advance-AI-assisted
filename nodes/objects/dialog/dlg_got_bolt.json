@@ -1,0 +1,23 @@
+{
+  "id": "dlg_got_bolt",
+  "kind": "object",
+  "type": "dialog",
+  "name": "Void Bolt",
+  "notes": "After taking the Void Bolt orb.",
+  "font": "font_default",
+  "box": {
+    "x": 8,
+    "y": 96,
+    "w": 224,
+    "h": 56,
+    "paper": 3,
+    "border": 2
+  },
+  "ticks_per_char": 1,
+  "lines": [
+    {
+      "portrait": "icon_face_vessel",
+      "text": "VOID BOLT! TAP L TO HURL A BOLT OF VOID. IT COSTS 33 SOUL."
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "id": "pal_temple",
+  "kind": "object",
+  "type": "palette",
+  "name": "Black Temple colors",
+  "notes": "Black stone veined with the orange Glare.",
+  "colors": [
+    "#000000",
+    "#050304",
+    "#1a1214",
+    "#2a1e20",
+    "#3e2c2c",
+    "#6a4a40",
+    "#a04010",
+    "#f08020",
+    "#0a0606",
+    "#140c0c",
+    "#241414",
+    "#ffd040",
+    "#fff4c0",
+    "#401010",
+    "#c06030",
+    "#5a3a30"
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "id": "anim_husk_hurt",
+  "kind": "object",
+  "type": "animation",
+  "name": "Husk hurt",
+  "notes": "Flinches when hit.",
+  "sprite": "spr_husk",
+  "loop": false,
+  "frames": [
+    {
+      "frame": "hurt",
+      "ticks": 20
+    }
+  ],
+  "events": []
+}

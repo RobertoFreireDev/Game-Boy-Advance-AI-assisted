@@ -1,0 +1,21 @@
+{
+  "id": "sfx_land",
+  "kind": "object",
+  "type": "sfx",
+  "name": "Land",
+  "notes": "Muffled thud on landing.",
+  "channel": "noise",
+  "priority": 1,
+  "steps": [
+    {
+      "pitch": 12,
+      "ticks": 2,
+      "volume": 5
+    },
+    {
+      "pitch": 14,
+      "ticks": 3,
+      "volume": 3
+    }
+  ]
+}

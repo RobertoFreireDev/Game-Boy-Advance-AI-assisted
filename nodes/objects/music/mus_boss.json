@@ -1,0 +1,50 @@
+{
+  "id": "mus_boss",
+  "kind": "object",
+  "type": "music",
+  "name": "Boss battle",
+  "notes": "Driving E minor battle music: pounding eighth-note bass, urgent stabs on square 2, a fierce melody and full drums.",
+  "bpm": 150,
+  "rows_per_beat": 2,
+  "loop": true,
+  "instruments": {
+    "square1": {
+      "duty": 2,
+      "volume": 9,
+      "decay": 0
+    },
+    "square2": {
+      "duty": 3,
+      "volume": 5,
+      "decay": 1
+    },
+    "wave": {
+      "wave": "02468aceeca86420fdb97531135789bd",
+      "volume": 3
+    },
+    "noise": {
+      "volume": 7,
+      "decay": 1
+    }
+  },
+  "patterns": {
+    "A": {
+      "square1": "E5 -- -- E5 G5 -- E5 -- | D5 -- -- -- B4 -- -- -- | C5 -- -- C5 D5 -- C5 -- | B4 -- -- -- -- -- -- --",
+      "square2": "E4 .. E4 .. G4 .. E4 .. | E4 .. E4 .. G4 .. E4 .. | C4 .. C4 .. D4 .. B3 .. | C4 .. C4 .. D4 .. B3 ..",
+      "wave": "E2 E3 E2 E3 E2 E3 E2 E3 | E2 E3 E2 E3 E2 E3 E2 E3 | C2 C3 C2 C3 C2 C3 C2 C3 | D2 D3 D2 D3 D2 D3 D2 D3",
+      "noise": "X2 .. Xa .. X2 X2 Xa .. | X2 .. Xa .. X2 X2 Xa .. | X2 .. Xa .. X2 X2 Xa .. | X2 .. Xa .. X2 X2 Xa .."
+    },
+    "B": {
+      "square1": "G5 -- -- -- A5 -- B5 -- | A5 -- -- -- G5 -- -- -- | F#5 -- -- G5 A5 -- F#5 -- | E5 -- -- -- -- -- -- --",
+      "square2": "C4 .. E4 .. C4 .. E4 .. | C4 .. E4 .. C4 .. E4 .. | D4 .. F#4 .. D4 .. F#4 .. | B3 .. D#4 .. B3 .. D#4 ..",
+      "wave": "C2 C3 C2 C3 C2 C3 C2 C3 | C2 C3 C2 C3 C2 C3 C2 C3 | D2 D3 D2 D3 D2 D3 D2 D3 | B2 B2 B2 B2 B2 B2 B2 B2",
+      "noise": "X2 .. Xa .. X2 X2 Xa Xa | X2 .. Xa .. X2 X2 Xa Xa | X2 .. Xa .. X2 X2 Xa Xa | X2 .. Xa .. X2 X2 Xa Xa"
+    }
+  },
+  "order": [
+    "A",
+    "A",
+    "B",
+    "A"
+  ]
+}

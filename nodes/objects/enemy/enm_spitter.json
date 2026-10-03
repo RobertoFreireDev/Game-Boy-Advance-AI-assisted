@@ -1,0 +1,63 @@
+{
+  "id": "enm_spitter",
+  "kind": "object",
+  "type": "enemy",
+  "name": "Mossfly spitter",
+  "notes": "Hovers toward you slowly and spits globs of Glare every two seconds. 3 hits; drops 2 geo.",
+  "body": "body_spitter",
+  "logic": [
+    {
+      "behavior": "chase_player",
+      "params": {
+        "speed": 0.3,
+        "range": 110,
+        "vertical": true
+      }
+    },
+    {
+      "behavior": "shooter",
+      "params": {
+        "object": "prop_glob",
+        "every": 120,
+        "range": 120,
+        "offset_y": -2,
+        "sound": "sfx_spit"
+      }
+    },
+    {
+      "behavior": "damage_on_touch",
+      "params": {
+        "amount": 1
+      }
+    },
+    {
+      "behavior": "health",
+      "params": {
+        "max": 3,
+        "invincible_ticks": 10,
+        "knockback": 1.4,
+        "spikes": false,
+        "on_death": [
+          {
+            "do": "spawn",
+            "object": "item_geo",
+            "x": -4,
+            "y": -10
+          },
+          {
+            "do": "spawn",
+            "object": "item_geo",
+            "x": 4,
+            "y": -10
+          }
+        ]
+      }
+    }
+  ],
+  "sounds": {
+    "die": "sfx_kill"
+  },
+  "children": [
+    "body_spitter"
+  ]
+}

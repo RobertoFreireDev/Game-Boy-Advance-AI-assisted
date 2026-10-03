@@ -1,0 +1,27 @@
+{
+  "id": "prop_glare",
+  "kind": "object",
+  "type": "prop",
+  "name": "Glare orb",
+  "notes": "The Hollow Vessel's orb: drifts toward you, pops on contact.",
+  "body": "body_glare",
+  "logic": [
+    {
+      "behavior": "projectile",
+      "params": {
+        "speed": 1.4,
+        "lifetime": 170
+      }
+    },
+    {
+      "behavior": "damage_on_touch",
+      "params": {
+        "amount": 1,
+        "vanish": true
+      }
+    }
+  ],
+  "children": [
+    "body_glare"
+  ]
+}

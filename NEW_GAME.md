@@ -47,16 +47,19 @@ The repo is ~8.6k lines of engine/tools plus a handful of template nodes (a full
 
 ## 2. Genre → building blocks that already exist
 
-Three games have been built so far: **Hero Quest** (side platformer, commit `ba0261a^`),
+Four games have been built so far: **Hero Quest** (side platformer, commit `ba0261a^`),
 **Sun Shrine** (top-down Zelda-like, commit `1c794e3^`), **Night Swarm** (survivors-like, branch
-`games/night_swarm`). `main` is now an **empty template** (one start scene + the generic UI
-nodes), but their engine features stayed, so all three genres are covered without new code:
+`games/night_swarm`) and **Void Vessel** (Hollow Knight-like metroidvania, branch
+`games/void_vessel`). `main` is an **empty template** (one start scene + the generic UI nodes);
+the engine features of the first three are on `main`, Void Vessel's metroidvania behaviors live on
+its branch (merge or cherry-pick its engine commit to bring them to `main`):
 
 | Genre | Player | Enemies | World / progression |
 |-------|--------|---------|---------------------|
 | Platformer | `platformer_controller`, `health`, `camera_target` | `patrol`, `chase_player`, `stompable`, `damage_on_touch` | `follow_path` + `solid_platform` lifts, `collectible`, `trigger_zone` exits, gravity bodies, one-way/ladder/hazard tiles |
 | Top-down adventure | `topdown_controller`, `sword_attack`, `health` | `wander`, `chase_player`, `damage_on_touch` | `talk` + dialogs, `locked_door`, `if_var` flags, `*_up`/`*_down` animation slots |
 | Survivors / bullet heaven | `topdown_controller` (`speed_var`), `weapon` ×N, `aura` | `swarm`, `spawn_wave` (on an invisible `prop` director) | `projectile` props, `magnet` gems, `level_up` + `upgrade` nodes + upgrade menu, `run_clock`, `persistent` vars + `save_game` shop |
+| Metroidvania (Void Vessel) | `platformer_controller` (dash / wall jump / double jump vars), `nail_attack`, `soul_magic`, `safe_ground`, `health` | `patrol`, `chase_player`, `leaper`, `shooter` + projectile shots with `damage_on_touch` `vanish`; bosses with `health.stagger: false` | rooms joined by `trg_exit_*` triggers that set a `door` variable + `entry_point` markers (98 = back from the map on the last safe spot, 99 = on the bench); `only_if` for one-time things (bosses, relics, grubs, cracked walls, boss gates); benches = `talk` dialog that sets `bench` and `save_game`; death drops a shade (`place_from_vars` + `only_if shade_room == room`) |
 
 If the genre is new (shmup, puzzle, racing, RPG battles…), map it to these first, then list
 the **missing** behaviors/actions and ask the human before adding a node type or changing
@@ -151,9 +154,21 @@ Build it in the **session scratchpad**, never in the repo (it is not committed):
 3. **Render**: a Python script turns the dumps into a PNG (mode-0 BG layers + sprites). BG
    scroll registers are write-only, so read scroll from `bg.c`'s `s_layers` instead.
 
+Functional testing of a platformer (Void Vessel): give the scripted input a few **autopilots**
+gdb can switch on — hold/tap keys, "walk to x", "run, jump at x, dash at the apex", "wall climb"
+(cling → jump while pressing away → switch side), "double jump", "fight the nearest enemy" — and a
+**warp** knob: input_update calls `scene_goto(g_test_goto)` and, in the same call, writes the
+target into the safe-spot variables that the room's `entry_point` 98 reads (setting them from gdb
+is not enough: the old room's `safe_ground` overwrites them for one more frame). Copy each
+checkpoint's player x/y/speed/slot into globals so one `printf` shows the state.
+
 Pitfalls:
 - `set var` on initialized `.data` **before crt0 runs** gets overwritten — change test knobs at
-  a checkpoint, not at the start.
+  a checkpoint, not at the start (that includes the checkpoint period).
+- The renderer must pair each `SCROLL` line with the checkpoint printed **after** it, or the last
+  screenshot gets zero scroll and looks like missing tiles.
+- Write gdb `printf` lines (and test scripts) with the Write/Edit tools: a `\\n` typed through a
+  bash heredoc reaches gdb as a real newline and breaks the script.
 - `EWRAM_BSS` pools are not zeroed at boot; the engine clears them itself — keep it that way.
 
 ---

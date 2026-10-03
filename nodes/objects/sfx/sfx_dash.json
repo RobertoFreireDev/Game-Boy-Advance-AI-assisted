@@ -1,0 +1,26 @@
+{
+  "id": "sfx_dash",
+  "kind": "object",
+  "type": "sfx",
+  "name": "Dash",
+  "notes": "A rush of air.",
+  "channel": "noise",
+  "priority": 2,
+  "steps": [
+    {
+      "pitch": 1,
+      "ticks": 2,
+      "volume": 12
+    },
+    {
+      "pitch": 3,
+      "ticks": 3,
+      "volume": 9
+    },
+    {
+      "pitch": 5,
+      "ticks": 4,
+      "volume": 5
+    }
+  ]
+}

@@ -1,0 +1,45 @@
+{
+  "id": "dlg_ending",
+  "kind": "object",
+  "type": "dialog",
+  "name": "Ending",
+  "notes": "The last words after the Hollow Vessel falls; then back to the title.",
+  "font": "font_default",
+  "box": {
+    "x": 8,
+    "y": 96,
+    "w": 224,
+    "h": 56,
+    "paper": 3,
+    "border": 2
+  },
+  "ticks_per_char": 2,
+  "lines": [
+    {
+      "text": "THE HOLLOW VESSEL FALLS. THE GLARE POURS OUT OF ITS BROKEN MASK... AND INTO YOU."
+    },
+    {
+      "text": "YOU HOLD IT. NO MIND TO BURN, NO VOICE TO CRY OUT. ONLY VOID."
+    },
+    {
+      "text": "THE TEMPLE SEALS AGAIN, WITH A NEW VESSEL INSIDE. FAR ABOVE, IN DUSTMERE, THE LAMPS STILL GLOW."
+    },
+    {
+      "text": "THANK YOU FOR PLAYING VOID VESSEL!"
+    }
+  ],
+  "on_end": [
+    {
+      "do": "wait",
+      "ticks": 120
+    },
+    {
+      "do": "fade_out",
+      "ticks": 60
+    },
+    {
+      "do": "goto_scene",
+      "scene": "scn_title"
+    }
+  ]
+}

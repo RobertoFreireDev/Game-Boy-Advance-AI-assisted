@@ -1,0 +1,191 @@
+{
+  "id": "menu_map",
+  "kind": "object",
+  "type": "menu",
+  "name": "Map close",
+  "notes": "The single button under the map: goes back to the room you were in (on your last safe spot).",
+  "font": "font_default",
+  "cursor": "icon_cursor",
+  "box": {
+    "x": 72,
+    "y": 136,
+    "w": 96,
+    "h": 24,
+    "paper": 3,
+    "border": 2
+  },
+  "layout": {
+    "x": 96,
+    "y": 144,
+    "spacing": 16
+  },
+  "sounds": {
+    "move": "sfx_select",
+    "select": "sfx_confirm"
+  },
+  "on_cancel": [
+    {
+      "do": "fade_out",
+      "ticks": 15
+    },
+    {
+      "do": "if_var",
+      "var": "room",
+      "op": "==",
+      "value": 2,
+      "then": [
+        {
+          "do": "goto_scene",
+          "scene": "scn_cross"
+        }
+      ],
+      "else": [
+        {
+          "do": "if_var",
+          "var": "room",
+          "op": "==",
+          "value": 3,
+          "then": [
+            {
+              "do": "goto_scene",
+              "scene": "scn_arena"
+            }
+          ],
+          "else": [
+            {
+              "do": "if_var",
+              "var": "room",
+              "op": "==",
+              "value": 4,
+              "then": [
+                {
+                  "do": "goto_scene",
+                  "scene": "scn_moss"
+                }
+              ],
+              "else": [
+                {
+                  "do": "if_var",
+                  "var": "room",
+                  "op": "==",
+                  "value": 5,
+                  "then": [
+                    {
+                      "do": "goto_scene",
+                      "scene": "scn_spire"
+                    }
+                  ],
+                  "else": [
+                    {
+                      "do": "if_var",
+                      "var": "room",
+                      "op": "==",
+                      "value": 6,
+                      "then": [
+                        {
+                          "do": "goto_scene",
+                          "scene": "scn_temple"
+                        }
+                      ],
+                      "else": [
+                        {
+                          "do": "goto_scene",
+                          "scene": "scn_town"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "options": [
+    {
+      "label": "BACK",
+      "actions": [
+        {
+          "do": "fade_out",
+          "ticks": 15
+        },
+        {
+          "do": "if_var",
+          "var": "room",
+          "op": "==",
+          "value": 2,
+          "then": [
+            {
+              "do": "goto_scene",
+              "scene": "scn_cross"
+            }
+          ],
+          "else": [
+            {
+              "do": "if_var",
+              "var": "room",
+              "op": "==",
+              "value": 3,
+              "then": [
+                {
+                  "do": "goto_scene",
+                  "scene": "scn_arena"
+                }
+              ],
+              "else": [
+                {
+                  "do": "if_var",
+                  "var": "room",
+                  "op": "==",
+                  "value": 4,
+                  "then": [
+                    {
+                      "do": "goto_scene",
+                      "scene": "scn_moss"
+                    }
+                  ],
+                  "else": [
+                    {
+                      "do": "if_var",
+                      "var": "room",
+                      "op": "==",
+                      "value": 5,
+                      "then": [
+                        {
+                          "do": "goto_scene",
+                          "scene": "scn_spire"
+                        }
+                      ],
+                      "else": [
+                        {
+                          "do": "if_var",
+                          "var": "room",
+                          "op": "==",
+                          "value": 6,
+                          "then": [
+                            {
+                              "do": "goto_scene",
+                              "scene": "scn_temple"
+                            }
+                          ],
+                          "else": [
+                            {
+                              "do": "goto_scene",
+                              "scene": "scn_town"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

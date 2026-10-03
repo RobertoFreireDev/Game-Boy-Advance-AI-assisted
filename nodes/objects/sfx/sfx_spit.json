@@ -1,0 +1,21 @@
+{
+  "id": "sfx_spit",
+  "kind": "object",
+  "type": "sfx",
+  "name": "Spit",
+  "notes": "Wet spit of a Glare glob.",
+  "channel": "noise",
+  "priority": 1,
+  "steps": [
+    {
+      "pitch": 6,
+      "ticks": 2,
+      "volume": 9
+    },
+    {
+      "pitch": 9,
+      "ticks": 4,
+      "volume": 6
+    }
+  ]
+}

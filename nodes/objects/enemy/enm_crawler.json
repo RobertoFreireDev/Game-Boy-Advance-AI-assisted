@@ -1,0 +1,46 @@
+{
+  "id": "enm_crawler",
+  "kind": "object",
+  "type": "enemy",
+  "name": "Shellcrawler",
+  "notes": "Harmless-looking crawler that patrols ledges and turns at edges. Hurts on touch. 2 hits; drops 1 geo.",
+  "body": "body_crawler",
+  "logic": [
+    {
+      "behavior": "patrol",
+      "params": {
+        "speed": 0.4,
+        "turn_at_edges": true
+      }
+    },
+    {
+      "behavior": "damage_on_touch",
+      "params": {
+        "amount": 1
+      }
+    },
+    {
+      "behavior": "health",
+      "params": {
+        "max": 2,
+        "invincible_ticks": 10,
+        "knockback": 1.4,
+        "spikes": false,
+        "on_death": [
+          {
+            "do": "spawn",
+            "object": "item_geo",
+            "x": 0,
+            "y": -10
+          }
+        ]
+      }
+    }
+  ],
+  "sounds": {
+    "die": "sfx_kill"
+  },
+  "children": [
+    "body_crawler"
+  ]
+}

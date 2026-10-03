@@ -1,0 +1,21 @@
+{
+  "id": "sfx_kill",
+  "kind": "object",
+  "type": "sfx",
+  "name": "Enemy defeated",
+  "notes": "Pop when a bug is defeated.",
+  "channel": "noise",
+  "priority": 2,
+  "steps": [
+    {
+      "pitch": 8,
+      "ticks": 3,
+      "volume": 12
+    },
+    {
+      "pitch": 11,
+      "ticks": 5,
+      "volume": 7
+    }
+  ]
+}

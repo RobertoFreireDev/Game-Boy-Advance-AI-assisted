@@ -1,0 +1,22 @@
+{
+  "id": "hud_title",
+  "kind": "object",
+  "type": "hud",
+  "name": "Title text",
+  "notes": "The subtitle under the logo and a small credit line at the bottom of the title screen.",
+  "font": "font_default",
+  "elements": [
+    {
+      "kind": "text",
+      "x": 48,
+      "y": 56,
+      "text": "A TALE OF UNDERHIVE"
+    },
+    {
+      "kind": "text",
+      "x": 40,
+      "y": 152,
+      "text": "MADE 100% BY AI - 2026"
+    }
+  ]
+}

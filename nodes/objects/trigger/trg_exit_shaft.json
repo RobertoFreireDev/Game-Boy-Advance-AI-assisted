@@ -1,0 +1,20 @@
+{
+  "id": "trg_exit_shaft",
+  "kind": "object",
+  "type": "trigger",
+  "name": "Shaft exit",
+  "notes": "Invisible wide zone at the top or bottom of a shaft: passing through it moves to the next room.",
+  "zone": {
+    "w": 40,
+    "h": 8
+  },
+  "logic": [
+    {
+      "behavior": "trigger_zone",
+      "params": {
+        "on_enter": [],
+        "once": true
+      }
+    }
+  ]
+}

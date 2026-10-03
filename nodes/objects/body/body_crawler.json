@@ -1,0 +1,34 @@
+{
+  "id": "body_crawler",
+  "kind": "object",
+  "type": "body",
+  "name": "Shellcrawler body",
+  "notes": "Low and wide; walks on the ground.",
+  "origin": [
+    8,
+    16
+  ],
+  "hitbox": {
+    "x": -6,
+    "y": -7,
+    "w": 12,
+    "h": 7
+  },
+  "physics": {
+    "gravity": true,
+    "solid": false,
+    "collides_with": [
+      "tiles",
+      "player"
+    ]
+  },
+  "animations": {
+    "idle": "anim_crawler_walk",
+    "walk": "anim_crawler_walk"
+  },
+  "default_animation": "idle",
+  "children": [
+    "spr_crawler",
+    "anim_crawler_walk"
+  ]
+}

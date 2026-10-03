@@ -1,0 +1,25 @@
+{
+  "id": "pal_boss",
+  "kind": "object",
+  "type": "palette",
+  "name": "Boss colors",
+  "notes": "The Brood Warden's armor and the Hollow Vessel. 1 = outline, 2-5 = steel armor, 6-8 = Glare infection (orange, yellow, white-hot), 9-a = mask white, b-c = black cloak, d-e = burnt orange, f = leather.",
+  "colors": [
+    "#000000",
+    "#0c0a10",
+    "#3a4058",
+    "#5c6688",
+    "#8e9abc",
+    "#d0d8ec",
+    "#f07818",
+    "#ffd040",
+    "#fff4c0",
+    "#f4f0e8",
+    "#b8b0a0",
+    "#1a1a24",
+    "#30303e",
+    "#5a2a10",
+    "#a84810",
+    "#7a5030"
+  ]
+}

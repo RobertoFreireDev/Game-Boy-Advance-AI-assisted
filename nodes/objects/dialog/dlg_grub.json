@@ -1,0 +1,22 @@
+{
+  "id": "dlg_grub",
+  "kind": "object",
+  "type": "dialog",
+  "name": "Grub freed",
+  "notes": "After freeing a grub.",
+  "font": "font_default",
+  "box": {
+    "x": 8,
+    "y": 96,
+    "w": 224,
+    "h": 56,
+    "paper": 3,
+    "border": 2
+  },
+  "ticks_per_char": 1,
+  "lines": [
+    {
+      "text": "THE GRUB WIGGLES FREE, SQUEAKS A HAPPY THANK YOU AND BURROWS AWAY HOME."
+    }
+  ]
+}

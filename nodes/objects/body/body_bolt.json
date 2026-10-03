@@ -1,0 +1,32 @@
+{
+  "id": "body_bolt",
+  "kind": "object",
+  "type": "body",
+  "name": "Void Bolt body",
+  "notes": "Flies straight, no gravity, through walls; hits enemies.",
+  "origin": [
+    8,
+    8
+  ],
+  "hitbox": {
+    "x": -6,
+    "y": -5,
+    "w": 12,
+    "h": 10
+  },
+  "physics": {
+    "gravity": false,
+    "solid": false,
+    "collides_with": [
+      "enemy"
+    ]
+  },
+  "animations": {
+    "idle": "anim_bolt_fly"
+  },
+  "default_animation": "idle",
+  "children": [
+    "spr_bolt",
+    "anim_bolt_fly"
+  ]
+}

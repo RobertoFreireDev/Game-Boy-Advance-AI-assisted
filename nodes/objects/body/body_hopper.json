@@ -1,0 +1,37 @@
+{
+  "id": "body_hopper",
+  "kind": "object",
+  "type": "body",
+  "name": "Mosshopper body",
+  "notes": "Hops with gravity.",
+  "origin": [
+    8,
+    16
+  ],
+  "hitbox": {
+    "x": -6,
+    "y": -10,
+    "w": 12,
+    "h": 10
+  },
+  "physics": {
+    "gravity": true,
+    "solid": false,
+    "collides_with": [
+      "tiles",
+      "player"
+    ]
+  },
+  "animations": {
+    "idle": "anim_hopper_idle",
+    "attack": "anim_hopper_crouch",
+    "jump": "anim_hopper_jump"
+  },
+  "default_animation": "idle",
+  "children": [
+    "spr_hopper",
+    "anim_hopper_idle",
+    "anim_hopper_crouch",
+    "anim_hopper_jump"
+  ]
+}

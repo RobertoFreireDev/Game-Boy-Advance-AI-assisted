@@ -1,0 +1,20 @@
+{
+  "id": "anim_glob",
+  "kind": "object",
+  "type": "animation",
+  "name": "Glob pulse",
+  "notes": "Pulses as it flies.",
+  "sprite": "spr_glob",
+  "loop": true,
+  "frames": [
+    {
+      "frame": "orb1",
+      "ticks": 5
+    },
+    {
+      "frame": "orb2",
+      "ticks": 5
+    }
+  ],
+  "events": []
+}

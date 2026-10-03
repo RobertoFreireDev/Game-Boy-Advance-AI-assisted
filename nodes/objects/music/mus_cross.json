@@ -1,0 +1,50 @@
+{
+  "id": "mus_cross",
+  "kind": "object",
+  "type": "music",
+  "name": "Ashen Crossroads",
+  "notes": "Mysterious E minor loop for the Crossroads and the arena after the fight: a pulsing wave bass, ghostly square 2 echoes and a slow melody, with soft ticking drums.",
+  "bpm": 92,
+  "rows_per_beat": 2,
+  "loop": true,
+  "instruments": {
+    "square1": {
+      "duty": 2,
+      "volume": 7,
+      "decay": 1
+    },
+    "square2": {
+      "duty": 0,
+      "volume": 3,
+      "decay": 2
+    },
+    "wave": {
+      "wave": "02468aceeca86420fdb97531135789bd",
+      "volume": 2
+    },
+    "noise": {
+      "volume": 3,
+      "decay": 2
+    }
+  },
+  "patterns": {
+    "A": {
+      "square1": ".. .. .. .. .. .. .. .. | E5 -- -- -- G5 -- -- -- | F#5 -- -- -- -- -- D5 -- | E5 -- -- -- -- -- -- --",
+      "square2": "E3 B3 G3 B3 E3 B3 G3 B3 | E3 B3 G3 B3 E3 B3 G3 B3 | D4 A4 F#4 A4 D4 A4 F#4 A4 | E3 B3 G3 B3 E3 B3 G3 B3",
+      "wave": "E2 -- E2 -- B2 -- E2 -- | E2 -- E2 -- B2 -- E2 -- | D2 -- D2 -- A2 -- D2 -- | E2 -- E2 -- B2 -- E2 --",
+      "noise": "X1 -- .. .. X4 -- .. .. | X1 -- .. .. X4 -- .. .. | X1 -- .. .. X4 -- .. .. | X1 -- .. .. X4 -- .. .."
+    },
+    "B": {
+      "square1": "G5 -- -- -- A5 -- -- -- | B5 -- -- -- -- -- A5 -- | G5 -- -- -- F#5 -- -- -- | E5 -- -- -- -- -- -- --",
+      "square2": "C4 G4 E4 G4 C4 G4 E4 G4 | D4 A4 F#4 A4 D4 A4 F#4 A4 | B3 F#4 D4 F#4 B3 F#4 D4 F#4 | E3 B3 G3 B3 E3 B3 G3 B3",
+      "wave": "C3 -- C3 -- G2 -- C3 -- | D3 -- D3 -- A2 -- D3 -- | B2 -- B2 -- F#2 -- B2 -- | E2 -- E2 -- B2 -- E2 --",
+      "noise": "X1 -- .. .. X4 -- .. .. | X1 -- .. .. X4 -- .. .. | X1 -- .. .. X4 -- .. .. | X1 -- X4 -- X4 -- X4 --"
+    }
+  },
+  "order": [
+    "A",
+    "A",
+    "B",
+    "A"
+  ]
+}

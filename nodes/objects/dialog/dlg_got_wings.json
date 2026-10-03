@@ -1,0 +1,23 @@
+{
+  "id": "dlg_got_wings",
+  "kind": "object",
+  "type": "dialog",
+  "name": "Moth Wings",
+  "notes": "After taking the Moth Wings.",
+  "font": "font_default",
+  "box": {
+    "x": 8,
+    "y": 96,
+    "w": 224,
+    "h": 56,
+    "paper": 3,
+    "border": 2
+  },
+  "ticks_per_char": 1,
+  "lines": [
+    {
+      "portrait": "icon_face_vessel",
+      "text": "MOTH WINGS! PRESS A AGAIN IN MID AIR FOR A SECOND JUMP. THE ROOF IS WITHIN REACH."
+    }
+  ]
+}

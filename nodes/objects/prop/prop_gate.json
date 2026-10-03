@@ -1,0 +1,31 @@
+{
+  "id": "prop_gate",
+  "kind": "object",
+  "type": "prop",
+  "name": "Boss gate",
+  "notes": "Iron bars at the arena entrance. Hidden until the boss fight starts (arena_fight), gone for good once the Brood Warden is beaten, so you can't be knocked out of the fight and the boss can't be skipped.",
+  "body": "body_gate",
+  "logic": [
+    {
+      "behavior": "only_if",
+      "params": {
+        "var": "warden_dead",
+        "op": "==",
+        "value": 0
+      }
+    },
+    {
+      "behavior": "only_if",
+      "params": {
+        "var": "arena_fight",
+        "op": "==",
+        "value": 1,
+        "mode": "hide"
+      }
+    }
+  ],
+  "sounds": {},
+  "children": [
+    "body_gate"
+  ]
+}

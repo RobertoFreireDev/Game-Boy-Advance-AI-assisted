@@ -1,0 +1,26 @@
+{
+  "id": "sfx_hit",
+  "kind": "object",
+  "type": "sfx",
+  "name": "Nail hit",
+  "notes": "A sharp crack when the nail strikes something.",
+  "channel": "noise",
+  "priority": 2,
+  "steps": [
+    {
+      "pitch": 8,
+      "ticks": 2,
+      "volume": 14
+    },
+    {
+      "pitch": 11,
+      "ticks": 3,
+      "volume": 9
+    },
+    {
+      "pitch": 14,
+      "ticks": 3,
+      "volume": 4
+    }
+  ]
+}

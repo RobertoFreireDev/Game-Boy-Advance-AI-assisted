@@ -1,0 +1,25 @@
+{
+  "id": "pal_knight",
+  "kind": "object",
+  "type": "palette",
+  "name": "Vessel colors",
+  "notes": "The little vessel, its shade, the Void Bolt spell and the hit / soul sparks. 1 = void black outline, 2 = mask white, 3 = mask shade, 4-6 = cloak (dark to light), 7-8 = nail silver, 9 = slash white, a-b = slash blue, c-d = void purple (dash trail, shade, spell), e-f = soul glow.",
+  "colors": [
+    "#000000",
+    "#0a0a12",
+    "#f4f4fa",
+    "#b0b8cc",
+    "#1e2236",
+    "#363e5c",
+    "#5a6488",
+    "#e0e4f0",
+    "#8890a8",
+    "#ffffff",
+    "#a0d0ff",
+    "#5878c8",
+    "#3a1858",
+    "#7848b0",
+    "#d8f0ff",
+    "#88c8f0"
+  ]
+}

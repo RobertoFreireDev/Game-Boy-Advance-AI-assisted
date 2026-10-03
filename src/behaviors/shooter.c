@@ -1,6 +1,7 @@
 // shooter - every few ticks, while the player is in range, fires one or more objects at the
 // player (fanned out by 'spread' degrees). A shot with the projectile behavior flies at its own
 // speed; any other object is pushed at 'speed'. Give enemy shots damage_on_touch (vanish).
+// Plays the 'cast' animation (or 'attack') while firing.
 #include "shooter.h"
 #include "behavior_params.h"
 #include "projectile.h"
@@ -44,9 +45,10 @@ void bhv_shooter_update(Actor *a, const void *params) {
         shot->facing_left = rx < 0;
     }
     if (p->sound) audio_play_sfx(p->sound);
-    if (a->body && a->body->anims[ANIM_ATTACK]) {
-        a->anim_slot = ANIM_ATTACK;
-        anim_start(&a->anim, a->body->anims[ANIM_ATTACK], a);
-        a->anim_lock = (u16)anim_length(a->body->anims[ANIM_ATTACK]);
+    u8 slot = a->body && a->body->anims[ANIM_CAST] ? ANIM_CAST : ANIM_ATTACK;
+    if (a->body && a->body->anims[slot]) {                 // the 'cast' pose, else 'attack'
+        a->anim_slot = slot;
+        anim_start(&a->anim, a->body->anims[slot], a);
+        a->anim_lock = (u16)anim_length(a->body->anims[slot]);
     }
 }

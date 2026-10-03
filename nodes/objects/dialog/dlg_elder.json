@@ -1,0 +1,49 @@
+{
+  "id": "dlg_elder",
+  "kind": "object",
+  "type": "dialog",
+  "name": "The Elder's story",
+  "notes": "The Elder explains where to go and how the world works.",
+  "font": "font_default",
+  "box": {
+    "x": 8,
+    "y": 96,
+    "w": 224,
+    "h": 56,
+    "paper": 3,
+    "border": 2
+  },
+  "ticks_per_char": 1,
+  "lines": [
+    {
+      "speaker": "ELDER",
+      "portrait": "icon_face_elder",
+      "text": "AH, ANOTHER WANDERER. NO EYES, NO VOICE... YOU LOOK LIKE THE OLD VESSELS."
+    },
+    {
+      "speaker": "ELDER",
+      "portrait": "icon_face_elder",
+      "text": "BELOW DUSTMERE LIES WHAT IS LEFT OF UNDERHIVE. THE GLARE TOOK ITS BUGS."
+    },
+    {
+      "speaker": "ELDER",
+      "portrait": "icon_face_elder",
+      "text": "THEY SAY A VESSEL SLEEPS IN THE BLACK TEMPLE, ABOVE THE WEEPING SPIRE."
+    },
+    {
+      "speaker": "ELDER",
+      "portrait": "icon_face_elder",
+      "text": "IT HOLDS THE GLARE IN. BUT LATELY THE LIGHT DOWN THERE BURNS BRIGHTER..."
+    },
+    {
+      "speaker": "ELDER",
+      "portrait": "icon_face_elder",
+      "text": "TAKE THE WELL DOWN, IF YOU MUST. REST ON BENCHES TO SAVE YOUR WAY."
+    },
+    {
+      "speaker": "ELDER",
+      "portrait": "icon_face_elder",
+      "text": "AND IF YOU FALL, FIND YOUR SHADE. IT KEEPS YOUR GEO UNTIL YOU BEAT IT."
+    }
+  ]
+}

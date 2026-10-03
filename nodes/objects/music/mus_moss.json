@@ -1,0 +1,50 @@
+{
+  "id": "mus_moss",
+  "kind": "object",
+  "type": "music",
+  "name": "Mosswood",
+  "notes": "Flowing, gentle G major song for Mosswood: rippling arpeggios on square 2, a singing melody on square 1, a walking wave bass and light shaker drums.",
+  "bpm": 104,
+  "rows_per_beat": 2,
+  "loop": true,
+  "instruments": {
+    "square1": {
+      "duty": 2,
+      "volume": 8,
+      "decay": 0
+    },
+    "square2": {
+      "duty": 1,
+      "volume": 4,
+      "decay": 2
+    },
+    "wave": {
+      "wave": "0123456789abcdeffedcba9876543210",
+      "volume": 2
+    },
+    "noise": {
+      "volume": 2,
+      "decay": 1
+    }
+  },
+  "patterns": {
+    "A": {
+      "square1": "B4 -- -- -- D5 -- -- -- | G5 -- -- -- -- -- F#5 -- | E5 -- -- -- D5 -- -- -- | B4 -- -- -- -- -- -- --",
+      "square2": "G3 B3 D4 B3 G3 B3 D4 B3 | G3 B3 D4 B3 G3 B3 D4 B3 | E3 G3 B3 G3 E3 G3 B3 G3 | D4 F#4 A4 F#4 D4 F#4 A4 F#4",
+      "wave": "G2 -- -- -- D3 -- -- -- | G2 -- -- -- B2 -- -- -- | E2 -- -- -- B2 -- -- -- | D2 -- -- -- A2 -- -- --",
+      "noise": "X0 .. X2 .. X0 .. X2 .. | X0 .. X2 .. X0 .. X2 .. | X0 .. X2 .. X0 .. X2 .. | X0 .. X2 .. X0 .. X2 .."
+    },
+    "B": {
+      "square1": "C5 -- -- -- E5 -- -- -- | G5 -- -- -- A5 -- -- -- | B5 -- -- -- -- -- A5 -- | G5 -- -- -- -- -- -- --",
+      "square2": "C4 E4 G4 E4 C4 E4 G4 E4 | C4 E4 G4 E4 C4 E4 G4 E4 | D4 F#4 A4 F#4 D4 F#4 A4 F#4 | G3 B3 D4 B3 G3 B3 D4 B3",
+      "wave": "C3 -- -- -- G2 -- -- -- | C3 -- -- -- E3 -- -- -- | D3 -- -- -- A2 -- -- -- | G2 -- -- -- -- -- -- --",
+      "noise": "X0 .. X2 .. X0 .. X2 .. | X0 .. X2 .. X0 .. X2 .. | X0 .. X2 .. X0 .. X2 .. | X0 .. X2 .. X0 .. X2 .."
+    }
+  },
+  "order": [
+    "A",
+    "B",
+    "A",
+    "B"
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "id": "pal_bugs",
+  "kind": "object",
+  "type": "palette",
+  "name": "Bug colors",
+  "notes": "Every common enemy of Underhive. 1 = outline, 2-5 = brown shell (dark to highlight), 6-7 = the orange Glare infection, 8-a = grey husk cloth, b = bone-white masks, c-f = moss greens for the Mosswood bugs.",
+  "colors": [
+    "#000000",
+    "#140c08",
+    "#5a3418",
+    "#8a5428",
+    "#c08040",
+    "#f0b060",
+    "#f07818",
+    "#ffd040",
+    "#3c3c48",
+    "#686878",
+    "#a0a0b0",
+    "#e8e0d0",
+    "#486028",
+    "#70a038",
+    "#b0d860",
+    "#203018"
+  ]
+}

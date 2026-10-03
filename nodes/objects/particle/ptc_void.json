@@ -1,0 +1,23 @@
+{
+  "id": "ptc_void",
+  "kind": "object",
+  "type": "particle",
+  "name": "Void burst",
+  "notes": "Purple-black wisps when a shade or the Hollow Vessel breaks apart.",
+  "animation": "anim_void",
+  "mode": "burst",
+  "count": 10,
+  "lifetime": 24,
+  "speed": [
+    0.6,
+    1.8
+  ],
+  "angle": [
+    0,
+    359
+  ],
+  "gravity": 0,
+  "children": [
+    "anim_void"
+  ]
+}

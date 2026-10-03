@@ -1,0 +1,81 @@
+{
+  "id": "dlg_quill",
+  "kind": "object",
+  "type": "dialog",
+  "name": "Quill's map",
+  "notes": "Quill sells the map for 30 geo.",
+  "font": "font_default",
+  "box": {
+    "x": 8,
+    "y": 96,
+    "w": 224,
+    "h": 56,
+    "paper": 3,
+    "border": 2
+  },
+  "ticks_per_char": 1,
+  "lines": [
+    {
+      "speaker": "QUILL",
+      "portrait": "icon_face_quill",
+      "text": "HMM HMM... OH, HELLO! I MAP THESE CAVES. WANT A COPY OF MY MAP? 30 GEO."
+    }
+  ],
+  "choices": [
+    {
+      "label": "BUY MAP - 30 GEO",
+      "actions": [
+        {
+          "do": "if_var",
+          "var": "has_map",
+          "op": "==",
+          "value": 1,
+          "then": [
+            {
+              "do": "show_dialog",
+              "dialog": "dlg_have_map"
+            }
+          ],
+          "else": [
+            {
+              "do": "if_var",
+              "var": "geo",
+              "op": ">=",
+              "value": 30,
+              "then": [
+                {
+                  "do": "add_var",
+                  "var": "geo",
+                  "value": -30
+                },
+                {
+                  "do": "set_var",
+                  "var": "has_map",
+                  "value": 1
+                },
+                {
+                  "do": "play_sfx",
+                  "sfx": "sfx_item"
+                },
+                {
+                  "do": "show_dialog",
+                  "dialog": "dlg_bought_map"
+                }
+              ],
+              "else": [
+                {
+                  "do": "show_dialog",
+                  "dialog": "dlg_no_geo"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "label": "NO THANKS",
+      "actions": []
+    }
+  ]
+}

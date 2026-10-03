@@ -1,0 +1,20 @@
+{
+  "id": "anim_relic_shard",
+  "kind": "object",
+  "type": "animation",
+  "name": "Mask shard shine",
+  "notes": "Mask shard twinkles.",
+  "sprite": "spr_relics",
+  "loop": true,
+  "frames": [
+    {
+      "frame": "shard1",
+      "ticks": 16
+    },
+    {
+      "frame": "shard2",
+      "ticks": 16
+    }
+  ],
+  "events": []
+}

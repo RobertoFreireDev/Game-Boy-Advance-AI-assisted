@@ -1,0 +1,46 @@
+{
+  "id": "item_cloak",
+  "kind": "object",
+  "type": "pickup",
+  "name": "Shade Cloak",
+  "notes": "Appears in the Warden's arena once the Brood Warden falls. Grants the dash (R).",
+  "body": "body_relic_cloak",
+  "logic": [
+    {
+      "behavior": "only_if",
+      "params": {
+        "var": "has_dash",
+        "op": "==",
+        "value": 0
+      }
+    },
+    {
+      "behavior": "only_if",
+      "params": {
+        "var": "warden_dead",
+        "op": "==",
+        "value": 1,
+        "mode": "hide"
+      }
+    },
+    {
+      "behavior": "collectible",
+      "params": {
+        "var": "has_dash",
+        "amount": 1,
+        "on_collect": [
+          {
+            "do": "show_dialog",
+            "dialog": "dlg_got_cloak"
+          }
+        ]
+      }
+    }
+  ],
+  "sounds": {
+    "collect": "sfx_item"
+  },
+  "children": [
+    "body_relic_cloak"
+  ]
+}

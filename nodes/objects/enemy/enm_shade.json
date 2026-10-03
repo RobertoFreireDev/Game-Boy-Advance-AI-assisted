@@ -1,0 +1,86 @@
+{
+  "id": "enm_shade",
+  "kind": "object",
+  "type": "enemy",
+  "name": "Shade",
+  "notes": "Your lost shade. Appears only in the room where you died (shade_room equals room), on the last safe ground you stood on. It drifts after you; strike it 4 times to win back the geo you dropped and your full soul vessel.",
+  "body": "body_shade",
+  "logic": [
+    {
+      "behavior": "only_if",
+      "params": {
+        "var": "shade_room",
+        "op": "==",
+        "value_var": "room",
+        "mode": "remove"
+      }
+    },
+    {
+      "behavior": "place_from_vars",
+      "params": {
+        "x_var": "shade_x",
+        "y_var": "shade_y",
+        "offset_y": -6
+      }
+    },
+    {
+      "behavior": "chase_player",
+      "params": {
+        "speed": 0.6,
+        "range": 120,
+        "vertical": true
+      }
+    },
+    {
+      "behavior": "damage_on_touch",
+      "params": {
+        "amount": 1,
+        "stun_ticks": 40
+      }
+    },
+    {
+      "behavior": "health",
+      "params": {
+        "max": 4,
+        "invincible_ticks": 10,
+        "knockback": 1.2,
+        "spikes": false,
+        "on_death": [
+          {
+            "do": "add_var",
+            "var": "geo",
+            "from": "shade_geo"
+          },
+          {
+            "do": "set_var",
+            "var": "shade_geo",
+            "value": 0
+          },
+          {
+            "do": "set_var",
+            "var": "shade_room",
+            "value": 0
+          },
+          {
+            "do": "set_var",
+            "var": "soul_max",
+            "value": 99
+          },
+          {
+            "do": "spawn",
+            "object": "ptc_void",
+            "x": 0,
+            "y": -6
+          },
+          {
+            "do": "play_sfx",
+            "sfx": "sfx_shade"
+          }
+        ]
+      }
+    }
+  ],
+  "children": [
+    "body_shade"
+  ]
+}

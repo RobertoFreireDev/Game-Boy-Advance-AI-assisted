@@ -1,0 +1,28 @@
+{
+  "id": "anim_vessel_run",
+  "kind": "object",
+  "type": "animation",
+  "name": "Run",
+  "notes": "Run of the vessel.",
+  "sprite": "spr_vessel",
+  "loop": true,
+  "frames": [
+    {
+      "frame": "run1",
+      "ticks": 6
+    },
+    {
+      "frame": "run2",
+      "ticks": 6
+    },
+    {
+      "frame": "run3",
+      "ticks": 6
+    },
+    {
+      "frame": "run4",
+      "ticks": 6
+    }
+  ],
+  "events": []
+}

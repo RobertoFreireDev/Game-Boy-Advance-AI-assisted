@@ -1,0 +1,23 @@
+{
+  "id": "dlg_got_cloak",
+  "kind": "object",
+  "type": "dialog",
+  "name": "Shade Cloak",
+  "notes": "After taking the Shade Cloak.",
+  "font": "font_default",
+  "box": {
+    "x": 8,
+    "y": 96,
+    "w": 224,
+    "h": 56,
+    "paper": 3,
+    "border": 2
+  },
+  "ticks_per_char": 1,
+  "lines": [
+    {
+      "portrait": "icon_face_vessel",
+      "text": "SHADE CLOAK! PRESS R TO DASH, EVEN IN MID AIR. THE CHASM BELOW THE CROSSROADS IS NO LONGER TOO WIDE."
+    }
+  ]
+}

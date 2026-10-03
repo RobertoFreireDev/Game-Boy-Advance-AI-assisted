@@ -1,0 +1,26 @@
+{
+  "id": "icon_soul",
+  "kind": "object",
+  "type": "icon",
+  "name": "Soul vessel",
+  "notes": "The round soul vessel in the HUD's top-left corner; the bar beside it shows how much soul you hold.",
+  "palette": "pal_ui",
+  "pixels": [
+    ".....11111......",
+    "...112222211....",
+    "..122222ffff1...",
+    ".122222fffff61..",
+    "122222fffff6661.",
+    "1222ff111166661.",
+    "122ff1ffff16661.",
+    "12fff12fff166d1.",
+    "1fff1ffffff1dd1.",
+    "1fff61ffff1ddd1.",
+    "1ff661ffff1ddd1.",
+    "1f66661111dddd1.",
+    ".166666dddddd1..",
+    "..166ddddddd1...",
+    "...11ddddd11....",
+    ".....11111......"
+  ]
+}

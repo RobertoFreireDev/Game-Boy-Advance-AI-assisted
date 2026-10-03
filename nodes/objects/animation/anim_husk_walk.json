@@ -1,0 +1,20 @@
+{
+  "id": "anim_husk_walk",
+  "kind": "object",
+  "type": "animation",
+  "name": "Husk walk",
+  "notes": "A heavy, swaying walk.",
+  "sprite": "spr_husk",
+  "loop": true,
+  "frames": [
+    {
+      "frame": "walk1",
+      "ticks": 12
+    },
+    {
+      "frame": "walk2",
+      "ticks": 12
+    }
+  ],
+  "events": []
+}

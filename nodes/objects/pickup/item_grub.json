@@ -1,0 +1,42 @@
+{
+  "id": "item_grub",
+  "kind": "object",
+  "type": "pickup",
+  "name": "Grub jar",
+  "notes": "A grub trapped in a jar. Touch it to free it (counts in 'grubs'). Each placed jar overrides only_if / collectible with its own flag (grub_1 ... grub_4) so a freed grub never comes back.",
+  "body": "body_grub",
+  "logic": [
+    {
+      "behavior": "only_if",
+      "params": {
+        "var": "grub_1",
+        "op": "==",
+        "value": 0
+      }
+    },
+    {
+      "behavior": "collectible",
+      "params": {
+        "var": "grubs",
+        "amount": 1,
+        "on_collect": [
+          {
+            "do": "set_var",
+            "var": "grub_1",
+            "value": 1
+          },
+          {
+            "do": "show_dialog",
+            "dialog": "dlg_grub"
+          }
+        ]
+      }
+    }
+  ],
+  "sounds": {
+    "collect": "sfx_grub"
+  },
+  "children": [
+    "body_grub"
+  ]
+}

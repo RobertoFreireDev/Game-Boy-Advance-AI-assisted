@@ -1,0 +1,20 @@
+{
+  "id": "anim_soul",
+  "kind": "object",
+  "type": "animation",
+  "name": "Soul mote",
+  "notes": "A soft blue mote.",
+  "sprite": "spr_fx",
+  "loop": false,
+  "frames": [
+    {
+      "frame": "soul1",
+      "ticks": 8
+    },
+    {
+      "frame": "soul2",
+      "ticks": 8
+    }
+  ],
+  "events": []
+}

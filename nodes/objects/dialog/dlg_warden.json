@@ -1,0 +1,25 @@
+{
+  "id": "dlg_warden",
+  "kind": "object",
+  "type": "dialog",
+  "name": "Brood Warden",
+  "notes": "Announces the first boss.",
+  "font": "font_default",
+  "box": {
+    "x": 8,
+    "y": 96,
+    "w": 224,
+    "h": 56,
+    "paper": 3,
+    "border": 2
+  },
+  "ticks_per_char": 1,
+  "lines": [
+    {
+      "text": "A HULKING SHAPE STIRS IN THE DARK. STEEL SCRAPES ON STONE..."
+    },
+    {
+      "text": "THE BROOD WARDEN!"
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "id": "anim_glare",
+  "kind": "object",
+  "type": "animation",
+  "name": "Glare pulse",
+  "notes": "Flickers.",
+  "sprite": "spr_glare",
+  "loop": true,
+  "frames": [
+    {
+      "frame": "glare1",
+      "ticks": 4
+    },
+    {
+      "frame": "glare2",
+      "ticks": 4
+    }
+  ],
+  "events": []
+}

@@ -1,0 +1,52 @@
+{
+  "id": "hud_map",
+  "kind": "object",
+  "type": "hud",
+  "name": "Map labels",
+  "notes": "Region names written on Quill's map, and a hint at the top.",
+  "font": "font_default",
+  "elements": [
+    {
+      "kind": "text",
+      "x": 32,
+      "y": 24,
+      "text": "DUSTMERE"
+    },
+    {
+      "kind": "text",
+      "x": 32,
+      "y": 64,
+      "text": "CROSSROADS"
+    },
+    {
+      "kind": "text",
+      "x": 128,
+      "y": 88,
+      "text": "ARENA"
+    },
+    {
+      "kind": "text",
+      "x": 104,
+      "y": 120,
+      "text": "MOSSWOOD"
+    },
+    {
+      "kind": "text",
+      "x": 200,
+      "y": 112,
+      "text": "SPIRE"
+    },
+    {
+      "kind": "text",
+      "x": 192,
+      "y": 32,
+      "text": "TEMPLE"
+    },
+    {
+      "kind": "text",
+      "x": 8,
+      "y": 0,
+      "text": "MAP OF UNDERHIVE"
+    }
+  ]
+}

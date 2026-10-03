@@ -1,0 +1,23 @@
+{
+  "id": "ptc_focus",
+  "kind": "object",
+  "type": "particle",
+  "name": "Focus motes",
+  "notes": "Soul motes that drift up around the vessel while it focuses to heal.",
+  "animation": "anim_soul",
+  "mode": "burst",
+  "count": 2,
+  "lifetime": 16,
+  "speed": [
+    0.4,
+    0.9
+  ],
+  "angle": [
+    60,
+    120
+  ],
+  "gravity": 0,
+  "children": [
+    "anim_soul"
+  ]
+}

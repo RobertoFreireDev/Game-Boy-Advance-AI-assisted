@@ -1,0 +1,16 @@
+{
+  "id": "anim_gate",
+  "kind": "object",
+  "type": "animation",
+  "name": "Gate",
+  "notes": "Still.",
+  "sprite": "spr_gate",
+  "loop": true,
+  "frames": [
+    {
+      "frame": "bars",
+      "ticks": 60
+    }
+  ],
+  "events": []
+}

@@ -1,0 +1,37 @@
+{
+  "id": "item_wings",
+  "kind": "object",
+  "type": "pickup",
+  "name": "Moth Wings",
+  "notes": "Rest at the top of the Weeping Spire. Grants the double jump.",
+  "body": "body_relic_wings",
+  "logic": [
+    {
+      "behavior": "only_if",
+      "params": {
+        "var": "has_wings",
+        "op": "==",
+        "value": 0
+      }
+    },
+    {
+      "behavior": "collectible",
+      "params": {
+        "var": "has_wings",
+        "amount": 1,
+        "on_collect": [
+          {
+            "do": "show_dialog",
+            "dialog": "dlg_got_wings"
+          }
+        ]
+      }
+    }
+  ],
+  "sounds": {
+    "collect": "sfx_item"
+  },
+  "children": [
+    "body_relic_wings"
+  ]
+}

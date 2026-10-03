@@ -1,0 +1,32 @@
+{
+  "id": "sfx_heal",
+  "kind": "object",
+  "type": "sfx",
+  "name": "Focus heal",
+  "notes": "Bright rising chime: a mask grows back.",
+  "channel": "square2",
+  "duty": 2,
+  "priority": 3,
+  "steps": [
+    {
+      "note": "C5",
+      "ticks": 4,
+      "volume": 8
+    },
+    {
+      "note": "E5",
+      "ticks": 4,
+      "volume": 9
+    },
+    {
+      "note": "G5",
+      "ticks": 4,
+      "volume": 10
+    },
+    {
+      "note": "C6",
+      "ticks": 8,
+      "volume": 8
+    }
+  ]
+}

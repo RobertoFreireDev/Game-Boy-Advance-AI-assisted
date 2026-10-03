@@ -1,0 +1,27 @@
+{
+  "id": "prop_glob",
+  "kind": "object",
+  "type": "prop",
+  "name": "Glare glob",
+  "notes": "The spitter's shot: flies straight at where you were and pops when it hits you.",
+  "body": "body_glob",
+  "logic": [
+    {
+      "behavior": "projectile",
+      "params": {
+        "speed": 1.3,
+        "lifetime": 150
+      }
+    },
+    {
+      "behavior": "damage_on_touch",
+      "params": {
+        "amount": 1,
+        "vanish": true
+      }
+    }
+  ],
+  "children": [
+    "body_glob"
+  ]
+}

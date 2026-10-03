@@ -1,0 +1,20 @@
+{
+  "id": "anim_grub_wiggle",
+  "kind": "object",
+  "type": "animation",
+  "name": "Grub wiggle",
+  "notes": "The grub wriggles for help.",
+  "sprite": "spr_grub",
+  "loop": true,
+  "frames": [
+    {
+      "frame": "jar1",
+      "ticks": 12
+    },
+    {
+      "frame": "jar2",
+      "ticks": 12
+    }
+  ],
+  "events": []
+}

@@ -1,0 +1,20 @@
+{
+  "id": "anim_vessel_slash_down",
+  "kind": "object",
+  "type": "animation",
+  "name": "Down slash",
+  "notes": "Down slash of the vessel.",
+  "sprite": "spr_vessel",
+  "loop": false,
+  "frames": [
+    {
+      "frame": "slash_down1",
+      "ticks": 4
+    },
+    {
+      "frame": "slash_down2",
+      "ticks": 4
+    }
+  ],
+  "events": []
+}

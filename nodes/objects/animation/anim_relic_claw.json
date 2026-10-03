@@ -1,0 +1,20 @@
+{
+  "id": "anim_relic_claw",
+  "kind": "object",
+  "type": "animation",
+  "name": "Thorn Claw shine",
+  "notes": "Thorn Claw twinkles.",
+  "sprite": "spr_relics",
+  "loop": true,
+  "frames": [
+    {
+      "frame": "claw1",
+      "ticks": 16
+    },
+    {
+      "frame": "claw2",
+      "ticks": 16
+    }
+  ],
+  "events": []
+}

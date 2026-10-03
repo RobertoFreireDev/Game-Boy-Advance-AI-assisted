@@ -1,0 +1,24 @@
+{
+  "id": "npc_quill",
+  "kind": "object",
+  "type": "npc",
+  "name": "Quill",
+  "notes": "Quill the mapmaker, humming next to the Crossroads bench. Sells the map of Underhive (START > MAP).",
+  "body": "body_quill",
+  "logic": [
+    {
+      "behavior": "talk",
+      "params": {
+        "dialog": "dlg_quill",
+        "button": "UP",
+        "range": 10
+      }
+    }
+  ],
+  "sounds": {
+    "talk": "sfx_talk"
+  },
+  "children": [
+    "body_quill"
+  ]
+}

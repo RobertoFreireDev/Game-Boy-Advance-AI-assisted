@@ -1,0 +1,22 @@
+{
+  "id": "dlg_rested",
+  "kind": "object",
+  "type": "dialog",
+  "name": "Rested",
+  "notes": "After resting.",
+  "font": "font_default",
+  "box": {
+    "x": 8,
+    "y": 96,
+    "w": 224,
+    "h": 56,
+    "paper": 3,
+    "border": 2
+  },
+  "ticks_per_char": 1,
+  "lines": [
+    {
+      "text": "YOUR MASKS ARE WHOLE AGAIN. YOU WILL WAKE HERE. GAME SAVED."
+    }
+  ]
+}

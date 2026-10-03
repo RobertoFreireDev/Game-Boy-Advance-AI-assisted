@@ -1,0 +1,16 @@
+{
+  "id": "anim_hollow_crouch",
+  "kind": "object",
+  "type": "animation",
+  "name": "Hollow wind-up",
+  "notes": "Lowers its nail: about to leap.",
+  "sprite": "spr_hollow",
+  "loop": false,
+  "frames": [
+    {
+      "frame": "crouch",
+      "ticks": 8
+    }
+  ],
+  "events": []
+}

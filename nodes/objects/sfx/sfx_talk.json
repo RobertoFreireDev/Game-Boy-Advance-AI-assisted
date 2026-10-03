@@ -1,0 +1,22 @@
+{
+  "id": "sfx_talk",
+  "kind": "object",
+  "type": "sfx",
+  "name": "Talk",
+  "notes": "Little chirp when a bug starts talking.",
+  "channel": "square2",
+  "duty": 1,
+  "priority": 1,
+  "steps": [
+    {
+      "note": "A5",
+      "ticks": 2,
+      "volume": 6
+    },
+    {
+      "note": "D6",
+      "ticks": 3,
+      "volume": 5
+    }
+  ]
+}

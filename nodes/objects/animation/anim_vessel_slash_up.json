@@ -1,0 +1,20 @@
+{
+  "id": "anim_vessel_slash_up",
+  "kind": "object",
+  "type": "animation",
+  "name": "Up slash",
+  "notes": "Up slash of the vessel.",
+  "sprite": "spr_vessel",
+  "loop": false,
+  "frames": [
+    {
+      "frame": "slash_up1",
+      "ticks": 4
+    },
+    {
+      "frame": "slash_up2",
+      "ticks": 4
+    }
+  ],
+  "events": []
+}

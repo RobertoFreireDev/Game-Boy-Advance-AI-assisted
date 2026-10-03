@@ -1,0 +1,16 @@
+{
+  "id": "anim_warden_idle",
+  "kind": "object",
+  "type": "animation",
+  "name": "Warden idle",
+  "notes": "Stands guard.",
+  "sprite": "spr_warden",
+  "loop": true,
+  "frames": [
+    {
+      "frame": "idle",
+      "ticks": 30
+    }
+  ],
+  "events": []
+}

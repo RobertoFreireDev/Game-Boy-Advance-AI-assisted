@@ -279,14 +279,18 @@ groups them for humans. **What an actor does comes only from its `logic` list.**
 - **sfx** steps: `note` (or `".."` silence) for square/wave, `pitch` 0–15 for noise.
 - **animation** `events[{at: frame index, action | actions}]` run when that frame starts.
 - **particle**: positions are the sprite's center; `rate` = ticks between stream particles.
-- **body** animation slots: `idle walk run jump fall hurt die attack climb`, plus the top-down
-  slots `idle_up idle_down walk_up walk_down attack_up attack_down`. `origin` mirrors with
-  the art when it faces left; the **hitbox does not mirror**. The `*_up` / `*_down` slots are
-  never mirrored (their art is drawn as seen from behind / from the front). `physics.collides_with` categories:
+- **body** animation slots: `idle walk run jump fall hurt die attack climb`, the top-down
+  slots `idle_up idle_down walk_up walk_down attack_up attack_down`, and the side-view moves
+  `dash focus cast wall` (wall = sliding down a wall). `origin` mirrors with
+  the art when it faces left; the **hitbox does not mirror**. On a top-down body (no gravity) the
+  `*_up` / `*_down` slots are never mirrored (their art is drawn as seen from behind / from the
+  front); a side-view body (gravity) uses `attack_up` / `attack_down` for up / down slashes and
+  mirrors them like every other slot. `physics.collides_with` categories:
   `tiles player enemy npc prop platform pickup trigger`. Two actors touch (and both get
   `on_touch`) when either lists the other's category. `physics.solid` = others can't walk through
   it and can stand on it (like a crate).
-- **actor** `sounds{event: sfx}` events: `jump land hurt die collect stomp talk attack`.
+- **actor** `sounds{event: sfx}` events: `jump land hurt die collect stomp talk attack dash heal cast hit`
+  (`hit` = the player's nail connects).
 - **trigger**: `zone{w,h}` with its top-left corner at the instance x, y; touches the player only.
 - **hud** elements (x, y multiples of 8): `text {text}` (`{var}` placeholders, 3 chars reserved
   per value; `{var:02}` pads to 2 digits, for clocks), `icon {icon}`, `icon_repeat {icon, empty_icon?, var, max_var?, max, spacing?}` (`var` full icons, then
@@ -483,8 +487,9 @@ Every channel in a pattern has the same number of rows. Missing channels are sil
   the `bhv_<name>_init/update/on_touch` functions it finds in the `.c` file. Behaviors keep
   private per-actor state in `bhv_state(actor)` (`BSTATE_WORDS` words each).
 - Movement behaviors pick body animation slots by convention: `idle`, `walk`, `run`, `jump`,
-  `fall`, `hurt`, `die`, `attack`, `climb` (a missing `run` uses `walk` and back, `fall` uses
-  `jump`, `die` uses `hurt`, then `default_animation`).
+  `fall`, `hurt`, `die`, `attack`, `climb`, `dash`, `focus`, `cast`, `wall` (a missing `run` uses
+  `walk` and back, `fall` uses `jump`, `die` uses `hurt`, `dash` uses `run`, `focus` uses `idle`,
+  `cast` uses `attack`, `wall` uses `fall`, then `default_animation`).
 - **Facing (top-down)**: every actor has a `facing` (right / left / up / down, starts down) set by
   `actor_face()`. When it faces up or down, asking for `idle`, `walk`/`run` or `attack` plays the
   matching `*_up` / `*_down` slot if the body has it (a missing `*_up` / `*_down` slot falls back
@@ -493,14 +498,24 @@ Every channel in a pattern has the same number of rows. Missing channels are sil
   hit lands; while it runs, `swarm`, `chase_player`, `patrol` and `wander` hold still and
   `damage_on_touch` hurts no one (knockback still applies).
 - `health` on a body **without gravity** (top-down) knocks straight away from the hit (slowing
-  down) and dies in place; with gravity it knocks sideways and falls off the screen.
+  down) and dies in place; with gravity it knocks sideways and falls off the screen. With
+  `stagger: false` (bosses) a hit only makes it blink: no knockback, no hurt pose.
 - Starter set: `platformer_controller`, `topdown_controller`, `patrol`, `chase_player`,
   `follow_path`, `solid_platform`, `health`, `damage_on_touch`, `stompable`, `collectible`,
   `trigger_zone`, `talk`, `camera_target`, `spawn_particles`, `button_actions` (a button press runs
   actions, e.g. START opens a pause menu). Top-down set: `sword_attack`,
   `wander`, `locked_door`. Survivors set: `weapon` (auto-fire, level from a variable), `projectile`
   (the shot), `aura`, `swarm` (horde movement with grid-based crowd spreading), `magnet` (pickups fly
-  to the player), `spawn_wave` (timed off-screen waves), `run_clock`, `level_up`. Add more as games need them.
+  to the player), `spawn_wave` (timed off-screen waves), `run_clock`, `level_up`. Metroidvania set:
+  `platformer_controller` gains dash / wall jump / double jump (each unlocked by a variable),
+  `nail_attack` (forward / up / down slashes, pogo off enemies and spikes, fills a soul variable),
+  `soul_magic` (hold = focus heal, tap = spell), `safe_ground` (spikes and pits cost health and
+  respawn on the last safe spot; list it before `health`), `entry_point` (invisible door marker:
+  where the player appears, picked by a `door` variable), `only_if` (an object exists / shows only
+  while a variable check holds: beaten bosses, freed grubs, gates), `place_from_vars` (spawn at a
+  position held in variables: the shade), `leaper` (crouch then leap at the player: bosses,
+  hoppers), `shooter` (fires objects at the player; enemy shots use `damage_on_touch` with
+  `vanish`). Add more as games need them.
 - Prefer a new reusable behavior over custom code.
 
 ### 7.2 Actions (what happens when something occurs)

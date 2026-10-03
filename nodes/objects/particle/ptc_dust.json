@@ -1,0 +1,20 @@
+{
+  "id": "ptc_dust",
+  "kind": "object",
+  "type": "particle",
+  "name": "Slam dust",
+  "notes": "Dust thrown up when a heavy boss lands.",
+  "animation": "anim_dust",
+  "mode": "burst",
+  "count": 8,
+  "lifetime": 18,
+  "speed": [
+    0.8,
+    2.0
+  ],
+  "angle": [
+    10,
+    170
+  ],
+  "gravity": 0.08
+}

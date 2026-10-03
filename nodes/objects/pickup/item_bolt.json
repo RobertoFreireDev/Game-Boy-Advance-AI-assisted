@@ -1,0 +1,37 @@
+{
+  "id": "item_bolt",
+  "kind": "object",
+  "type": "pickup",
+  "name": "Void Bolt orb",
+  "notes": "Floats in the Crossroads shrine. Grants the Void Bolt spell (tap L).",
+  "body": "body_relic_bolt",
+  "logic": [
+    {
+      "behavior": "only_if",
+      "params": {
+        "var": "has_spell",
+        "op": "==",
+        "value": 0
+      }
+    },
+    {
+      "behavior": "collectible",
+      "params": {
+        "var": "has_spell",
+        "amount": 1,
+        "on_collect": [
+          {
+            "do": "show_dialog",
+            "dialog": "dlg_got_bolt"
+          }
+        ]
+      }
+    }
+  ],
+  "sounds": {
+    "collect": "sfx_item"
+  },
+  "children": [
+    "body_relic_bolt"
+  ]
+}

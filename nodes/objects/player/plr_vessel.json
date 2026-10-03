@@ -1,0 +1,213 @@
+{
+  "id": "plr_vessel",
+  "kind": "object",
+  "type": "player",
+  "name": "The Vessel",
+  "notes": "You: a small, silent vessel of void. D-pad runs, A jumps (hold for higher), B swings the nail (hold UP to slash up, DOWN in the air to slash down and bounce off enemies and spikes), L held = Focus (heal one mask for 33 soul), L tapped = Void Bolt (once found), R = dash (once found). Wall jump and double jump come from relics. UP talks and rests at benches, START pauses. Dying leaves a shade with your geo where you last stood, and your soul vessel shrinks until you beat it.",
+  "body": "body_vessel",
+  "logic": [
+    {
+      "behavior": "platformer_controller",
+      "params": {
+        "speed": 1.5,
+        "acceleration": 0.3,
+        "jump_height": 48,
+        "jump_button": "A",
+        "dash_var": "has_dash",
+        "dash_button": "R",
+        "dash_speed": 4.0,
+        "dash_ticks": 10,
+        "dash_cooldown": 18,
+        "wall_jump_var": "has_claw",
+        "wall_slide_speed": 1.0,
+        "double_jump_var": "has_wings"
+      }
+    },
+    {
+      "behavior": "safe_ground",
+      "params": {
+        "x_var": "safe_x",
+        "y_var": "safe_y",
+        "damage": 1
+      }
+    },
+    {
+      "behavior": "health",
+      "params": {
+        "var": "health",
+        "invincible_ticks": 80,
+        "knockback": 1.5,
+        "spikes": false,
+        "on_death": [
+          {
+            "do": "set_var",
+            "var": "shade_room",
+            "from": "room"
+          },
+          {
+            "do": "set_var",
+            "var": "shade_x",
+            "from": "safe_x"
+          },
+          {
+            "do": "set_var",
+            "var": "shade_y",
+            "from": "safe_y"
+          },
+          {
+            "do": "set_var",
+            "var": "shade_geo",
+            "from": "geo"
+          },
+          {
+            "do": "set_var",
+            "var": "geo",
+            "value": 0
+          },
+          {
+            "do": "set_var",
+            "var": "soul",
+            "value": 0
+          },
+          {
+            "do": "set_var",
+            "var": "soul_max",
+            "value": 66
+          },
+          {
+            "do": "stop_music"
+          },
+          {
+            "do": "wait",
+            "ticks": 50
+          },
+          {
+            "do": "fade_out",
+            "ticks": 40
+          },
+          {
+            "do": "set_var",
+            "var": "health",
+            "from": "max_health"
+          },
+          {
+            "do": "set_var",
+            "var": "door",
+            "value": 99
+          },
+          {
+            "do": "if_var",
+            "var": "bench",
+            "op": "==",
+            "value": 2,
+            "then": [
+              {
+                "do": "goto_scene",
+                "scene": "scn_cross"
+              }
+            ],
+            "else": [
+              {
+                "do": "if_var",
+                "var": "bench",
+                "op": "==",
+                "value": 4,
+                "then": [
+                  {
+                    "do": "goto_scene",
+                    "scene": "scn_moss"
+                  }
+                ],
+                "else": [
+                  {
+                    "do": "if_var",
+                    "var": "bench",
+                    "op": "==",
+                    "value": 5,
+                    "then": [
+                      {
+                        "do": "goto_scene",
+                        "scene": "scn_spire"
+                      }
+                    ],
+                    "else": [
+                      {
+                        "do": "goto_scene",
+                        "scene": "scn_town"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "behavior": "nail_attack",
+      "params": {
+        "button": "B",
+        "damage": 1,
+        "reach": 16,
+        "width": 18,
+        "ticks": 8,
+        "cooldown": 8,
+        "hits": "enemy_and_prop",
+        "pogo": 3.6,
+        "recoil": 1.5,
+        "soul_var": "soul",
+        "soul_gain": 11,
+        "soul_max_var": "soul_max",
+        "hit_particle": "ptc_hit"
+      }
+    },
+    {
+      "behavior": "soul_magic",
+      "params": {
+        "button": "L",
+        "soul_var": "soul",
+        "cost": 33,
+        "hold_ticks": 10,
+        "focus_ticks": 55,
+        "health_var": "health",
+        "max_health_var": "max_health",
+        "spell": "prop_void_bolt",
+        "spell_var": "has_spell",
+        "spell_y": -10,
+        "recoil": 1.0,
+        "particle": "ptc_focus"
+      }
+    },
+    {
+      "behavior": "camera_target",
+      "params": {}
+    },
+    {
+      "behavior": "button_actions",
+      "params": {
+        "button": "START",
+        "on_press": [
+          {
+            "do": "open_menu",
+            "menu": "menu_pause"
+          }
+        ]
+      }
+    }
+  ],
+  "sounds": {
+    "jump": "sfx_jump",
+    "land": "sfx_land",
+    "hurt": "sfx_hurt",
+    "die": "sfx_die",
+    "attack": "sfx_nail",
+    "dash": "sfx_dash",
+    "heal": "sfx_heal",
+    "cast": "sfx_cast",
+    "hit": "sfx_hit"
+  },
+  "children": [
+    "body_vessel"
+  ]
+}

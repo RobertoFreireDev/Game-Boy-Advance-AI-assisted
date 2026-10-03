@@ -1,0 +1,332 @@
+{
+  "id": "scn_cross",
+  "kind": "scene",
+  "type": "level",
+  "name": "Ashen Crossroads",
+  "notes": "The first cave region. Shellcrawlers, gnatlings and husks. Bench and Quill the mapmaker in the middle hall; the Void Bolt shrine up on the right; the Brood Warden to the east; a grub behind a cracked wall and another high in a niche; the chasm to Mosswood needs the dash.",
+  "backdrop": "#0a0e18",
+  "music": "mus_cross",
+  "camera": {
+    "follow": "player",
+    "bounds": "map"
+  },
+  "instances": [
+    {
+      "id": "layer_cross",
+      "object": "map_cross"
+    },
+    {
+      "id": "layer_cross_bg",
+      "object": "map_cross_bg"
+    },
+    {
+      "id": "player",
+      "object": "plr_vessel",
+      "x": 68,
+      "y": 32
+    },
+    {
+      "id": "entry_1",
+      "object": "prop_entry",
+      "x": 68,
+      "y": 32,
+      "overrides": {
+        "entry_point": {
+          "value": 1,
+          "face_left": false
+        }
+      }
+    },
+    {
+      "id": "entry_3",
+      "object": "prop_entry",
+      "x": 764,
+      "y": 200,
+      "overrides": {
+        "entry_point": {
+          "value": 3,
+          "face_left": true
+        }
+      }
+    },
+    {
+      "id": "entry_4",
+      "object": "prop_entry",
+      "x": 764,
+      "y": 312,
+      "overrides": {
+        "entry_point": {
+          "value": 4,
+          "face_left": true
+        }
+      }
+    },
+    {
+      "id": "bench",
+      "object": "prop_bench",
+      "x": 452,
+      "y": 200
+    },
+    {
+      "id": "entry_99",
+      "object": "prop_entry",
+      "x": 452,
+      "y": 200,
+      "overrides": {
+        "entry_point": {
+          "value": 99,
+          "face_left": false
+        }
+      }
+    },
+    {
+      "id": "quill",
+      "object": "npc_quill",
+      "x": 500,
+      "y": 200
+    },
+    {
+      "id": "crawler_1",
+      "object": "enm_crawler",
+      "x": 180,
+      "y": 120
+    },
+    {
+      "id": "crawler_2",
+      "object": "enm_crawler",
+      "x": 212,
+      "y": 312
+    },
+    {
+      "id": "crawler_3",
+      "object": "enm_crawler",
+      "x": 508,
+      "y": 312
+    },
+    {
+      "id": "gnat_1",
+      "object": "enm_gnat",
+      "x": 244,
+      "y": 280
+    },
+    {
+      "id": "gnat_2",
+      "object": "enm_gnat",
+      "x": 468,
+      "y": 272
+    },
+    {
+      "id": "gnat_3",
+      "object": "enm_gnat",
+      "x": 564,
+      "y": 88
+    },
+    {
+      "id": "gnat_4",
+      "object": "enm_gnat",
+      "x": 620,
+      "y": 80
+    },
+    {
+      "id": "husk_1",
+      "object": "enm_husk",
+      "x": 276,
+      "y": 200
+    },
+    {
+      "id": "husk_2",
+      "object": "enm_husk",
+      "x": 580,
+      "y": 200
+    },
+    {
+      "id": "husk_3",
+      "object": "enm_husk",
+      "x": 180,
+      "y": 312
+    },
+    {
+      "id": "bolt",
+      "object": "item_bolt",
+      "x": 740,
+      "y": 104
+    },
+    {
+      "id": "grub1",
+      "object": "item_grub",
+      "x": 36,
+      "y": 312,
+      "overrides": {
+        "only_if": {
+          "var": "grub_1"
+        },
+        "collectible": {
+          "on_collect": [
+            {
+              "do": "set_var",
+              "var": "grub_1",
+              "value": 1
+            },
+            {
+              "do": "show_dialog",
+              "dialog": "dlg_grub"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "grub2",
+      "object": "item_grub",
+      "x": 420,
+      "y": 88,
+      "overrides": {
+        "only_if": {
+          "var": "grub_2"
+        },
+        "collectible": {
+          "on_collect": [
+            {
+              "do": "set_var",
+              "var": "grub_2",
+              "value": 1
+            },
+            {
+              "do": "show_dialog",
+              "dialog": "dlg_grub"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "wall1",
+      "object": "prop_crack_wall",
+      "x": 68,
+      "y": 312,
+      "overrides": {
+        "only_if": {
+          "var": "wall_1"
+        },
+        "health": {
+          "on_death": [
+            {
+              "do": "set_var",
+              "var": "wall_1",
+              "value": 1
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "entry_map",
+      "object": "prop_entry",
+      "x": 0,
+      "y": 0,
+      "overrides": {
+        "entry_point": {
+          "value": 98,
+          "x_var": "safe_x",
+          "y_var": "safe_y"
+        }
+      }
+    },
+    {
+      "id": "shade",
+      "object": "enm_shade",
+      "x": 0,
+      "y": 0
+    },
+    {
+      "id": "exit_1",
+      "object": "trg_exit_shaft",
+      "x": 48,
+      "y": 0,
+      "overrides": {
+        "trigger_zone": {
+          "on_enter": [
+            {
+              "do": "set_var",
+              "var": "door",
+              "value": 2
+            },
+            {
+              "do": "fade_out",
+              "ticks": 12
+            },
+            {
+              "do": "goto_scene",
+              "scene": "scn_town"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "exit_2",
+      "object": "trg_exit_side",
+      "x": 784,
+      "y": 160,
+      "overrides": {
+        "trigger_zone": {
+          "on_enter": [
+            {
+              "do": "set_var",
+              "var": "door",
+              "value": 1
+            },
+            {
+              "do": "fade_out",
+              "ticks": 12
+            },
+            {
+              "do": "goto_scene",
+              "scene": "scn_arena"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "exit_3",
+      "object": "trg_exit_side",
+      "x": 784,
+      "y": 256,
+      "overrides": {
+        "trigger_zone": {
+          "on_enter": [
+            {
+              "do": "set_var",
+              "var": "door",
+              "value": 1
+            },
+            {
+              "do": "fade_out",
+              "ticks": 12
+            },
+            {
+              "do": "goto_scene",
+              "scene": "scn_moss"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "hud",
+      "object": "hud_game"
+    }
+  ],
+  "on_start": [
+    {
+      "do": "set_var",
+      "var": "room",
+      "value": 2
+    },
+    {
+      "do": "fade_in",
+      "ticks": 20
+    }
+  ]
+}

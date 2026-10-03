@@ -1,0 +1,24 @@
+{
+  "id": "dlg_have_map",
+  "kind": "object",
+  "type": "dialog",
+  "name": "Already mapped",
+  "notes": "You already own the map.",
+  "font": "font_default",
+  "box": {
+    "x": 8,
+    "y": 96,
+    "w": 224,
+    "h": 56,
+    "paper": 3,
+    "border": 2
+  },
+  "ticks_per_char": 1,
+  "lines": [
+    {
+      "speaker": "QUILL",
+      "portrait": "icon_face_quill",
+      "text": "YOU ALREADY HAVE MY MAP! KEEP IT DRY."
+    }
+  ]
+}

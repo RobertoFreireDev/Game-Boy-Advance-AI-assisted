@@ -1,0 +1,30 @@
+{
+  "id": "scn_ending",
+  "kind": "scene",
+  "type": "credits",
+  "name": "Ending",
+  "notes": "After the Hollow Vessel falls: the last words of the story, THE END and how many grubs you freed. Then back to the title.",
+  "backdrop": "#000000",
+  "music": "mus_title",
+  "camera": {
+    "x": 0,
+    "y": 0,
+    "bounds": "none"
+  },
+  "instances": [
+    {
+      "id": "end",
+      "object": "hud_end"
+    },
+    {
+      "id": "words",
+      "object": "dlg_ending"
+    }
+  ],
+  "on_start": [
+    {
+      "do": "fade_in",
+      "ticks": 60
+    }
+  ]
+}

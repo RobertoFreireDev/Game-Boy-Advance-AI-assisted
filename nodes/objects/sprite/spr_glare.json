@@ -1,0 +1,32 @@
+{
+  "id": "spr_glare",
+  "kind": "object",
+  "type": "sprite",
+  "name": "Glare orb sprite",
+  "notes": "The Hollow Vessel's orb of burning Glare.",
+  "palette": "pal_boss",
+  "width": 8,
+  "height": 8,
+  "frames": {
+    "glare1": [
+      "..6666..",
+      ".677776.",
+      "67788776",
+      "67888876",
+      "67888876",
+      "67788776",
+      ".677776.",
+      "..6666.."
+    ],
+    "glare2": [
+      "...66...",
+      "..6776..",
+      ".677776.",
+      "67788776",
+      "67788776",
+      ".677776.",
+      "..6776..",
+      "...66..."
+    ]
+  }
+}

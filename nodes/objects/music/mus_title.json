@@ -1,0 +1,44 @@
+{
+  "id": "mus_title",
+  "kind": "object",
+  "type": "music",
+  "name": "Void Vessel theme",
+  "notes": "Slow, sad D minor theme for the title and the ending: a lonely melody on square 1, broken chords on square 2, long bass notes on the wave channel. No drums.",
+  "bpm": 76,
+  "rows_per_beat": 2,
+  "loop": true,
+  "instruments": {
+    "square1": {
+      "duty": 2,
+      "volume": 8,
+      "decay": 1
+    },
+    "square2": {
+      "duty": 1,
+      "volume": 4,
+      "decay": 2
+    },
+    "wave": {
+      "wave": "0123456789abcdeffedcba9876543210",
+      "volume": 2
+    }
+  },
+  "patterns": {
+    "A": {
+      "square1": "D5 -- -- -- F5 -- E5 -- | D5 -- -- -- A4 -- -- -- | A#4 -- -- -- A4 -- G4 -- | A4 -- -- -- -- -- -- --",
+      "square2": "D4 F4 A4 F4 D4 F4 A4 F4 | D4 F4 A4 F4 D4 F4 A4 F4 | A#3 D4 F4 D4 A#3 D4 F4 D4 | A3 C#4 E4 C#4 A3 C#4 E4 C#4",
+      "wave": "D3 -- -- -- -- -- -- -- | D3 -- -- -- -- -- -- -- | A#2 -- -- -- -- -- -- -- | A2 -- -- -- -- -- -- --"
+    },
+    "B": {
+      "square1": "F5 -- -- -- G5 -- A5 -- | G5 -- -- -- F5 -- E5 -- | F5 -- -- E5 D5 -- C#5 -- | D5 -- -- -- -- -- -- --",
+      "square2": "D4 F4 A4 F4 D4 F4 A4 F4 | C4 E4 G4 E4 C4 E4 G4 E4 | A#3 D4 F4 D4 A#3 D4 F4 D4 | D4 F4 A4 F4 D4 F4 A4 F4",
+      "wave": "D3 -- -- -- -- -- -- -- | C3 -- -- -- -- -- -- -- | A#2 -- -- -- A2 -- -- -- | D3 -- -- -- -- -- -- --"
+    }
+  },
+  "order": [
+    "A",
+    "B",
+    "A",
+    "B"
+  ]
+}

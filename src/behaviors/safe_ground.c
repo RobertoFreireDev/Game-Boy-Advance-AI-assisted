@@ -13,7 +13,10 @@ void bhv_safe_ground_update(Actor *a, const void *params) {
     const Params_safe_ground *p = params;
     u32 *st = bhv_state(a);
     int fell = (a->flags & ACTOR_FELL) != 0;
-    if (st[ST_KNOWN] && (fell || (a->tile_touch & TILE_HAZARD))) {
+    if (!st[ST_KNOWN] && (a->tile_touch & TILE_HAZARD)) {
+        health_damage(a, p->damage, NULL);          // no safe spot yet: spikes just hurt
+        if (!actor_alive(a)) return;
+    } else if (st[ST_KNOWN] && (fell || (a->tile_touch & TILE_HAZARD))) {
         a->flags &= (u8)~ACTOR_FELL;
         health_damage(a, p->damage, NULL);          // no-op while still blinking from a hit
         if (!actor_alive(a)) return;

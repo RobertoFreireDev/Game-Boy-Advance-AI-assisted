@@ -1,0 +1,48 @@
+{
+  "id": "hud_game",
+  "kind": "object",
+  "type": "hud",
+  "name": "Vessel HUD",
+  "notes": "Top-left corner during play, like the original: the round soul vessel with the soul bar beside it (fills as your nail hits; 33 soul = one heal or one spell), your masks above the bar (white = left, dark = lost, up to your maximum) and your geo below.",
+  "font": "font_default",
+  "elements": [
+    {
+      "kind": "icon",
+      "x": 8,
+      "y": 8,
+      "icon": "icon_soul"
+    },
+    {
+      "kind": "icon_repeat",
+      "x": 24,
+      "y": 8,
+      "icon": "icon_mask",
+      "empty_icon": "icon_mask_empty",
+      "var": "health",
+      "max_var": "max_health",
+      "max": 9
+    },
+    {
+      "kind": "bar",
+      "x": 24,
+      "y": 16,
+      "var": "soul",
+      "max": 99,
+      "length": 6,
+      "color": 15,
+      "back": 13
+    },
+    {
+      "kind": "icon",
+      "x": 8,
+      "y": 24,
+      "icon": "icon_geo"
+    },
+    {
+      "kind": "text",
+      "x": 16,
+      "y": 24,
+      "text": "{geo}"
+    }
+  ]
+}

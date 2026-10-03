@@ -1,0 +1,47 @@
+{
+  "id": "item_shard",
+  "kind": "object",
+  "type": "pickup",
+  "name": "Mask shard",
+  "notes": "A whole mask shard hidden at the top of the Weeping Spire: one more mask, all masks refilled.",
+  "body": "body_relic_shard",
+  "logic": [
+    {
+      "behavior": "only_if",
+      "params": {
+        "var": "shard_found",
+        "op": "==",
+        "value": 0
+      }
+    },
+    {
+      "behavior": "collectible",
+      "params": {
+        "var": "shard_found",
+        "amount": 1,
+        "on_collect": [
+          {
+            "do": "add_var",
+            "var": "max_health",
+            "value": 1
+          },
+          {
+            "do": "set_var",
+            "var": "health",
+            "from": "max_health"
+          },
+          {
+            "do": "show_dialog",
+            "dialog": "dlg_got_shard"
+          }
+        ]
+      }
+    }
+  ],
+  "sounds": {
+    "collect": "sfx_item"
+  },
+  "children": [
+    "body_relic_shard"
+  ]
+}

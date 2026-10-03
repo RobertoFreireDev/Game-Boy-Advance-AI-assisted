@@ -1,0 +1,20 @@
+{
+  "id": "anim_crawler_walk",
+  "kind": "object",
+  "type": "animation",
+  "name": "Shellcrawler walk",
+  "notes": "Legs shuffle as it crawls.",
+  "sprite": "spr_crawler",
+  "loop": true,
+  "frames": [
+    {
+      "frame": "walk1",
+      "ticks": 10
+    },
+    {
+      "frame": "walk2",
+      "ticks": 10
+    }
+  ],
+  "events": []
+}

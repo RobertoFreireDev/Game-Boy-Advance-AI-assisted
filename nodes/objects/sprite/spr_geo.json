@@ -1,0 +1,32 @@
+{
+  "id": "spr_geo",
+  "kind": "object",
+  "type": "sprite",
+  "name": "Geo sprite",
+  "notes": "A geo shell-coin: cream and gold. Spins as it lies on the ground.",
+  "palette": "pal_items",
+  "width": 8,
+  "height": 8,
+  "frames": {
+    "geo1": [
+      ".11211..",
+      "1222331.",
+      "22333331",
+      "23323331",
+      "33433441",
+      "33334441",
+      "1334441.",
+      ".11411.."
+    ],
+    "geo2": [
+      "..121...",
+      ".12231..",
+      ".12331..",
+      ".13331..",
+      ".13341..",
+      ".13341..",
+      ".13441..",
+      "..141..."
+    ]
+  }
+}

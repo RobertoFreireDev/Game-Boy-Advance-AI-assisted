@@ -1,0 +1,16 @@
+{
+  "id": "anim_hollow_cast",
+  "kind": "object",
+  "type": "animation",
+  "name": "Hollow cast",
+  "notes": "Raises the nail as glare orbs burst out.",
+  "sprite": "spr_hollow",
+  "loop": false,
+  "frames": [
+    {
+      "frame": "cast",
+      "ticks": 18
+    }
+  ],
+  "events": []
+}

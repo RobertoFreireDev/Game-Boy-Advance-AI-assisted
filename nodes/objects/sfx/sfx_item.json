@@ -1,0 +1,42 @@
+{
+  "id": "sfx_item",
+  "kind": "object",
+  "type": "sfx",
+  "name": "Relic fanfare",
+  "notes": "Short fanfare when you find a relic or buy something.",
+  "channel": "square1",
+  "duty": 2,
+  "priority": 4,
+  "steps": [
+    {
+      "note": "C5",
+      "ticks": 4,
+      "volume": 10
+    },
+    {
+      "note": "E5",
+      "ticks": 4,
+      "volume": 10
+    },
+    {
+      "note": "G5",
+      "ticks": 4,
+      "volume": 10
+    },
+    {
+      "note": "C6",
+      "ticks": 4,
+      "volume": 11
+    },
+    {
+      "note": "E6",
+      "ticks": 4,
+      "volume": 10
+    },
+    {
+      "note": "G6",
+      "ticks": 10,
+      "volume": 9
+    }
+  ]
+}

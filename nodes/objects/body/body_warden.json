@@ -1,0 +1,39 @@
+{
+  "id": "body_warden",
+  "kind": "object",
+  "type": "body",
+  "name": "Brood Warden body",
+  "notes": "Big and heavy.",
+  "origin": [
+    16,
+    32
+  ],
+  "hitbox": {
+    "x": -11,
+    "y": -24,
+    "w": 22,
+    "h": 24
+  },
+  "physics": {
+    "gravity": true,
+    "solid": false,
+    "collides_with": [
+      "tiles",
+      "player"
+    ]
+  },
+  "animations": {
+    "idle": "anim_warden_idle",
+    "walk": "anim_warden_walk",
+    "attack": "anim_warden_crouch",
+    "jump": "anim_warden_jump"
+  },
+  "default_animation": "idle",
+  "children": [
+    "spr_warden",
+    "anim_warden_idle",
+    "anim_warden_walk",
+    "anim_warden_crouch",
+    "anim_warden_jump"
+  ]
+}

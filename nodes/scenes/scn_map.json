@@ -1,0 +1,100 @@
+{
+  "id": "scn_map",
+  "kind": "scene",
+  "type": "menu",
+  "name": "Map of Underhive",
+  "notes": "Quill's map, opened from the pause menu once bought. The blinking pin marks the region you are in. BACK (or B / START) returns to where you stood.",
+  "backdrop": "#3a2a18",
+  "music": null,
+  "camera": {
+    "x": 0,
+    "y": 0,
+    "bounds": "none"
+  },
+  "instances": [
+    {
+      "id": "map",
+      "object": "map_world"
+    },
+    {
+      "id": "pin_town",
+      "object": "prop_marker",
+      "x": 56,
+      "y": 32,
+      "overrides": {
+        "only_if": {
+          "value": 1
+        }
+      }
+    },
+    {
+      "id": "pin_cross",
+      "object": "prop_marker",
+      "x": 72,
+      "y": 76,
+      "overrides": {
+        "only_if": {
+          "value": 2
+        }
+      }
+    },
+    {
+      "id": "pin_arena",
+      "object": "prop_marker",
+      "x": 148,
+      "y": 80,
+      "overrides": {
+        "only_if": {
+          "value": 3
+        }
+      }
+    },
+    {
+      "id": "pin_moss",
+      "object": "prop_marker",
+      "x": 132,
+      "y": 128,
+      "overrides": {
+        "only_if": {
+          "value": 4
+        }
+      }
+    },
+    {
+      "id": "pin_spire",
+      "object": "prop_marker",
+      "x": 208,
+      "y": 80,
+      "overrides": {
+        "only_if": {
+          "value": 5
+        }
+      }
+    },
+    {
+      "id": "pin_temple",
+      "object": "prop_marker",
+      "x": 208,
+      "y": 24,
+      "overrides": {
+        "only_if": {
+          "value": 6
+        }
+      }
+    },
+    {
+      "id": "labels",
+      "object": "hud_map"
+    },
+    {
+      "id": "close",
+      "object": "menu_map"
+    }
+  ],
+  "on_start": [
+    {
+      "do": "fade_in",
+      "ticks": 15
+    }
+  ]
+}

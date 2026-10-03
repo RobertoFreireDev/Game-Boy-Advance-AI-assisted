@@ -1,0 +1,32 @@
+{
+  "id": "sfx_die",
+  "kind": "object",
+  "type": "sfx",
+  "name": "Death",
+  "notes": "The vessel shatters.",
+  "channel": "square1",
+  "duty": 3,
+  "priority": 4,
+  "steps": [
+    {
+      "note": "G4",
+      "ticks": 6,
+      "volume": 12
+    },
+    {
+      "note": "E4",
+      "ticks": 6,
+      "volume": 10
+    },
+    {
+      "note": "C4",
+      "ticks": 8,
+      "volume": 8
+    },
+    {
+      "note": "G3",
+      "ticks": 10,
+      "volume": 6
+    }
+  ]
+}

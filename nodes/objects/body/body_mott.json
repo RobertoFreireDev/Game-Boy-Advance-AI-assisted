@@ -1,0 +1,29 @@
+{
+  "id": "body_mott",
+  "kind": "object",
+  "type": "body",
+  "name": "Mott body",
+  "notes": "Stands still; no collisions.",
+  "origin": [
+    8,
+    32
+  ],
+  "hitbox": {
+    "x": -6,
+    "y": -20,
+    "w": 12,
+    "h": 20
+  },
+  "physics": {
+    "gravity": false,
+    "solid": false,
+    "collides_with": []
+  },
+  "animations": {
+    "idle": "anim_mott_idle"
+  },
+  "default_animation": "idle",
+  "children": [
+    "anim_mott_idle"
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "id": "sfx_crumble",
+  "kind": "object",
+  "type": "sfx",
+  "name": "Wall crumbles",
+  "notes": "Rocks tumbling down.",
+  "channel": "noise",
+  "priority": 3,
+  "steps": [
+    {
+      "pitch": 12,
+      "ticks": 4,
+      "volume": 12
+    },
+    {
+      "pitch": 13,
+      "ticks": 4,
+      "volume": 10
+    },
+    {
+      "pitch": 14,
+      "ticks": 6,
+      "volume": 8
+    },
+    {
+      "pitch": 15,
+      "ticks": 10,
+      "volume": 5
+    }
+  ]
+}

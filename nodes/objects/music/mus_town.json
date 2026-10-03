@@ -1,0 +1,51 @@
+{
+  "id": "mus_town",
+  "kind": "object",
+  "type": "music",
+  "name": "Dustmere",
+  "notes": "Quiet, lonely A minor tune for the surface town: a few soft notes on square 1 over slow broken chords and a wave bass. Lots of space, like wind over empty streets.",
+  "bpm": 66,
+  "rows_per_beat": 2,
+  "loop": true,
+  "instruments": {
+    "square1": {
+      "duty": 1,
+      "volume": 6,
+      "decay": 1
+    },
+    "square2": {
+      "duty": 2,
+      "volume": 3,
+      "decay": 3
+    },
+    "wave": {
+      "wave": "0123456789abcdeffedcba9876543210",
+      "volume": 2
+    }
+  },
+  "patterns": {
+    "A": {
+      "square1": "E5 -- -- -- -- -- D5 -- | C5 -- -- -- B4 -- -- -- | A4 -- -- -- -- -- B4 -- | C5 -- -- -- E4 -- -- --",
+      "square2": "A3 -- C4 -- E4 -- C4 -- | A3 -- C4 -- E4 -- C4 -- | F3 -- A3 -- C4 -- A3 -- | C4 -- E4 -- G4 -- E4 --",
+      "wave": "A2 -- -- -- -- -- -- -- | A2 -- -- -- -- -- -- -- | F2 -- -- -- -- -- -- -- | C3 -- -- -- -- -- -- --"
+    },
+    "B": {
+      "square1": "F4 -- -- -- A4 -- -- -- | C5 -- -- -- B4 -- A4 -- | G#4 -- -- -- -- -- A4 -- | B4 -- -- -- -- -- -- --",
+      "square2": "F3 -- A3 -- C4 -- A3 -- | F3 -- A3 -- C4 -- A3 -- | E3 -- G#3 -- B3 -- G#3 -- | E3 -- G#3 -- B3 -- G#3 --",
+      "wave": "F2 -- -- -- -- -- -- -- | F2 -- -- -- -- -- -- -- | E2 -- -- -- -- -- -- -- | E2 -- -- -- -- -- -- --"
+    },
+    "C": {
+      "square1": ".. .. .. .. .. .. .. .. | .. .. .. .. .. .. .. .. | .. .. .. .. .. .. .. .. | .. .. .. .. .. .. .. ..",
+      "square2": "A3 -- C4 -- E4 -- C4 -- | F3 -- A3 -- C4 -- A3 -- | E3 -- G#3 -- B3 -- G#3 -- | A3 -- C4 -- E4 -- C4 --",
+      "wave": "A2 -- -- -- -- -- -- -- | F2 -- -- -- -- -- -- -- | E2 -- -- -- -- -- -- -- | A2 -- -- -- -- -- -- --"
+    }
+  },
+  "order": [
+    "A",
+    "B",
+    "C",
+    "A",
+    "B",
+    "C"
+  ]
+}

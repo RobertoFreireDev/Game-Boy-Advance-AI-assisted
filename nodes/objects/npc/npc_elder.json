@@ -1,0 +1,24 @@
+{
+  "id": "npc_elder",
+  "kind": "object",
+  "type": "npc",
+  "name": "The Elder",
+  "notes": "An old bug sitting outside his house in Dustmere. Press UP next to him to hear the story of Underhive.",
+  "body": "body_elder",
+  "logic": [
+    {
+      "behavior": "talk",
+      "params": {
+        "dialog": "dlg_elder",
+        "button": "UP",
+        "range": 10
+      }
+    }
+  ],
+  "sounds": {
+    "talk": "sfx_talk"
+  },
+  "children": [
+    "body_elder"
+  ]
+}

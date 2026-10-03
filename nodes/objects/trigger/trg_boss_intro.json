@@ -1,0 +1,20 @@
+{
+  "id": "trg_boss_intro",
+  "kind": "object",
+  "type": "trigger",
+  "name": "Boss announcement",
+  "notes": "Invisible zone near a boss arena's entrance: the first time you walk in, the boss is announced.",
+  "zone": {
+    "w": 16,
+    "h": 64
+  },
+  "logic": [
+    {
+      "behavior": "trigger_zone",
+      "params": {
+        "on_enter": [],
+        "once": true
+      }
+    }
+  ]
+}

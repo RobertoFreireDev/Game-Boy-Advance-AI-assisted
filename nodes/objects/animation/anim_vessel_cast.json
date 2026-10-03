@@ -1,0 +1,16 @@
+{
+  "id": "anim_vessel_cast",
+  "kind": "object",
+  "type": "animation",
+  "name": "Cast",
+  "notes": "Cast of the vessel.",
+  "sprite": "spr_vessel",
+  "loop": false,
+  "frames": [
+    {
+      "frame": "cast",
+      "ticks": 12
+    }
+  ],
+  "events": []
+}

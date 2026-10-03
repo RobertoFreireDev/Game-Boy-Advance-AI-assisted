@@ -1,0 +1,16 @@
+{
+  "id": "anim_vessel_wall",
+  "kind": "object",
+  "type": "animation",
+  "name": "Wall slide",
+  "notes": "Wall slide of the vessel.",
+  "sprite": "spr_vessel",
+  "loop": true,
+  "frames": [
+    {
+      "frame": "wall",
+      "ticks": 8
+    }
+  ],
+  "events": []
+}

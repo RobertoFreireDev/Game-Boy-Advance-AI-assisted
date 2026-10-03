@@ -1,0 +1,139 @@
+{
+  "id": "enm_warden",
+  "kind": "object",
+  "type": "enemy",
+  "name": "Brood Warden",
+  "notes": "Boss of the Crossroads, guarding the Shade Cloak. Stomps toward you, crouches (dragging its mace: the warning) and leaps to crush you; every landing shakes the hall. 26 hits, does not flinch. Gone for good once beaten (warden_dead).",
+  "body": "body_warden",
+  "logic": [
+    {
+      "behavior": "only_if",
+      "params": {
+        "var": "warden_dead",
+        "op": "==",
+        "value": 0
+      }
+    },
+    {
+      "behavior": "leaper",
+      "params": {
+        "range": 170,
+        "walk_speed": 0.6,
+        "every": 70,
+        "windup": 26,
+        "leap_speed": 4.6,
+        "max_reach": 120,
+        "on_land": [
+          {
+            "do": "shake_camera",
+            "ticks": 14,
+            "strength": 3
+          },
+          {
+            "do": "play_sfx",
+            "sfx": "sfx_slam"
+          },
+          {
+            "do": "spawn",
+            "object": "ptc_dust",
+            "x": 0,
+            "y": -2
+          }
+        ]
+      }
+    },
+    {
+      "behavior": "damage_on_touch",
+      "params": {
+        "amount": 1
+      }
+    },
+    {
+      "behavior": "health",
+      "params": {
+        "max": 26,
+        "invincible_ticks": 8,
+        "stagger": false,
+        "spikes": false,
+        "on_death": [
+          {
+            "do": "set_var",
+            "var": "warden_dead",
+            "value": 1
+          },
+          {
+            "do": "shake_camera",
+            "ticks": 30,
+            "strength": 2
+          },
+          {
+            "do": "stop_music"
+          },
+          {
+            "do": "spawn",
+            "object": "item_geo",
+            "x": -14,
+            "y": -10
+          },
+          {
+            "do": "spawn",
+            "object": "item_geo",
+            "x": -10,
+            "y": -10
+          },
+          {
+            "do": "spawn",
+            "object": "item_geo",
+            "x": -6,
+            "y": -10
+          },
+          {
+            "do": "spawn",
+            "object": "item_geo",
+            "x": -2,
+            "y": -10
+          },
+          {
+            "do": "spawn",
+            "object": "item_geo",
+            "x": 2,
+            "y": -10
+          },
+          {
+            "do": "spawn",
+            "object": "item_geo",
+            "x": 6,
+            "y": -10
+          },
+          {
+            "do": "spawn",
+            "object": "item_geo",
+            "x": 10,
+            "y": -10
+          },
+          {
+            "do": "spawn",
+            "object": "item_geo",
+            "x": 14,
+            "y": -10
+          },
+          {
+            "do": "wait",
+            "ticks": 60
+          },
+          {
+            "do": "play_music",
+            "music": "mus_cross"
+          }
+        ]
+      }
+    }
+  ],
+  "sounds": {
+    "die": "sfx_boss_die",
+    "land": "sfx_slam"
+  },
+  "children": [
+    "body_warden"
+  ]
+}

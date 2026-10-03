@@ -1,0 +1,38 @@
+{
+  "id": "scn_title",
+  "kind": "scene",
+  "type": "title",
+  "name": "Title screen",
+  "notes": "VOID VESSEL in big letters over the night sky of Dustmere, the subtitle, and the title menu (NEW GAME / CONTINUE / CONTROLS).",
+  "backdrop": "#04050c",
+  "music": "mus_title",
+  "camera": {
+    "x": 0,
+    "y": 0,
+    "bounds": "none"
+  },
+  "instances": [
+    {
+      "id": "sky",
+      "object": "map_sky"
+    },
+    {
+      "id": "logo",
+      "object": "map_logo"
+    },
+    {
+      "id": "hud",
+      "object": "hud_title"
+    },
+    {
+      "id": "menu",
+      "object": "menu_title"
+    }
+  ],
+  "on_start": [
+    {
+      "do": "fade_in",
+      "ticks": 40
+    }
+  ]
+}

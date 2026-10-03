@@ -1,0 +1,16 @@
+{
+  "id": "anim_crack_wall_break",
+  "kind": "object",
+  "type": "animation",
+  "name": "Wall crumbles",
+  "notes": "Breaks apart.",
+  "sprite": "spr_crack_wall",
+  "loop": false,
+  "frames": [
+    {
+      "frame": "crumble",
+      "ticks": 30
+    }
+  ],
+  "events": []
+}

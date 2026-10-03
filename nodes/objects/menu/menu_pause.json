@@ -1,0 +1,88 @@
+{
+  "id": "menu_pause",
+  "kind": "object",
+  "type": "menu",
+  "name": "Pause menu",
+  "notes": "START during play. The title shows how many grubs you have freed. RESUME goes back, MAP opens Quill's map (once bought), QUIT returns to the title (progress since your last bench is lost).",
+  "font": "font_default",
+  "cursor": "icon_cursor",
+  "title": "GRUBS {grubs}/4",
+  "box": {
+    "x": 56,
+    "y": 40,
+    "w": 128,
+    "h": 80,
+    "paper": 3,
+    "border": 2
+  },
+  "layout": {
+    "x": 80,
+    "y": 64,
+    "spacing": 16,
+    "title_y": 48
+  },
+  "sounds": {
+    "move": "sfx_select",
+    "select": "sfx_confirm"
+  },
+  "on_cancel": [
+    {
+      "do": "close_menu"
+    }
+  ],
+  "options": [
+    {
+      "label": "RESUME",
+      "actions": [
+        {
+          "do": "close_menu"
+        }
+      ]
+    },
+    {
+      "label": "MAP",
+      "actions": [
+        {
+          "do": "if_var",
+          "var": "has_map",
+          "op": "==",
+          "value": 1,
+          "then": [
+            {
+              "do": "set_var",
+              "var": "door",
+              "value": 98
+            },
+            {
+              "do": "fade_out",
+              "ticks": 15
+            },
+            {
+              "do": "goto_scene",
+              "scene": "scn_map"
+            }
+          ],
+          "else": [
+            {
+              "do": "show_dialog",
+              "dialog": "dlg_no_map"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "label": "QUIT",
+      "actions": [
+        {
+          "do": "fade_out",
+          "ticks": 20
+        },
+        {
+          "do": "goto_scene",
+          "scene": "scn_title"
+        }
+      ]
+    }
+  ]
+}

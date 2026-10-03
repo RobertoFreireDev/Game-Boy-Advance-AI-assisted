@@ -1,0 +1,20 @@
+{
+  "id": "anim_marker",
+  "kind": "object",
+  "type": "animation",
+  "name": "Pin blink",
+  "notes": "Blinks.",
+  "sprite": "spr_marker",
+  "loop": true,
+  "frames": [
+    {
+      "frame": "pin1",
+      "ticks": 20
+    },
+    {
+      "frame": "pin2",
+      "ticks": 12
+    }
+  ],
+  "events": []
+}

@@ -1,0 +1,20 @@
+{
+  "id": "anim_mott_idle",
+  "kind": "object",
+  "type": "animation",
+  "name": "Mott idle",
+  "notes": "The lantern flickers.",
+  "sprite": "spr_townsfolk",
+  "loop": true,
+  "frames": [
+    {
+      "frame": "mott1",
+      "ticks": 14
+    },
+    {
+      "frame": "mott2",
+      "ticks": 10
+    }
+  ],
+  "events": []
+}

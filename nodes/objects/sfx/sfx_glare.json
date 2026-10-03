@@ -1,0 +1,32 @@
+{
+  "id": "sfx_glare",
+  "kind": "object",
+  "type": "sfx",
+  "name": "Glare orbs",
+  "notes": "High shimmering notes as glare orbs burst out.",
+  "channel": "square2",
+  "duty": 0,
+  "priority": 2,
+  "steps": [
+    {
+      "note": "E6",
+      "ticks": 3,
+      "volume": 8
+    },
+    {
+      "note": "B5",
+      "ticks": 3,
+      "volume": 7
+    },
+    {
+      "note": "E6",
+      "ticks": 3,
+      "volume": 7
+    },
+    {
+      "note": "B5",
+      "ticks": 6,
+      "volume": 5
+    }
+  ]
+}

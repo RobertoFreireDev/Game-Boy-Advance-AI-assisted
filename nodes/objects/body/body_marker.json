@@ -1,0 +1,30 @@
+{
+  "id": "body_marker",
+  "kind": "object",
+  "type": "body",
+  "name": "Map pin body",
+  "notes": "Static.",
+  "origin": [
+    4,
+    8
+  ],
+  "hitbox": {
+    "x": -3,
+    "y": -7,
+    "w": 6,
+    "h": 7
+  },
+  "physics": {
+    "gravity": false,
+    "solid": false,
+    "collides_with": []
+  },
+  "animations": {
+    "idle": "anim_marker"
+  },
+  "default_animation": "idle",
+  "children": [
+    "spr_marker",
+    "anim_marker"
+  ]
+}

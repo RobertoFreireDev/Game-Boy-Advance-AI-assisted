@@ -1,0 +1,22 @@
+{
+  "id": "prop_void_bolt",
+  "kind": "object",
+  "type": "prop",
+  "name": "Void Bolt",
+  "notes": "The spell: tap L (33 soul) once the Void Bolt orb is found. A ball of void that flies straight ahead and hits every enemy in its way for 3 damage.",
+  "body": "body_bolt",
+  "logic": [
+    {
+      "behavior": "projectile",
+      "params": {
+        "speed": 4.0,
+        "lifetime": 50,
+        "damage": 3,
+        "pierce": 0
+      }
+    }
+  ],
+  "children": [
+    "body_bolt"
+  ]
+}

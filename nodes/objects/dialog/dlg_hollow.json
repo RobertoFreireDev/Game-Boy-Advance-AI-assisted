@@ -1,0 +1,27 @@
+{
+  "id": "dlg_hollow",
+  "kind": "object",
+  "type": "dialog",
+  "name": "Hollow Vessel",
+  "notes": "Announces the final boss.",
+  "font": "font_default",
+  "box": {
+    "x": 8,
+    "y": 96,
+    "w": 224,
+    "h": 56,
+    "paper": 3,
+    "border": 2
+  },
+  "ticks_per_char": 1,
+  "lines": [
+    {
+      "portrait": "icon_face_hollow",
+      "text": "A TALL VESSEL STANDS IN THE TEMPLE. ITS MASK IS CRACKED, AND THE GLARE STARES OUT AT YOU."
+    },
+    {
+      "portrait": "icon_face_hollow",
+      "text": "THE HOLLOW VESSEL!"
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "id": "anim_vessel_jump",
+  "kind": "object",
+  "type": "animation",
+  "name": "Jump",
+  "notes": "Jump of the vessel.",
+  "sprite": "spr_vessel",
+  "loop": false,
+  "frames": [
+    {
+      "frame": "jump",
+      "ticks": 4
+    }
+  ],
+  "events": []
+}

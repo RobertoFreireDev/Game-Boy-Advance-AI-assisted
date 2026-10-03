@@ -1,0 +1,101 @@
+{
+  "id": "scn_temple",
+  "kind": "scene",
+  "type": "level",
+  "name": "Black Temple",
+  "notes": "The final hall. You drop in from the Spire's roof; walking toward the Hollow Vessel announces it and starts the battle. Beating it ends the game.",
+  "backdrop": "#0a0505",
+  "music": null,
+  "camera": {
+    "follow": "player",
+    "bounds": "map"
+  },
+  "instances": [
+    {
+      "id": "layer_temple",
+      "object": "map_temple"
+    },
+    {
+      "id": "layer_temple_bg",
+      "object": "map_temple_bg"
+    },
+    {
+      "id": "player",
+      "object": "plr_vessel",
+      "x": 36,
+      "y": 24
+    },
+    {
+      "id": "entry_1",
+      "object": "prop_entry",
+      "x": 36,
+      "y": 24,
+      "overrides": {
+        "entry_point": {
+          "value": 1,
+          "face_left": false
+        }
+      }
+    },
+    {
+      "id": "hollow_1",
+      "object": "enm_hollow",
+      "x": 244,
+      "y": 160
+    },
+    {
+      "id": "entry_map",
+      "object": "prop_entry",
+      "x": 0,
+      "y": 0,
+      "overrides": {
+        "entry_point": {
+          "value": 98,
+          "x_var": "safe_x",
+          "y_var": "safe_y"
+        }
+      }
+    },
+    {
+      "id": "shade",
+      "object": "enm_shade",
+      "x": 0,
+      "y": 0
+    },
+    {
+      "id": "exit_1",
+      "object": "trg_boss_intro",
+      "x": 24,
+      "y": 104,
+      "overrides": {
+        "trigger_zone": {
+          "on_enter": [
+            {
+              "do": "show_dialog",
+              "dialog": "dlg_hollow"
+            },
+            {
+              "do": "play_music",
+              "music": "mus_boss"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "hud",
+      "object": "hud_game"
+    }
+  ],
+  "on_start": [
+    {
+      "do": "set_var",
+      "var": "room",
+      "value": 6
+    },
+    {
+      "do": "fade_in",
+      "ticks": 20
+    }
+  ]
+}

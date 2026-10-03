@@ -1,0 +1,227 @@
+{
+  "id": "scn_moss",
+  "kind": "scene",
+  "type": "level",
+  "name": "Mosswood",
+  "notes": "A long mossy cavern east of the Crossroads chasm: thorn pits (pogo or dash over them), mosshoppers and spitters, a bench, the Thorn Claw (wall jump) in the east shrine with a grub high above, and the shaft up to the Weeping Spire.",
+  "backdrop": "#061006",
+  "music": "mus_moss",
+  "camera": {
+    "follow": "player",
+    "bounds": "map"
+  },
+  "instances": [
+    {
+      "id": "layer_moss",
+      "object": "map_moss"
+    },
+    {
+      "id": "layer_moss_bg",
+      "object": "map_moss_bg"
+    },
+    {
+      "id": "player",
+      "object": "plr_vessel",
+      "x": 28,
+      "y": 280
+    },
+    {
+      "id": "entry_1",
+      "object": "prop_entry",
+      "x": 28,
+      "y": 280,
+      "overrides": {
+        "entry_point": {
+          "value": 1,
+          "face_left": false
+        }
+      }
+    },
+    {
+      "id": "entry_2",
+      "object": "prop_entry",
+      "x": 460,
+      "y": 32,
+      "overrides": {
+        "entry_point": {
+          "value": 2,
+          "face_left": true
+        }
+      }
+    },
+    {
+      "id": "bench",
+      "object": "prop_bench",
+      "x": 292,
+      "y": 280
+    },
+    {
+      "id": "entry_99",
+      "object": "prop_entry",
+      "x": 292,
+      "y": 280,
+      "overrides": {
+        "entry_point": {
+          "value": 99,
+          "face_left": false
+        }
+      }
+    },
+    {
+      "id": "hopper_1",
+      "object": "enm_hopper",
+      "x": 252,
+      "y": 280
+    },
+    {
+      "id": "hopper_2",
+      "object": "enm_hopper",
+      "x": 660,
+      "y": 280
+    },
+    {
+      "id": "spitter_1",
+      "object": "enm_spitter",
+      "x": 196,
+      "y": 216
+    },
+    {
+      "id": "spitter_2",
+      "object": "enm_spitter",
+      "x": 604,
+      "y": 208
+    },
+    {
+      "id": "spitter_3",
+      "object": "enm_spitter",
+      "x": 732,
+      "y": 208
+    },
+    {
+      "id": "gnat_1",
+      "object": "enm_gnat",
+      "x": 636,
+      "y": 200
+    },
+    {
+      "id": "gnat_2",
+      "object": "enm_gnat",
+      "x": 100,
+      "y": 208
+    },
+    {
+      "id": "claw",
+      "object": "item_claw",
+      "x": 740,
+      "y": 248
+    },
+    {
+      "id": "grub3",
+      "object": "item_grub",
+      "x": 716,
+      "y": 96,
+      "overrides": {
+        "only_if": {
+          "var": "grub_3"
+        },
+        "collectible": {
+          "on_collect": [
+            {
+              "do": "set_var",
+              "var": "grub_3",
+              "value": 1
+            },
+            {
+              "do": "show_dialog",
+              "dialog": "dlg_grub"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "entry_map",
+      "object": "prop_entry",
+      "x": 0,
+      "y": 0,
+      "overrides": {
+        "entry_point": {
+          "value": 98,
+          "x_var": "safe_x",
+          "y_var": "safe_y"
+        }
+      }
+    },
+    {
+      "id": "shade",
+      "object": "enm_shade",
+      "x": 0,
+      "y": 0
+    },
+    {
+      "id": "exit_1",
+      "object": "trg_exit_side",
+      "x": 0,
+      "y": 232,
+      "overrides": {
+        "trigger_zone": {
+          "on_enter": [
+            {
+              "do": "set_var",
+              "var": "door",
+              "value": 4
+            },
+            {
+              "do": "fade_out",
+              "ticks": 12
+            },
+            {
+              "do": "goto_scene",
+              "scene": "scn_cross"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "exit_2",
+      "object": "trg_exit_shaft",
+      "x": 448,
+      "y": 0,
+      "overrides": {
+        "trigger_zone": {
+          "on_enter": [
+            {
+              "do": "set_var",
+              "var": "door",
+              "value": 1
+            },
+            {
+              "do": "fade_out",
+              "ticks": 12
+            },
+            {
+              "do": "goto_scene",
+              "scene": "scn_spire"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "hud",
+      "object": "hud_game"
+    }
+  ],
+  "on_start": [
+    {
+      "do": "set_var",
+      "var": "room",
+      "value": 4
+    },
+    {
+      "do": "fade_in",
+      "ticks": 20
+    }
+  ]
+}

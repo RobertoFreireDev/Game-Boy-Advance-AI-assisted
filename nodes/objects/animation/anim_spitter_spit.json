@@ -1,0 +1,16 @@
+{
+  "id": "anim_spitter_spit",
+  "kind": "object",
+  "type": "animation",
+  "name": "Spitter spit",
+  "notes": "Mouth flares as it spits.",
+  "sprite": "spr_spitter",
+  "loop": false,
+  "frames": [
+    {
+      "frame": "spit",
+      "ticks": 14
+    }
+  ],
+  "events": []
+}

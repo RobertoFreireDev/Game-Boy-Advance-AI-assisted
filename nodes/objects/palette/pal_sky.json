@@ -1,0 +1,25 @@
+{
+  "id": "pal_sky",
+  "kind": "object",
+  "type": "palette",
+  "name": "Night sky colors",
+  "notes": "The sky over Dustmere: deep blue bands, stars and the far spires of the old kingdom.",
+  "colors": [
+    "#000000",
+    "#04050c",
+    "#070914",
+    "#0a0d1e",
+    "#0e1228",
+    "#131834",
+    "#f0f0ff",
+    "#8088b8",
+    "#06070e",
+    "#0b0d1a",
+    "#f8e8a0",
+    "#202848",
+    "#2a3458",
+    "#000000",
+    "#000000",
+    "#000000"
+  ]
+}

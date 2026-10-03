@@ -1,0 +1,26 @@
+{
+  "id": "sfx_boss_die",
+  "kind": "object",
+  "type": "sfx",
+  "name": "Boss defeated",
+  "notes": "Long rumble when a boss falls.",
+  "channel": "noise",
+  "priority": 5,
+  "steps": [
+    {
+      "pitch": 14,
+      "ticks": 8,
+      "volume": 15
+    },
+    {
+      "pitch": 15,
+      "ticks": 10,
+      "volume": 10
+    },
+    {
+      "pitch": 15,
+      "ticks": 12,
+      "volume": 5
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "id": "body_relic_wings",
+  "kind": "object",
+  "type": "body",
+  "name": "Moth Wings body",
+  "notes": "Floats in place.",
+  "origin": [
+    8,
+    16
+  ],
+  "hitbox": {
+    "x": -6,
+    "y": -14,
+    "w": 12,
+    "h": 14
+  },
+  "physics": {
+    "gravity": false,
+    "solid": false,
+    "collides_with": []
+  },
+  "animations": {
+    "idle": "anim_relic_wings"
+  },
+  "default_animation": "idle",
+  "children": [
+    "anim_relic_wings"
+  ]
+}

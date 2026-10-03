@@ -1,0 +1,25 @@
+{
+  "id": "pal_moss",
+  "kind": "object",
+  "type": "palette",
+  "name": "Mosswood colors",
+  "notes": "Dark green rock under thick moss, glowing sprouts and brown thorns.",
+  "colors": [
+    "#000000",
+    "#060a06",
+    "#17221a",
+    "#24382a",
+    "#34503a",
+    "#4a6e4a",
+    "#3e8a2e",
+    "#8cd050",
+    "#08100a",
+    "#0e1c12",
+    "#18301c",
+    "#b8f070",
+    "#f0f0b0",
+    "#4a2a18",
+    "#a05a28",
+    "#6a4a28"
+  ]
+}

@@ -1,0 +1,41 @@
+{
+  "id": "body_hollow",
+  "kind": "object",
+  "type": "body",
+  "name": "Hollow Vessel body",
+  "notes": "Tall, heavy.",
+  "origin": [
+    16,
+    32
+  ],
+  "hitbox": {
+    "x": -6,
+    "y": -26,
+    "w": 12,
+    "h": 26
+  },
+  "physics": {
+    "gravity": true,
+    "solid": false,
+    "collides_with": [
+      "tiles",
+      "player"
+    ]
+  },
+  "animations": {
+    "idle": "anim_hollow_idle",
+    "walk": "anim_hollow_walk",
+    "attack": "anim_hollow_crouch",
+    "jump": "anim_hollow_jump",
+    "cast": "anim_hollow_cast"
+  },
+  "default_animation": "idle",
+  "children": [
+    "spr_hollow",
+    "anim_hollow_idle",
+    "anim_hollow_walk",
+    "anim_hollow_crouch",
+    "anim_hollow_jump",
+    "anim_hollow_cast"
+  ]
+}

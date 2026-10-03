@@ -1,0 +1,16 @@
+{
+  "id": "anim_crack_wall",
+  "kind": "object",
+  "type": "animation",
+  "name": "Cracked wall",
+  "notes": "Still.",
+  "sprite": "spr_crack_wall",
+  "loop": true,
+  "frames": [
+    {
+      "frame": "wall",
+      "ticks": 60
+    }
+  ],
+  "events": []
+}

@@ -1,0 +1,48 @@
+{
+  "id": "spr_bolt",
+  "kind": "object",
+  "type": "sprite",
+  "name": "Void Bolt sprite",
+  "notes": "The Void Bolt spell: a ghostly ball of void with a white face and a wavy tail. It flies straight and passes through enemies.",
+  "palette": "pal_knight",
+  "width": 16,
+  "height": 16,
+  "frames": {
+    "bolt1": [
+      "................",
+      "................",
+      "................",
+      ".........1111...",
+      ".....1..1cccc1..",
+      "....1d11ccdddc1.",
+      "....1ccccdddddc1",
+      "...1c1dccdd9d9d1",
+      ".11cc1cccddddddc",
+      "1c1c1.1ccddd2dc1",
+      "1cc1..1cccdddcc1",
+      ".1c1...1cccccc1.",
+      "..1.....1cccc1..",
+      ".........1111...",
+      "................",
+      "................"
+    ],
+    "bolt2": [
+      "................",
+      "................",
+      "................",
+      ".........1111...",
+      "...1....1cccc1..",
+      "..1c1..1ccdddc1.",
+      "..1cc11ccdddddc1",
+      ".1c1cd1ccdd9d9d1",
+      "1cc11ccccddddddc",
+      "1c1..1cccddd2dc1",
+      ".1...1dcccdddcc1",
+      "......11cccccc1.",
+      "........1cccc1..",
+      ".........1111...",
+      "................",
+      "................"
+    ]
+  }
+}

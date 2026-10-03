@@ -1,0 +1,48 @@
+{
+  "id": "spr_grub",
+  "kind": "object",
+  "type": "sprite",
+  "name": "Grub jar sprite",
+  "notes": "A trapped grub in a glass jar, wriggling and waving. Touch the jar to set it free.",
+  "palette": "pal_npc",
+  "width": 16,
+  "height": 16,
+  "frames": {
+    "jar1": [
+      "................",
+      ".....111111.....",
+      "....15555551....",
+      "....14444441....",
+      "....1bbbbbb1....",
+      "...1bbbbbbbb1...",
+      "..1bbcbbbbbaa1..",
+      ".1bbcbeeeeaaaa1.",
+      ".1bbceeeeedaaa1.",
+      ".1bbbee1e1daaa1.",
+      ".1bbbeeddddaaa1.",
+      ".1bbaedddddaaa1.",
+      "..1aaddddddaa1..",
+      "...1aaddddaa1...",
+      "....1aaaaaa1....",
+      ".....111111....."
+    ],
+    "jar2": [
+      "................",
+      ".....111111.....",
+      "....15555551....",
+      "....14444441....",
+      "....1bbbbbb1....",
+      "...1bbbbbbbb1...",
+      "..1bbcbbebbaa1..",
+      ".1bbcbeeeeeaaa1.",
+      ".1bbcbee1e1daa1.",
+      ".1bbbeeeedddaa1.",
+      ".1bbbeedddddaa1.",
+      ".1bbaaddddddaa1.",
+      "..1aaadddddaa1..",
+      "...1aaaadaaa1...",
+      "....1aaaaaa1....",
+      ".....111111....."
+    ]
+  }
+}

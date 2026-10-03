@@ -1,0 +1,27 @@
+{
+  "id": "sfx_bench",
+  "kind": "object",
+  "type": "sfx",
+  "name": "Rest",
+  "notes": "Calm three notes while you rest.",
+  "channel": "square2",
+  "duty": 2,
+  "priority": 3,
+  "steps": [
+    {
+      "note": "G4",
+      "ticks": 6,
+      "volume": 7
+    },
+    {
+      "note": "C5",
+      "ticks": 6,
+      "volume": 8
+    },
+    {
+      "note": "E5",
+      "ticks": 14,
+      "volume": 7
+    }
+  ]
+}

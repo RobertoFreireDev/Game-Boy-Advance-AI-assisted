@@ -1,0 +1,16 @@
+{
+  "id": "anim_vessel_fall",
+  "kind": "object",
+  "type": "animation",
+  "name": "Fall",
+  "notes": "Fall of the vessel.",
+  "sprite": "spr_vessel",
+  "loop": false,
+  "frames": [
+    {
+      "frame": "fall",
+      "ticks": 4
+    }
+  ],
+  "events": []
+}

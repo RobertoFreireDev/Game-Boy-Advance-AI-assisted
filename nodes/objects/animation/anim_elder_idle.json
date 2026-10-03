@@ -1,0 +1,20 @@
+{
+  "id": "anim_elder_idle",
+  "kind": "object",
+  "type": "animation",
+  "name": "Elder idle",
+  "notes": "Blinks slowly.",
+  "sprite": "spr_townsfolk",
+  "loop": true,
+  "frames": [
+    {
+      "frame": "elder1",
+      "ticks": 90
+    },
+    {
+      "frame": "elder2",
+      "ticks": 8
+    }
+  ],
+  "events": []
+}

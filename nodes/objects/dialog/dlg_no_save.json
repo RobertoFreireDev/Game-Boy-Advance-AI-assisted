@@ -1,0 +1,28 @@
+{
+  "id": "dlg_no_save",
+  "kind": "object",
+  "type": "dialog",
+  "name": "No save",
+  "notes": "CONTINUE without a saved game.",
+  "font": "font_default",
+  "box": {
+    "x": 8,
+    "y": 96,
+    "w": 224,
+    "h": 56,
+    "paper": 3,
+    "border": 2
+  },
+  "ticks_per_char": 1,
+  "lines": [
+    {
+      "text": "NO SAVED GAME YET. REST ON A BENCH TO SAVE."
+    }
+  ],
+  "on_end": [
+    {
+      "do": "open_menu",
+      "menu": "menu_title"
+    }
+  ]
+}

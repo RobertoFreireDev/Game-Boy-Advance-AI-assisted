@@ -1,0 +1,23 @@
+{
+  "id": "ptc_hit",
+  "kind": "object",
+  "type": "particle",
+  "name": "Nail hit sparks",
+  "notes": "White-blue sparks that fly off whatever the nail or the spell hits.",
+  "animation": "anim_spark",
+  "mode": "burst",
+  "count": 5,
+  "lifetime": 12,
+  "speed": [
+    1.0,
+    2.2
+  ],
+  "angle": [
+    0,
+    359
+  ],
+  "gravity": 0,
+  "children": [
+    "anim_spark"
+  ]
+}

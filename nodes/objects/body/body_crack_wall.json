@@ -1,0 +1,32 @@
+{
+  "id": "body_crack_wall",
+  "kind": "object",
+  "type": "body",
+  "name": "Cracked wall body",
+  "notes": "Solid: blocks the way until broken.",
+  "origin": [
+    8,
+    32
+  ],
+  "hitbox": {
+    "x": -4,
+    "y": -32,
+    "w": 8,
+    "h": 32
+  },
+  "physics": {
+    "gravity": false,
+    "solid": true,
+    "collides_with": []
+  },
+  "animations": {
+    "idle": "anim_crack_wall",
+    "die": "anim_crack_wall_break"
+  },
+  "default_animation": "idle",
+  "children": [
+    "spr_crack_wall",
+    "anim_crack_wall",
+    "anim_crack_wall_break"
+  ]
+}

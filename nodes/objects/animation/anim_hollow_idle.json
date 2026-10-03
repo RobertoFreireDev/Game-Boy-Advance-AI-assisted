@@ -1,0 +1,20 @@
+{
+  "id": "anim_hollow_idle",
+  "kind": "object",
+  "type": "animation",
+  "name": "Hollow idle",
+  "notes": "Stands still, swaying.",
+  "sprite": "spr_hollow",
+  "loop": true,
+  "frames": [
+    {
+      "frame": "idle",
+      "ticks": 20
+    },
+    {
+      "frame": "walk2",
+      "ticks": 20
+    }
+  ],
+  "events": []
+}

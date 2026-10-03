@@ -1,0 +1,20 @@
+{
+  "id": "anim_relic_bolt",
+  "kind": "object",
+  "type": "animation",
+  "name": "Void Bolt orb shine",
+  "notes": "Void Bolt orb twinkles.",
+  "sprite": "spr_relics",
+  "loop": true,
+  "frames": [
+    {
+      "frame": "bolt1",
+      "ticks": 16
+    },
+    {
+      "frame": "bolt2",
+      "ticks": 16
+    }
+  ],
+  "events": []
+}

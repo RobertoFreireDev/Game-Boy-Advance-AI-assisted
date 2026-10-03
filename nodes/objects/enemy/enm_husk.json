@@ -1,0 +1,52 @@
+{
+  "id": "enm_husk",
+  "kind": "object",
+  "type": "enemy",
+  "name": "Hollow husk",
+  "notes": "A bug lost to the Glare, shambling back and forth. Tougher: 4 hits; drops 2 geo.",
+  "body": "body_husk",
+  "logic": [
+    {
+      "behavior": "patrol",
+      "params": {
+        "speed": 0.45,
+        "turn_at_edges": true
+      }
+    },
+    {
+      "behavior": "damage_on_touch",
+      "params": {
+        "amount": 1
+      }
+    },
+    {
+      "behavior": "health",
+      "params": {
+        "max": 4,
+        "invincible_ticks": 10,
+        "knockback": 1.4,
+        "spikes": false,
+        "on_death": [
+          {
+            "do": "spawn",
+            "object": "item_geo",
+            "x": -4,
+            "y": -10
+          },
+          {
+            "do": "spawn",
+            "object": "item_geo",
+            "x": 4,
+            "y": -10
+          }
+        ]
+      }
+    }
+  ],
+  "sounds": {
+    "die": "sfx_kill"
+  },
+  "children": [
+    "body_husk"
+  ]
+}

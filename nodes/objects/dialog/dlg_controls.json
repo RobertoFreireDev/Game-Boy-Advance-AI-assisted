@@ -1,0 +1,37 @@
+{
+  "id": "dlg_controls",
+  "kind": "object",
+  "type": "dialog",
+  "name": "Controls",
+  "notes": "Explains the buttons; back to the title menu at the end.",
+  "font": "font_default",
+  "box": {
+    "x": 8,
+    "y": 96,
+    "w": 224,
+    "h": 56,
+    "paper": 3,
+    "border": 2
+  },
+  "ticks_per_char": 1,
+  "lines": [
+    {
+      "text": "D-PAD RUNS. A JUMPS: HOLD IT LONGER TO JUMP HIGHER."
+    },
+    {
+      "text": "B SWINGS YOUR NAIL. HOLD UP TO SLASH UP. HOLD DOWN IN THE AIR TO SLASH DOWN AND BOUNCE OFF FOES AND SPIKES."
+    },
+    {
+      "text": "HITS FILL YOUR SOUL. HOLD L TO FOCUS: 33 SOUL HEALS ONE MASK. STAND STILL WHILE YOU DO."
+    },
+    {
+      "text": "R DASHES AND A TAP OF L CASTS A SPELL, ONCE YOU FIND THEM. UP TALKS AND RESTS ON BENCHES. START PAUSES."
+    }
+  ],
+  "on_end": [
+    {
+      "do": "open_menu",
+      "menu": "menu_title"
+    }
+  ]
+}

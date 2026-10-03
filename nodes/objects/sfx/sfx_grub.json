@@ -1,0 +1,32 @@
+{
+  "id": "sfx_grub",
+  "kind": "object",
+  "type": "sfx",
+  "name": "Grub freed",
+  "notes": "Happy squeak of a freed grub.",
+  "channel": "square2",
+  "duty": 1,
+  "priority": 4,
+  "steps": [
+    {
+      "note": "E6",
+      "ticks": 3,
+      "volume": 8
+    },
+    {
+      "note": "G6",
+      "ticks": 3,
+      "volume": 8
+    },
+    {
+      "note": "E6",
+      "ticks": 3,
+      "volume": 8
+    },
+    {
+      "note": "C7",
+      "ticks": 8,
+      "volume": 7
+    }
+  ]
+}

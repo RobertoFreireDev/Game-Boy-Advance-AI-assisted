@@ -1,0 +1,16 @@
+{
+  "id": "prop_entry",
+  "kind": "object",
+  "type": "prop",
+  "name": "Entrance marker",
+  "notes": "Invisible: where the vessel appears when a room starts. Each one is placed with its own door number; doors set 'door' before switching rooms, benches use 99 and coming back from the map uses 98 (the last safe spot).",
+  "logic": [
+    {
+      "behavior": "entry_point",
+      "params": {
+        "var": "door",
+        "value": 0
+      }
+    }
+  ]
+}

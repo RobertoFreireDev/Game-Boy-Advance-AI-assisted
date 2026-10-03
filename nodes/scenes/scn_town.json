@@ -1,0 +1,146 @@
+{
+  "id": "scn_town",
+  "kind": "scene",
+  "type": "level",
+  "name": "Dustmere",
+  "notes": "The quiet town on the surface where the journey starts. The Elder tells the story, Mott sells mask shards, the bench saves. Jump down the old well on the right to reach the Crossroads.",
+  "backdrop": "#04050c",
+  "music": "mus_town",
+  "camera": {
+    "follow": "player",
+    "bounds": "map"
+  },
+  "instances": [
+    {
+      "id": "layer_town",
+      "object": "map_town"
+    },
+    {
+      "id": "layer_town_houses",
+      "object": "map_town_houses"
+    },
+    {
+      "id": "layer_sky",
+      "object": "map_sky"
+    },
+    {
+      "id": "player",
+      "object": "plr_vessel",
+      "x": 52,
+      "y": 152
+    },
+    {
+      "id": "entry_0",
+      "object": "prop_entry",
+      "x": 52,
+      "y": 152,
+      "overrides": {
+        "entry_point": {
+          "value": 0,
+          "face_left": false
+        }
+      }
+    },
+    {
+      "id": "elder",
+      "object": "npc_elder",
+      "x": 116,
+      "y": 152
+    },
+    {
+      "id": "bench",
+      "object": "prop_bench",
+      "x": 228,
+      "y": 152
+    },
+    {
+      "id": "mott",
+      "object": "npc_mott",
+      "x": 380,
+      "y": 152
+    },
+    {
+      "id": "entry_2",
+      "object": "prop_entry",
+      "x": 420,
+      "y": 152,
+      "overrides": {
+        "entry_point": {
+          "value": 2,
+          "face_left": true
+        }
+      }
+    },
+    {
+      "id": "entry_99",
+      "object": "prop_entry",
+      "x": 228,
+      "y": 152,
+      "overrides": {
+        "entry_point": {
+          "value": 99,
+          "face_left": false
+        }
+      }
+    },
+    {
+      "id": "entry_map",
+      "object": "prop_entry",
+      "x": 0,
+      "y": 0,
+      "overrides": {
+        "entry_point": {
+          "value": 98,
+          "x_var": "safe_x",
+          "y_var": "safe_y"
+        }
+      }
+    },
+    {
+      "id": "shade",
+      "object": "enm_shade",
+      "x": 0,
+      "y": 0
+    },
+    {
+      "id": "exit_1",
+      "object": "trg_exit_shaft",
+      "x": 432,
+      "y": 176,
+      "overrides": {
+        "trigger_zone": {
+          "on_enter": [
+            {
+              "do": "set_var",
+              "var": "door",
+              "value": 1
+            },
+            {
+              "do": "fade_out",
+              "ticks": 12
+            },
+            {
+              "do": "goto_scene",
+              "scene": "scn_cross"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "hud",
+      "object": "hud_game"
+    }
+  ],
+  "on_start": [
+    {
+      "do": "set_var",
+      "var": "room",
+      "value": 1
+    },
+    {
+      "do": "fade_in",
+      "ticks": 20
+    }
+  ]
+}

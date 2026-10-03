@@ -1,0 +1,20 @@
+{
+  "id": "anim_bolt_fly",
+  "kind": "object",
+  "type": "animation",
+  "name": "Void Bolt flight",
+  "notes": "The bolt's tail waves.",
+  "sprite": "spr_bolt",
+  "loop": true,
+  "frames": [
+    {
+      "frame": "bolt1",
+      "ticks": 4
+    },
+    {
+      "frame": "bolt2",
+      "ticks": 4
+    }
+  ],
+  "events": []
+}

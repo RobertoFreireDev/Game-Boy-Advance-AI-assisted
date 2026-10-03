@@ -1,0 +1,22 @@
+{
+  "id": "sfx_jump",
+  "kind": "object",
+  "type": "sfx",
+  "name": "Jump",
+  "notes": "Soft rising blip when the vessel jumps.",
+  "channel": "square1",
+  "duty": 2,
+  "priority": 1,
+  "steps": [
+    {
+      "note": "C5",
+      "ticks": 2,
+      "volume": 7
+    },
+    {
+      "note": "G5",
+      "ticks": 3,
+      "volume": 5
+    }
+  ]
+}

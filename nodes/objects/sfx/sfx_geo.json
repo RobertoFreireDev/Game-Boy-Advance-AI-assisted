@@ -1,0 +1,22 @@
+{
+  "id": "sfx_geo",
+  "kind": "object",
+  "type": "sfx",
+  "name": "Geo",
+  "notes": "Tiny clink of a geo coin.",
+  "channel": "square2",
+  "duty": 1,
+  "priority": 1,
+  "steps": [
+    {
+      "note": "B5",
+      "ticks": 2,
+      "volume": 9
+    },
+    {
+      "note": "E6",
+      "ticks": 4,
+      "volume": 7
+    }
+  ]
+}

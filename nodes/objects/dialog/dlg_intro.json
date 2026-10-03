@@ -1,0 +1,49 @@
+{
+  "id": "dlg_intro",
+  "kind": "object",
+  "type": "dialog",
+  "name": "The story",
+  "notes": "The opening story, told over black before the game starts in Dustmere.",
+  "font": "font_default",
+  "box": {
+    "x": 8,
+    "y": 96,
+    "w": 224,
+    "h": 56,
+    "paper": 3,
+    "border": 2
+  },
+  "ticks_per_char": 2,
+  "lines": [
+    {
+      "text": "LONG AGO THE ASHEN KING CARVED THE KINGDOM OF UNDERHIVE OUT OF THE DARK."
+    },
+    {
+      "text": "THEN CAME THE GLARE: A FORGOTTEN LIGHT THAT WHISPERED IN THE DREAMS OF EVERY BUG AND BURNED THEIR MINDS AWAY."
+    },
+    {
+      "text": "THE KING FORGED VESSELS OF PURE VOID, HOLLOW AND SILENT, TO LOCK THE GLARE INSIDE ONE OF THEM FOREVER."
+    },
+    {
+      "text": "THE CHOSEN ONE, THE HOLLOW VESSEL, WAS SEALED IN THE BLACK TEMPLE. THE REST WERE CAST INTO THE ABYSS."
+    },
+    {
+      "text": "BUT THE SEAL IS CRACKING. AND FROM THE ABYSS, ONE SMALL VESSEL HAS CLIMBED BACK UP..."
+    }
+  ],
+  "on_end": [
+    {
+      "do": "fade_out",
+      "ticks": 40
+    },
+    {
+      "do": "set_var",
+      "var": "door",
+      "value": 0
+    },
+    {
+      "do": "goto_scene",
+      "scene": "scn_town"
+    }
+  ]
+}

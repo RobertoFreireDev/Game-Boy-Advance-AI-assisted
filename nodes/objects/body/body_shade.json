@@ -1,0 +1,32 @@
+{
+  "id": "body_shade",
+  "kind": "object",
+  "type": "body",
+  "name": "Shade body",
+  "notes": "Floats (no gravity) and drifts through walls.",
+  "origin": [
+    8,
+    13
+  ],
+  "hitbox": {
+    "x": -5,
+    "y": -11,
+    "w": 10,
+    "h": 12
+  },
+  "physics": {
+    "gravity": false,
+    "solid": false,
+    "collides_with": [
+      "player"
+    ]
+  },
+  "animations": {
+    "idle": "anim_shade_float"
+  },
+  "default_animation": "idle",
+  "children": [
+    "spr_shade",
+    "anim_shade_float"
+  ]
+}

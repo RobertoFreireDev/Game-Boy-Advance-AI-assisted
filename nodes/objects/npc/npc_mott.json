@@ -1,0 +1,24 @@
+{
+  "id": "npc_mott",
+  "kind": "object",
+  "type": "npc",
+  "name": "Mott",
+  "notes": "Mott the moth merchant, by her shop in Dustmere. Sells mask shards (one more mask each) for geo.",
+  "body": "body_mott",
+  "logic": [
+    {
+      "behavior": "talk",
+      "params": {
+        "dialog": "dlg_mott",
+        "button": "UP",
+        "range": 10
+      }
+    }
+  ],
+  "sounds": {
+    "talk": "sfx_talk"
+  },
+  "children": [
+    "body_mott"
+  ]
+}

@@ -1,0 +1,100 @@
+{
+  "id": "enm_hollow",
+  "kind": "object",
+  "type": "enemy",
+  "name": "The Hollow Vessel",
+  "notes": "Final boss in the Black Temple: the vessel that sealed the Glare, now broken by it. Leaps at you (it lowers its nail first) and raises its nail to throw fans of three glare orbs. 36 hits, does not flinch. Beating it ends the game.",
+  "body": "body_hollow",
+  "logic": [
+    {
+      "behavior": "leaper",
+      "params": {
+        "range": 180,
+        "walk_speed": 0.7,
+        "every": 80,
+        "windup": 22,
+        "leap_speed": 4.8,
+        "max_reach": 140,
+        "on_land": [
+          {
+            "do": "shake_camera",
+            "ticks": 14,
+            "strength": 3
+          },
+          {
+            "do": "play_sfx",
+            "sfx": "sfx_slam"
+          },
+          {
+            "do": "spawn",
+            "object": "ptc_dust",
+            "x": 0,
+            "y": -2
+          }
+        ]
+      }
+    },
+    {
+      "behavior": "shooter",
+      "params": {
+        "object": "prop_glare",
+        "every": 150,
+        "count": 3,
+        "spread": 25,
+        "range": 220,
+        "offset_y": -22,
+        "sound": "sfx_glare"
+      }
+    },
+    {
+      "behavior": "damage_on_touch",
+      "params": {
+        "amount": 1
+      }
+    },
+    {
+      "behavior": "health",
+      "params": {
+        "max": 36,
+        "invincible_ticks": 8,
+        "stagger": false,
+        "spikes": false,
+        "on_death": [
+          {
+            "do": "stop_music"
+          },
+          {
+            "do": "spawn",
+            "object": "ptc_void",
+            "x": 0,
+            "y": -16
+          },
+          {
+            "do": "shake_camera",
+            "ticks": 60,
+            "strength": 2
+          },
+          {
+            "do": "wait",
+            "ticks": 90
+          },
+          {
+            "do": "fade_out",
+            "ticks": 60
+          },
+          {
+            "do": "goto_scene",
+            "scene": "scn_ending"
+          }
+        ]
+      }
+    }
+  ],
+  "sounds": {
+    "die": "sfx_boss_die",
+    "land": "sfx_slam"
+  },
+  "children": [
+    "body_hollow"
+  ]
+}

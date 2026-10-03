@@ -1,0 +1,130 @@
+{
+  "id": "menu_title",
+  "kind": "object",
+  "type": "menu",
+  "name": "Title menu",
+  "notes": "NEW GAME starts from the story; CONTINUE loads your last bench rest; CONTROLS explains the buttons.",
+  "font": "font_default",
+  "cursor": "icon_cursor",
+  "box": {
+    "x": 64,
+    "y": 88,
+    "w": 112,
+    "h": 56,
+    "paper": 3,
+    "border": 2
+  },
+  "layout": {
+    "x": 88,
+    "y": 96,
+    "spacing": 16
+  },
+  "sounds": {
+    "move": "sfx_select",
+    "select": "sfx_confirm"
+  },
+  "options": [
+    {
+      "label": "NEW GAME",
+      "actions": [
+        {
+          "do": "reset_vars"
+        },
+        {
+          "do": "fade_out",
+          "ticks": 30
+        },
+        {
+          "do": "goto_scene",
+          "scene": "scn_intro"
+        }
+      ]
+    },
+    {
+      "label": "CONTINUE",
+      "actions": [
+        {
+          "do": "load_game"
+        },
+        {
+          "do": "if_var",
+          "var": "has_save",
+          "op": "==",
+          "value": 1,
+          "then": [
+            {
+              "do": "set_var",
+              "var": "door",
+              "value": 99
+            },
+            {
+              "do": "fade_out",
+              "ticks": 30
+            },
+            {
+              "do": "if_var",
+              "var": "bench",
+              "op": "==",
+              "value": 2,
+              "then": [
+                {
+                  "do": "goto_scene",
+                  "scene": "scn_cross"
+                }
+              ],
+              "else": [
+                {
+                  "do": "if_var",
+                  "var": "bench",
+                  "op": "==",
+                  "value": 4,
+                  "then": [
+                    {
+                      "do": "goto_scene",
+                      "scene": "scn_moss"
+                    }
+                  ],
+                  "else": [
+                    {
+                      "do": "if_var",
+                      "var": "bench",
+                      "op": "==",
+                      "value": 5,
+                      "then": [
+                        {
+                          "do": "goto_scene",
+                          "scene": "scn_spire"
+                        }
+                      ],
+                      "else": [
+                        {
+                          "do": "goto_scene",
+                          "scene": "scn_town"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "else": [
+            {
+              "do": "show_dialog",
+              "dialog": "dlg_no_save"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "label": "CONTROLS",
+      "actions": [
+        {
+          "do": "show_dialog",
+          "dialog": "dlg_controls"
+        }
+      ]
+    }
+  ]
+}

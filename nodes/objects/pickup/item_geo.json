@@ -1,0 +1,23 @@
+{
+  "id": "item_geo",
+  "kind": "object",
+  "type": "pickup",
+  "name": "Geo",
+  "notes": "A geo coin worth 5. Enemies drop them; spend them at Mott's and Quill's.",
+  "body": "body_geo",
+  "logic": [
+    {
+      "behavior": "collectible",
+      "params": {
+        "var": "geo",
+        "amount": 5
+      }
+    }
+  ],
+  "sounds": {
+    "collect": "sfx_geo"
+  },
+  "children": [
+    "body_geo"
+  ]
+}

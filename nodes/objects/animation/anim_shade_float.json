@@ -1,0 +1,20 @@
+{
+  "id": "anim_shade_float",
+  "kind": "object",
+  "type": "animation",
+  "name": "Shade float",
+  "notes": "The shade's wisps drift.",
+  "sprite": "spr_shade",
+  "loop": true,
+  "frames": [
+    {
+      "frame": "float1",
+      "ticks": 10
+    },
+    {
+      "frame": "float2",
+      "ticks": 10
+    }
+  ],
+  "events": []
+}

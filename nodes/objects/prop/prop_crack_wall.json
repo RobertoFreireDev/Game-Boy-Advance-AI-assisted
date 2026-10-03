@@ -1,0 +1,41 @@
+{
+  "id": "prop_crack_wall",
+  "kind": "object",
+  "type": "prop",
+  "name": "Cracked wall",
+  "notes": "A cracked wall hiding a secret. 3 nail strikes break it for good (its flag variable, wall_1 by default).",
+  "body": "body_crack_wall",
+  "logic": [
+    {
+      "behavior": "only_if",
+      "params": {
+        "var": "wall_1",
+        "op": "==",
+        "value": 0
+      }
+    },
+    {
+      "behavior": "health",
+      "params": {
+        "max": 3,
+        "invincible_ticks": 10,
+        "stagger": false,
+        "spikes": false,
+        "on_death": [
+          {
+            "do": "set_var",
+            "var": "wall_1",
+            "value": 1
+          }
+        ]
+      }
+    }
+  ],
+  "sounds": {
+    "hurt": "sfx_hit",
+    "die": "sfx_crumble"
+  },
+  "children": [
+    "body_crack_wall"
+  ]
+}

@@ -1,0 +1,48 @@
+{
+  "id": "spr_shade",
+  "kind": "object",
+  "type": "sprite",
+  "name": "Shade sprite",
+  "notes": "Your lost shade: a void-black copy of the vessel with glowing white eyes and wisps for legs. Two frames of drifting wisps.",
+  "palette": "pal_knight",
+  "width": 16,
+  "height": 16,
+  "frames": {
+    "float1": [
+      "....1......1....",
+      "...1c1....1c1...",
+      "...1c1....1c1...",
+      "...1cc1..1cc1...",
+      "..1cccccccccc1..",
+      "..1cccccccccc1..",
+      ".1cc22cccc22cc1.",
+      ".1c222cccc222c1.",
+      ".1c222cccc222c1.",
+      ".1cc22cccc22cc1.",
+      "..1cccccccccc1..",
+      "...1cdccccdc1...",
+      "...1ccdccdcc1...",
+      "..1cc1cdccc1c1..",
+      "..1c1.1cc1.1c1..",
+      "...1...11...1..."
+    ],
+    "float2": [
+      "....1......1....",
+      "...1c1....1c1...",
+      "...1c1....1c1...",
+      "...1cc1..1cc1...",
+      "..1cccccccccc1..",
+      "..1cccccccccc1..",
+      ".1cc22cccc22cc1.",
+      ".1c222cccc222c1.",
+      ".1c222cccc222c1.",
+      ".1cc22cccc22cc1.",
+      "..1cccccccccc1..",
+      "...1cdccccdc1...",
+      "...1ccdccdcc1...",
+      "..1ccc1cdc1cc1..",
+      "...1c1.1c1.1c1..",
+      "....1...1...1..."
+    ]
+  }
+}

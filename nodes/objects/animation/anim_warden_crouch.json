@@ -1,0 +1,16 @@
+{
+  "id": "anim_warden_crouch",
+  "kind": "object",
+  "type": "animation",
+  "name": "Warden wind-up",
+  "notes": "Crouches and drags its mace: it is about to leap.",
+  "sprite": "spr_warden",
+  "loop": false,
+  "frames": [
+    {
+      "frame": "crouch",
+      "ticks": 8
+    }
+  ],
+  "events": []
+}

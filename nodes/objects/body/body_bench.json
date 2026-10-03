@@ -1,0 +1,30 @@
+{
+  "id": "body_bench",
+  "kind": "object",
+  "type": "body",
+  "name": "Bench body",
+  "notes": "Static.",
+  "origin": [
+    16,
+    16
+  ],
+  "hitbox": {
+    "x": -12,
+    "y": -8,
+    "w": 24,
+    "h": 8
+  },
+  "physics": {
+    "gravity": false,
+    "solid": false,
+    "collides_with": []
+  },
+  "animations": {
+    "idle": "anim_bench"
+  },
+  "default_animation": "idle",
+  "children": [
+    "spr_bench",
+    "anim_bench"
+  ]
+}

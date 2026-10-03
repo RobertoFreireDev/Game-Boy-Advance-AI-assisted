@@ -1,0 +1,58 @@
+{
+  "id": "body_vessel",
+  "kind": "object",
+  "type": "body",
+  "name": "Vessel body",
+  "notes": "The little vessel: 8x14 hitbox centered under the mask (the 32x32 art leaves room for the slashes). Falls with gravity, collides with tiles, enemies, pickups, triggers and solid props (cracked walls).",
+  "origin": [
+    16,
+    24
+  ],
+  "hitbox": {
+    "x": -4,
+    "y": -14,
+    "w": 8,
+    "h": 14
+  },
+  "physics": {
+    "gravity": true,
+    "solid": false,
+    "collides_with": [
+      "tiles",
+      "enemy",
+      "pickup",
+      "trigger",
+      "prop"
+    ]
+  },
+  "animations": {
+    "idle": "anim_vessel_idle",
+    "run": "anim_vessel_run",
+    "jump": "anim_vessel_jump",
+    "fall": "anim_vessel_fall",
+    "attack": "anim_vessel_slash",
+    "attack_up": "anim_vessel_slash_up",
+    "attack_down": "anim_vessel_slash_down",
+    "hurt": "anim_vessel_hurt",
+    "dash": "anim_vessel_dash",
+    "focus": "anim_vessel_focus",
+    "cast": "anim_vessel_cast",
+    "wall": "anim_vessel_wall"
+  },
+  "default_animation": "idle",
+  "children": [
+    "spr_vessel",
+    "anim_vessel_idle",
+    "anim_vessel_run",
+    "anim_vessel_jump",
+    "anim_vessel_fall",
+    "anim_vessel_slash",
+    "anim_vessel_slash_up",
+    "anim_vessel_slash_down",
+    "anim_vessel_hurt",
+    "anim_vessel_dash",
+    "anim_vessel_focus",
+    "anim_vessel_cast",
+    "anim_vessel_wall"
+  ]
+}

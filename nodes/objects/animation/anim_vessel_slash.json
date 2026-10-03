@@ -1,0 +1,20 @@
+{
+  "id": "anim_vessel_slash",
+  "kind": "object",
+  "type": "animation",
+  "name": "Forward slash",
+  "notes": "Forward slash of the vessel.",
+  "sprite": "spr_vessel",
+  "loop": false,
+  "frames": [
+    {
+      "frame": "slash1",
+      "ticks": 4
+    },
+    {
+      "frame": "slash2",
+      "ticks": 4
+    }
+  ],
+  "events": []
+}

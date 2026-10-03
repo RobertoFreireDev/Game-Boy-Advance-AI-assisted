@@ -1,0 +1,26 @@
+{
+  "id": "icon_face_mott",
+  "kind": "object",
+  "type": "icon",
+  "name": "Mott portrait",
+  "notes": "Mott the moth merchant's face: purple wings and a little pale mask.",
+  "palette": "pal_ui",
+  "pixels": [
+    "3333333333333333",
+    "3333b3333333b333",
+    "33333b33333b3333",
+    "33333b33333b3333",
+    "33222bb222b22b33",
+    "3222b2222222bbb3",
+    "322b22222222bbb3",
+    "222b22222222bbbb",
+    "22bb22122217bbbb",
+    "2bbb22222777bbbb",
+    "bbbbb222777bbbbb",
+    "bbbbbb7777bbbbbb",
+    "bbbbbbbbbbbbbbbb",
+    "3bbbbbb33bbbbbb3",
+    "3bbbbbb33bbbbbb3",
+    "33bbbb3333bbbb33"
+  ]
+}

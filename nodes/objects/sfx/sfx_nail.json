@@ -1,0 +1,26 @@
+{
+  "id": "sfx_nail",
+  "kind": "object",
+  "type": "sfx",
+  "name": "Nail swing",
+  "notes": "A quick swish of the nail cutting the air.",
+  "channel": "noise",
+  "priority": 1,
+  "steps": [
+    {
+      "pitch": 2,
+      "ticks": 2,
+      "volume": 9
+    },
+    {
+      "pitch": 4,
+      "ticks": 2,
+      "volume": 7
+    },
+    {
+      "pitch": 7,
+      "ticks": 3,
+      "volume": 4
+    }
+  ]
+}

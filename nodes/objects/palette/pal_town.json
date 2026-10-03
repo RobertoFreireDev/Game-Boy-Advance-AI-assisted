@@ -1,0 +1,25 @@
+{
+  "id": "pal_town",
+  "kind": "object",
+  "type": "palette",
+  "name": "Dustmere colors",
+  "notes": "The surface town: dusty ground, stone, the houses' dark walls and warm windows.",
+  "colors": [
+    "#000000",
+    "#080608",
+    "#241c1c",
+    "#382c28",
+    "#4e3e36",
+    "#7a6454",
+    "#3a3a44",
+    "#8a8a98",
+    "#101420",
+    "#1c2234",
+    "#2c3450",
+    "#f8d878",
+    "#e8e0d0",
+    "#3a3030",
+    "#9a8a80",
+    "#6a4a30"
+  ]
+}

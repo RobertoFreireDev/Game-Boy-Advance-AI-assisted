@@ -1,0 +1,25 @@
+{
+  "id": "pal_items",
+  "kind": "object",
+  "type": "palette",
+  "name": "Item colors",
+  "notes": "Geo coins and the relics that unlock new moves. 1 = outline, 2-4 = geo (light to dark), 5 = white, 6-7 = soul blues, 8-9 = void purples, a-b = claw red-orange, c-d = moss greens, e-f = silver.",
+  "colors": [
+    "#000000",
+    "#141010",
+    "#fff0c0",
+    "#e8c070",
+    "#a87838",
+    "#ffffff",
+    "#a0d0ff",
+    "#5878c8",
+    "#3a1858",
+    "#7848b0",
+    "#e06030",
+    "#f0a040",
+    "#70c050",
+    "#c8f0a0",
+    "#b8b8c8",
+    "#606078"
+  ]
+}

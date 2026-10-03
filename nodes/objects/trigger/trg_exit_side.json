@@ -1,0 +1,20 @@
+{
+  "id": "trg_exit_side",
+  "kind": "object",
+  "type": "trigger",
+  "name": "Side exit",
+  "notes": "Invisible tall zone at the edge of a room: walking into it moves to the next room (each placed exit sets its own door and scene).",
+  "zone": {
+    "w": 8,
+    "h": 48
+  },
+  "logic": [
+    {
+      "behavior": "trigger_zone",
+      "params": {
+        "on_enter": [],
+        "once": true
+      }
+    }
+  ]
+}

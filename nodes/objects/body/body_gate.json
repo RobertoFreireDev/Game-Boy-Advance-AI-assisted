@@ -1,0 +1,30 @@
+{
+  "id": "body_gate",
+  "kind": "object",
+  "type": "body",
+  "name": "Gate body",
+  "notes": "Solid bars: block the way.",
+  "origin": [
+    8,
+    32
+  ],
+  "hitbox": {
+    "x": -4,
+    "y": -32,
+    "w": 8,
+    "h": 32
+  },
+  "physics": {
+    "gravity": false,
+    "solid": true,
+    "collides_with": []
+  },
+  "animations": {
+    "idle": "anim_gate"
+  },
+  "default_animation": "idle",
+  "children": [
+    "spr_gate",
+    "anim_gate"
+  ]
+}

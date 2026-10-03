@@ -1,0 +1,37 @@
+{
+  "id": "item_claw",
+  "kind": "object",
+  "type": "pickup",
+  "name": "Thorn Claw",
+  "notes": "Lies in the shrine at the east end of Mosswood. Grants wall slide and wall jump.",
+  "body": "body_relic_claw",
+  "logic": [
+    {
+      "behavior": "only_if",
+      "params": {
+        "var": "has_claw",
+        "op": "==",
+        "value": 0
+      }
+    },
+    {
+      "behavior": "collectible",
+      "params": {
+        "var": "has_claw",
+        "amount": 1,
+        "on_collect": [
+          {
+            "do": "show_dialog",
+            "dialog": "dlg_got_claw"
+          }
+        ]
+      }
+    }
+  ],
+  "sounds": {
+    "collect": "sfx_item"
+  },
+  "children": [
+    "body_relic_claw"
+  ]
+}

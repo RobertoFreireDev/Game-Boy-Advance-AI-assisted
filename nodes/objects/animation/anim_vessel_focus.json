@@ -1,0 +1,20 @@
+{
+  "id": "anim_vessel_focus",
+  "kind": "object",
+  "type": "animation",
+  "name": "Focus",
+  "notes": "Focus of the vessel.",
+  "sprite": "spr_vessel",
+  "loop": true,
+  "frames": [
+    {
+      "frame": "focus1",
+      "ticks": 8
+    },
+    {
+      "frame": "focus2",
+      "ticks": 8
+    }
+  ],
+  "events": []
+}

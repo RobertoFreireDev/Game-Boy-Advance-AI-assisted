@@ -1,0 +1,22 @@
+{
+  "id": "hud_end",
+  "kind": "object",
+  "type": "hud",
+  "name": "The end",
+  "notes": "Shown on the ending screen behind the last words.",
+  "font": "font_default",
+  "elements": [
+    {
+      "kind": "text",
+      "x": 88,
+      "y": 40,
+      "text": "THE END"
+    },
+    {
+      "kind": "text",
+      "x": 40,
+      "y": 56,
+      "text": "GRUBS FREED: {grubs} OF 4"
+    }
+  ]
+}

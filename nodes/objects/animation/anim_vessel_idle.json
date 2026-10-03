@@ -1,0 +1,20 @@
+{
+  "id": "anim_vessel_idle",
+  "kind": "object",
+  "type": "animation",
+  "name": "Idle",
+  "notes": "Idle of the vessel.",
+  "sprite": "spr_vessel",
+  "loop": true,
+  "frames": [
+    {
+      "frame": "idle1",
+      "ticks": 30
+    },
+    {
+      "frame": "idle2",
+      "ticks": 30
+    }
+  ],
+  "events": []
+}

@@ -1,0 +1,20 @@
+{
+  "id": "anim_hollow_walk",
+  "kind": "object",
+  "type": "animation",
+  "name": "Hollow walk",
+  "notes": "Slow, heavy steps.",
+  "sprite": "spr_hollow",
+  "loop": true,
+  "frames": [
+    {
+      "frame": "walk1",
+      "ticks": 9
+    },
+    {
+      "frame": "walk2",
+      "ticks": 9
+    }
+  ],
+  "events": []
+}

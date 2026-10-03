@@ -1,0 +1,20 @@
+{
+  "id": "anim_gnat_fly",
+  "kind": "object",
+  "type": "animation",
+  "name": "Gnatling fly",
+  "notes": "Wings beat fast.",
+  "sprite": "spr_gnat",
+  "loop": true,
+  "frames": [
+    {
+      "frame": "fly1",
+      "ticks": 4
+    },
+    {
+      "frame": "fly2",
+      "ticks": 4
+    }
+  ],
+  "events": []
+}

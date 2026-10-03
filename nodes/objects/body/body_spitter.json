@@ -1,0 +1,36 @@
+{
+  "id": "body_spitter",
+  "kind": "object",
+  "type": "body",
+  "name": "Spitter body",
+  "notes": "Flies, bumps into walls.",
+  "origin": [
+    8,
+    12
+  ],
+  "hitbox": {
+    "x": -6,
+    "y": -9,
+    "w": 12,
+    "h": 10
+  },
+  "physics": {
+    "gravity": false,
+    "solid": false,
+    "collides_with": [
+      "tiles",
+      "player"
+    ]
+  },
+  "animations": {
+    "idle": "anim_spitter_fly",
+    "run": "anim_spitter_fly",
+    "cast": "anim_spitter_spit"
+  },
+  "default_animation": "idle",
+  "children": [
+    "spr_spitter",
+    "anim_spitter_fly",
+    "anim_spitter_spit"
+  ]
+}

@@ -1,0 +1,50 @@
+{
+  "id": "enm_hopper",
+  "kind": "object",
+  "type": "enemy",
+  "name": "Mosshopper",
+  "notes": "Sits still, crouches, then hops right at you. 3 hits; drops 1 geo.",
+  "body": "body_hopper",
+  "logic": [
+    {
+      "behavior": "leaper",
+      "params": {
+        "range": 100,
+        "walk_speed": 0,
+        "every": 50,
+        "windup": 16,
+        "leap_speed": 3.6,
+        "max_reach": 56
+      }
+    },
+    {
+      "behavior": "damage_on_touch",
+      "params": {
+        "amount": 1
+      }
+    },
+    {
+      "behavior": "health",
+      "params": {
+        "max": 3,
+        "invincible_ticks": 10,
+        "knockback": 1.4,
+        "spikes": false,
+        "on_death": [
+          {
+            "do": "spawn",
+            "object": "item_geo",
+            "x": 0,
+            "y": -10
+          }
+        ]
+      }
+    }
+  ],
+  "sounds": {
+    "die": "sfx_kill"
+  },
+  "children": [
+    "body_hopper"
+  ]
+}

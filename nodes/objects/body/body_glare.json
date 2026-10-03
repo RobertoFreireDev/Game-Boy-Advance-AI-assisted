@@ -1,0 +1,32 @@
+{
+  "id": "body_glare",
+  "kind": "object",
+  "type": "body",
+  "name": "Glare orb body",
+  "notes": "A small shot; touches only the player.",
+  "origin": [
+    4,
+    4
+  ],
+  "hitbox": {
+    "x": -3,
+    "y": -3,
+    "w": 6,
+    "h": 6
+  },
+  "physics": {
+    "gravity": false,
+    "solid": false,
+    "collides_with": [
+      "player"
+    ]
+  },
+  "animations": {
+    "idle": "anim_glare"
+  },
+  "default_animation": "idle",
+  "children": [
+    "spr_glare",
+    "anim_glare"
+  ]
+}

@@ -1,0 +1,48 @@
+{
+  "id": "enm_gnat",
+  "kind": "object",
+  "type": "enemy",
+  "name": "Gnatling",
+  "notes": "A buzzing gnat that flies straight at you once you come close. 2 hits; drops 1 geo.",
+  "body": "body_gnat",
+  "logic": [
+    {
+      "behavior": "chase_player",
+      "params": {
+        "speed": 0.75,
+        "range": 90,
+        "vertical": true
+      }
+    },
+    {
+      "behavior": "damage_on_touch",
+      "params": {
+        "amount": 1,
+        "stun_ticks": 30
+      }
+    },
+    {
+      "behavior": "health",
+      "params": {
+        "max": 2,
+        "invincible_ticks": 10,
+        "knockback": 1.4,
+        "spikes": false,
+        "on_death": [
+          {
+            "do": "spawn",
+            "object": "item_geo",
+            "x": 0,
+            "y": -10
+          }
+        ]
+      }
+    }
+  ],
+  "sounds": {
+    "die": "sfx_kill"
+  },
+  "children": [
+    "body_gnat"
+  ]
+}

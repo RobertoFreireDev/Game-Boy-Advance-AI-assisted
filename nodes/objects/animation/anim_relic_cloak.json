@@ -1,0 +1,20 @@
+{
+  "id": "anim_relic_cloak",
+  "kind": "object",
+  "type": "animation",
+  "name": "Shade Cloak shine",
+  "notes": "Shade Cloak twinkles.",
+  "sprite": "spr_relics",
+  "loop": true,
+  "frames": [
+    {
+      "frame": "cloak1",
+      "ticks": 16
+    },
+    {
+      "frame": "cloak2",
+      "ticks": 16
+    }
+  ],
+  "events": []
+}

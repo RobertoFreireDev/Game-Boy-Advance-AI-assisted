@@ -1,0 +1,25 @@
+{
+  "id": "pal_npc",
+  "kind": "object",
+  "type": "palette",
+  "name": "Townsfolk colors",
+  "notes": "Friendly bugs, the bench, grub jars and cracked walls. 1 = outline, 2-3 = pale mask, 4-6 = browns, 7-9 = moth purples, a-c = jar glass, d-e = grub green, f = lantern yellow.",
+  "colors": [
+    "#000000",
+    "#100c10",
+    "#e8e0d0",
+    "#a89c88",
+    "#5a4a3a",
+    "#8a6a48",
+    "#c09060",
+    "#4a3060",
+    "#7a58a0",
+    "#b090d0",
+    "#406070",
+    "#80b8c8",
+    "#d0f0f0",
+    "#98d878",
+    "#e8fcd0",
+    "#f8d860"
+  ]
+}

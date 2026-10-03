@@ -1,0 +1,20 @@
+{
+  "id": "anim_relic_wings",
+  "kind": "object",
+  "type": "animation",
+  "name": "Moth Wings shine",
+  "notes": "Moth Wings twinkles.",
+  "sprite": "spr_relics",
+  "loop": true,
+  "frames": [
+    {
+      "frame": "wings1",
+      "ticks": 16
+    },
+    {
+      "frame": "wings2",
+      "ticks": 16
+    }
+  ],
+  "events": []
+}

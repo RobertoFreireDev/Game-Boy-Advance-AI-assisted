@@ -1,0 +1,16 @@
+{
+  "id": "anim_hopper_crouch",
+  "kind": "object",
+  "type": "animation",
+  "name": "Mosshopper crouch",
+  "notes": "Crouches: about to hop.",
+  "sprite": "spr_hopper",
+  "loop": false,
+  "frames": [
+    {
+      "frame": "crouch",
+      "ticks": 6
+    }
+  ],
+  "events": []
+}

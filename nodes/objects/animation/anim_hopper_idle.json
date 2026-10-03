@@ -1,0 +1,16 @@
+{
+  "id": "anim_hopper_idle",
+  "kind": "object",
+  "type": "animation",
+  "name": "Mosshopper idle",
+  "notes": "Sits.",
+  "sprite": "spr_hopper",
+  "loop": true,
+  "frames": [
+    {
+      "frame": "idle",
+      "ticks": 20
+    }
+  ],
+  "events": []
+}

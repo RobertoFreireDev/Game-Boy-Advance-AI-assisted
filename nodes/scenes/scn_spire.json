@@ -1,0 +1,252 @@
+{
+  "id": "scn_spire",
+  "kind": "scene",
+  "type": "level",
+  "name": "Weeping Spire",
+  "notes": "A rain-soaked tower. Climb the ledges past husk guards and spitters to the bench, wall-jump up the narrow shaft, and find the Moth Wings, a grub and a mask shard at the top. The hole in the roof (double jump) leads to the Black Temple; the hole in the floor drops back to Mosswood.",
+  "backdrop": "#080a1a",
+  "music": "mus_spire",
+  "camera": {
+    "follow": "player",
+    "bounds": "map"
+  },
+  "instances": [
+    {
+      "id": "layer_spire",
+      "object": "map_spire"
+    },
+    {
+      "id": "layer_spire_bg",
+      "object": "map_spire_bg"
+    },
+    {
+      "id": "player",
+      "object": "plr_vessel",
+      "x": 76,
+      "y": 472
+    },
+    {
+      "id": "entry_1",
+      "object": "prop_entry",
+      "x": 76,
+      "y": 472,
+      "overrides": {
+        "entry_point": {
+          "value": 1,
+          "face_left": false
+        }
+      }
+    },
+    {
+      "id": "entry_2",
+      "object": "prop_entry",
+      "x": 332,
+      "y": 40,
+      "overrides": {
+        "entry_point": {
+          "value": 2,
+          "face_left": true
+        }
+      }
+    },
+    {
+      "id": "bench",
+      "object": "prop_bench",
+      "x": 132,
+      "y": 304
+    },
+    {
+      "id": "entry_99",
+      "object": "prop_entry",
+      "x": 132,
+      "y": 304,
+      "overrides": {
+        "entry_point": {
+          "value": 99,
+          "face_left": false
+        }
+      }
+    },
+    {
+      "id": "husk_1",
+      "object": "enm_husk",
+      "x": 292,
+      "y": 368
+    },
+    {
+      "id": "husk_2",
+      "object": "enm_husk",
+      "x": 244,
+      "y": 80
+    },
+    {
+      "id": "spitter_1",
+      "object": "enm_spitter",
+      "x": 244,
+      "y": 312
+    },
+    {
+      "id": "spitter_2",
+      "object": "enm_spitter",
+      "x": 68,
+      "y": 248
+    },
+    {
+      "id": "spitter_3",
+      "object": "enm_spitter",
+      "x": 324,
+      "y": 272
+    },
+    {
+      "id": "gnat_1",
+      "object": "enm_gnat",
+      "x": 164,
+      "y": 376
+    },
+    {
+      "id": "wings",
+      "object": "item_wings",
+      "x": 68,
+      "y": 80
+    },
+    {
+      "id": "grub4",
+      "object": "item_grub",
+      "x": 28,
+      "y": 80,
+      "overrides": {
+        "only_if": {
+          "var": "grub_4"
+        },
+        "collectible": {
+          "on_collect": [
+            {
+              "do": "set_var",
+              "var": "grub_4",
+              "value": 1
+            },
+            {
+              "do": "show_dialog",
+              "dialog": "dlg_grub"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "shard",
+      "object": "item_shard",
+      "x": 348,
+      "y": 80
+    },
+    {
+      "id": "entry_map",
+      "object": "prop_entry",
+      "x": 0,
+      "y": 0,
+      "overrides": {
+        "entry_point": {
+          "value": 98,
+          "x_var": "safe_x",
+          "y_var": "safe_y"
+        }
+      }
+    },
+    {
+      "id": "shade",
+      "object": "enm_shade",
+      "x": 0,
+      "y": 0
+    },
+    {
+      "id": "exit_1",
+      "object": "trg_exit_shaft",
+      "x": 24,
+      "y": 488,
+      "overrides": {
+        "trigger_zone": {
+          "on_enter": [
+            {
+              "do": "set_var",
+              "var": "door",
+              "value": 2
+            },
+            {
+              "do": "fade_out",
+              "ticks": 12
+            },
+            {
+              "do": "goto_scene",
+              "scene": "scn_moss"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "exit_2",
+      "object": "trg_exit_shaft",
+      "x": 304,
+      "y": 0,
+      "overrides": {
+        "trigger_zone": {
+          "on_enter": [
+            {
+              "do": "set_var",
+              "var": "door",
+              "value": 1
+            },
+            {
+              "do": "fade_out",
+              "ticks": 12
+            },
+            {
+              "do": "goto_scene",
+              "scene": "scn_temple"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "exit_3",
+      "object": "trg_exit_shaft",
+      "x": 320,
+      "y": 0,
+      "overrides": {
+        "trigger_zone": {
+          "on_enter": [
+            {
+              "do": "set_var",
+              "var": "door",
+              "value": 1
+            },
+            {
+              "do": "fade_out",
+              "ticks": 12
+            },
+            {
+              "do": "goto_scene",
+              "scene": "scn_temple"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "hud",
+      "object": "hud_game"
+    }
+  ],
+  "on_start": [
+    {
+      "do": "set_var",
+      "var": "room",
+      "value": 5
+    },
+    {
+      "do": "fade_in",
+      "ticks": 20
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "id": "spr_marker",
+  "kind": "object",
+  "type": "sprite",
+  "name": "You-are-here pin",
+  "notes": "Red pin on the map that blinks where you are.",
+  "palette": "pal_items",
+  "width": 8,
+  "height": 8,
+  "frames": {
+    "pin1": [
+      "..1111..",
+      ".1aaaa1.",
+      ".1a5aa1.",
+      "1aaaaaa1",
+      ".1aaaa1.",
+      ".1aaaa1.",
+      "..1a11..",
+      "..1a1..."
+    ],
+    "pin2": [
+      "........",
+      "..1111..",
+      ".1bbbb1.",
+      ".1bbbb1.",
+      ".1bbbb1.",
+      "..1b11..",
+      "..1b1...",
+      "..1b1..."
+    ]
+  }
+}

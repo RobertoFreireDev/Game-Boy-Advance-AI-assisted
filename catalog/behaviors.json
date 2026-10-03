@@ -1152,7 +1152,7 @@
     }
   },
   "shooter": {
-    "description": "Every few ticks, while the player is in range, fires one or more objects at the player (fanned out). A shot with the projectile behavior flies at its own speed; give enemy shots damage_on_touch with vanish. Plays 'attack' while firing.",
+    "description": "Every few ticks, while the player is in range, fires one or more objects at the player (fanned out). A shot with the projectile behavior flies at its own speed; give enemy shots damage_on_touch with vanish. Plays 'cast' (or 'attack') while firing and stands still meanwhile.",
     "params": {
       "object": {
         "type": "node:actor",

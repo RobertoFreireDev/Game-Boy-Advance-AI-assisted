@@ -1,0 +1,20 @@
+{
+  "id": "anim_vessel_dash",
+  "kind": "object",
+  "type": "animation",
+  "name": "Dash",
+  "notes": "Dash of the vessel.",
+  "sprite": "spr_vessel",
+  "loop": false,
+  "frames": [
+    {
+      "frame": "dash1",
+      "ticks": 4
+    },
+    {
+      "frame": "dash2",
+      "ticks": 6
+    }
+  ],
+  "events": []
+}

@@ -1,0 +1,24 @@
+{
+  "id": "dlg_bought_shard",
+  "kind": "object",
+  "type": "dialog",
+  "name": "Bought a shard",
+  "notes": "After buying a mask shard.",
+  "font": "font_default",
+  "box": {
+    "x": 8,
+    "y": 96,
+    "w": 224,
+    "h": 56,
+    "paper": 3,
+    "border": 2
+  },
+  "ticks_per_char": 1,
+  "lines": [
+    {
+      "speaker": "MOTT",
+      "portrait": "icon_face_mott",
+      "text": "YOU GAIN ONE MORE MASK!"
+    }
+  ]
+}

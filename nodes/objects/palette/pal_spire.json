@@ -1,0 +1,25 @@
+{
+  "id": "pal_spire",
+  "kind": "object",
+  "type": "palette",
+  "name": "Weeping Spire colors",
+  "notes": "Blue city stone slick with rain, lamp light and falling drops.",
+  "colors": [
+    "#000000",
+    "#06060e",
+    "#1a1e3a",
+    "#283060",
+    "#3a4888",
+    "#6878c0",
+    "#4a5aa0",
+    "#a0b8f0",
+    "#080a18",
+    "#10142c",
+    "#1a2044",
+    "#f8e8a0",
+    "#c8d8ff",
+    "#303040",
+    "#b0b0d0",
+    "#605070"
+  ]
+}

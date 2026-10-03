@@ -1,0 +1,18 @@
+{
+  "id": "icon_geo",
+  "kind": "object",
+  "type": "icon",
+  "name": "Geo",
+  "notes": "Geo coin icon next to your geo count.",
+  "palette": "pal_ui",
+  "pixels": [
+    "..1111..",
+    ".142241.",
+    "14c44c41",
+    "1444c441",
+    "14c44441",
+    "1c4444c1",
+    ".1cccc1.",
+    "..1111.."
+  ]
+}

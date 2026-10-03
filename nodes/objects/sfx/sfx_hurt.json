@@ -1,0 +1,27 @@
+{
+  "id": "sfx_hurt",
+  "kind": "object",
+  "type": "sfx",
+  "name": "Hurt",
+  "notes": "Falling notes when the vessel loses a mask.",
+  "channel": "square1",
+  "duty": 3,
+  "priority": 3,
+  "steps": [
+    {
+      "note": "E4",
+      "ticks": 3,
+      "volume": 13
+    },
+    {
+      "note": "C4",
+      "ticks": 4,
+      "volume": 10
+    },
+    {
+      "note": "G3",
+      "ticks": 7,
+      "volume": 7
+    }
+  ]
+}

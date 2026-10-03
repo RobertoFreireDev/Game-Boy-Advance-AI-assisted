@@ -1,0 +1,91 @@
+{
+  "id": "dlg_mott",
+  "kind": "object",
+  "type": "dialog",
+  "name": "Mott's shop",
+  "notes": "Mott sells up to two mask shards for 150 geo each.",
+  "font": "font_default",
+  "box": {
+    "x": 8,
+    "y": 96,
+    "w": 224,
+    "h": 56,
+    "paper": 3,
+    "border": 2
+  },
+  "ticks_per_char": 1,
+  "lines": [
+    {
+      "speaker": "MOTT",
+      "portrait": "icon_face_mott",
+      "text": "OH! A CUSTOMER! A MASK SHARD MAKES YOU HARDER TO BREAK. ONLY 150 GEO!"
+    }
+  ],
+  "choices": [
+    {
+      "label": "BUY SHARD - 150 GEO",
+      "actions": [
+        {
+          "do": "if_var",
+          "var": "shards_bought",
+          "op": ">=",
+          "value": 2,
+          "then": [
+            {
+              "do": "show_dialog",
+              "dialog": "dlg_sold_out"
+            }
+          ],
+          "else": [
+            {
+              "do": "if_var",
+              "var": "geo",
+              "op": ">=",
+              "value": 150,
+              "then": [
+                {
+                  "do": "add_var",
+                  "var": "geo",
+                  "value": -150
+                },
+                {
+                  "do": "add_var",
+                  "var": "shards_bought",
+                  "value": 1
+                },
+                {
+                  "do": "add_var",
+                  "var": "max_health",
+                  "value": 1
+                },
+                {
+                  "do": "set_var",
+                  "var": "health",
+                  "from": "max_health"
+                },
+                {
+                  "do": "play_sfx",
+                  "sfx": "sfx_item"
+                },
+                {
+                  "do": "show_dialog",
+                  "dialog": "dlg_bought_shard"
+                }
+              ],
+              "else": [
+                {
+                  "do": "show_dialog",
+                  "dialog": "dlg_no_geo"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "label": "JUST LOOKING",
+      "actions": []
+    }
+  ]
+}

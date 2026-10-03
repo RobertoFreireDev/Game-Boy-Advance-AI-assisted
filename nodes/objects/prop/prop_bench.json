@@ -1,0 +1,22 @@
+{
+  "id": "prop_bench",
+  "kind": "object",
+  "type": "prop",
+  "name": "Bench",
+  "notes": "Press UP on a bench to rest: masks refilled, this bench becomes where you wake up after dying, and the game is saved.",
+  "body": "body_bench",
+  "logic": [
+    {
+      "behavior": "talk",
+      "params": {
+        "dialog": "dlg_bench",
+        "button": "UP",
+        "range": 4,
+        "face_player": false
+      }
+    }
+  ],
+  "children": [
+    "body_bench"
+  ]
+}

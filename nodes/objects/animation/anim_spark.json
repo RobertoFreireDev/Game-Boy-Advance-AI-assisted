@@ -1,0 +1,20 @@
+{
+  "id": "anim_spark",
+  "kind": "object",
+  "type": "animation",
+  "name": "Hit spark",
+  "notes": "A white star that shrinks.",
+  "sprite": "spr_fx",
+  "loop": false,
+  "frames": [
+    {
+      "frame": "spark1",
+      "ticks": 4
+    },
+    {
+      "frame": "spark2",
+      "ticks": 6
+    }
+  ],
+  "events": []
+}

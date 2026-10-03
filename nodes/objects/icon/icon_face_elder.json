@@ -1,0 +1,26 @@
+{
+  "id": "icon_face_elder",
+  "kind": "object",
+  "type": "icon",
+  "name": "Elder portrait",
+  "notes": "The Elder's face for dialogs: an old pale mask on a brown shell. Painted on the dialog box color.",
+  "palette": "pal_ui",
+  "pixels": [
+    "3333333333333333",
+    "3333333333333333",
+    "3383333333333333",
+    "3383333222233333",
+    "3383322222222333",
+    "3383322222222333",
+    "3383322222222333",
+    "3383322122127333",
+    "338cc22222777333",
+    "338cc22227777833",
+    "3c8cccc777788883",
+    "3c8ccccc88888883",
+    "3c8ccc8888888883",
+    "3c8c888888888883",
+    "3388888888888833",
+    "3388888888888333"
+  ]
+}

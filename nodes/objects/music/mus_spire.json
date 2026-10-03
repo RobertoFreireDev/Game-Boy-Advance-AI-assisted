@@ -1,0 +1,50 @@
+{
+  "id": "mus_spire",
+  "kind": "object",
+  "type": "music",
+  "name": "Weeping Spire",
+  "notes": "Sad C minor song for the rainy tower: a slow, sighing melody, falling broken chords and a constant patter of rain on the noise channel.",
+  "bpm": 72,
+  "rows_per_beat": 2,
+  "loop": true,
+  "instruments": {
+    "square1": {
+      "duty": 2,
+      "volume": 7,
+      "decay": 1
+    },
+    "square2": {
+      "duty": 1,
+      "volume": 3,
+      "decay": 2
+    },
+    "wave": {
+      "wave": "0123456789abcdeffedcba9876543210",
+      "volume": 2
+    },
+    "noise": {
+      "volume": 2,
+      "decay": 3
+    }
+  },
+  "patterns": {
+    "A": {
+      "square1": "G5 -- -- -- -- -- D#5 -- | D5 -- -- -- C5 -- -- -- | D5 -- -- -- D#5 -- D5 -- | G4 -- -- -- -- -- -- --",
+      "square2": "G4 D#4 C4 D#4 G4 D#4 C4 D#4 | G4 D#4 C4 D#4 G4 D#4 C4 D#4 | D#4 C4 G#3 C4 D#4 C4 G#3 C4 | D4 B3 G3 B3 D4 B3 G3 B3",
+      "wave": "C3 -- -- -- -- -- -- -- | C3 -- -- -- -- -- -- -- | G#2 -- -- -- -- -- -- -- | G2 -- -- -- -- -- -- --",
+      "noise": "X0 X1 .. X0 .. X1 X0 .. | X0 X1 .. X0 .. X1 X0 .. | X0 X1 .. X0 .. X1 X0 .. | X0 X1 .. X0 .. X1 X0 .."
+    },
+    "B": {
+      "square1": "D#5 -- -- -- F5 -- -- -- | G5 -- -- -- G#5 -- G5 -- | F5 -- -- -- -- -- D#5 -- | D5 -- -- -- -- -- -- --",
+      "square2": "D#4 C4 G#3 C4 D#4 C4 G#3 C4 | A#4 G4 D#4 G4 A#4 G4 D#4 G4 | G4 D#4 C4 D#4 G4 D#4 C4 D#4 | D4 B3 G3 B3 D4 B3 G3 B3",
+      "wave": "G#2 -- -- -- -- -- -- -- | D#3 -- -- -- -- -- -- -- | C3 -- -- -- -- -- -- -- | G2 -- -- -- -- -- -- --",
+      "noise": "X0 X1 .. X0 .. X1 X0 .. | X0 X1 .. X0 .. X1 X0 .. | X0 X1 .. X0 .. X1 X0 .. | X0 X1 .. X0 .. X1 X0 .."
+    }
+  },
+  "order": [
+    "A",
+    "B",
+    "A",
+    "B"
+  ]
+}

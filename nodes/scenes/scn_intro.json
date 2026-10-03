@@ -1,0 +1,26 @@
+{
+  "id": "scn_intro",
+  "kind": "scene",
+  "type": "cutscene",
+  "name": "The story so far",
+  "notes": "Black screen, the theme, and the story of Underhive told in a dialog box. When it ends you wake in Dustmere.",
+  "backdrop": "#000000",
+  "music": "mus_title",
+  "camera": {
+    "x": 0,
+    "y": 0,
+    "bounds": "none"
+  },
+  "instances": [
+    {
+      "id": "story",
+      "object": "dlg_intro"
+    }
+  ],
+  "on_start": [
+    {
+      "do": "fade_in",
+      "ticks": 30
+    }
+  ]
+}

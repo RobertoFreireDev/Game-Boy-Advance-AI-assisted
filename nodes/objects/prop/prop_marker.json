@@ -1,0 +1,21 @@
+{
+  "id": "prop_marker",
+  "kind": "object",
+  "type": "prop",
+  "name": "You-are-here pin",
+  "notes": "Blinking pin on the map. One is placed in every region; each only shows when 'room' matches its region number.",
+  "body": "body_marker",
+  "logic": [
+    {
+      "behavior": "only_if",
+      "params": {
+        "var": "room",
+        "op": "==",
+        "value": 1
+      }
+    }
+  ],
+  "children": [
+    "body_marker"
+  ]
+}

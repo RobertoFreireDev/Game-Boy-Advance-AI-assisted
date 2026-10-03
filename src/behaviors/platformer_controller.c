@@ -11,6 +11,7 @@ enum { ST_COYOTE, ST_JUMP_V, ST_BUFFER, ST_JUMPING, ST_DASH, ST_AIR, ST_WALL };
 #define COYOTE_TICKS 6      // can still jump this long after walking off a ledge
 #define BUFFER_TICKS 6      // a jump pressed this long before landing still counts
 #define WALL_LOCK    10     // after a wall jump the D-pad is ignored this long (pushes off the wall)
+#define WALL_GRACE   6      // a jump this soon after letting go of a wall is still a wall jump
 
 // ST_AIR bits: moves used since the last time it stood on the ground (or clung to a wall).
 #define AIR_JUMPED   1
@@ -22,9 +23,11 @@ enum { ST_COYOTE, ST_JUMP_V, ST_BUFFER, ST_JUMPING, ST_DASH, ST_AIR, ST_WALL };
 #define DASH_LEFT(d)     (((d) >> 16) & 1)
 #define DASH_PACK(t, c, l) ((u32)(t) | ((u32)(c) << 8) | ((u32)(l) << 16))
 
-// ST_WALL: wall-jump lock ticks (bits 0-7), side of the wall it clings to (bits 8-9: 1 = right, 2 = left).
+// ST_WALL: wall-jump lock ticks (bits 0-7), side of the last wall clung to (bits 8-9: 1 = right,
+// 2 = left), grace ticks left since letting go of it (bits 10-13).
 #define WALL_LOCK_OF(w)  ((w) & 0xFF)
 #define WALL_SIDE(w)     (((w) >> 8) & 3)
+#define WALL_GRACE_OF(w) (((w) >> 10) & 15)
 
 static int unlocked(s16 var) { return var >= 0 && vars_get(var) != 0; }
 
@@ -82,6 +85,7 @@ void bhv_platformer_controller_update(Actor *a, const void *params) {
     u32 dash_t = DASH_TIMER(dash), dash_cool = DASH_COOL(dash), dash_left = DASH_LEFT(dash);
     u32 wall_lock = WALL_LOCK_OF(st[ST_WALL]);
     int wall_side = (int)WALL_SIDE(st[ST_WALL]);         // 1 = right, 2 = left, 0 = none
+    u32 wall_grace = WALL_GRACE_OF(st[ST_WALL]);
     if (dash_cool) dash_cool--;
     if (wall_lock) wall_lock--;
     if (a->on_ground) st[ST_AIR] = 0;
@@ -102,7 +106,7 @@ void bhv_platformer_controller_update(Actor *a, const void *params) {
     }
     if (unlocked(p->dash_var) && !dash_cool && !a->anim_lock && !a->climbing &&
         !(st[ST_AIR] & AIR_DASHED) && input_pressed(p->dash_button)) {
-        dash_left = wall_side ? wall_side == 1 : dx ? dx < 0 : a->facing_left;
+        dash_left = wall_grace ? wall_side == 1 : dx ? dx < 0 : a->facing_left;
         dash_t = (u32)p->dash_ticks;
         dash_cool = (u32)(p->dash_ticks + p->dash_cooldown);
         if (!a->on_ground) st[ST_AIR] |= AIR_DASHED;
@@ -160,18 +164,26 @@ void bhv_platformer_controller_update(Actor *a, const void *params) {
     }
 
     // Wall slide: in the air against a wall, holding toward it (or already clinging and not
-    // pushing away). Clinging refreshes the double jump and the air dash.
-    int cling = 0;
+    // pushing away). Clinging refreshes the double jump and the air dash. For a few ticks after
+    // letting go a jump still kicks off that wall (players press away + jump together).
+    int cling = 0, prev = wall_side == 1 ? 1 : wall_side == 2 ? -1 : 0;
     if (unlocked(p->wall_jump_var) && !a->on_ground && !a->anim_lock && a->vy >= 0) {
         if (dx && wall_beside(a, dx)) cling = dx;
-        else if (wall_side && !dx && wall_beside(a, wall_side == 1 ? 1 : -1)) cling = wall_side == 1 ? 1 : -1;
+        else if (prev && dx != -prev && wall_beside(a, prev)) cling = prev;
     }
-    wall_side = cling > 0 ? 1 : cling < 0 ? 2 : 0;
     if (cling) {
+        wall_side = cling > 0 ? 1 : 2;
+        wall_grace = WALL_GRACE;
         if (a->vy > p->wall_slide_speed) a->vy = p->wall_slide_speed;
         a->facing_left = cling > 0;                     // looks away from the wall
         st[ST_AIR] = 0;
+    } else if (wall_grace && !a->on_ground) {
+        wall_grace--;                                   // just let go: remember the wall a moment
+    } else {
+        wall_side = 0;
+        wall_grace = 0;
     }
+    int kick = cling ? cling : wall_grace ? prev : 0;   // wall a jump would kick off
 
     // Jumping.
     if (a->on_ground) st[ST_COYOTE] = COYOTE_TICKS;
@@ -183,12 +195,13 @@ void bhv_platformer_controller_update(Actor *a, const void *params) {
         st[ST_COYOTE] = st[ST_BUFFER] = 0;
         st[ST_JUMPING] = 1;
         actor_sound(a, SND_JUMP);
-    } else if (st[ST_BUFFER] && cling) {                // wall jump: up and away from the wall
+    } else if (st[ST_BUFFER] && kick) {                 // wall jump: up and away from the wall
         a->vy = -jump_v;
-        a->vx = -cling * p->speed * 3 / 2;
-        a->facing_left = cling > 0;
+        a->vx = -kick * p->speed * 3 / 2;
+        a->facing_left = kick > 0;
         wall_lock = WALL_LOCK;
         wall_side = 0;
+        wall_grace = 0;
         cling = 0;
         st[ST_BUFFER] = 0;
         st[ST_JUMPING] = 1;
@@ -211,7 +224,7 @@ void bhv_platformer_controller_update(Actor *a, const void *params) {
     }
     if (a->vy >= 0) st[ST_JUMPING] = 0;
     if (a->on_ground && !a->was_on_ground) actor_sound(a, SND_LAND);
-    st[ST_WALL] = wall_lock | ((u32)wall_side << 8);
+    st[ST_WALL] = wall_lock | ((u32)wall_side << 8) | (wall_grace << 10);
 
     // Animation.
     if (!a->anim_lock && !busy_anim(a)) {

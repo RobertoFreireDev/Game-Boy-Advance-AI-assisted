@@ -1,0 +1,64 @@
+{
+  "id": "dlg_bench",
+  "kind": "object",
+  "type": "dialog",
+  "name": "Rest?",
+  "notes": "Asked on a bench. REST refills your masks, makes this bench your waking place and saves the game.",
+  "font": "font_default",
+  "box": {
+    "x": 8,
+    "y": 96,
+    "w": 224,
+    "h": 56,
+    "paper": 3,
+    "border": 2
+  },
+  "ticks_per_char": 1,
+  "lines": [
+    {
+      "text": "REST ON THE BENCH?"
+    }
+  ],
+  "choices": [
+    {
+      "label": "REST",
+      "actions": [
+        {
+          "do": "set_var",
+          "var": "health",
+          "from": "max_health"
+        },
+        {
+          "do": "set_var",
+          "var": "bench",
+          "from": "room"
+        },
+        {
+          "do": "set_var",
+          "var": "has_save",
+          "value": 1
+        },
+        {
+          "do": "set_var",
+          "var": "door",
+          "value": 99
+        },
+        {
+          "do": "play_sfx",
+          "sfx": "sfx_bench"
+        },
+        {
+          "do": "save_game"
+        },
+        {
+          "do": "show_dialog",
+          "dialog": "dlg_rested"
+        }
+      ]
+    },
+    {
+      "label": "LEAVE",
+      "actions": []
+    }
+  ]
+}

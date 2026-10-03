@@ -1,0 +1,26 @@
+{
+  "id": "sfx_slam",
+  "kind": "object",
+  "type": "sfx",
+  "name": "Boss slam",
+  "notes": "Heavy crash when a boss lands.",
+  "channel": "noise",
+  "priority": 3,
+  "steps": [
+    {
+      "pitch": 13,
+      "ticks": 4,
+      "volume": 15
+    },
+    {
+      "pitch": 14,
+      "ticks": 6,
+      "volume": 10
+    },
+    {
+      "pitch": 15,
+      "ticks": 10,
+      "volume": 6
+    }
+  ]
+}
