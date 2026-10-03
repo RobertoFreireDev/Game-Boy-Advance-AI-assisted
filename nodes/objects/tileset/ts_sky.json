@@ -3,7 +3,7 @@
   "kind": "object",
   "type": "tileset",
   "name": "Night sky tiles",
-  "notes": "Tiles of the far sky painting (map_sky): stars, the sky glowing lighter toward the horizon (dithered bands), the big rising moon with craters and a soft halo, distant hills and a ruined castle with lit windows. The tile letters carry no meaning: the picture was painted whole and cut into 8x8 tiles, identical tiles merged.",
+  "notes": "Tiles of the far sky painting (map_sky): stars, the sky glowing lighter toward the horizon (dithered bands), the big rising moon with craters and a soft halo, distant hills and a ruined castle with lit windows standing on a dark rocky hill. The tile letters carry no meaning: the picture was painted whole and cut into 8x8 tiles, identical tiles merged.",
   "palette": "pal_night",
   "tiles": {
     "A": {
@@ -774,18 +774,6 @@
         "ababab55"
       ]
     },
-    "+": {
-      "pixels": [
-        "5555666e",
-        "55556666",
-        "55556666",
-        "55556666",
-        "55556666",
-        "55556666",
-        "55556666",
-        "55556666"
-      ]
-    },
     "=": {
       "pixels": [
         "eabababa",
@@ -928,6 +916,102 @@
         "66666666",
         "66666666",
         "66666666"
+      ]
+    },
+    ",": {
+      "pixels": [
+        "5555666e",
+        "55556666",
+        "55556666",
+        "55556666",
+        "55556666",
+        "55556666",
+        "5555cccc",
+        "5555555c"
+      ]
+    },
+    "!": {
+      "pixels": [
+        "bbbbbc55",
+        "bbbbc555",
+        "eeec5555",
+        "66c55555",
+        "cc555555",
+        "55555555",
+        "55555555",
+        "55555555"
+      ]
+    },
+    "?": {
+      "pixels": [
+        "ccc66666",
+        "555cc666",
+        "55555cc6",
+        "5555555c",
+        "55555555",
+        "55555555",
+        "55555555",
+        "55555555"
+      ]
+    },
+    "@": {
+      "pixels": [
+        "666eebbb",
+        "66666eee",
+        "66666666",
+        "66666666",
+        "c6666666",
+        "5cc6c666",
+        "555c5cc6",
+        "5555555c"
+      ]
+    },
+    "$": {
+      "pixels": [
+        "bbbbbbbb",
+        "bbbbbbbe",
+        "eeeeeee6",
+        "66666666",
+        "66666666",
+        "66666666",
+        "66666666",
+        "cc666666"
+      ]
+    },
+    "%": {
+      "pixels": [
+        "55cc6666",
+        "555c6666",
+        "5555c666",
+        "55555cc6",
+        "5555555c",
+        "55555555",
+        "55555555",
+        "55555555"
+      ]
+    },
+    "&": {
+      "pixels": [
+        "66666666",
+        "66666666",
+        "66666666",
+        "66666666",
+        "66666666",
+        "cc666666",
+        "55c66666",
+        "555cc666"
+      ]
+    },
+    "(": {
+      "pixels": [
+        "55555c66",
+        "555555cc",
+        "55555555",
+        "55555555",
+        "55555555",
+        "55555555",
+        "55555555",
+        "55555555"
       ]
     }
   }
