@@ -11,7 +11,7 @@
     "w": 224,
     "h": 56,
     "paper": 3,
-    "border": 2
+    "border": 4
   },
   "ticks_per_char": 1,
   "lines": [

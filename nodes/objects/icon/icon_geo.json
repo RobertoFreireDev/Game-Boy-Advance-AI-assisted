@@ -3,16 +3,16 @@
   "kind": "object",
   "type": "icon",
   "name": "Geo",
-  "notes": "Geo coin icon next to your geo count.",
+  "notes": "Geo icon next to your geo count: a faceted pale stone.",
   "palette": "pal_ui",
   "pixels": [
     "..1111..",
-    ".142241.",
-    "14c44c41",
-    "1444c441",
-    "14c44441",
-    "1c4444c1",
-    ".1cccc1.",
-    "..1111.."
+    ".12c491.",
+    "12cc4991",
+    "1c2c9991",
+    "1cc49991",
+    ".1999991",
+    "..19991.",
+    "...111.."
   ]
 }

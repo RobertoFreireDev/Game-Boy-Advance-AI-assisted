@@ -3,7 +3,7 @@
   "kind": "object",
   "type": "npc",
   "name": "The Elder",
-  "notes": "An old bug sitting outside his house in Dustmere. Press UP next to him to hear the story of Underhive.",
+  "notes": "An old bug resting outside the snail-shell home in Dustmere. Press UP next to him to hear the story of Underhive.",
   "body": "body_elder",
   "logic": [
     {

@@ -4,7 +4,7 @@
   "type": "level",
   "name": "Black Temple",
   "notes": "The final hall. You drop in from the Spire's roof; walking toward the Hollow Vessel announces it and starts the battle. Beating it ends the game.",
-  "backdrop": "#0a0505",
+  "backdrop": "#1c0a0a",
   "music": null,
   "camera": {
     "follow": "player",

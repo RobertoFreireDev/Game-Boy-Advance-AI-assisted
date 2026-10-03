@@ -3,16 +3,16 @@
   "kind": "object",
   "type": "icon",
   "name": "Empty mask",
-  "notes": "A lost mask: dark outline only, up to your maximum.",
+  "notes": "A lost mask: a hollow grey shell up to your maximum.",
   "palette": "pal_ui",
   "pixels": [
-    "d......d",
-    "d.d..d.d",
-    "d..dd..d",
-    "d......d",
-    "d......d",
-    "d......d",
-    ".d....d.",
-    "..dddd.."
+    "6.6..6.6",
+    "67666676",
+    "67777776",
+    "67777776",
+    "67777776",
+    "67777776",
+    ".677776.",
+    "..6666.."
   ]
 }

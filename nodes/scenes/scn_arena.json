@@ -4,7 +4,7 @@
   "type": "level",
   "name": "Warden's arena",
   "notes": "The Brood Warden's hall. Walking in announces the boss, slams an iron gate shut behind you and starts the battle music; beating it opens the gate and reveals the Shade Cloak (dash). Exit west back to the Crossroads.",
-  "backdrop": "#0a0e18",
+  "backdrop": "#1e2838",
   "music": null,
   "camera": {
     "follow": "player",

@@ -4,7 +4,7 @@
   "type": "level",
   "name": "Dustmere",
   "notes": "The quiet town on the surface where the journey starts. The Elder tells the story, Mott sells mask shards, the bench saves. Jump down the old well on the right to reach the Crossroads.",
-  "backdrop": "#04050c",
+  "backdrop": "#0a0c14",
   "music": "mus_town",
   "camera": {
     "follow": "player",

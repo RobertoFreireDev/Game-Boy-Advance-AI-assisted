@@ -3,7 +3,7 @@
   "kind": "object",
   "type": "particle",
   "name": "Nail hit sparks",
-  "notes": "White-blue sparks that fly off whatever the nail or the spell hits.",
+  "notes": "White slash-sparks that fly off whatever the nail or the spell hits.",
   "animation": "anim_spark",
   "mode": "burst",
   "count": 5,

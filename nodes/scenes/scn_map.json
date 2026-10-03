@@ -4,7 +4,7 @@
   "type": "menu",
   "name": "Map of Underhive",
   "notes": "Quill's map, opened from the pause menu once bought. The blinking pin marks the region you are in. BACK (or B / START) returns to where you stood.",
-  "backdrop": "#3a2a18",
+  "backdrop": "#2a1e14",
   "music": null,
   "camera": {
     "x": 0,

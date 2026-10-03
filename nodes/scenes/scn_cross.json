@@ -4,7 +4,7 @@
   "type": "level",
   "name": "Ashen Crossroads",
   "notes": "The first cave region. Shellcrawlers, gnatlings and husks. Bench and Quill the mapmaker in the middle hall; the Void Bolt shrine up on the right; the Brood Warden to the east; a grub behind a cracked wall and another high in a niche; the chasm to Mosswood needs the dash.",
-  "backdrop": "#0a0e18",
+  "backdrop": "#1e2838",
   "music": "mus_cross",
   "camera": {
     "follow": "player",

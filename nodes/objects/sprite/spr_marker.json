@@ -3,7 +3,7 @@
   "kind": "object",
   "type": "sprite",
   "name": "You-are-here pin",
-  "notes": "Red pin on the map that blinks where you are.",
+  "notes": "Quill's red map pin that blinks where you are.",
   "palette": "pal_items",
   "width": 8,
   "height": 8,
@@ -11,22 +11,22 @@
     "pin1": [
       "..1111..",
       ".1aaaa1.",
-      ".1a5aa1.",
+      ".15aaa1.",
       "1aaaaaa1",
       ".1aaaa1.",
-      ".1aaaa1.",
-      "..1a11..",
-      "..1a1..."
+      "..1fa1..",
+      "..1f1...",
+      "..1f1..."
     ],
     "pin2": [
-      "........",
-      "..1111..",
+      "...11...",
+      "..1bb1..",
       ".1bbbb1.",
       ".1bbbb1.",
       ".1bbbb1.",
-      "..1b11..",
-      "..1b1...",
-      "..1b1..."
+      "..1f11..",
+      "..1f1...",
+      "..1f1..."
     ]
   }
 }

@@ -4,7 +4,7 @@
   "type": "level",
   "name": "Mosswood",
   "notes": "A long mossy cavern east of the Crossroads chasm: thorn pits (pogo or dash over them), mosshoppers and spitters, a bench, the Thorn Claw (wall jump) in the east shrine with a grub high above, and the shaft up to the Weeping Spire.",
-  "backdrop": "#061006",
+  "backdrop": "#14301c",
   "music": "mus_moss",
   "camera": {
     "follow": "player",

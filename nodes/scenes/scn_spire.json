@@ -4,7 +4,7 @@
   "type": "level",
   "name": "Weeping Spire",
   "notes": "A rain-soaked tower. Climb the ledges past husk guards and spitters to the bench, wall-jump up the narrow shaft, and find the Moth Wings, a grub and a mask shard at the top. The hole in the roof (double jump) leads to the Black Temple; the hole in the floor drops back to Mosswood.",
-  "backdrop": "#080a1a",
+  "backdrop": "#18224c",
   "music": "mus_spire",
   "camera": {
     "follow": "player",

@@ -3,7 +3,7 @@
   "kind": "object",
   "type": "sprite",
   "name": "Glare orb sprite",
-  "notes": "The Hollow Vessel's orb of burning Glare.",
+  "notes": "The Hollow Vessel's orb of burning Glare: white-hot core, gold, an orange halo.",
   "palette": "pal_boss",
   "width": 8,
   "height": 8,
@@ -11,7 +11,7 @@
     "glare1": [
       "..6666..",
       ".677776.",
-      "67788776",
+      "67888776",
       "67888876",
       "67888876",
       "67788776",
@@ -21,8 +21,8 @@
     "glare2": [
       "...66...",
       "..6776..",
-      ".677776.",
-      "67788776",
+      ".678776.",
+      "67888776",
       "67788776",
       ".677776.",
       "..6776..",

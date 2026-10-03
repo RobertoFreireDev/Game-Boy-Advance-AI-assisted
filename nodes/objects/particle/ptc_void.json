@@ -3,7 +3,7 @@
   "kind": "object",
   "type": "particle",
   "name": "Void burst",
-  "notes": "Purple-black wisps when a shade or the Hollow Vessel breaks apart.",
+  "notes": "Black wisps of void when a shade or the Hollow Vessel breaks apart.",
   "animation": "anim_void",
   "mode": "burst",
   "count": 10,

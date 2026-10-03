@@ -3,7 +3,7 @@
   "kind": "object",
   "type": "animation",
   "name": "Hit spark",
-  "notes": "A white star that shrinks.",
+  "notes": "A white cross of light that shrinks.",
   "sprite": "spr_fx",
   "loop": false,
   "frames": [

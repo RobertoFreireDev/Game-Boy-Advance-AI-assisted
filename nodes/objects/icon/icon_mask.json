@@ -3,16 +3,16 @@
   "kind": "object",
   "type": "icon",
   "name": "Mask",
-  "notes": "One health mask, in the HUD: the vessel's white mask.",
+  "notes": "One health mask, in the HUD: a little white horned mask like the vessel's own, black contour.",
   "palette": "pal_ui",
   "pixels": [
-    "1......1",
-    "121..121",
-    "12211221",
-    "12122121",
-    "12122121",
-    "12222271",
-    ".122271.",
+    "1.1..1.1",
+    "12111121",
+    "12222221",
+    "12222221",
+    "12222241",
+    "12222241",
+    ".122241.",
     "..1111.."
   ]
 }
