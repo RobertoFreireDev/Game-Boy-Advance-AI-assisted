@@ -1,0 +1,42 @@
+{
+  "id": "body_kai",
+  "kind": "object",
+  "type": "body",
+  "name": "Kai body",
+  "notes": "How Kai looks and collides. The hitbox only covers the lower body (feet to chin), so Kai can squeeze between trees and the head may overlap walls above, like classic top-down games. No gravity: this is seen from above.",
+  "children": [
+    "spr_kai",
+    "anim_kai_idle_down",
+    "anim_kai_walk_down",
+    "anim_kai_idle_up",
+    "anim_kai_walk_up",
+    "anim_kai_idle",
+    "anim_kai_walk",
+    "anim_kai_attack_down",
+    "anim_kai_attack_up",
+    "anim_kai_attack",
+    "anim_kai_hurt",
+    "anim_kai_die"
+  ],
+  "origin": [16, 24],
+  "hitbox": {"x": -5, "y": -9, "w": 10, "h": 8},
+  "physics": {
+    "gravity": false,
+    "solid": false,
+    "collides_with": ["tiles", "enemy", "npc", "prop", "pickup", "trigger"]
+  },
+  "animations": {
+    "idle": "anim_kai_idle",
+    "walk": "anim_kai_walk",
+    "idle_up": "anim_kai_idle_up",
+    "walk_up": "anim_kai_walk_up",
+    "idle_down": "anim_kai_idle_down",
+    "walk_down": "anim_kai_walk_down",
+    "attack": "anim_kai_attack",
+    "attack_up": "anim_kai_attack_up",
+    "attack_down": "anim_kai_attack_down",
+    "hurt": "anim_kai_hurt",
+    "die": "anim_kai_die"
+  },
+  "default_animation": "idle_down"
+}

@@ -1,0 +1,15 @@
+{
+  "id": "sfx_enemy_die",
+  "kind": "object",
+  "type": "sfx",
+  "name": "Monster defeated",
+  "notes": "A puff of noise when a monster vanishes.",
+  "channel": "noise",
+  "priority": 1,
+  "steps": [
+    {"pitch": 5, "ticks": 4, "volume": 12},
+    {"pitch": 7, "ticks": 4, "volume": 9},
+    {"pitch": 9, "ticks": 6, "volume": 6},
+    {"pitch": 11, "ticks": 6, "volume": 3}
+  ]
+}

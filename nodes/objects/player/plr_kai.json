@@ -1,0 +1,46 @@
+{
+  "id": "plr_kai",
+  "kind": "object",
+  "type": "player",
+  "name": "Kai",
+  "notes": "The hero the human controls. D-pad walks in 8 directions, B swings the sword (only after the elder gives it: variable has_sword), A talks to people. 5 hearts; losing them all goes to the game over screen.",
+  "children": ["body_kai", "sfx_sword", "sfx_kai_hurt"],
+  "body": "body_kai",
+  "logic": [
+    {
+      "behavior": "topdown_controller",
+      "params": {"speed": 1.25, "eight_way": true}
+    },
+    {
+      "behavior": "sword_attack",
+      "params": {
+        "button": "B",
+        "damage": 1,
+        "reach": 12,
+        "width": 14,
+        "ticks": 14,
+        "cooldown": 4,
+        "hits": "enemy_and_prop",
+        "var": "has_sword"
+      }
+    },
+    {
+      "behavior": "health",
+      "params": {
+        "var": "health",
+        "invincible_ticks": 60,
+        "knockback": 1.5,
+        "on_death": [
+          {"do": "wait", "ticks": 50},
+          {"do": "fade_out", "ticks": 30},
+          {"do": "goto_scene", "scene": "scn_game_over"}
+        ]
+      }
+    },
+    {
+      "behavior": "camera_target",
+      "params": {}
+    }
+  ],
+  "sounds": {"attack": "sfx_sword", "hurt": "sfx_kai_hurt", "die": "sfx_kai_hurt"}
+}

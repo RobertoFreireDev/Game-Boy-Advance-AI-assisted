@@ -1,0 +1,15 @@
+{
+  "id": "hud_victory",
+  "kind": "object",
+  "type": "hud",
+  "name": "Ending text",
+  "notes": "The ending message with the number of gems collected.",
+  "font": "font_default",
+  "elements": [
+    {"kind": "text", "x": 32, "y": 32, "text": "THE SUN CRYSTAL IS HOME"},
+    {"kind": "text", "x": 32, "y": 48, "text": "AND DAWN RETURNS!"},
+    {"kind": "text", "x": 32, "y": 80, "text": "GEMS FOUND: {gems}"},
+    {"kind": "text", "x": 32, "y": 112, "text": "THANKS FOR PLAYING"},
+    {"kind": "text", "x": 32, "y": 128, "text": "A GAME MADE BY AI"}
+  ]
+}

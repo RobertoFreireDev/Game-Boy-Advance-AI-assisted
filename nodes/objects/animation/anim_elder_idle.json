@@ -1,0 +1,14 @@
+{
+  "id": "anim_elder_idle",
+  "kind": "object",
+  "type": "animation",
+  "name": "Elder idle",
+  "notes": "Stands and blinks now and then.",
+  "sprite": "spr_villagers",
+  "loop": true,
+  "frames": [
+    {"frame": "elder_0", "ticks": 90},
+    {"frame": "elder_1", "ticks": 8}
+  ],
+  "events": []
+}

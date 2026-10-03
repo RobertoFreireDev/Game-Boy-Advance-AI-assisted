@@ -1,0 +1,14 @@
+{
+  "id": "sfx_cut",
+  "kind": "object",
+  "type": "sfx",
+  "name": "Bush cut",
+  "notes": "Leafy rustle when a bush is cut.",
+  "channel": "noise",
+  "priority": 1,
+  "steps": [
+    {"pitch": 2, "ticks": 3, "volume": 10},
+    {"pitch": 4, "ticks": 4, "volume": 7},
+    {"pitch": 6, "ticks": 5, "volume": 4}
+  ]
+}

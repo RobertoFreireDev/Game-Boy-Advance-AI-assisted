@@ -1,0 +1,31 @@
+{
+  "id": "mus_victory",
+  "kind": "object",
+  "type": "music",
+  "name": "Ending fanfare",
+  "notes": "Triumphant fanfare that plays once at the ending.",
+  "bpm": 132,
+  "rows_per_beat": 4,
+  "loop": false,
+  "instruments": {
+    "square1": {"duty": 2, "volume": 10, "decay": 1},
+    "square2": {"duty": 1, "volume": 6, "decay": 2},
+    "wave": {"wave": "0123456789abcdeffedcba9876543210", "volume": 3},
+    "noise": {"volume": 5, "decay": 1}
+  },
+  "patterns": {
+    "A": {
+      "square1": "G4 -- C5 -- E5 -- G5 -- | -- -- E5 -- G5 -- -- --",
+      "square2": "E4 -- G4 -- C5 -- E5 -- | -- -- C5 -- E5 -- -- --",
+      "wave": "C3 -- -- -- C3 -- -- -- | G2 -- -- -- C3 -- -- --",
+      "noise": "X3 .. .. .. X3 .. .. .. | X3 .. X3 .. X3 .. .. .."
+    },
+    "B": {
+      "square1": "A5 -- G5 -- F5 -- D5 -- | C5 -- -- -- -- -- .. ..",
+      "square2": "F5 -- E5 -- D5 -- B4 -- | E4 -- -- -- -- -- .. ..",
+      "wave": "F2 -- -- -- G2 -- -- -- | C3 -- -- -- -- -- .. ..",
+      "noise": "X3 .. .. .. X3 .. .. .. | X8 .. .. .. .. .. .. .."
+    }
+  },
+  "order": ["A", "B"]
+}

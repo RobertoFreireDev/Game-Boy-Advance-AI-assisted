@@ -1,0 +1,18 @@
+{
+  "id": "scn_victory",
+  "kind": "scene",
+  "type": "credits",
+  "name": "Ending",
+  "notes": "The ending after taking the Sun Crystal: a warm dawn-colored screen, the fanfare, the number of gems found and thanks. Returns to the title after about 7 seconds.",
+  "backdrop": "#c86838",
+  "music": "mus_victory",
+  "instances": [
+    {"id": "text", "object": "hud_victory"}
+  ],
+  "on_start": [
+    {"do": "fade_in", "ticks": 40},
+    {"do": "wait", "ticks": 420},
+    {"do": "fade_out", "ticks": 40},
+    {"do": "goto_scene", "scene": "scn_title"}
+  ]
+}

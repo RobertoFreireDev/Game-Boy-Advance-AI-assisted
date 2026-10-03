@@ -1,0 +1,32 @@
+{
+  "id": "spr_heart",
+  "kind": "object",
+  "type": "sprite",
+  "name": "Heart sprite",
+  "notes": "Small red heart; the second frame is one pixel higher.",
+  "palette": "pal_items",
+  "width": 8,
+  "height": 8,
+  "frames": {
+    "beat_0": [
+      ".11.11..",
+      "1541551.",
+      "1455551.",
+      "1555561.",
+      ".15561..",
+      "..161...",
+      "...1....",
+      "........"
+    ],
+    "beat_1": [
+      "1541551.",
+      "1455551.",
+      "1555561.",
+      ".15561..",
+      "..161...",
+      "...1....",
+      "........",
+      "........"
+    ]
+  }
+}

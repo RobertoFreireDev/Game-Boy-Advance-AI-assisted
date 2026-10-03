@@ -1,0 +1,13 @@
+{
+  "id": "body_key",
+  "kind": "object",
+  "type": "body",
+  "name": "Key body",
+  "notes": "Covers the whole key.",
+  "children": ["spr_key", "anim_key_shine"],
+  "origin": [4, 16],
+  "hitbox": {"x": -4, "y": -14, "w": 8, "h": 13},
+  "physics": {"gravity": false, "solid": false, "collides_with": []},
+  "animations": {"idle": "anim_key_shine"},
+  "default_animation": "idle"
+}

@@ -1,0 +1,14 @@
+{
+  "id": "anim_bat_fly",
+  "kind": "object",
+  "type": "animation",
+  "name": "Bat flapping",
+  "notes": "Fast wing flaps, all the time.",
+  "sprite": "spr_bat",
+  "loop": true,
+  "frames": [
+    {"frame": "bat_0", "ticks": 6},
+    {"frame": "bat_1", "ticks": 6}
+  ],
+  "events": []
+}

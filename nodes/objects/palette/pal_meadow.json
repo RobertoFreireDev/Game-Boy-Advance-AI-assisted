@@ -1,0 +1,25 @@
+{
+  "id": "pal_meadow",
+  "kind": "object",
+  "type": "palette",
+  "name": "Meadow colors",
+  "notes": "Outdoor tiles: grass, trees, sandy path, pond water, stones, red roofs, flowers. Color 2 matches the meadow backdrop so empty tiles look like grass.",
+  "colors": [
+    "#000000",
+    "#183018",
+    "#68c050",
+    "#48a038",
+    "#206828",
+    "#389838",
+    "#885828",
+    "#d8b878",
+    "#b89858",
+    "#3878d8",
+    "#88c0f8",
+    "#a8a8b0",
+    "#686878",
+    "#c83830",
+    "#f8f8f8",
+    "#f8d040"
+  ]
+}

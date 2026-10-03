@@ -2,10 +2,16 @@
   "id": "scn_title",
   "kind": "scene",
   "type": "title",
-  "name": "Title screen",
-  "notes": "Title menu over the sky and the far hills. Up/Down picks an option, A confirms.",
-  "backdrop": "#78c8f8",
+  "name": "Title",
+  "notes": "Title screen: the Sun Shrine in the meadow behind the title menu, with the title theme.",
+  "backdrop": "#68c050",
   "music": "mus_title",
-  "instances": [{"id": "hills", "object": "map_hills"}, {"id": "menu", "object": "menu_title"}],
-  "on_start": [{"do": "fade_in", "ticks": 20}]
+  "camera": {"bounds": "map", "x": 0, "y": 0},
+  "instances": [
+    {"id": "map", "object": "map_title"},
+    {"id": "menu", "object": "menu_title"}
+  ],
+  "on_start": [
+    {"do": "fade_in", "ticks": 20}
+  ]
 }

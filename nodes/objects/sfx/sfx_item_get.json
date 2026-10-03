@@ -1,0 +1,16 @@
+{
+  "id": "sfx_item_get",
+  "kind": "object",
+  "type": "sfx",
+  "name": "Item fanfare",
+  "notes": "Short triumphant fanfare: getting the sword or the Sun Crystal.",
+  "channel": "square1",
+  "duty": 2,
+  "priority": 3,
+  "steps": [
+    {"note": "C5", "ticks": 4, "volume": 12},
+    {"note": "E5", "ticks": 4, "volume": 12},
+    {"note": "G5", "ticks": 4, "volume": 12},
+    {"note": "C6", "ticks": 12, "volume": 10}
+  ]
+}

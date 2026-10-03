@@ -1,0 +1,17 @@
+{
+  "id": "dlg_crystal",
+  "kind": "object",
+  "type": "dialog",
+  "name": "Got the Sun Crystal",
+  "notes": "Shown when Kai touches the Sun Crystal. When it closes, the ending starts.",
+  "font": "font_default",
+  "box": {"x": 8, "y": 104, "w": 224, "h": 48, "paper": 3, "border": 2},
+  "ticks_per_char": 2,
+  "lines": [
+    {"text": "YOU FOUND THE SUN CRYSTAL! ITS WARM LIGHT FILLS THE SHRINE..."}
+  ],
+  "on_end": [
+    {"do": "fade_out", "ticks": 40},
+    {"do": "goto_scene", "scene": "scn_victory"}
+  ]
+}

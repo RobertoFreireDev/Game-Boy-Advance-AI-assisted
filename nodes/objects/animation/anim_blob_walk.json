@@ -1,0 +1,14 @@
+{
+  "id": "anim_blob_walk",
+  "kind": "object",
+  "type": "animation",
+  "name": "Blob wobble",
+  "notes": "Squishes up and down as it moves.",
+  "sprite": "spr_blob",
+  "loop": true,
+  "frames": [
+    {"frame": "blob_0", "ticks": 12},
+    {"frame": "blob_1", "ticks": 12}
+  ],
+  "events": []
+}

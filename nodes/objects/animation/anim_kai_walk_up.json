@@ -1,0 +1,16 @@
+{
+  "id": "anim_kai_walk_up",
+  "kind": "object",
+  "type": "animation",
+  "name": "Kai walking (up)",
+  "notes": "Walking toward the top of the screen.",
+  "sprite": "spr_kai",
+  "loop": true,
+  "frames": [
+    {"frame": "up_1", "ticks": 8},
+    {"frame": "up_0", "ticks": 8},
+    {"frame": "up_1", "ticks": 8, "flip_x": true},
+    {"frame": "up_0", "ticks": 8}
+  ],
+  "events": []
+}

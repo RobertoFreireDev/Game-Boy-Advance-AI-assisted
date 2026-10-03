@@ -1,0 +1,13 @@
+{
+  "id": "body_heart",
+  "kind": "object",
+  "type": "body",
+  "name": "Heart body",
+  "notes": "8x8 hitbox.",
+  "children": ["spr_heart", "anim_heart_bob"],
+  "origin": [4, 8],
+  "hitbox": {"x": -4, "y": -8, "w": 8, "h": 8},
+  "physics": {"gravity": false, "solid": false, "collides_with": []},
+  "animations": {"idle": "anim_heart_bob"},
+  "default_animation": "idle"
+}

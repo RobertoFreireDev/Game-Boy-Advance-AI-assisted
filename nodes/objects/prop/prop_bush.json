@@ -1,0 +1,16 @@
+{
+  "id": "prop_bush",
+  "kind": "object",
+  "type": "prop",
+  "name": "Bush",
+  "notes": "A bush that blocks the way. One sword hit cuts it. Scenes can make a bush drop something with an override of its health on_death.",
+  "children": ["body_bush", "sfx_cut"],
+  "body": "body_bush",
+  "logic": [
+    {
+      "behavior": "health",
+      "params": {"max": 1, "invincible_ticks": 0, "knockback": 0}
+    }
+  ],
+  "sounds": {"die": "sfx_cut"}
+}

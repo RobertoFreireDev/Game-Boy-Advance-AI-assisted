@@ -1,0 +1,24 @@
+{
+  "id": "enm_bat",
+  "kind": "object",
+  "type": "enemy",
+  "name": "Bat",
+  "notes": "Shrine bat. Hangs in place until Kai comes close, then flies straight at him. One sword hit defeats it.",
+  "children": ["body_bat"],
+  "body": "body_bat",
+  "logic": [
+    {
+      "behavior": "chase_player",
+      "params": {"speed": 0.6, "range": 72, "vertical": true}
+    },
+    {
+      "behavior": "damage_on_touch",
+      "params": {"amount": 1}
+    },
+    {
+      "behavior": "health",
+      "params": {"max": 1, "invincible_ticks": 10, "knockback": 2.0, "spikes": false}
+    }
+  ],
+  "sounds": {"hurt": "sfx_enemy_hit", "die": "sfx_enemy_die"}
+}

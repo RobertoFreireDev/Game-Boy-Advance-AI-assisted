@@ -1,0 +1,16 @@
+{
+  "id": "npc_elder",
+  "kind": "object",
+  "type": "npc",
+  "name": "Village elder",
+  "notes": "Stands outside his house in the village. Talk to him (A) to get the sword: it sets has_sword so B starts working.",
+  "children": ["body_elder"],
+  "body": "body_elder",
+  "logic": [
+    {
+      "behavior": "talk",
+      "params": {"dialog": "dlg_elder", "button": "A", "range": 6}
+    }
+  ],
+  "sounds": {"talk": "sfx_talk"}
+}

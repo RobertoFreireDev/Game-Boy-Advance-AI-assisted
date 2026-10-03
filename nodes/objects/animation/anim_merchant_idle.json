@@ -1,0 +1,14 @@
+{
+  "id": "anim_merchant_idle",
+  "kind": "object",
+  "type": "animation",
+  "name": "Merchant idle",
+  "notes": "Stands and blinks now and then.",
+  "sprite": "spr_villagers",
+  "loop": true,
+  "frames": [
+    {"frame": "merchant_0", "ticks": 70},
+    {"frame": "merchant_1", "ticks": 8}
+  ],
+  "events": []
+}

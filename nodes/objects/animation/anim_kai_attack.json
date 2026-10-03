@@ -1,0 +1,14 @@
+{
+  "id": "anim_kai_attack",
+  "kind": "object",
+  "type": "animation",
+  "name": "Kai sword (side)",
+  "notes": "Wind-up, then the sword thrusts forward. 14 ticks.",
+  "sprite": "spr_kai",
+  "loop": false,
+  "frames": [
+    {"frame": "ready_side", "ticks": 4},
+    {"frame": "attack_side", "ticks": 10}
+  ],
+  "events": []
+}

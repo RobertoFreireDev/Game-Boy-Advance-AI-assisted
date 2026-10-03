@@ -1,0 +1,64 @@
+{
+  "id": "scn_meadow",
+  "kind": "scene",
+  "type": "level",
+  "name": "Meadow",
+  "notes": "The overworld. Kai starts on the village road. Talk to the elder (left house) for the sword, cut bushes, beat blobs for gems, buy a potion from the merchant (right house), then walk north into the Sun Shrine.",
+  "backdrop": "#68c050",
+  "music": "mus_meadow",
+  "camera": {"follow": "kai", "bounds": "map"},
+  "instances": [
+    {"id": "map", "object": "map_meadow"},
+    {"id": "kai", "object": "plr_kai", "x": 96, "y": 222},
+    {"id": "elder", "object": "npc_elder", "x": 56, "y": 208},
+    {"id": "merchant", "object": "npc_merchant", "x": 312, "y": 208},
+    {"id": "blob_1", "object": "enm_blob", "x": 136, "y": 168},
+    {"id": "blob_2", "object": "enm_blob", "x": 248, "y": 152},
+    {"id": "blob_3", "object": "enm_blob", "x": 344, "y": 72},
+    {"id": "blob_4", "object": "enm_blob", "x": 96, "y": 112},
+    {"id": "blob_5", "object": "enm_blob", "x": 280, "y": 184},
+    {"id": "blob_6", "object": "enm_blob", "x": 160, "y": 96},
+    {
+      "id": "bush_nook",
+      "object": "prop_bush",
+      "x": 56,
+      "y": 80,
+      "overrides": {
+        "health": {
+          "on_death": [
+            {"do": "spawn", "object": "item_heart", "x": 0, "y": 0}
+          ]
+        }
+      }
+    },
+    {"id": "bush_1", "object": "prop_bush", "x": 176, "y": 136},
+    {"id": "bush_2", "object": "prop_bush", "x": 216, "y": 112},
+    {
+      "id": "bush_3",
+      "object": "prop_bush",
+      "x": 312,
+      "y": 152,
+      "overrides": {
+        "health": {
+          "on_death": [
+            {"do": "spawn", "object": "item_gem", "x": 0, "y": 0}
+          ]
+        }
+      }
+    },
+    {"id": "gem_nook_1", "object": "item_gem", "x": 28, "y": 32},
+    {"id": "gem_nook_2", "object": "item_gem", "x": 44, "y": 48},
+    {"id": "gem_nook_3", "object": "item_gem", "x": 60, "y": 32},
+    {"id": "gem_nook_4", "object": "item_gem", "x": 28, "y": 60},
+    {"id": "gem_nook_5", "object": "item_gem", "x": 68, "y": 60},
+    {"id": "gem_bridge", "object": "item_gem", "x": 272, "y": 112},
+    {"id": "gem_1", "object": "item_gem", "x": 132, "y": 236},
+    {"id": "heart_1", "object": "item_heart", "x": 284, "y": 72},
+    {"id": "shrine_door", "object": "trg_shrine_door", "x": 184, "y": 52},
+    {"id": "hud", "object": "hud_game"}
+  ],
+  "on_start": [
+    {"do": "set_var", "var": "checkpoint", "value": 0},
+    {"do": "fade_in", "ticks": 20}
+  ]
+}

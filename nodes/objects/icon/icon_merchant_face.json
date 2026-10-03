@@ -1,0 +1,26 @@
+{
+  "id": "icon_merchant_face",
+  "kind": "object",
+  "type": "icon",
+  "name": "Merchant portrait",
+  "notes": "The merchant's face in her dialog boxes.",
+  "palette": "pal_npc",
+  "pixels": [
+    "bbbbbb1111bbbbbb",
+    "bbbb11aaaa11bbbb",
+    "bbb1aaaaaaaa1bbb",
+    "b11aaaaaaaaaa11b",
+    "1aaaaaaaaaaaaaa1",
+    "b11222222222211b",
+    "bb121222222121bb",
+    "bb122222222221bb",
+    "bbb1222222221bbb",
+    "bb188112211881bb",
+    "b18988888888981b",
+    "b12188888888121b",
+    "bb189888888981bb",
+    "bb189888888981bb",
+    "bb199999999991bb",
+    "bbb1111111111bbb"
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "id": "item_key",
+  "kind": "object",
+  "type": "pickup",
+  "name": "Small key",
+  "notes": "Adds 1 to 'keys' and tells the player what it is for. A key opens one locked door.",
+  "children": ["body_key", "sfx_key"],
+  "body": "body_key",
+  "logic": [
+    {
+      "behavior": "collectible",
+      "params": {
+        "var": "keys",
+        "amount": 1,
+        "on_collect": [
+          {"do": "show_dialog", "dialog": "dlg_key"}
+        ]
+      }
+    }
+  ],
+  "sounds": {"collect": "sfx_key"}
+}

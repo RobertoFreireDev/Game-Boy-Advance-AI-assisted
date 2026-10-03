@@ -14,6 +14,6 @@ void bhv_topdown_controller_update(Actor *a, const void *params) {
         a->vx = a->vx * 181 / 256;
         a->vy = a->vy * 181 / 256;
     }
-    if (dx) a->facing_left = dx < 0;
+    actor_face(a, dx, dy);                      // picks the up / down / side animations
     actor_play_slot(a, (dx || dy) ? ANIM_WALK : ANIM_IDLE);
 }

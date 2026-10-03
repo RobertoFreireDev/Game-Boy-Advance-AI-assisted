@@ -3,16 +3,19 @@
   "kind": "object",
   "type": "palette",
   "name": "Hero colors",
-  "notes": "The hero's colors: dark outline, skin, blue tunic, brown hair and boots, gold belt.",
+  "notes": "Kai's colors: outline, skin, green hood and tunic, brown hair and boots, and the sword's steel and gold. Only Kai uses it.",
   "colors": [
-              "#000000",
-              "#181010",
-              "#f8c898",
-              "#c07850",
-              "#3868d8",
-              "#183888",
-              "#f8f8f8",
-              "#884018",
-              "#f0b020"
-            ]
+    "#000000",
+    "#181010",
+    "#f8c890",
+    "#c07850",
+    "#48a830",
+    "#286818",
+    "#885020",
+    "#e8e8f0",
+    "#9098b0",
+    "#f8d040",
+    "#f8f8f8",
+    "#503010"
+  ]
 }

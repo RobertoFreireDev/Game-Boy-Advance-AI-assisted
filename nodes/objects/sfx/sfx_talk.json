@@ -3,8 +3,12 @@
   "kind": "object",
   "type": "sfx",
   "name": "Talk",
-  "notes": "Soft blip when the sage starts talking.",
+  "notes": "Little blip when a villager starts talking.",
   "channel": "square2",
-  "duty": 1,
-  "steps": [{"note": "E6", "ticks": 2, "volume": 8}, {"note": "C6", "ticks": 3, "volume": 6}]
+  "duty": 2,
+  "priority": 1,
+  "steps": [
+    {"note": "E5", "ticks": 2, "volume": 8},
+    {"note": "G5", "ticks": 2, "volume": 6}
+  ]
 }

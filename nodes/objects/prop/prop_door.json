@@ -1,0 +1,22 @@
+{
+  "id": "prop_door",
+  "kind": "object",
+  "type": "prop",
+  "name": "Locked door",
+  "notes": "Blocks the way to the Sun Crystal. Walk into it holding a key: it uses the key and sinks into the floor.",
+  "children": ["body_door", "sfx_door"],
+  "body": "body_door",
+  "logic": [
+    {
+      "behavior": "locked_door",
+      "params": {
+        "var": "keys",
+        "consume": true,
+        "range": 2,
+        "on_open": [
+          {"do": "play_sfx", "sfx": "sfx_door"}
+        ]
+      }
+    }
+  ]
+}

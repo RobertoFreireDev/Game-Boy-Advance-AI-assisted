@@ -1,0 +1,32 @@
+{
+  "id": "map_title",
+  "kind": "object",
+  "type": "tilemap",
+  "name": "Title backdrop",
+  "notes": "One screen of meadow with the Sun Shrine at the top, behind the title menu.",
+  "tileset": "ts_meadow",
+  "layer": 1,
+  "parallax": 1,
+  "rows": [
+    "ABABABABABABABABABABABABABABAB",
+    "CDCDCDCDCDCDCDCDCDCDCDCDCDCDCD",
+    "AB.......SSSSSSSSSSSS,......AB",
+    "CD.AB....SSSSSUUSSSSS...AB..CD",
+    "AB.CD..*.SSSSSSSSSSSS...CD..AB",
+    "CD.......SSSSSSSSSSSS.......CD",
+    "AB...AB..SSSSSEESSSSS.AB....AB",
+    "CD...CD..SSSSSEESSSSS.CD....CD",
+    "AB.........*.*__...,......*,AB",
+    "CD......,.....__............CD",
+    "AB............__.,,,..,....*AB",
+    "CD,...........__..*..*......CD",
+    "AB.AB.........__...*........AB",
+    "CD.CD.*.*....,__.........AB.CD",
+    "AB..........*.__.........CD.AB",
+    "CD*.,.*.......__.......,....CD",
+    "AB...........*__...*........AB",
+    "CD......,.*...__.....,......CD",
+    "ABABABABABABABABABABABABABABAB",
+    "CDCDCDCDCDCDCDCDCDCDCDCDCDCDCD"
+  ]
+}

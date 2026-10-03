@@ -1,0 +1,18 @@
+{
+  "id": "icon_gem",
+  "kind": "object",
+  "type": "icon",
+  "name": "Gem (HUD)",
+  "notes": "Gem counter icon in the HUD.",
+  "palette": "pal_ui",
+  "pixels": [
+    "...11...",
+    "..1261..",
+    ".126631.",
+    "12666331",
+    "16666331",
+    ".166331.",
+    "..1631..",
+    "...11..."
+  ]
+}

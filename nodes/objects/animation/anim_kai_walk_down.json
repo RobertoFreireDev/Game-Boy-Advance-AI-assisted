@@ -1,0 +1,16 @@
+{
+  "id": "anim_kai_walk_down",
+  "kind": "object",
+  "type": "animation",
+  "name": "Kai walking (down)",
+  "notes": "Walking toward the bottom of the screen. The mirrored step frame makes the other foot step.",
+  "sprite": "spr_kai",
+  "loop": true,
+  "frames": [
+    {"frame": "down_1", "ticks": 8},
+    {"frame": "down_0", "ticks": 8},
+    {"frame": "down_1", "ticks": 8, "flip_x": true},
+    {"frame": "down_0", "ticks": 8}
+  ],
+  "events": []
+}

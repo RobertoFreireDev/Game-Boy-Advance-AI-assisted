@@ -1,0 +1,39 @@
+{
+  "id": "dlg_merchant",
+  "kind": "object",
+  "type": "dialog",
+  "name": "Merchant's potion",
+  "notes": "The merchant offers a potion: 10 gems refill every heart.",
+  "font": "font_default",
+  "box": {"x": 8, "y": 104, "w": 224, "h": 48, "paper": 3, "border": 2},
+  "ticks_per_char": 2,
+  "lines": [
+    {
+      "speaker": "MERCHANT",
+      "portrait": "icon_merchant_face",
+      "text": "WELCOME! A POTION FILLS ALL YOUR HEARTS. ONLY 10 GEMS!"
+    }
+  ],
+  "choices": [
+    {
+      "label": "BUY POTION - 10 GEMS",
+      "actions": [
+        {
+          "do": "if_var",
+          "var": "gems",
+          "op": ">=",
+          "value": 10,
+          "then": [
+            {"do": "add_var", "var": "gems", "value": -10},
+            {"do": "set_var", "var": "health", "value": 5},
+            {"do": "play_sfx", "sfx": "sfx_heart"}
+          ],
+          "else": [
+            {"do": "show_dialog", "dialog": "dlg_no_gems"}
+          ]
+        }
+      ]
+    },
+    {"label": "NO THANKS", "actions": []}
+  ]
+}

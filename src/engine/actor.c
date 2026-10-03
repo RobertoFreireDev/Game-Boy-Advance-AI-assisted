@@ -35,13 +35,48 @@ int actor_has_slot(const Actor *a, u8 slot) {
     return a->body && a->body->anims[slot] != NULL;
 }
 
+int actor_slot_vertical(u8 slot) {
+    return slot == ANIM_IDLE_UP || slot == ANIM_IDLE_DOWN || slot == ANIM_WALK_UP ||
+           slot == ANIM_WALK_DOWN || slot == ANIM_ATTACK_UP || slot == ANIM_ATTACK_DOWN;
+}
+
+void actor_face(Actor *a, int dx, int dy) {
+    if (!dx && !dy) return;
+    if (dx) a->facing_left = dx < 0;
+    int keep = (dx && a->facing == (dx < 0 ? DIR_LEFT : DIR_RIGHT)) ||
+               (dy && a->facing == (dy < 0 ? DIR_UP : DIR_DOWN));
+    if (keep) return;
+    if (dx) a->facing = dx < 0 ? DIR_LEFT : DIR_RIGHT;
+    else a->facing = dy < 0 ? DIR_UP : DIR_DOWN;
+}
+
+// The *_up / *_down version of a slot for the way the actor faces, if the body has it.
+static u8 directional_slot(const Actor *a, u8 slot) {
+    static const u8 up[ANIM_SLOT_COUNT] = {
+        [ANIM_IDLE] = ANIM_IDLE_UP, [ANIM_WALK] = ANIM_WALK_UP, [ANIM_RUN] = ANIM_WALK_UP,
+        [ANIM_ATTACK] = ANIM_ATTACK_UP };
+    static const u8 down[ANIM_SLOT_COUNT] = {
+        [ANIM_IDLE] = ANIM_IDLE_DOWN, [ANIM_WALK] = ANIM_WALK_DOWN, [ANIM_RUN] = ANIM_WALK_DOWN,
+        [ANIM_ATTACK] = ANIM_ATTACK_DOWN };
+    if (a->facing != DIR_UP && a->facing != DIR_DOWN) return slot;
+    u8 v = a->facing == DIR_UP ? up[slot] : down[slot];
+    return (v && a->body->anims[v]) ? v : slot;
+}
+
 void actor_play_slot(Actor *a, u8 slot) {
     if (!a->body) return;
+    slot = directional_slot(a, slot);
     const AnimationData *an = a->body->anims[slot];
     if (!an && slot == ANIM_RUN) an = a->body->anims[ANIM_WALK];
     if (!an && slot == ANIM_WALK) an = a->body->anims[ANIM_RUN];
     if (!an && slot == ANIM_FALL) an = a->body->anims[ANIM_JUMP];
     if (!an && slot == ANIM_DIE) an = a->body->anims[ANIM_HURT];
+    if (!an && slot == ANIM_IDLE_UP) an = a->body->anims[slot = ANIM_IDLE];
+    if (!an && slot == ANIM_IDLE_DOWN) an = a->body->anims[slot = ANIM_IDLE];
+    if (!an && slot == ANIM_WALK_UP) an = a->body->anims[slot = ANIM_WALK];
+    if (!an && slot == ANIM_WALK_DOWN) an = a->body->anims[slot = ANIM_WALK];
+    if (!an && slot == ANIM_ATTACK_UP) an = a->body->anims[slot = ANIM_ATTACK];
+    if (!an && slot == ANIM_ATTACK_DOWN) an = a->body->anims[slot = ANIM_ATTACK];
     if (!an) {
         slot = a->body->default_slot;
         an = a->body->anims[slot];
@@ -83,6 +118,7 @@ Actor *actor_spawn(s16 node, s32 x, s32 y, const LogicEntry *logic, u8 logic_cou
     a->home_x = x;
     a->home_y = y;
     a->riding = -1;
+    a->facing = DIR_DOWN;
     if (a->body) {
         a->hb_x = a->body->hb_x;
         a->hb_y = a->body->hb_y;

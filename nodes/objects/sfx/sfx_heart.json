@@ -1,0 +1,16 @@
+{
+  "id": "sfx_heart",
+  "kind": "object",
+  "type": "sfx",
+  "name": "Heart",
+  "notes": "Rising arpeggio when hearts come back.",
+  "channel": "square2",
+  "duty": 2,
+  "priority": 1,
+  "steps": [
+    {"note": "C5", "ticks": 3, "volume": 10},
+    {"note": "E5", "ticks": 3, "volume": 10},
+    {"note": "G5", "ticks": 3, "volume": 10},
+    {"note": "C6", "ticks": 6, "volume": 8}
+  ]
+}

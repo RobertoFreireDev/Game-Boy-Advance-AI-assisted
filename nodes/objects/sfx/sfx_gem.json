@@ -1,0 +1,14 @@
+{
+  "id": "sfx_gem",
+  "kind": "object",
+  "type": "sfx",
+  "name": "Gem",
+  "notes": "Bright two-note 'ching' for a gem.",
+  "channel": "square2",
+  "duty": 2,
+  "priority": 1,
+  "steps": [
+    {"note": "E6", "ticks": 3, "volume": 10},
+    {"note": "B6", "ticks": 6, "volume": 9}
+  ]
+}

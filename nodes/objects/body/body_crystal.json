@@ -1,0 +1,13 @@
+{
+  "id": "body_crystal",
+  "kind": "object",
+  "type": "body",
+  "name": "Sun Crystal body",
+  "notes": "Covers the whole crystal.",
+  "children": ["spr_crystal", "anim_crystal_shine"],
+  "origin": [8, 16],
+  "hitbox": {"x": -7, "y": -15, "w": 14, "h": 14},
+  "physics": {"gravity": false, "solid": false, "collides_with": []},
+  "animations": {"idle": "anim_crystal_shine"},
+  "default_animation": "idle"
+}

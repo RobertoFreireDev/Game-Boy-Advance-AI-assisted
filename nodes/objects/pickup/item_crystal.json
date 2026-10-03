@@ -1,0 +1,25 @@
+{
+  "id": "item_crystal",
+  "kind": "object",
+  "type": "pickup",
+  "name": "Sun Crystal",
+  "notes": "The goal of the game, in the shrine's top room. Touching it plays a fanfare and a message, then the ending.",
+  "children": ["ptc_crystal_glow", "body_crystal"],
+  "body": "body_crystal",
+  "logic": [
+    {
+      "behavior": "collectible",
+      "params": {
+        "on_collect": [
+          {"do": "stop_music"},
+          {"do": "show_dialog", "dialog": "dlg_crystal"}
+        ]
+      }
+    },
+    {
+      "behavior": "spawn_particles",
+      "params": {"particle": "ptc_crystal_glow", "when": "always", "offset_y": -8}
+    }
+  ],
+  "sounds": {"collect": "sfx_item_get"}
+}

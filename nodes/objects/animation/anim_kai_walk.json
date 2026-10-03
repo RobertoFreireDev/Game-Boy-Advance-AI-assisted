@@ -1,0 +1,14 @@
+{
+  "id": "anim_kai_walk",
+  "kind": "object",
+  "type": "animation",
+  "name": "Kai walking (side)",
+  "notes": "Walking left or right.",
+  "sprite": "spr_kai",
+  "loop": true,
+  "frames": [
+    {"frame": "side_1", "ticks": 8},
+    {"frame": "side_0", "ticks": 8}
+  ],
+  "events": []
+}

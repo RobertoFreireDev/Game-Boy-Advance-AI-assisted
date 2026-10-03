@@ -1,0 +1,15 @@
+{
+  "id": "sfx_enemy_hit",
+  "kind": "object",
+  "type": "sfx",
+  "name": "Monster hit",
+  "notes": "Short blip when the sword hits a monster.",
+  "channel": "square2",
+  "duty": 1,
+  "priority": 1,
+  "steps": [
+    {"note": "C5", "ticks": 2, "volume": 12},
+    {"note": "G4", "ticks": 2, "volume": 10},
+    {"note": "C4", "ticks": 3, "volume": 8}
+  ]
+}

@@ -2,6 +2,41 @@
 
 One entry per request, newest first. Written for humans: what changed and which nodes.
 
+## 2026-10-03 — Replace Hero Quest with a top-down adventure, "Sun Shrine"
+
+**Request:** "remove all the logic related to this game and create a new top down zelda 2d like game".
+
+**Removed:** every Hero Quest node (scenes, hero, slime, coins, lift, sage, flag, tree, maps,
+music, sounds…). Kept only generic pieces, now used by the new game: `font_default`, `pal_ui`,
+`icon_cursor`, `icon_heart`, `icon_heart_empty`, `sfx_select`, `sfx_confirm`.
+
+**New game "Sun Shrine"** (ROM `dist/sun_shrine.gba`) — 115 new nodes:
+- Scenes: `scn_intro` (story), `scn_title`, `scn_meadow` (overworld with village, pond, secret
+  nook), `scn_shrine` (dungeon), `scn_game_over`, `scn_victory` (ending).
+- Hero `plr_kai`: 8-way walking, faces up/down/left/right, sword on B (after the elder gives it),
+  talks with A, 5 hearts.
+- Monsters: `enm_blob` (wanders, drops a gem), `enm_bat` (chases), `enm_knight` (3 hits, drops a
+  heart). Shared defeat puff `anim_poof`.
+- Props and people: `prop_bush` (cut with the sword), `prop_door` (locked, opens with a key),
+  `npc_elder` (gives the sword), `npc_merchant` (potion for 10 gems).
+- Pickups: `item_gem`, `item_heart`, `item_key`, `item_crystal` (the goal, with `ptc_crystal_glow`).
+- World: `ts_meadow`, `ts_shrine`, `map_meadow`, `map_shrine`, `map_title`; trigger `trg_shrine_door`.
+- UI: `hud_game`, `hud_intro`, `hud_victory`, `menu_title`, `menu_game_over`, 7 dialogs
+  (`dlg_elder`, `dlg_merchant`, `dlg_no_gems`, `dlg_need_sword`, `dlg_key`, `dlg_crystal`,
+  `dlg_how_to_play`), icons `icon_gem`, `icon_key`, `icon_elder_face`, `icon_merchant_face`.
+- Sound: `mus_title`, `mus_meadow`, `mus_shrine`, `mus_victory`, `mus_game_over` and 11 sound
+  effects (sword, hurt, monster hit/defeat, gem, heart, key, door, item fanfare, talk, bush cut).
+- Variables: `health`, `gems`, `keys`, `has_sword`, `checkpoint` (TRY AGAIN restarts the area).
+
+**Engine additions (shared, game-agnostic):**
+- Actors now face up / down / left / right; bodies can have `idle_up`, `idle_down`, `walk_up`,
+  `walk_down`, `attack_up`, `attack_down` animations (falls back to the plain ones).
+- New behaviors: `sword_attack`, `wander`, `locked_door`.
+- `health`: top-down knockback (straight away from the hit, slowing down), dies in place without
+  gravity, new `spikes` option. `topdown_controller` and `chase_player` pick the facing.
+  `talk` also works when standing above or below the person.
+- Visualizer: knows the new animation slots (up/down art is never mirrored).
+
 ## 2026-10-02 — Build the whole system from CLAUDE.md (milestones M0–M6)
 
 **Request:** "implement CLAUDE.md".

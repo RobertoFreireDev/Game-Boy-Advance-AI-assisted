@@ -1,0 +1,14 @@
+{
+  "id": "anim_sparkle",
+  "kind": "object",
+  "type": "animation",
+  "name": "Sparkle twinkle",
+  "notes": "Twinkles while it floats.",
+  "sprite": "spr_sparkle",
+  "loop": true,
+  "frames": [
+    {"frame": "big", "ticks": 6},
+    {"frame": "small", "ticks": 6}
+  ],
+  "events": []
+}

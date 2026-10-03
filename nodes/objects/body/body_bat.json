@@ -1,0 +1,13 @@
+{
+  "id": "body_bat",
+  "kind": "object",
+  "type": "body",
+  "name": "Bat body",
+  "notes": "Small hitbox around the bat's body (not the wings), so it is fair to dodge.",
+  "children": ["spr_bat", "anim_bat_fly"],
+  "origin": [8, 12],
+  "hitbox": {"x": -5, "y": -9, "w": 10, "h": 7},
+  "physics": {"gravity": false, "solid": false, "collides_with": ["tiles", "player"]},
+  "animations": {"idle": "anim_bat_fly", "walk": "anim_bat_fly", "die": "anim_poof"},
+  "default_animation": "idle"
+}

@@ -11,10 +11,42 @@
     }
   },
   "topdown_controller": {
-    "description": "Top-down control: walk in any direction with the D-pad (no gravity). Picks the idle and walk animations.",
+    "description": "Top-down control: walk in any direction with the D-pad (no gravity). Faces up, down, left or right and picks the matching idle / walk animations (idle_up, walk_down...).",
     "params": {
       "speed":     { "type": "fixed", "default": 1.0,  "description": "Walking speed (pixels per tick)." },
       "eight_way": { "type": "bool",  "default": true, "description": "Allow diagonal movement." }
+    }
+  },
+  "sword_attack": {
+    "description": "Top-down sword: press the button to swing in the direction the actor faces. It stops while swinging and plays its attack animation. Anything with health inside the blade is hurt and pushed away.",
+    "params": {
+      "button":   { "type": "button", "default": "B",     "description": "Button that swings the sword." },
+      "damage":   { "type": "int",    "default": 1,       "description": "Health removed per hit." },
+      "reach":    { "type": "int",    "default": 14,      "description": "How far the blade reaches past the body (pixels)." },
+      "width":    { "type": "int",    "default": 12,      "description": "How wide the blade's hit area is (pixels)." },
+      "ticks":    { "type": "ticks",  "default": 14,      "description": "How long one swing lasts (ticks). Make the attack animation about this long." },
+      "cooldown": { "type": "ticks",  "default": 6,       "description": "Extra wait after a swing before the next one (ticks)." },
+      "hits":     { "type": "choice", "default": "enemy", "options": ["enemy", "enemy_and_prop", "any"], "description": "What the blade hurts: enemies only, enemies and props (bushes, pots), or anything with health." },
+      "var":      { "type": "var",    "default": "",      "description": "Only works while this game variable is not 0 (for example, after getting the sword). Empty = always works." }
+    }
+  },
+  "wander": {
+    "description": "Top-down: walks around at random (up, down, left or right), resting now and then. Turns when it bumps into something.",
+    "params": {
+      "speed":       { "type": "fixed", "default": 0.5, "description": "Walking speed (pixels per tick)." },
+      "min_ticks":   { "type": "ticks", "default": 30,  "description": "Shortest walk in one direction (ticks)." },
+      "max_ticks":   { "type": "ticks", "default": 90,  "description": "Longest walk in one direction (ticks)." },
+      "pause_ticks": { "type": "ticks", "default": 30,  "description": "Rest between walks (ticks). 0 = never rests." },
+      "distance":    { "type": "int",   "default": 0,   "description": "Heads back when it gets this many pixels away from where it was placed. 0 = roams anywhere." }
+    }
+  },
+  "locked_door": {
+    "description": "A door that opens when the player walks up to it with a key: uses one key, runs its actions and disappears (its 'die' animation plays as the opening). Give the body physics.solid so it blocks the way.",
+    "params": {
+      "var":     { "type": "var",     "required": true, "description": "Game variable that counts the keys." },
+      "consume": { "type": "bool",    "default": true,  "description": "Use up one key when it opens." },
+      "range":   { "type": "int",     "default": 2,     "description": "How close the player must stand (pixels of gap)." },
+      "on_open": { "type": "actions", "default": [],    "description": "What happens when it opens." }
     }
   },
   "patrol": {
@@ -27,7 +59,7 @@
     }
   },
   "chase_player": {
-    "description": "Moves toward the player when the player comes close, and stops when the player is far away.",
+    "description": "Moves toward the player when the player comes close, and stops when the player is far away. With 'vertical' it also faces up and down (top-down games).",
     "params": {
       "speed":    { "type": "fixed", "default": 0.75,  "description": "Chasing speed (pixels per tick)." },
       "range":    { "type": "int",   "default": 80,    "description": "Starts chasing when the player is this close (pixels)." },
@@ -50,12 +82,13 @@
     }
   },
   "health": {
-    "description": "Can be hurt and can die. Blinks and is briefly invincible after a hit. Spikes and falling off the map also hurt.",
+    "description": "Can be hurt and can die. Blinks and is briefly invincible after a hit. Spikes and falling off the map also hurt. Side view: knocked sideways and falls off the screen when it dies. Top-down (no gravity): pushed straight away from the hit and vanishes in place.",
     "params": {
       "var":              { "type": "var",     "default": "",  "description": "Game variable that holds the health (shared with the HUD). Empty = private health." },
       "max":              { "type": "int",     "default": 1,   "description": "Starting health when no variable is used." },
       "invincible_ticks": { "type": "ticks",   "default": 60,  "description": "Invincibility time after being hurt (ticks)." },
       "knockback":        { "type": "fixed",   "default": 1.5, "description": "How far a hit pushes it back (pixels per tick)." },
+      "spikes":           { "type": "bool",    "default": true, "description": "Spike tiles (hazard) hurt it. Turn off for monsters that should walk over spikes safely." },
       "on_hurt":          { "type": "actions", "default": [],  "description": "What happens on every hit." },
       "on_death":         { "type": "actions", "default": [],  "description": "What happens when health reaches 0." }
     }
@@ -95,7 +128,7 @@
     "params": {
       "dialog":      { "type": "node:dialog", "required": true, "description": "Dialog to show." },
       "button":      { "type": "button",      "default": "B",  "description": "Button that starts the talk." },
-      "range":       { "type": "int",         "default": 12,   "description": "How close the player must stand (pixels of gap between them)." },
+      "range":       { "type": "int",         "default": 12,   "description": "How close the player must stand (pixels of gap between them, sideways or up/down)." },
       "face_player": { "type": "bool",        "default": true, "description": "Turn to look at the player." }
     }
   },

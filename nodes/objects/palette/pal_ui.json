@@ -3,16 +3,16 @@
   "kind": "object",
   "type": "palette",
   "name": "UI colors",
-  "notes": "Colors for text, menus, dialog boxes and HUD icons. 1 = dark outline/shadow, 2 = white text, 3 = dark blue box background, 5 = heart red, 7 = gray. Also used by the dust particles.",
+  "notes": "Colors for text, menus, dialog boxes and HUD icons. 1 = dark outline, 2 = white text, 3 = dark blue box background, 4 = yellow (key), 5 = heart red, 6 = light blue (gem), 7 = gray (empty heart).",
   "colors": [
-              "#000000",
-              "#101820",
-              "#f8f8f8",
-              "#284890",
-              "#f8d038",
-              "#e83838",
-              "#78a8f8",
-              "#a0a0a0",
-              "#883010"
-            ]
+    "#000000",
+    "#101820",
+    "#f8f8f8",
+    "#284890",
+    "#f8d038",
+    "#e83838",
+    "#78a8f8",
+    "#a0a0a0",
+    "#883010"
+  ]
 }

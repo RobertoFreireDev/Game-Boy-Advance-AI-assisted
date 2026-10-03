@@ -270,8 +270,10 @@ groups them for humans. **What an actor does comes only from its `logic` list.**
 - **sfx** steps: `note` (or `".."` silence) for square/wave, `pitch` 0–15 for noise.
 - **animation** `events[{at: frame index, action | actions}]` run when that frame starts.
 - **particle**: positions are the sprite's center; `rate` = ticks between stream particles.
-- **body** animation slots: `idle walk run jump fall hurt die attack climb`. `origin` mirrors with
-  the art when it faces left; the **hitbox does not mirror**. `physics.collides_with` categories:
+- **body** animation slots: `idle walk run jump fall hurt die attack climb`, plus the top-down
+  slots `idle_up idle_down walk_up walk_down attack_up attack_down`. `origin` mirrors with
+  the art when it faces left; the **hitbox does not mirror**. The `*_up` / `*_down` slots are
+  never mirrored (their art is drawn as seen from behind / from the front). `physics.collides_with` categories:
   `tiles player enemy npc prop platform pickup trigger`. Two actors touch (and both get
   `on_touch`) when either lists the other's category. `physics.solid` = others can't walk through
   it and can stand on it (like a crate).
@@ -287,6 +289,9 @@ groups them for humans. **What an actor does comes only from its `logic` list.**
 - **dialog**: `box {x, y, w, h, paper, border}` (required), `ticks_per_char` (0 = instant).
   Codegen word-wraps each line (`common.wrap_text`); the speaker uses the first row, a 16×16
   portrait takes 3 columns. A/B skip typing / next line; choices show after the last line.
+  An icon on a box (portrait, cursor) only gets the box color behind it when it uses the font's
+  palette; in any other palette its transparent pixels show the map, so paint its background with
+  a palette color equal to the box paper.
 - A menu or dialog **pauses the world** (actor logic, physics, animations) until it closes.
 - Use **one font per scene** for the HUD and box-less menus (BG0 has one transparent-font slot).
 
@@ -453,9 +458,16 @@ Every channel in a pattern has the same number of rows. Missing channels are sil
 - Movement behaviors pick body animation slots by convention: `idle`, `walk`, `run`, `jump`,
   `fall`, `hurt`, `die`, `attack`, `climb` (a missing `run` uses `walk` and back, `fall` uses
   `jump`, `die` uses `hurt`, then `default_animation`).
+- **Facing (top-down)**: every actor has a `facing` (right / left / up / down, starts down) set by
+  `actor_face()`. When it faces up or down, asking for `idle`, `walk`/`run` or `attack` plays the
+  matching `*_up` / `*_down` slot if the body has it (a missing `*_up` / `*_down` slot falls back
+  to the plain one). `facing_left` keeps the last horizontal direction and mirrors the side art.
+- `health` on a body **without gravity** (top-down) knocks straight away from the hit (slowing
+  down) and dies in place; with gravity it knocks sideways and falls off the screen.
 - Starter set: `platformer_controller`, `topdown_controller`, `patrol`, `chase_player`,
   `follow_path`, `solid_platform`, `health`, `damage_on_touch`, `stompable`, `collectible`,
-  `trigger_zone`, `talk`, `camera_target`, `spawn_particles`. Add more as games need them.
+  `trigger_zone`, `talk`, `camera_target`, `spawn_particles`. Top-down set: `sword_attack`,
+  `wander`, `locked_door`. Add more as games need them.
 - Prefer a new reusable behavior over custom code.
 
 ### 7.2 Actions (what happens when something occurs)
@@ -678,7 +690,8 @@ The AI runs the Python scripts directly; the `.bat` files exist for the human.
 ## 14. Bootstrap (empty repository)
 
 Build in milestones. Each one ends with a ROM that builds and runs and a visualizer that opens.
-**Status: M0–M6 done (2026-10-02)** with the demo game "Hero Quest" (see `CHANGELOG.md`).
+**Status: M0–M6 done (2026-10-02).** Current game: "Sun Shrine", a top-down action adventure
+(2026-10-03; it replaced the first demo, the platformer "Hero Quest"). See `CHANGELOG.md`.
 
 1. **M0 – Skeleton**: folders, `config.json`, `.bat` files, `validate.py`, `bundle.py`, `build.py`,
    `run.py`, empty `nodes.json`, `CHANGELOG.md`.

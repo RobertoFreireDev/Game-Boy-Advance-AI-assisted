@@ -1,0 +1,14 @@
+{
+  "id": "anim_bush_cut",
+  "kind": "object",
+  "type": "animation",
+  "name": "Bush cut",
+  "notes": "Leaves fly apart, then it is gone.",
+  "sprite": "spr_bush",
+  "loop": false,
+  "frames": [
+    {"frame": "cut", "ticks": 15},
+    {"frame": "cut", "ticks": 15, "flip_y": true}
+  ],
+  "events": []
+}

@@ -1,0 +1,16 @@
+{
+  "id": "ptc_crystal_glow",
+  "kind": "object",
+  "type": "particle",
+  "name": "Crystal glow",
+  "notes": "A slow stream of sparkles rising from the Sun Crystal.",
+  "children": ["anim_sparkle"],
+  "animation": "anim_sparkle",
+  "mode": "stream",
+  "count": 1,
+  "rate": 12,
+  "lifetime": 36,
+  "speed": [0.2, 0.5],
+  "angle": [60, 120],
+  "gravity": 0
+}

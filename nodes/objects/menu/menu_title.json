@@ -3,24 +3,27 @@
   "kind": "object",
   "type": "menu",
   "name": "Title menu",
-  "notes": "Main menu on the title screen. START GAME resets hearts and coins and starts level 1; CREDITS shows the credits.",
+  "notes": "Title screen menu. NEW GAME resets everything and starts in the meadow; HOW TO PLAY explains the buttons.",
   "font": "font_default",
-  "title": "HERO QUEST",
+  "title": "SUN SHRINE",
   "cursor": "icon_cursor",
-  "layout": {"x": 88, "y": 96, "spacing": 16, "title_y": 48},
+  "box": {"x": 48, "y": 72, "w": 144, "h": 72, "paper": 3, "border": 2},
+  "layout": {"x": 72, "y": 112, "spacing": 16, "title_y": 88},
   "options": [
-               {
-                 "label": "START GAME",
-                 "actions": [
-                              {"do": "reset_vars"},
-                              {"do": "fade_out", "ticks": 20},
-                              {"do": "goto_scene", "scene": "scn_level_1"}
-                            ]
-               },
-               {
-                 "label": "CREDITS",
-                 "actions": [{"do": "fade_out", "ticks": 20}, {"do": "goto_scene", "scene": "scn_credits"}]
-               }
-             ],
+    {
+      "label": "NEW GAME",
+      "actions": [
+        {"do": "reset_vars"},
+        {"do": "fade_out", "ticks": 20},
+        {"do": "goto_scene", "scene": "scn_meadow"}
+      ]
+    },
+    {
+      "label": "HOW TO PLAY",
+      "actions": [
+        {"do": "show_dialog", "dialog": "dlg_how_to_play"}
+      ]
+    }
+  ],
   "sounds": {"move": "sfx_select", "select": "sfx_confirm"}
 }

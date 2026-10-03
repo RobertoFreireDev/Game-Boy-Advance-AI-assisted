@@ -1,0 +1,32 @@
+{
+  "id": "enm_knight",
+  "kind": "object",
+  "type": "enemy",
+  "name": "Knight",
+  "notes": "Armored shrine guard. Marches around quickly and needs three sword hits; drops a heart when defeated.",
+  "children": ["body_knight"],
+  "body": "body_knight",
+  "logic": [
+    {
+      "behavior": "wander",
+      "params": {"speed": 0.6, "min_ticks": 20, "max_ticks": 70, "pause_ticks": 20}
+    },
+    {
+      "behavior": "damage_on_touch",
+      "params": {"amount": 1}
+    },
+    {
+      "behavior": "health",
+      "params": {
+        "max": 3,
+        "invincible_ticks": 16,
+        "knockback": 1.0,
+        "spikes": false,
+        "on_death": [
+          {"do": "spawn", "object": "item_heart"}
+        ]
+      }
+    }
+  ],
+  "sounds": {"hurt": "sfx_enemy_hit", "die": "sfx_enemy_die"}
+}

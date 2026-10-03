@@ -15,6 +15,11 @@
 #define SOLID_FULL    1     // blocks from every side
 #define SOLID_ONE_WAY 2     // only stands-on from above
 
+#define DIR_RIGHT     0     // Actor.facing (top-down games use all four)
+#define DIR_LEFT      1
+#define DIR_UP        2
+#define DIR_DOWN      3
+
 typedef struct Actor {
     u8 active, type, category, flags;
     s16 node, inst;                 // node id; scene instance index (-1 = spawned later)
@@ -22,7 +27,8 @@ typedef struct Actor {
     const BodyData *body;           // NULL for triggers
     const LogicEntry *logic;
     u8 logic_count;
-    u8 facing_left;
+    u8 facing_left;                 // last horizontal direction (mirrors the side-view art)
+    u8 facing;                      // DIR_*: which way it looks (picks *_up / *_down animations)
     u8 on_ground, was_on_ground;    // standing on something now / last frame
     u8 hit_wall;                    // bumped into a wall this frame
     u8 gravity;                     // falls (behaviors may turn it off, e.g. on ladders)
@@ -57,6 +63,11 @@ void actor_update_all(void);
 void actor_touch(Actor *a, Actor *other);
 // Play a body animation slot, falling back to similar slots, then the default one.
 void actor_play_slot(Actor *a, u8 slot);
+// Turn to face a movement direction (dx, dy in -1..1); keeps the current facing on diagonals
+// when it is one of the two directions, otherwise prefers left/right.
+void actor_face(Actor *a, int dx, int dy);
+// True for the slots drawn as seen from above/below (*_up, *_down): never mirrored.
+int actor_slot_vertical(u8 slot);
 // True if the body has an animation in this slot.
 int actor_has_slot(const Actor *a, u8 slot);
 // Play one of the actor's sounds (SND_*), if it has one.

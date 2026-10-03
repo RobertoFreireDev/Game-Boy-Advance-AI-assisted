@@ -56,7 +56,10 @@ SCENE_PREFIX = "scn_"
 INSTANCE_TYPES = ["tilemap"] + ACTOR_TYPES + ["hud", "menu", "dialog", "particle"]
 
 # Order matters: these lists become C enums in generated/node_ids.h.
-ANIM_SLOTS = ["idle", "walk", "run", "jump", "fall", "hurt", "die", "attack", "climb"]
+# The *_up / *_down slots are for top-down actors: the engine picks them when the actor faces
+# up or down (falling back to the plain slot); the plain slots face right and mirror for left.
+ANIM_SLOTS = ["idle", "walk", "run", "jump", "fall", "hurt", "die", "attack", "climb",
+              "idle_up", "idle_down", "walk_up", "walk_down", "attack_up", "attack_down"]
 SOUND_EVENTS = ["jump", "land", "hurt", "die", "collect", "stomp", "talk", "attack"]
 CATEGORIES = ["tiles", "player", "enemy", "npc", "prop", "platform", "pickup", "trigger"]
 CHANNELS = ["square1", "square2", "wave", "noise"]

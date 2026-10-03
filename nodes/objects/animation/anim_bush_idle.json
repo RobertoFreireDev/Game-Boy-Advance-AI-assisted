@@ -1,0 +1,13 @@
+{
+  "id": "anim_bush_idle",
+  "kind": "object",
+  "type": "animation",
+  "name": "Bush",
+  "notes": "Just sits there.",
+  "sprite": "spr_bush",
+  "loop": true,
+  "frames": [
+    {"frame": "bush", "ticks": 60}
+  ],
+  "events": []
+}

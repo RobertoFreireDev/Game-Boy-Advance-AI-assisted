@@ -1,0 +1,16 @@
+{
+  "id": "sfx_kai_hurt",
+  "kind": "object",
+  "type": "sfx",
+  "name": "Kai hurt",
+  "notes": "Falling 'ouch' when Kai loses a heart.",
+  "channel": "square1",
+  "duty": 2,
+  "priority": 2,
+  "steps": [
+    {"note": "A4", "ticks": 3, "volume": 12},
+    {"note": "F4", "ticks": 3, "volume": 11},
+    {"note": "D4", "ticks": 4, "volume": 9},
+    {"note": "A3", "ticks": 6, "volume": 6}
+  ]
+}

@@ -19,6 +19,7 @@ void bhv_chase_player_update(Actor *a, const void *params) {
     }
     a->vx = fx_abs(dx) > 2 ? fx_sign(dx) * p->speed : 0;
     if (p->vertical) a->vy = fx_abs(dy) > 2 ? fx_sign(dy) * p->speed : 0;
-    if (dx) a->facing_left = dx < 0;
+    if (p->vertical) actor_face(a, fx_abs(dx) >= fx_abs(dy) ? fx_sign(dx) : 0, fx_abs(dy) > fx_abs(dx) ? fx_sign(dy) : 0);
+    else if (dx) a->facing_left = dx < 0;
     actor_play_slot(a, ANIM_RUN);
 }

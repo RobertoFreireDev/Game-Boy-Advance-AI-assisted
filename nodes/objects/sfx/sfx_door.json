@@ -1,0 +1,14 @@
+{
+  "id": "sfx_door",
+  "kind": "object",
+  "type": "sfx",
+  "name": "Door opens",
+  "notes": "Low rumble as the locked door sinks.",
+  "channel": "noise",
+  "priority": 1,
+  "steps": [
+    {"pitch": 9, "ticks": 6, "volume": 12},
+    {"pitch": 10, "ticks": 8, "volume": 9},
+    {"pitch": 12, "ticks": 10, "volume": 6}
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "id": "anim_kai_hurt",
+  "kind": "object",
+  "type": "animation",
+  "name": "Kai hurt",
+  "notes": "Eyes shut and shaking while knocked back.",
+  "sprite": "spr_kai",
+  "loop": true,
+  "frames": [
+    {"frame": "hurt", "ticks": 3},
+    {"frame": "hurt", "ticks": 3, "flip_x": true}
+  ],
+  "events": []
+}

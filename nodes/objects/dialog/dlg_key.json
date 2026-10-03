@@ -1,0 +1,13 @@
+{
+  "id": "dlg_key",
+  "kind": "object",
+  "type": "dialog",
+  "name": "Got the key",
+  "notes": "Shown when Kai picks up the small key.",
+  "font": "font_default",
+  "box": {"x": 8, "y": 104, "w": 224, "h": 48, "paper": 3, "border": 2},
+  "ticks_per_char": 1,
+  "lines": [
+    {"text": "YOU GOT A SMALL KEY! IT OPENS A LOCKED DOOR."}
+  ]
+}

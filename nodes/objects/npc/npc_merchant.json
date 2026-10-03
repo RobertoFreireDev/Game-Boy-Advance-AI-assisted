@@ -1,0 +1,16 @@
+{
+  "id": "npc_merchant",
+  "kind": "object",
+  "type": "npc",
+  "name": "Merchant",
+  "notes": "Sells a potion that refills every heart for 10 gems. Stands outside the shop on the east side of the village.",
+  "children": ["body_merchant"],
+  "body": "body_merchant",
+  "logic": [
+    {
+      "behavior": "talk",
+      "params": {"dialog": "dlg_merchant", "button": "A", "range": 6}
+    }
+  ],
+  "sounds": {"talk": "sfx_talk"}
+}

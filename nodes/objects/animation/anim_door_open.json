@@ -1,0 +1,15 @@
+{
+  "id": "anim_door_open",
+  "kind": "object",
+  "type": "animation",
+  "name": "Door opening",
+  "notes": "The door sinks into the floor.",
+  "sprite": "spr_door",
+  "loop": false,
+  "frames": [
+    {"frame": "closed", "ticks": 4},
+    {"frame": "open_1", "ticks": 10},
+    {"frame": "open_2", "ticks": 16}
+  ],
+  "events": []
+}

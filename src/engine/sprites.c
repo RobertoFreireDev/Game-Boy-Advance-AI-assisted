@@ -70,7 +70,8 @@ static void draw_actor(const Actor *a, s32 cx, s32 cy) {
     const AnimFrame *f = anim_frame(&a->anim);
     if (!f) return;
     const SpriteData *s = a->anim.anim->sprite;
-    u8 flip = f->flip ^ (a->facing_left ? FLIP_X : 0);
+    int mirror = a->facing_left && !actor_slot_vertical(a->anim_slot);
+    u8 flip = f->flip ^ (mirror ? FLIP_X : 0);
     // The origin is mirrored with the art, so flipping keeps the feet in place.
     s32 ox = (flip & FLIP_X) ? s->width - a->body->origin_x : a->body->origin_x;
     s32 oy = (flip & FLIP_Y) ? s->height - a->body->origin_y : a->body->origin_y;
