@@ -436,6 +436,7 @@ class Gen:
             icon = self.ptr(e.get("icon"))
             empty = self.ptr(e.get("empty_icon"))
             var = self.var_enum(e.get("var"))
+            max_var = self.var_enum(e.get("max_var"))
             mx = length = color = back = spacing = 0
             if kind == "text":
                 text = self.text(e["text"])
@@ -444,8 +445,8 @@ class Gen:
                 mx, spacing = e["max"], e.get("spacing", size) // 8
             elif kind == "bar":
                 mx, length, color, back = e["max"], e["length"], e["color"], e.get("back", 0)
-            items.append("{ HUD_%s, %d, %d, %d, %s, %d, %d, %d, %d, %s, %s, %s }" % (
-                up(kind), x, y, mx, var, length, color, back, spacing, icon, empty, text))
+            items.append("{ HUD_%s, %d, %d, %d, %s, %s, %d, %d, %d, %d, %s, %s, %s }" % (
+                up(kind), x, y, mx, var, max_var, length, color, back, spacing, icon, empty, text))
         s = self.sym(nid + "_elements")
         self.emit("static const HudElement %s[] = {\n    %s\n};" % (s, ",\n    ".join(items)))
         self.emit("const HudData node_%s = { %s, %d, %s };" % (nid, self.ptr(n["font"]), len(items), s))

@@ -72,6 +72,7 @@ static void separate(u32 *st, int idx, u8 cat, s32 x, s32 y, u32 frame, fixed *o
 void bhv_swarm_update(Actor *a, const void *params) {
     const Params_swarm *p = params;
     if (a->anim_lock) return;                   // being knocked back
+    if (a->stun) { a->vx = a->vy = 0; return; } // stunned after a hit: hold still
     u32 *st = bhv_state(a);
     Actor *pl = actor_player();
     if (!pl) {

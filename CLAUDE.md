@@ -289,7 +289,8 @@ groups them for humans. **What an actor does comes only from its `logic` list.**
 - **actor** `sounds{event: sfx}` events: `jump land hurt die collect stomp talk attack`.
 - **trigger**: `zone{w,h}` with its top-left corner at the instance x, y; touches the player only.
 - **hud** elements (x, y multiples of 8): `text {text}` (`{var}` placeholders, 3 chars reserved
-  per value; `{var:02}` pads to 2 digits, for clocks), `icon {icon}`, `icon_repeat {icon, empty_icon?, var, max, spacing?}`,
+  per value; `{var:02}` pads to 2 digits, for clocks), `icon {icon}`, `icon_repeat {icon, empty_icon?, var, max_var?, max, spacing?}` (`var` full icons, then
+  empty icons up to `max_var` — heart containers — or up to `max` without it),
   `bar {var, max, length (tiles), color, back}` (colors are indexes of the font palette).
 - **menu**: `layout {x, y, spacing, title_y}`, optional `box {x, y, w, h, paper, border}`,
   `sounds {move, select}`. Up/Down move, A picks, B or START runs `on_cancel`. Picking an option **locks**
@@ -488,6 +489,9 @@ Every channel in a pattern has the same number of rows. Missing channels are sil
   `actor_face()`. When it faces up or down, asking for `idle`, `walk`/`run` or `attack` plays the
   matching `*_up` / `*_down` slot if the body has it (a missing `*_up` / `*_down` slot falls back
   to the plain one). `facing_left` keeps the last horizontal direction and mirrors the side art.
+- **Stun**: every actor has a `stun` timer (ticks). `damage_on_touch` with `stun_ticks` sets it when a
+  hit lands; while it runs, `swarm`, `chase_player`, `patrol` and `wander` hold still and
+  `damage_on_touch` hurts no one (knockback still applies).
 - `health` on a body **without gravity** (top-down) knocks straight away from the hit (slowing
   down) and dies in place; with gravity it knocks sideways and falls off the screen.
 - Starter set: `platformer_controller`, `topdown_controller`, `patrol`, `chase_player`,

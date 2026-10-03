@@ -3,11 +3,11 @@
   "kind": "object",
   "type": "enemy",
   "name": "Werewolf",
-  "notes": "Elite hunter from 7:00: fast, very tough and barely pushed back. Drops two big gems, gold and often a roast.",
+  "notes": "Elite hunter from 7:00: fast, very tough and barely pushed back. Drops two big gems, gold and often a roast. After it hurts the hunter it is stunned for 3 seconds (stands still, harmless).",
   "body": "body_wolf",
   "logic": [
     {"behavior": "swarm", "params": {"leash": 220, "speed": 0.95}},
-    {"behavior": "damage_on_touch", "params": {"amount": 1}},
+    {"behavior": "damage_on_touch", "params": {"amount": 1, "stun_ticks": 180}},
     {
       "behavior": "health",
       "params": {

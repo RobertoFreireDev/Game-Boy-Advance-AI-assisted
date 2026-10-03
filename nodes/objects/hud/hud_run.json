@@ -3,7 +3,7 @@
   "kind": "object",
   "type": "hud",
   "name": "Run HUD",
-  "notes": "Always on screen during a run. Top row: the XP bar (fills toward the next level). Second row: hearts, the clock (mm:ss), the level. Third row: monsters defeated and gold found this run.",
+  "notes": "Always on screen during a run. Top row: the XP bar (fills toward the next level). Second row: hearts (full ones = health left, dark ones = empty slots up to the maximum), the clock (mm:ss), the level. Third row: monsters defeated and gold found this run.",
   "font": "font_default",
   "elements": [
     {
@@ -16,7 +16,16 @@
       "color": 6,
       "back": 13
     },
-    {"kind": "icon_repeat", "x": 8, "y": 8, "icon": "icon_heart", "var": "health", "max": 11},
+    {
+      "kind": "icon_repeat",
+      "x": 8,
+      "y": 8,
+      "icon": "icon_heart",
+      "empty_icon": "icon_heart_empty",
+      "var": "health",
+      "max_var": "max_health",
+      "max": 11
+    },
     {"kind": "text", "x": 104, "y": 8, "text": "{time_min:02}:{time_sec:02}"},
     {"kind": "text", "x": 200, "y": 8, "text": "LV{level}"},
     {"kind": "icon", "x": 8, "y": 16, "icon": "icon_skull"},
@@ -24,5 +33,5 @@
     {"kind": "icon", "x": 192, "y": 16, "icon": "icon_coin"},
     {"kind": "text", "x": 200, "y": 16, "text": "{run_gold}"}
   ],
-  "children": ["icon_skull"]
+  "children": ["icon_skull", "icon_heart_empty"]
 }

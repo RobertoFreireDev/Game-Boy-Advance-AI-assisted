@@ -152,7 +152,7 @@ enum { HUD_TEXT, HUD_ICON, HUD_ICON_REPEAT, HUD_BAR };
 
 typedef struct {
     u8 kind, x, y, max;                 // x, y in tiles
-    s16 var;
+    s16 var, max_var;                   // max_var: icon_repeat shows empty icons up to it (-1 = max)
     u8 length, color, back, spacing;
     const IconData *icon, *empty_icon;
     const char *text;                   // \001 + (var+1) = {var}; \002 + (var+1) = {var:02} (2 digits)

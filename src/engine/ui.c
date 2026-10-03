@@ -214,6 +214,7 @@ static u32 s_hud_sig[HUD_SIG_MAX];
 // A number that changes whenever what the element shows changes (the values it prints).
 static u32 hud_signature(const HudElement *e) {
     if (e->kind == HUD_ICON) return 0;
+    if (e->kind == HUD_ICON_REPEAT) return (u32)vars_get(e->var) | (u32)vars_get(e->max_var) << 16;
     if (e->kind != HUD_TEXT) return (u32)vars_get(e->var);
     u32 sig = 0;
     for (const char *s = e->text; *s; s++)
@@ -252,11 +253,12 @@ static void draw_hud(int all) {
             break;
         case HUD_ICON_REPEAT: {
             s32 v = vars_get(e->var);
+            s32 slots = e->max_var >= 0 ? vars_get(e->max_var) : e->max;     // empty icons up to here
             int size = e->icon->width / 8;
             for (int k = 0; k < e->max; k++) {
                 int x = e->x + k * e->spacing;
                 if (k < v) draw_icon(x, e->y, e->icon, 0xFF);
-                else if (e->empty_icon) draw_icon(x, e->y, e->empty_icon, 0xFF);
+                else if (e->empty_icon && k < slots) draw_icon(x, e->y, e->empty_icon, 0xFF);
                 else clear_rect(x, e->y, size, size);
             }
             break;

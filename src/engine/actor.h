@@ -45,6 +45,7 @@ typedef struct Actor {
     u8 anim_slot;                   // body animation slot playing (ANIM_*)
     u16 blink;                     // > 0: flickers (invincible)
     u16 anim_lock;                  // > 0: movement behaviors don't change the animation
+    u16 stun;                       // > 0: stunned: movement behaviors hold still, no touch damage
     u16 die_timer;
     u32 state[MAX_LOGIC][BSTATE_WORDS];
 } Actor;

@@ -26,6 +26,11 @@ void bhv_patrol_update(Actor *a, const void *params) {
     }
     st[0] = (u32)dir;
     if (a->anim_lock) return;
+    if (a->stun) {                              // stunned: hold still
+        a->vx = 0;
+        actor_play_slot(a, ANIM_IDLE);
+        return;
+    }
     a->vx = dir * p->speed;
     a->facing_left = dir < 0;
     actor_play_slot(a, ANIM_WALK);

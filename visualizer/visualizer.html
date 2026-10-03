@@ -408,9 +408,10 @@ function drawHud(ctx, hudId, values) {
     else if (e.kind === "icon_repeat") {
       const ic = NODES[e.icon]; const size = ic ? ic.pixels.length / 8 : 1;
       const sp = (e.spacing || size * 8) >> 3, v = get(e.var);
+      const slots = e.max_var ? get(e.max_var) : (e.max || 0);   // empty icons up to max_var (like ui.c)
       for (let k = 0; k < (e.max || 0); k++) {
         if (k < v) drawIcon(ctx, e.icon, x + k * sp, y);
-        else if (e.empty_icon) drawIcon(ctx, e.empty_icon, x + k * sp, y);
+        else if (e.empty_icon && k < slots) drawIcon(ctx, e.empty_icon, x + k * sp, y);
       }
     } else if (e.kind === "bar") {
       const f = NODES[hd.font], cols = palColors(f && f.palette);

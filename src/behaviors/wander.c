@@ -39,6 +39,11 @@ void bhv_wander_update(Actor *a, const void *params) {
     const Params_wander *p = params;
     u32 *st = bhv_state(a);
     if (a->anim_lock) return;                       // being knocked back
+    if (a->stun) {                                  // stunned: hold still
+        a->vx = a->vy = 0;
+        actor_play_slot(a, ANIM_IDLE);
+        return;
+    }
     int blocked = st[ST_DIR] != DIR_REST && st[ST_MOVED] && a->x == a->prev_x && a->y == a->prev_y;
     if (st[ST_TIMER] == 0 || blocked || a->hit_wall) pick(a, p, st, !blocked && !a->hit_wall);
     else st[ST_TIMER]--;

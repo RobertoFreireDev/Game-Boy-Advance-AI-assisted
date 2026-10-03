@@ -95,10 +95,11 @@
     }
   },
   "damage_on_touch": {
-    "description": "Hurts whoever touches it (if they have health). Does not hurt someone who stomps it from above when it is stompable.",
+    "description": "Hurts whoever touches it (if they have health). Does not hurt someone who stomps it from above when it is stompable. With stun_ticks, a hit that lands stuns it: it stands still and hurts no one for a while (so it can't keep chasing and biting).",
     "params": {
       "amount":  {"type": "int", "default": 1, "description": "Health removed per hit."},
-      "hurts":   {"type": "choice", "default": "player", "options": ["player", "enemy", "any"], "description": "Who it hurts."}
+      "hurts":   {"type": "choice", "default": "player", "options": ["player", "enemy", "any"], "description": "Who it hurts."},
+      "stun_ticks": {"type": "ticks", "default": 0, "description": "After it hurts someone it is stunned this long: swarm, chase_player, patrol and wander hold still and it does no touch damage. 0 = never stunned."}
     }
   },
   "stompable": {

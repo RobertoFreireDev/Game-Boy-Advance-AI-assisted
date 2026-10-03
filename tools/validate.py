@@ -827,7 +827,7 @@ def V_hud(c):
             continue
         kind = e.get("kind")
         allowed = {"text": ("text",), "icon": ("icon",),
-                   "icon_repeat": ("icon", "empty_icon", "var", "max", "spacing"),
+                   "icon_repeat": ("icon", "empty_icon", "var", "max_var", "max", "spacing"),
                    "bar": ("var", "max", "length", "color", "back")}.get(kind)
         if allowed is None:
             c.err("%s.kind must be text, icon, icon_repeat or bar" % label)
@@ -853,6 +853,10 @@ def V_hud(c):
                 if "empty_icon" in e:
                     c.ref(e["empty_icon"], ["icon"], label + ".empty_icon")
                 c.param_value("var", {"required": True}, e.get("var"), label + ".var")
+                if "max_var" in e:
+                    c.param_value("var", {"required": True}, e["max_var"], label + ".max_var")
+                    if "empty_icon" not in e:
+                        c.warn("%s.max_var only shows something with an empty_icon" % label)
                 mx = c.get(e, "max", "int", label + ".max", lo=1, hi=30) or 1
                 sp = c.get(e, "spacing", "int", label + ".spacing", required=False, default=size * 8, lo=8, hi=64)
                 if sp % 8:

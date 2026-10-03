@@ -7,6 +7,7 @@ void bhv_chase_player_update(Actor *a, const void *params) {
     Actor *pl = actor_player();
     if (a->anim_lock) return;
     s32 dx = 0, dy = 0;
+    if (a->stun) pl = NULL;                     // stunned: hold still like with no player
     if (pl) {
         dx = fx_to_int(pl->x) - fx_to_int(a->x);
         dy = fx_to_int(pl->y) - fx_to_int(a->y);

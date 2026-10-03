@@ -208,6 +208,7 @@ void actor_die(Actor *a, int stay) {
     a->solid_mode = SOLID_NONE;
     a->blink = 0;
     a->anim_lock = 0;
+    a->stun = 0;
     a->vx = 0;
     if (stay) {
         a->vy = 0;
@@ -251,5 +252,6 @@ void actor_update_all(void) {
         }
         if (a->blink) a->blink--;
         if (a->anim_lock) a->anim_lock--;
+        if (a->stun) a->stun--;
     }
 }

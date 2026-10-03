@@ -16,7 +16,8 @@
   ],
   "on_pick": [
     {"do": "add_var", "var": "max_health", "value": 1},
-    {"do": "add_var", "var": "health", "value": 1, "max_var": "max_health"}
+    {"do": "add_var", "var": "health", "value": 1, "max_var": "max_health"},
+    {"do": "play_sfx", "sfx": "sfx_heal"}
   ],
   "children": ["icon_up_heart"]
 }

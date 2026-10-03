@@ -274,6 +274,7 @@
     {"id": "upg_meat", "kind": "object", "type": "upgrade", "path": "objects/upgrade/upg_meat.json", "parent": null},
     {"id": "icon_skull", "kind": "object", "type": "icon", "path": "objects/icon/icon_skull.json", "parent": "hud_run"},
     {"id": "icon_coin", "kind": "object", "type": "icon", "path": "objects/icon/icon_coin.json", "parent": null},
+    {"id": "icon_heart_empty", "kind": "object", "type": "icon", "path": "objects/icon/icon_heart_empty.json", "parent": "hud_run"},
     {"id": "hud_run", "kind": "object", "type": "hud", "path": "objects/hud/hud_run.json", "parent": null},
     {"id": "hud_title", "kind": "object", "type": "hud", "path": "objects/hud/hud_title.json", "parent": null},
     {"id": "hud_shop", "kind": "object", "type": "hud", "path": "objects/hud/hud_shop.json", "parent": null},
