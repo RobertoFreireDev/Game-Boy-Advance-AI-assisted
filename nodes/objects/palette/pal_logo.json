@@ -1,0 +1,21 @@
+{
+  "id": "pal_logo",
+  "kind": "object",
+  "type": "palette",
+  "name": "Title logo colors",
+  "notes": "The big NIGHT SWARM logo: black outline and a deep purple drop shadow, white highlights, moonlit lavender (4 shades, light to dark) for NIGHT and blood red (4 shades) for SWARM.",
+  "colors": [
+    "#000000",
+    "#08060e",
+    "#1c0e2a",
+    "#ffffff",
+    "#e6e2ff",
+    "#b8b0ec",
+    "#8478cc",
+    "#5a4aa4",
+    "#ff8a6a",
+    "#e83a34",
+    "#b01e2e",
+    "#701028"
+  ]
+}

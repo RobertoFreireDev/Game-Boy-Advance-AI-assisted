@@ -3,16 +3,16 @@
   "kind": "object",
   "type": "icon",
   "name": "Menu cursor",
-  "notes": "White arrow that points at the selected menu option.",
+  "notes": "Gold arrow that points at the selected menu option: dark outline, white glint on the top edge, yellow body, orange shade underneath (matches the gold coins).",
   "palette": "pal_ui",
   "pixels": [
-    "1.......",
-    "121.....",
-    "1221....",
-    "12221...",
-    "1221....",
-    "121.....",
-    "1.......",
+    "11......",
+    "1211....",
+    "124411..",
+    "14444a1.",
+    "14aa11..",
+    "1a11....",
+    "11......",
     "........"
   ]
 }

@@ -197,3 +197,10 @@ If a new game pushes past this (more actors, bullets, particles), measure with t
 - Icons on boxes in a palette other than the font's (transparent pixels show the map).
 - Sprite sizes that aren't valid OBJ sizes; UI positions that aren't multiples of 8.
 - Bash heredocs with long multi-line text: write the script to a scratchpad file instead.
+- Painted backdrops (title art, skylines): paint the whole 240x160 picture in a scratchpad Python
+  script, cut it into 8x8 tiles and merge identical ones. A tileset has only 93 tile characters, so
+  split a busy picture over layers 3 (far) and 2 (near), make hill lines repeat every 80 px, keep
+  dithers and edges on the tile grid, and snap small repeated details (eyes, posts) to the same
+  spot inside a tile. Night Swarm's map_sky / map_night / map_logo were made this way.
+- Redrawing a level map: generate it from the committed layout (`git show HEAD:...`), never from
+  the file you just rewrote, and assert that the solid cells did not move.

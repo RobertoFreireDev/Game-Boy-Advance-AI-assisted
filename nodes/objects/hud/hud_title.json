@@ -3,10 +3,10 @@
   "kind": "object",
   "type": "hud",
   "name": "Title HUD",
-  "notes": "Title screen text: the goal at the top, banked gold at the bottom.",
+  "notes": "Title screen text: the goal under the logo, banked gold at the bottom.",
   "font": "font_default",
   "elements": [
-    {"kind": "text", "x": 48, "y": 16, "text": "SURVIVE 10 MINUTES"},
+    {"kind": "text", "x": 48, "y": 48, "text": "SURVIVE 10 MINUTES"},
     {"kind": "icon", "x": 88, "y": 152, "icon": "icon_coin"},
     {"kind": "text", "x": 96, "y": 152, "text": "GOLD {gold}"}
   ]

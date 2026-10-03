@@ -1,0 +1,35 @@
+{
+  "id": "map_sky",
+  "kind": "object",
+  "type": "tilemap",
+  "name": "Night sky",
+  "notes": "One screen (30x20 tiles), the farthest layer behind the title, the shop and the results: starry sky glowing toward the horizon, a big moon low on the right, rolling far hills with a ruined castle on the left. The near hills and graveyard (map_night) are drawn in front of it.",
+  "tileset": "ts_sky",
+  "layer": 3,
+  "parallax": 1,
+  "rows": [
+    "A.....A...B.BA.C.C....D.D.....",
+    "..................ADC...A...C.",
+    "..............................",
+    "..............................",
+    ".BE......................ADD..",
+    ".....A...................FGH..",
+    "........................IJKLM.",
+    "NONNNNNNNNNNNNNNNNNNNNNPQRSTUN",
+    "VWXYYYZYYYYYYYYYYYYYYYYabcdefY",
+    "ghijjkijjjjjjjjjjjjjjjjlmnopqj",
+    "rstuuvwxxxxxxxxxxxxxxxxxyz012x",
+    "34W5WW67888888889#888888889#88",
+    "*WWWWWW+=-__//\\|<>=-__//\\|<>=-",
+    "^~:::::::;^~:::::::;^~:::::::;",
+    "::::::::::::::::::::::::::::::",
+    "::::::::::::::::::::::::::::::",
+    "::::::::::::::::::::::::::::::",
+    "::::::::::::::::::::::::::::::",
+    "::::::::::::::::::::::::::::::",
+    "::::::::::::::::::::::::::::::"
+  ],
+  "children": [
+    "ts_sky"
+  ]
+}

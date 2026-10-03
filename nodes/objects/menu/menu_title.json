@@ -3,12 +3,11 @@
   "kind": "object",
   "type": "menu",
   "name": "Title menu",
-  "notes": "START RUN begins a new night, POWER UPS opens the permanent shop, HOW TO PLAY explains the game.",
+  "notes": "Sits under the big logo (so it has no title of its own). START RUN begins a new night, POWER UPS opens the permanent shop, HOW TO PLAY explains the game.",
   "font": "font_default",
-  "title": "NIGHT SWARM",
   "cursor": "icon_cursor",
-  "box": {"x": 56, "y": 64, "w": 128, "h": 88, "paper": 3, "border": 2},
-  "layout": {"x": 80, "y": 96, "spacing": 16, "title_y": 80},
+  "box": {"x": 56, "y": 88, "w": 128, "h": 56, "paper": 3, "border": 2},
+  "layout": {"x": 80, "y": 96, "spacing": 16},
   "options": [
     {
       "label": "START RUN",

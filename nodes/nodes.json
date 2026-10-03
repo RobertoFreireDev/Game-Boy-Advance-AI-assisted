@@ -173,6 +173,7 @@
     {"id": "pal_fx", "kind": "object", "type": "palette", "path": "objects/palette/pal_fx.json", "parent": null},
     {"id": "pal_field", "kind": "object", "type": "palette", "path": "objects/palette/pal_field.json", "parent": null},
     {"id": "pal_night", "kind": "object", "type": "palette", "path": "objects/palette/pal_night.json", "parent": null},
+    {"id": "pal_logo", "kind": "object", "type": "palette", "path": "objects/palette/pal_logo.json", "parent": null},
     {"id": "spr_hunter", "kind": "object", "type": "sprite", "path": "objects/sprite/spr_hunter.json", "parent": "body_hunter"},
     {"id": "anim_hunter_idle", "kind": "object", "type": "animation", "path": "objects/animation/anim_hunter_idle.json", "parent": "body_hunter"},
     {"id": "anim_hunter_walk", "kind": "object", "type": "animation", "path": "objects/animation/anim_hunter_walk.json", "parent": "body_hunter"},
@@ -304,6 +305,10 @@
     {"id": "ts_field", "kind": "object", "type": "tileset", "path": "objects/tileset/ts_field.json", "parent": "map_field"},
     {"id": "map_field", "kind": "object", "type": "tilemap", "path": "objects/tilemap/map_field.json", "parent": null},
     {"id": "ts_night", "kind": "object", "type": "tileset", "path": "objects/tileset/ts_night.json", "parent": "map_night"},
-    {"id": "map_night", "kind": "object", "type": "tilemap", "path": "objects/tilemap/map_night.json", "parent": null}
+    {"id": "map_night", "kind": "object", "type": "tilemap", "path": "objects/tilemap/map_night.json", "parent": null},
+    {"id": "ts_sky", "kind": "object", "type": "tileset", "path": "objects/tileset/ts_sky.json", "parent": "map_sky"},
+    {"id": "map_sky", "kind": "object", "type": "tilemap", "path": "objects/tilemap/map_sky.json", "parent": null},
+    {"id": "ts_logo", "kind": "object", "type": "tileset", "path": "objects/tileset/ts_logo.json", "parent": "map_logo"},
+    {"id": "map_logo", "kind": "object", "type": "tilemap", "path": "objects/tilemap/map_logo.json", "parent": null}
   ]
 }

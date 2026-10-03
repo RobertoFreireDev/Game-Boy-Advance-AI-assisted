@@ -8,7 +8,8 @@
   "music": "mus_title",
   "camera": {"x": 0, "y": 0, "bounds": "none"},
   "instances": [
-    {"id": "sky", "object": "map_night"},
+    {"id": "sky", "object": "map_sky"},
+    {"id": "graveyard", "object": "map_night"},
     {"id": "hud", "object": "hud_shop"},
     {"id": "menu", "object": "menu_shop"}
   ],

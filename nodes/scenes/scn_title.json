@@ -3,12 +3,14 @@
   "kind": "scene",
   "type": "title",
   "name": "Title",
-  "notes": "Title screen. Loads the save (banked gold and power ups) and shows the title menu over the night backdrop.",
+  "notes": "Title screen. Loads the save (banked gold and power ups) and shows the big NIGHT SWARM logo and the title menu over the night graveyard: starry sky, rising moon, a ruined castle and a dead tree.",
   "backdrop": "#101028",
   "music": "mus_title",
   "camera": {"x": 0, "y": 0, "bounds": "none"},
   "instances": [
-    {"id": "sky", "object": "map_night"},
+    {"id": "sky", "object": "map_sky"},
+    {"id": "graveyard", "object": "map_night"},
+    {"id": "logo", "object": "map_logo"},
     {"id": "hud", "object": "hud_title"},
     {"id": "menu", "object": "menu_title"}
   ],
