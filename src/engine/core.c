@@ -35,7 +35,11 @@ u32 rng_next(void) {
 
 s32 rng_range(s32 lo, s32 hi) {
     if (hi <= lo) return lo;
-    return lo + (s32)(rng_next() % (u32)(hi - lo + 1));
+    u32 span = (u32)(hi - lo + 1);
+    // Small ranges (all the game uses) scale 16 random bits with one multiply: the GBA has no
+    // divide instruction, and a % here cost ~100 cycles per particle, spawn and card.
+    if (span <= 0x10000) return lo + (s32)(((rng_next() >> 16) * span) >> 16);
+    return lo + (s32)(rng_next() % span);
 }
 
 u32 core_frame(void) { return s_frame; }

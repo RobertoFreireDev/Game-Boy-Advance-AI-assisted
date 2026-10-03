@@ -32,8 +32,11 @@ static inline fixed fx_sin_deg(s32 deg) {
         190, 193, 196, 199, 202, 204, 207, 210, 212, 215, 217, 219, 222, 224, 226, 228,
         230, 232, 234, 236, 237, 239, 241, 242, 243, 245, 246, 247, 248, 249, 250, 251,
         252, 253, 254, 254, 255, 255, 255, 256, 256, 256, 256 };
-    deg %= 360;
-    if (deg < 0) deg += 360;
+    if ((u32)deg >= 360u) {         // Thumb code has no fast divide: skip % for the usual angles
+        if (deg >= 360 && deg < 720) deg -= 360;
+        else if (deg < 0 && deg >= -360) deg += 360;
+        else { deg %= 360; if (deg < 0) deg += 360; }
+    }
     if (deg <= 90)  return quarter[deg];
     if (deg <= 180) return quarter[180 - deg];
     if (deg <= 270) return -quarter[deg - 180];

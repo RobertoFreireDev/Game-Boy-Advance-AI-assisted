@@ -536,7 +536,8 @@ src/engine/
 ├── scene.c/.h     load / unload scenes, spawn instances, transitions and fades
 ├── actor.iwram.c/.h   actor pool (in EWRAM), runs each actor's logic list every tick
 ├── physics.iwram.c/.h gravity, tile collision (solid/one_way/hazard/ladder), actor overlaps
-│                      (contacts only test the categories an actor lists, via per-frame buckets)
+│                      (contacts only test the categories an actor lists, via per-frame buckets;
+│                       big buckets many actors look into are binned in a 32 px grid)
 ├── anim.iwram.c/.h    animation players and frame events
 ├── particles.c/.h particle pool
 ├── camera.c/.h    follow target, clamp to bounds, shake
@@ -578,8 +579,11 @@ Palette banks are handed out per scene in first-use order (BG and OBJ separately
   node data is `node_<id>` in `generated/game_data.c`.
 - One module, one job. Each public function has a one-line comment in plain English.
 - Move hot code to IWRAM (ARM mode) only when a measured slowdown requires it: rename the file
-  `*.iwram.c` (done for actor, physics, anim, sprites and the `swarm` behavior after profiling
-  hordes of 60+ monsters). IWRAM is 32 KB shared with globals and the stack; keep it lean.
+  `*.iwram.c` (done for actor, physics, anim, sprites and the `swarm`, `projectile` and `health`
+  behaviors after profiling hordes of 60+ monsters). IWRAM is 32 KB shared with globals and the
+  stack (~27 KB used); keep it lean.
+- Thumb code (everything not `*.iwram.c`) has no fast divide or 64-bit multiply: in code that
+  runs per actor per tick avoid `/`, `%` by a variable and `fx_mul`, or move it to IWRAM.
 - Big pools live in EWRAM (`EWRAM_BSS`, not zeroed at boot: clear them yourself).
 - Zero warnings in our code.
 

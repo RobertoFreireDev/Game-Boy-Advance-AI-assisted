@@ -1,6 +1,8 @@
-// projectile - a launched shot: flies straight (or circles its owner), hurts the enemies it
-// touches and vanishes after its lifetime or after hitting enough enemies. Weapons launch it
-// with projectile_launch(); placed on its own it just flies right.
+// projectile.iwram.c (hot code: ARM in IWRAM) - a launched shot: flies straight (or circles its
+// owner), hurts the enemies it touches and vanishes after its lifetime or after hitting enough
+// enemies. Weapons launch it with projectile_launch(); placed on its own it just flies right.
+// In IWRAM because volleys launch many shots in one tick: as Thumb code each launch spent
+// ~1500 cycles in software divisions (ARM turns them into a multiply).
 #include "projectile.h"
 #include "behavior_params.h"
 #include "health.h"

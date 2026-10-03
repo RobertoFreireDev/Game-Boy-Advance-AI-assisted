@@ -69,6 +69,10 @@ void bhv_weapon_update(Actor *a, const void *params) {
 
     int count = p->count + (p->extra_every > 0 ? (lv - 1) / p->extra_every : 0);
     s32 base = rng_range(0, 359);
+    // Even spacing: step i is at i * 360 / count degrees, kept as a running quotient and
+    // remainder so the volley needs one division, not one per shot (no fast divide on the GBA).
+    if (count < 1) count = 1;
+    s32 step_q = 360 / count, step_r = 360 % count, q = 0, r = 0;
     for (int i = 0; i < count; i++) {
         fixed dx = ux, dy = uy;
         s32 angle = 0;
@@ -88,11 +92,14 @@ void bhv_weapon_update(Actor *a, const void *params) {
             break;
         case WEAPON_AIM_AROUND:
         case WEAPON_AIM_ORBIT:              // evenly spaced around the owner
-            angle = base + i * 360 / count;
+            angle = base + q;
             dx = fx_cos_deg(angle);
             dy = -fx_sin_deg(angle);
             break;
         }
+        q += step_q;
+        r += step_r;
+        if (r >= count) { r -= count; q++; }
         Actor *shot = scene_spawn(p->projectile, cx, cy);
         if (!shot) break;                   // actor pool full
         projectile_launch(shot, a, dx, dy, angle, p->damage_per_level * (lv - 1));

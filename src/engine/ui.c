@@ -55,10 +55,20 @@ static void put(int x, int y, u16 e) {
     if (x >= 0 && x < 30 && y >= 0 && y < 20) se_mem[SBB][y * 32 + x] = e;
 }
 
-static void clear_rect(int x, int y, int w, int h) {
-    for (int j = 0; j < h; j++)
-        for (int i = 0; i < w; i++) put(x + i, y + j, 0);
+// One row of a box: `left`, then `mid` repeated, then `right` (w tiles), clipped to the screen.
+// Rows are written straight into the map: a menu box is hundreds of tiles.
+static void put_row(int x, int y, int w, u16 left, u16 mid, u16 right) {
+    if (y < 0 || y >= 20 || w <= 0) return;
+    u16 *row = &se_mem[SBB][y * 32];
+    for (int i = x < 0 ? -x : 0; i < w && x + i < 30; i++)
+        row[x + i] = i == 0 ? left : i == w - 1 ? right : mid;
 }
+
+static void fill_rect(int x, int y, int w, int h, u16 e) {
+    for (int j = 0; j < h; j++) put_row(x, y + j, w, e, e, e);
+}
+
+static void clear_rect(int x, int y, int w, int h) { fill_rect(x, y, w, h, 0); }
 
 static void load_font(const FontData *f) {
     if (s_font == f) return;
@@ -68,11 +78,12 @@ static void load_font(const FontData *f) {
     memcpy32(&tile_mem[0][T_FONT], f->tiles, n * 8);
 }
 
-// One row of 4bpp pixels with the transparent ones painted in `paper`.
+// One row of 4bpp pixels with the transparent ones painted in `paper`. Branch-free: bit 0 of
+// each nibble of `used` is set for a non-zero pixel, so the multiply drops `paper` into every
+// transparent nibble at once (a pixel loop here made the first level-up menu skip frames).
 static u32 on_paper(u32 w, u8 paper) {
-    for (int k = 0; k < 8; k++)
-        if (((w >> (4 * k)) & 15) == 0) w |= (u32)paper << (4 * k);
-    return w;
+    u32 used = (w | (w >> 1) | (w >> 2) | (w >> 3)) & 0x11111111u;
+    return w | ((used ^ 0x11111111u) * paper);
 }
 
 // Glyphs with transparent pixels painted in the paper color, so text sits on the box.
@@ -85,19 +96,18 @@ static void load_paper_font(const FontData *f, u8 paper, u8 border) {
     int n = f->glyph_count > 127 ? 127 : f->glyph_count;
     u32 *dst = (u32 *)&tile_mem[0][T_PAPER];
     for (int i = 0; i < n * 8; i++) dst[i] = on_paper(f->tiles[i], paper);
-    // Box frame: 2-pixel border with cut corners, paper inside.
+    // Box frame: 2-pixel border with cut corners, paper inside. Built a row (8 pixels, one
+    // word) at a time: pixel x is nibble x, so the left two pixels are the low byte.
+    u32 all_paper = 0x11111111u * paper, all_border = 0x11111111u * border;
     for (int t = 0; t < 9; t++) {
         int left = t % 3 == 0, right = t % 3 == 2, top = t / 3 == 0, bottom = t / 3 == 2;
+        u32 edges = (left ? 0x000000FFu : 0) | (right ? 0xFF000000u : 0);
         u32 *d = (u32 *)&tile_mem[0][T_FRAME + t];
         for (int y = 0; y < 8; y++) {
-            u32 w = 0;
-            for (int x = 0; x < 8; x++) {
-                int edge = (left && x < 2) || (right && x > 5) || (top && y < 2) || (bottom && y > 5);
-                int cut = (left || right) && (top || bottom) &&
-                          (x == (left ? 0 : 7)) && (y == (top ? 0 : 7));
-                u32 c = cut ? 0 : edge ? border : paper;
-                w |= c << (4 * x);
-            }
+            u32 w = ((top && y < 2) || (bottom && y > 5)) ? all_border
+                                                          : (all_paper & ~edges) | (all_border & edges);
+            if ((left || right) && ((top && y == 0) || (bottom && y == 7)))
+                w &= left ? ~0x0000000Fu : ~0xF0000000u;     // cut corner pixel
             d[y] = w;
         }
     }
@@ -177,18 +187,15 @@ static int draw_text(int x, int y, const char *s, int paper) {
 }
 
 static void draw_box(const UiBox *b) {
+    u16 bank = (u16)(s_paper_bank << 12);
     for (int j = 0; j < b->h; j++) {
-        int row = j == 0 ? 0 : j == b->h - 1 ? 2 : 1;
-        for (int i = 0; i < b->w; i++) {
-            int col = i == 0 ? 0 : i == b->w - 1 ? 2 : 1;
-            put(b->x + i, b->y + j, (u16)((T_FRAME + row * 3 + col) | (s_paper_bank << 12)));
-        }
+        int t = T_FRAME + (j == 0 ? 0 : j == b->h - 1 ? 2 : 1) * 3;
+        put_row(b->x, b->y + j, b->w, (u16)(t | bank), (u16)((t + 1) | bank), (u16)((t + 2) | bank));
     }
 }
 
 static void fill_paper(int x, int y, int w, int h) {
-    for (int j = 0; j < h; j++)
-        for (int i = 0; i < w; i++) put(x + i, y + j, (u16)((T_FRAME + 4) | (s_paper_bank << 12)));
+    fill_rect(x, y, w, h, (u16)((T_FRAME + 4) | (s_paper_bank << 12)));
 }
 
 // ---- HUD -----------------------------------------------------------------------------
@@ -201,11 +208,39 @@ static int text_span(const char *s) {
     return n;
 }
 
-static void draw_hud(void) {
+#define HUD_SIG_MAX 32       // HUD elements that remember what they show (more are always redrawn)
+static u32 s_hud_sig[HUD_SIG_MAX];
+
+// A number that changes whenever what the element shows changes (the values it prints).
+static u32 hud_signature(const HudElement *e) {
+    if (e->kind == HUD_ICON) return 0;
+    if (e->kind != HUD_TEXT) return (u32)vars_get(e->var);
+    u32 sig = 0;
+    for (const char *s = e->text; *s; s++)
+        if ((*s == '\001' || *s == '\002') && s[1]) {
+            sig = sig * 31 + (u32)vars_get((s16)((u8)s[1] - 1));
+            s++;
+        }
+    return sig;
+}
+
+// Draw the HUD. all = 0 starts at the first element whose values changed: variables like the
+// kill count change almost every frame in a horde, and a full redraw each time is wasted work.
+// Everything after it is redrawn too, in order, so an element whose cleared area overlaps a
+// later one still ends up exactly as a full redraw would leave it.
+static void draw_hud(int all) {
     const HudData *h = s_hud;
     if (!h) return;
     load_font(h->font);
+    int from = all ? 0 : h->count;
     for (int i = 0; i < h->count; i++) {
+        u32 sig = i < HUD_SIG_MAX ? hud_signature(&h->elements[i]) : 0;
+        if (i >= HUD_SIG_MAX || sig != s_hud_sig[i]) {
+            if (i < from) from = i;
+        }
+        if (i < HUD_SIG_MAX) s_hud_sig[i] = sig;
+    }
+    for (int i = from; i < h->count; i++) {
         const HudElement *e = &h->elements[i];
         switch (e->kind) {
         case HUD_TEXT:
@@ -247,7 +282,7 @@ static void draw_hud(void) {
 
 void ui_show_hud(const HudData *h) {
     s_hud = h;
-    draw_hud();
+    draw_hud(1);
 }
 
 // ---- upgrade menus: pick up to N random upgrades the player can take -----------------
@@ -269,48 +304,40 @@ static void upg_find_all(void) {
 static const UpgradeData *upg(s16 node) { return (const UpgradeData *)g_nodes[node].data; }
 static s32 upg_level(const UpgradeData *u) { return u->var >= 0 ? vars_get(u->var) : 0; }
 
-// Can this weapon / item / evolution be offered now?
-static int upg_available(s16 node) {
-    const UpgradeData *u = upg(node);
-    if (upg_level(u) >= u->max_level) return 0;
-    for (int i = 0; i < u->req_count; i++)
-        if (upg_level(upg(u->reqs[i].upgrade)) < u->reqs[i].level) return 0;
-    for (int k = 0; k < s_upg_total; k++) {     // replaced by an evolution the player owns
-        const UpgradeData *e = upg(s_upg_nodes[k]);
-        if (e->replaces == node && upg_level(e) > 0) return 0;
+// What each upgrade (by its index in s_upg_nodes) can be offered as on the menu being opened.
+enum { CLS_EVOLUTION, CLS_NORMAL, CLS_BONUS, CLS_NONE };
+static u8 s_upg_class[NODE_COUNT];
+
+// Work out every upgrade's class once per menu: maxed weapons/items, incomplete evolution
+// recipes and weapons replaced by an owned evolution can't be offered.
+static void upg_classify(void) {
+    for (int i = 0; i < s_upg_total; i++) {
+        const UpgradeData *u = upg(s_upg_nodes[i]);
+        u8 c = u->category == UPG_BONUS ? CLS_BONUS : u->category == UPG_EVOLUTION ? CLS_EVOLUTION : CLS_NORMAL;
+        if (c != CLS_BONUS && upg_level(u) >= u->max_level) c = CLS_NONE;
+        for (int r = 0; r < u->req_count && c != CLS_NONE && c != CLS_BONUS; r++)
+            if (upg_level(upg(u->reqs[r].upgrade)) < u->reqs[r].level) c = CLS_NONE;
+        s_upg_class[i] = c;
     }
-    return 1;
-}
-
-// Class 0 = evolutions, 1 = weapons and items, 2 = bonus fillers.
-static int upg_in_class(s16 node, int cls) {
-    u8 c = upg(node)->category;
-    if (cls == 2) return c == UPG_BONUS;
-    if (c == UPG_BONUS || (c == UPG_EVOLUTION) != (cls == 0)) return 0;
-    return upg_available(node);
-}
-
-static int upg_picked(s16 node) {
-    for (int i = 0; i < s_up_count; i++)
-        if (s_up[i] == node) return 1;
-    return 0;
-}
-
-static int upg_candidate(s16 n, int cls) {
-    return !upg_picked(n) && upg_in_class(n, cls);
+    for (int k = 0; k < s_upg_total; k++) {
+        const UpgradeData *e = upg(s_upg_nodes[k]);
+        if (e->replaces < 0 || upg_level(e) <= 0) continue;
+        for (int i = 0; i < s_upg_total; i++)
+            if (s_upg_nodes[i] == e->replaces && s_upg_class[i] != CLS_BONUS) s_upg_class[i] = CLS_NONE;
+    }
 }
 
 // Add random upgrades of one class until there are `want` choices (or none are left).
 static void upg_pick_class(int cls, int want) {
     while (s_up_count < want) {
         int k = 0;
-        for (int i = 0; i < s_upg_total; i++)
-            if (upg_candidate(s_upg_nodes[i], cls)) k++;
+        for (int i = 0; i < s_upg_total; i++) k += s_upg_class[i] == cls;
         if (!k) return;
         int r = rng_range(0, k - 1);
         for (int i = 0; i < s_upg_total; i++)
-            if (upg_candidate(s_upg_nodes[i], cls) && r-- == 0) {
+            if (s_upg_class[i] == cls && r-- == 0) {
                 s_up[s_up_count++] = s_upg_nodes[i];
+                s_upg_class[i] = CLS_NONE;          // never twice on the same menu
                 break;
             }
     }
@@ -320,8 +347,9 @@ static void upg_pick_class(int cls, int want) {
 static void upg_pick(int want) {
     if (want > MAX_UPGRADE_CHOICES) want = MAX_UPGRADE_CHOICES;
     upg_find_all();
+    upg_classify();
     s_up_count = 0;
-    for (int cls = 0; cls < 3; cls++) upg_pick_class(cls, want);
+    for (int cls = CLS_EVOLUTION; cls <= CLS_BONUS; cls++) upg_pick_class(cls, want);
 }
 
 static void draw_upgrade_card(int i) {
@@ -387,7 +415,7 @@ static void draw_menu(void) {
 
 static void close_box(void) {
     memset32(&se_mem[SBB][0], 0, 512);
-    draw_hud();
+    draw_hud(1);
 }
 
 void ui_open_menu(const MenuData *m) {
@@ -544,5 +572,5 @@ int ui_blocking(void) { return s_menu != NULL || s_dlg != NULL; }
 void ui_update(void) {
     if (s_dlg) dialog_update();
     else if (s_menu) menu_update();
-    if (s_hud && s_hud_version != vars_version() && !s_dlg && !s_menu) draw_hud();
+    if (s_hud && s_hud_version != vars_version() && !s_dlg && !s_menu) draw_hud(0);
 }

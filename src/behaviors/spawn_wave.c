@@ -1,7 +1,8 @@
 // spawn_wave - brings in enemies just off screen around the camera, during a time window of
 // the run (read from a seconds variable). Formations: scatter (each one on a random side),
 // group (a pack from one side) or ring (a circle closing in on the player). A big wave appears
-// over a few ticks (at most SPAWN_PER_TICK per tick) so it never stalls a frame.
+// over a few ticks so it never stalls a frame: at most SPAWN_PER_TICK monsters per tick for all
+// the waves together (several waves often come due on the same tick).
 #include "spawn_wave.h"
 #include "behavior_params.h"
 #include "engine/vars.h"
@@ -9,10 +10,14 @@
 #include "engine/camera.h"
 #include "engine/bg.h"
 #include "engine/actions.h"
+#include "engine/core.h"
 
 enum { ST_TIMER, ST_DONE, ST_PENDING, ST_GROUP, ST_BASE };
 
 #define SPAWN_PER_TICK 3
+
+static u32 s_tick_frame;            // frame the budget below belongs to
+static int s_tick_spawned;          // monsters spawned by every wave this frame
 
 #define RING_RADIUS 150             // just outside the screen corners (half diagonal = 144)
 #define GROUP_JITTER 14
@@ -55,12 +60,17 @@ void bhv_spawn_wave_update(Actor *a, const void *params) {
         st[ST_BASE] = (u32)rng_range(0, 359);
     }
     if (!st[ST_PENDING]) return;
+    if (s_tick_frame != core_frame()) {
+        s_tick_frame = core_frame();
+        s_tick_spawned = 0;
+    }
+    if (s_tick_spawned >= SPAWN_PER_TICK) return;      // the rest waits for the next tick
 
     int alive = actor_count_node(p->object), free = actor_free_slots(), spawned = 0;
     const Actor *pl = actor_player();
     s32 px = pl ? fx_to_int(pl->x) : camera_x() + 120, py = pl ? fx_to_int(pl->y) : camera_y() + 88;
     s32 gx = (s16)(st[ST_GROUP] & 0xFFFF), gy = (s16)(st[ST_GROUP] >> 16);
-    while (st[ST_PENDING] && spawned < SPAWN_PER_TICK) {
+    while (st[ST_PENDING] && s_tick_spawned < SPAWN_PER_TICK) {
         if (alive >= p->max_alive || free <= p->reserve) {
             st[ST_PENDING] = 0;                 // full: the rest of this wave is skipped
             break;
@@ -90,6 +100,7 @@ void bhv_spawn_wave_update(Actor *a, const void *params) {
         alive++;
         free--;
         spawned++;
+        s_tick_spawned++;
     }
     if (spawned && !st[ST_DONE]) {
         st[ST_DONE] = 1;

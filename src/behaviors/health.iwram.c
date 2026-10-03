@@ -1,5 +1,6 @@
-// health - hit points, invincibility after a hit, knockback, death. Spikes and falling
-// off the map also hurt. Other behaviors call health_damage().
+// health.iwram.c (hot code: ARM in IWRAM) - hit points, invincibility after a hit, knockback,
+// death. Spikes and falling off the map also hurt. Other behaviors call health_damage().
+// In IWRAM because every monster of a horde runs it each tick and every shot hit calls it.
 // Side view (body with gravity): knocked back sideways and up, dies by falling off the screen.
 // Top-down (no gravity): knocked straight away from the hit, slowing down; dies in place.
 #include "health.h"

@@ -39,8 +39,10 @@ void particles_emit_one(const ParticleData *d, s32 x, s32 y) {
     p->life = d->lifetime;
     p->x = fx_from_int(x);
     p->y = fx_from_int(y);
-    p->vx = fx_mul(fx_cos_deg(angle), speed);
-    p->vy = -fx_mul(fx_sin_deg(angle), speed);           // 90 degrees = up
+    // |cos| <= 1.0, so a plain 32-bit multiply can't overflow (fx_mul's 64-bit one is a slow
+    // library call in Thumb code, and an aura pulse emits 16 of these at once).
+    p->vx = (fx_cos_deg(angle) * speed) >> FX_SHIFT;
+    p->vy = -((fx_sin_deg(angle) * speed) >> FX_SHIFT);  // 90 degrees = up
     p->gravity = d->gravity;
     anim_start(&p->anim, d->anim, NULL);
 }

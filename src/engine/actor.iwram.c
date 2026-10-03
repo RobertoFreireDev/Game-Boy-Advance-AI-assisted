@@ -1,12 +1,23 @@
 // actor.iwram.c - (hot code: ARM in IWRAM) the actor pool and logic-list runner.
+#include <stddef.h>
 #include <string.h>
 #include "actor.h"
 #include "actions.h"
 #include "audio.h"
 #include "camera.h"
+#include "core.h"
 
 EWRAM_BSS Actor g_actors[MAX_ACTORS];   // too big for IWRAM with hordes; EWRAM has room
 static int s_slot;              // logic entry currently running (for bhv_state)
+
+// Bookkeeping kept up to date on spawn / die / destroy, so the questions waves and weapons ask
+// every tick ("how many bats are alive?", "is the pool full?", "where is the player?") don't
+// walk the whole pool in slow EWRAM.
+static int s_first_free;        // no free slot below this index
+static int s_active;            // actors in the pool (dying ones included)
+static u8 s_node_live[NODE_COUNT];  // live (not dying) actors per node
+static Actor *s_player;         // last player found (checked before use)
+static u32 s_no_player_frame;   // frame in which a search found no live player (+1; 0 = none)
 
 #define DIE_FALL_TICKS 90
 #define DIE_STAY_TICKS 30
@@ -33,11 +44,6 @@ int actor_logic_index(const Actor *a, u8 behavior) {
 
 int actor_has_slot(const Actor *a, u8 slot) {
     return a->body && a->body->anims[slot] != NULL;
-}
-
-int actor_slot_vertical(u8 slot) {
-    return slot == ANIM_IDLE_UP || slot == ANIM_IDLE_DOWN || slot == ANIM_WALK_UP ||
-           slot == ANIM_WALK_DOWN || slot == ANIM_ATTACK_UP || slot == ANIM_ATTACK_DOWN;
 }
 
 void actor_face(Actor *a, int dx, int dy) {
@@ -91,20 +97,37 @@ void actor_sound(const Actor *a, u8 event) {
 }
 
 Actor *actor_player(void) {
+    Actor *p = s_player;
+    if (p && p->active && p->type == NT_PLAYER && !(p->flags & ACTOR_DYING)) return p;
+    // No live player (e.g. while the hero's death plays): search once per frame, not once per
+    // monster asking. A player spawned later this frame registers itself in actor_spawn.
+    u32 f = core_frame() + 1;
+    if (!p && s_no_player_frame == f) return NULL;
+    s_player = NULL;
     for (int i = 0; i < MAX_ACTORS; i++)
         if (g_actors[i].active && g_actors[i].type == NT_PLAYER && !(g_actors[i].flags & ACTOR_DYING))
-            return &g_actors[i];
+            return s_player = &g_actors[i];
+    s_no_player_frame = f;
     return NULL;
 }
 
 Actor *actor_spawn(s16 node, s32 x, s32 y, const LogicEntry *logic, u8 logic_count, s16 inst) {
     const ActorData *d = (const ActorData *)g_nodes[node].data;
     Actor *a = NULL;
-    for (int i = 0; i < MAX_ACTORS; i++)
-        if (!g_actors[i].active) { a = &g_actors[i]; break; }
-    if (!a) return NULL;
-    memset(a, 0, sizeof(*a));
+    for (int i = s_first_free; i < MAX_ACTORS; i++)
+        if (!g_actors[i].active) { a = &g_actors[i]; s_first_free = i + 1; break; }
+    if (!a) {
+        s_first_free = MAX_ACTORS;
+        return NULL;
+    }
+    if (logic_count > MAX_LOGIC) logic_count = MAX_LOGIC;
+    // Clear only what this actor uses: the state rows of its own behaviors (a shot has one).
+    memset(a, 0, offsetof(Actor, state));
+    memset(a->state, 0, logic_count * sizeof(a->state[0]));
+    s_active++;
+    s_node_live[node]++;
     a->active = 1;
+    if (d->type == NT_PLAYER && !s_player) s_player = a;
     a->type = d->type;
     a->category = d->category;
     a->node = node;
@@ -112,7 +135,7 @@ Actor *actor_spawn(s16 node, s32 x, s32 y, const LogicEntry *logic, u8 logic_cou
     a->data = d;
     a->body = d->body;
     a->logic = logic;
-    a->logic_count = logic_count > MAX_LOGIC ? MAX_LOGIC : logic_count;
+    a->logic_count = logic_count;
     a->x = a->prev_x = fx_from_int(x);
     a->y = a->prev_y = fx_from_int(y);
     a->home_x = x;
@@ -144,33 +167,43 @@ Actor *actor_spawn(s16 node, s32 x, s32 y, const LogicEntry *logic, u8 logic_cou
 }
 
 int actor_count_node(s16 node) {
-    int n = 0;
-    for (int i = 0; i < MAX_ACTORS; i++)
-        if (g_actors[i].active && g_actors[i].node == node && !(g_actors[i].flags & ACTOR_DYING)) n++;
-    return n;
+    return (node >= 0 && node < NODE_COUNT) ? s_node_live[node] : 0;
 }
 
-int actor_free_slots(void) {
-    int n = 0;
-    for (int i = 0; i < MAX_ACTORS; i++)
-        if (!g_actors[i].active) n++;
-    return n;
-}
+int actor_free_slots(void) { return MAX_ACTORS - s_active; }
 
 void actor_destroy(Actor *a) {
     if (!a->active) return;
+    if (!(a->flags & ACTOR_DYING)) s_node_live[a->node]--;
+    s_active--;
+    int i = actor_index(a);
+    if (i < s_first_free) s_first_free = i;
     a->active = 0;
     scripts_forget_actor(a);
     camera_forget(a);
 }
 
 void actor_clear_all(void) {
-    memset(g_actors, 0, sizeof(g_actors));      // EWRAM .sbss is not zeroed at boot
+    // EWRAM .sbss is not zeroed at boot: wipe the whole pool once. After that, freeing every
+    // slot is enough (actor_spawn clears a slot when it takes it); wiping 28 KB of slow EWRAM
+    // took most of a frame on every scene change.
+    static u8 s_wiped;
+    if (!s_wiped) {
+        memset(g_actors, 0, sizeof(g_actors));
+        s_wiped = 1;
+    }
+    for (int i = 0; i < MAX_ACTORS; i++) g_actors[i].active = 0;
+    memset(s_node_live, 0, sizeof(s_node_live));
+    s_first_free = 0;
+    s_active = 0;
+    s_player = NULL;
+    s_no_player_frame = 0;
 }
 
 void actor_die(Actor *a, int stay) {
     if (!a->active || (a->flags & ACTOR_DYING)) return;
     a->flags |= ACTOR_DYING;
+    s_node_live[a->node]--;
     a->collides = 0;
     a->solid_mode = SOLID_NONE;
     a->blink = 0;

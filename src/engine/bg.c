@@ -92,29 +92,47 @@ void bg_set_camera(s32 x, s32 y) {
     }
 }
 
-static u16 entry_at(const Layer *L, s32 tx, s32 ty) {
-    const TilemapData *m = L->map;
-    if (ty < 0 || ty >= m->height) return 0;
+// Map rows/columns are copied into the 32x32 hardware map with a pointer per row, not a
+// bounds-checked lookup per tile: a full redraw (scene load) is 651 tiles per layer, and every
+// tile step of the camera streams a row or a column during VBlank.
+
+// Column tx of the map (wrapped if the map repeats sideways), or -1 if it's off the map.
+static s32 map_column(const TilemapData *m, s32 tx) {
     if (m->repeat_x) {
         tx %= m->width;
-        if (tx < 0) tx += m->width;
-    } else if (tx < 0 || tx >= m->width) {
-        return 0;
+        return tx < 0 ? tx + m->width : tx;
     }
-    u8 cell = m->cells[ty * m->width + tx];
-    return cell ? (u16)(cell | (L->bank << 12)) : 0;
+    return (tx < 0 || tx >= m->width) ? -1 : tx;
 }
 
-static void put(int n, const Layer *L, s32 tx, s32 ty) {
-    se_mem[31 - n][(ty & 31) * 32 + (tx & 31)] = entry_at(L, tx, ty);
-}
-
-static void draw_column(int n, const Layer *L, s32 tx, s32 ty0) {
-    for (int i = 0; i < VIEW_ROWS; i++) put(n, L, tx, ty0 + i);
-}
-
+// One row of the visible window: map row ty, VIEW_COLS tiles from column tx0.
 static void draw_row(int n, const Layer *L, s32 ty, s32 tx0) {
-    for (int i = 0; i < VIEW_COLS; i++) put(n, L, tx0 + i, ty);
+    const TilemapData *m = L->map;
+    u16 *dst = &se_mem[31 - n][(ty & 31) * 32];
+    if (ty < 0 || ty >= m->height) {
+        for (int i = 0; i < VIEW_COLS; i++) dst[(tx0 + i) & 31] = 0;
+        return;
+    }
+    const u8 *row = &m->cells[ty * m->width];
+    u16 bank = (u16)(L->bank << 12);
+    s32 w = m->width, tx = m->repeat_x ? map_column(m, tx0) : tx0;
+    for (int i = 0; i < VIEW_COLS; i++, tx0++, tx++) {
+        if (m->repeat_x && tx >= w) tx -= w;
+        u8 cell = (tx >= 0 && tx < w) ? row[tx] : 0;
+        dst[tx0 & 31] = cell ? (u16)(cell | bank) : 0;
+    }
+}
+
+// One column of the visible window: map column tx, VIEW_ROWS tiles from row ty0.
+static void draw_column(int n, const Layer *L, s32 tx, s32 ty0) {
+    const TilemapData *m = L->map;
+    u16 *dst = &se_mem[31 - n][tx & 31];
+    s32 col = map_column(m, tx);
+    u16 bank = (u16)(L->bank << 12);
+    for (int i = 0; i < VIEW_ROWS; i++, ty0++) {
+        u8 cell = (col >= 0 && ty0 >= 0 && ty0 < m->height) ? m->cells[ty0 * m->width + col] : 0;
+        dst[(ty0 & 31) * 32] = cell ? (u16)(cell | bank) : 0;
+    }
 }
 
 static void stream(int n) {

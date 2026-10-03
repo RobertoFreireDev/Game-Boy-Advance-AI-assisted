@@ -67,7 +67,10 @@ void actor_play_slot(Actor *a, u8 slot);
 // when it is one of the two directions, otherwise prefers left/right.
 void actor_face(Actor *a, int dx, int dy);
 // True for the slots drawn as seen from above/below (*_up, *_down): never mirrored.
-int actor_slot_vertical(u8 slot);
+static inline int actor_slot_vertical(u8 slot) {
+    return slot == ANIM_IDLE_UP || slot == ANIM_IDLE_DOWN || slot == ANIM_WALK_UP ||
+           slot == ANIM_WALK_DOWN || slot == ANIM_ATTACK_UP || slot == ANIM_ATTACK_DOWN;
+}
 // True if the body has an animation in this slot.
 int actor_has_slot(const Actor *a, u8 slot);
 // Play one of the actor's sounds (SND_*), if it has one.

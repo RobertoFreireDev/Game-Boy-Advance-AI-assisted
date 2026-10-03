@@ -124,11 +124,20 @@ engine architecture (CLAUDE.md rule 8).
 Build it in the **session scratchpad**, never in the repo (it is not committed):
 
 1. **Test ROM**: compile all sources with `-g` (`*.iwram.c` with `build.py`'s `IWRAM_FLAGS`),
-   but swap in two test copies:
-   - `src/engine/input.c` → a scripted-input version: auto-plays (e.g. walks in patterns),
-     counts lag frames with cascaded timers TM2/TM3, and calls an empty
-     `test_checkpoint()` every 600 frames.
-   - `src/engine/core.c` → a copy with per-phase cycle counters around each step of the frame.
+   with two test changes:
+   - `src/engine/input.c` → a scripted-input version: auto-plays (walks long lines in 8
+     directions, taps A in menus), counts lag frames with cascaded timers TM2/TM3, and calls an
+     empty `test_checkpoint()` every 600 frames. Give it knobs gdb can set at a checkpoint:
+     clock warp, god mode, max loadout (write the weapon/item variables every frame), freeze XP
+     (no level-up pauses), immortal enemies (fills the pool: the true upper bound).
+   - Every other change is a **patch applied to a copy of the real source** at build time
+     (Python `str.replace` with an assert that the anchor exists), never a hand-made copy of a
+     file: a copied `core.c` silently kept an old slow `rng_range` and gave wrong profiles.
+     Patch `core.c`'s loop with per-phase cycle counters (worst frame and its breakdown, frames
+     over 70/80/90/100 %), and optionally wrap functions (`actor_spawn`, `health_damage`,
+     behavior updates, scene loads) with timers.
+   - Per-call timers cost ~100 cycles each (hundreds per frame in a horde): keep a "light" mode
+     with only the per-phase counters for the real numbers.
    Alternatively change a *copy* of `nodes/` (start scene, player position) and build the copy.
 2. **Run**: `mGBA.exe -g test.gba`, then `arm-none-eabi-gdb -batch -x cmds.gdb test.elf`
    (`target remote :2345`). In `cmds.gdb`: `break test_checkpoint`; at each hit
@@ -146,14 +155,31 @@ Pitfalls:
 
 ## 6. Performance lessons (Night Swarm, measured in the emulator)
 
-Hordes of ~65 monsters run at ~1 slow frame per 10 s after these changes. Reuse them, don't
-redo them:
+One frame = 280,896 CPU cycles. Measured worst frames (no lag in any of them): normal play 54 %,
+max loadout + level-ups + boss 72 %, a full pool of ~70 monsters 70 %, max loadout against a
+full pool of monsters that never die (unreachable upper bound) ~90 %. Reuse these, don't redo
+them:
 - Actor pool (96) in EWRAM; contacts tested only for listed categories via per-frame buckets
-  with cached hitboxes; still actors skip physics.
-- Hot files are ARM code in IWRAM (`*.iwram.c`): actor, physics, anim, sprites, `swarm`.
-  IWRAM is 32 KB shared with globals and stack — move code there only after measuring.
-- Horde aiming every 8 frames; crowd spreading through a small occupancy grid;
-  `spawn_wave` spawns at most 3 monsters per frame.
+  with cached hitboxes, built in the same pass that moves actors; big buckets that many actors
+  look into (a horde vs a volley) are binned into a 32 px grid. Free movers skip collision code.
+- Hot files are ARM code in IWRAM (`*.iwram.c`): actor, physics, anim, sprites, `swarm`,
+  `projectile`, `health`. IWRAM is 32 KB shared with globals and stack (~27 KB used) — move
+  code there only after measuring.
+- **Thumb code is the trap**: no divide instruction and no 64-bit multiply. A `%` or `/` by a
+  variable is a ~300–1000 cycle library call, by a constant still a call, and `fx_mul` is a call
+  too. `rng_range` once cost ~1000 cycles (now one multiply); `projectile_launch` cost ~1500
+  (now ARM). Keep per-actor-per-tick Thumb code free of them.
+- Pool questions are O(1): live count per node, free slots, first free slot, cached player
+  (a missing player is searched once per frame, not once per monster).
+- Bursts are spread: `spawn_wave` spawns at most 3 monsters per tick for all waves together;
+  an `aura` pulse sweeps the pool in 3 slices on 3 ticks (kill bursts spawn gems and run scripts).
+- Horde: aim every 8 frames; crowd check reads the 2x2 grid cells the push zone can touch;
+  EWRAM fields are read once into locals.
+- Sprites: sheet numbers cached in IWRAM, far off-screen actors skipped early.
+- UI: the HUD redraws from the first changed element on (not everything on every change);
+  menus/boxes write whole rows; paper-font tiles are converted with bit tricks, not per pixel.
+- Scene loads (~40–60 % of a frame, under a black fade): the actor pool is wiped once at boot,
+  later only freed; maps stream with a pointer per row.
 
 If a new game pushes past this (more actors, bullets, particles), measure with the harness
 (§5) before optimizing, and record the result in the commit message and here.

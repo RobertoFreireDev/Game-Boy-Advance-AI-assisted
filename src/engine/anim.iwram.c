@@ -45,10 +45,6 @@ void anim_update(void) {
     }
 }
 
-const AnimFrame *anim_frame(const AnimPlayer *p) {
-    return p->anim ? &p->anim->frames[p->frame] : NULL;
-}
-
 int anim_length(const AnimationData *a) {
     int t = 0;
     if (a)

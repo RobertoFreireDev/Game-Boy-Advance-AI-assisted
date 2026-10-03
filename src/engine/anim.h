@@ -21,8 +21,10 @@ void anim_set(AnimPlayer *p, const AnimationData *a, struct Actor *owner);
 void anim_step(AnimPlayer *p, struct Actor *owner);
 // Advance every actor's animation by one tick.
 void anim_update(void);
-// The frame being shown (NULL if nothing plays).
-const AnimFrame *anim_frame(const AnimPlayer *p);
+// The frame being shown (NULL if nothing plays). Inline: the sprite list asks for every actor.
+static inline const AnimFrame *anim_frame(const AnimPlayer *p) {
+    return p->anim ? &p->anim->frames[p->frame] : NULL;
+}
 // Total length of an animation in ticks.
 int anim_length(const AnimationData *a);
 

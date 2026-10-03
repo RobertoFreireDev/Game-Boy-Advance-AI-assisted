@@ -6,8 +6,9 @@
 // Crowding uses a small occupancy grid instead of comparing every pair: the world is cut into
 // 16x16-pixel cells, folded onto a 32x32 table (it wraps every 512 pixels; the real distance
 // check sorts out far-away cells that share a slot). Each member writes "I am here, frame F"
-// into its cell, then looks at the 3x3 cells around it: 9 table reads per member per tick.
-// Marks older than one frame are ignored, so the table never needs clearing.
+// into its cell, then looks at the cells its 24x24-pixel push zone overlaps: at most 2x2, as a
+// zone narrower than two cells can't span three. Marks older than one frame are ignored, so
+// the table never needs clearing.
 #include "swarm.h"
 #include "behavior_params.h"
 #include "engine/core.h"
@@ -36,17 +37,22 @@ void bhv_swarm_init(Actor *a, const void *params) {
     a->gravity = 0;
 }
 
-// Push away from same-category members marked in the 3x3 cells around (x, y), then mark our cell.
-static void separate(Actor *a, u32 *st, int idx, s32 x, s32 y) {
-    u32 now = core_frame() & 255;
+// Push away from same-category members marked in the cells around (x, y), then mark our cell.
+// Returns the push in *out_x, *out_y (fixed). The actor's fields live in slow EWRAM, so the caller
+// reads them once and passes them in.
+static void separate(u32 *st, int idx, u8 cat, s32 x, s32 y, u32 frame, fixed *out_x, fixed *out_y) {
+    u32 now = frame & 255;
     fixed px = (s32)st[ST_PUSH_X] * 3 / 4, py = (s32)st[ST_PUSH_Y] * 3 / 4;
-    for (s32 cy = y - (1 << CELL_SHIFT); cy <= y + (1 << CELL_SHIFT); cy += 1 << CELL_SHIFT) {
-        for (s32 cx = x - (1 << CELL_SHIFT); cx <= x + (1 << CELL_SHIFT); cx += 1 << CELL_SHIFT) {
-            u32 m = s_grid[cell_of(cx, cy)];
+    s32 r = SEPARATION - 1;             // a neighbour can only be in the cells this zone touches
+    s32 cx0 = (x - r) >> CELL_SHIFT, cx1 = (x + r) >> CELL_SHIFT;
+    s32 cy0 = (y - r) >> CELL_SHIFT, cy1 = (y + r) >> CELL_SHIFT;
+    for (s32 gy = cy0; gy <= cy1; gy++) {
+        for (s32 gx = cx0; gx <= cx1; gx++) {
+            u32 m = s_grid[((gy & (GRID - 1)) << 5) | (gx & (GRID - 1))];
             int j = (int)(m & 255) - 1;
             if (j < 0 || j == idx || ((now - (m >> 8)) & 255) > 1) continue;    // empty, us, or stale
             const Actor *o = &g_actors[j];
-            if (!o->active || o->category != a->category || (o->flags & ACTOR_DYING)) continue;
+            if (!o->active || o->category != cat || (o->flags & ACTOR_DYING)) continue;
             s32 ox = x - fx_to_int(o->x), oy = y - fx_to_int(o->y);
             if (ox >= SEPARATION || ox <= -SEPARATION || oy >= SEPARATION || oy <= -SEPARATION) continue;
             if (!ox && !oy) ox = (idx & 1) ? 1 : -1;
@@ -58,22 +64,23 @@ static void separate(Actor *a, u32 *st, int idx, s32 x, s32 y) {
     py = clamp(py, -PUSH, PUSH);
     st[ST_PUSH_X] = (u32)px;
     st[ST_PUSH_Y] = (u32)py;
-    a->vx += px;
-    a->vy += py;
+    *out_x = px;
+    *out_y = py;
     s_grid[cell_of(x, y)] = (u16)((now << 8) | (u32)(idx + 1));
 }
 
 void bhv_swarm_update(Actor *a, const void *params) {
     const Params_swarm *p = params;
+    if (a->anim_lock) return;                   // being knocked back
     u32 *st = bhv_state(a);
     Actor *pl = actor_player();
-    if (a->anim_lock) return;                   // being knocked back
     if (!pl) {
         a->vx = a->vy = 0;
         actor_play_slot(a, ANIM_IDLE);
         return;
     }
-    s32 dx = fx_to_int(pl->x - a->x), dy = fx_to_int(pl->y - a->y);
+    fixed ax = a->x, ay = a->y;
+    s32 dx = fx_to_int(pl->x - ax), dy = fx_to_int(pl->y - ay);
 
     // Far behind: reappear ahead of the player (mirrored through the player, off screen).
     if (p->leash > 0 && (fx_abs(dx) > p->leash || fx_abs(dy) > p->leash * 3 / 4)) {
@@ -88,22 +95,28 @@ void bhv_swarm_update(Actor *a, const void *params) {
     // Direction to the player as a unit vector: the square root and divisions only run every
     // AIM_EVERY ticks per member (or when it has no direction yet), which keeps big hordes cheap.
     int idx = actor_index(a);
-    if (((core_frame() + (u32)idx) % AIM_EVERY) == 0 || (!st[ST_UX] && !st[ST_UY])) {
-        s32 len = (s32)fx_isqrt((u32)(dx * dx + dy * dy));
-        st[ST_UX] = (u32)(len < 2 ? 0 : dx * FX_ONE / len);
-        st[ST_UY] = (u32)(len < 2 ? 0 : dy * FX_ONE / len);
-    }
+    u32 frame = core_frame();
     fixed ux = (s32)st[ST_UX], uy = (s32)st[ST_UY];
-    a->vx = fx_mul(p->speed, ux);
-    a->vy = fx_mul(p->speed, uy);
+    if (((frame + (u32)idx) % AIM_EVERY) == 0 || (!ux && !uy)) {
+        s32 len = (s32)fx_isqrt((u32)(dx * dx + dy * dy));
+        ux = len < 2 ? 0 : dx * FX_ONE / len;
+        uy = len < 2 ? 0 : dy * FX_ONE / len;
+        st[ST_UX] = (u32)ux;
+        st[ST_UY] = (u32)uy;
+    }
+    fixed speed = p->speed;
+    fixed vx = fx_mul(speed, ux), vy = fx_mul(speed, uy);
     if (p->wobble) {                            // weave side to side (flying things)
-        fixed w = fx_sin_deg((s32)(core_frame() * 6) + idx * 47) / 2;
-        a->vx -= fx_mul(w, uy);
-        a->vy += fx_mul(w, ux);
+        fixed w = fx_sin_deg((s32)(frame * 6) + idx * 47) / 2;
+        vx -= fx_mul(w, uy);
+        vy += fx_mul(w, ux);
     }
 
-    separate(a, st, idx, fx_to_int(a->x), fx_to_int(a->y));
+    fixed px, py;
+    separate(st, idx, a->category, fx_to_int(ax), fx_to_int(ay), frame, &px, &py);
+    a->vx = vx + px;
+    a->vy = vy + py;
 
     if (dx) a->facing_left = dx < 0;
-    actor_play_slot(a, ANIM_WALK);
+    if (a->anim_slot != ANIM_WALK) actor_play_slot(a, ANIM_WALK);
 }

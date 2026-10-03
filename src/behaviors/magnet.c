@@ -32,8 +32,13 @@ void bhv_magnet_update(Actor *a, const void *params) {
     fixed sp = (fixed)st[ST_SPEED] + p->acceleration;
     if (sp > p->max_speed) sp = p->max_speed;
     st[ST_SPEED] = (u32)sp;
-    s32 len = (s32)fx_isqrt((u32)(dx * dx + dy * dy));
+    // Distance estimate (largest side + 3/8 of the other, within 7%) and one division: a screen
+    // full of flying gems runs this every tick, and a square root plus two divisions per gem
+    // was one of the biggest costs of a big horde.
+    s32 ax = fx_abs(dx), ay = fx_abs(dy);
+    s32 len = ax > ay ? ax + (ay * 3 >> 3) : ay + (ax * 3 >> 3);
     if (len == 0) return;
-    a->vx = sp * dx / len;
-    a->vy = sp * dy / len;
+    s32 k = (sp << 8) / len;
+    a->vx = (dx * k) >> 8;
+    a->vy = (dy * k) >> 8;
 }
