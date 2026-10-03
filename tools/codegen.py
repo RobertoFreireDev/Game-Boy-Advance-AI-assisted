@@ -619,7 +619,8 @@ def gen_behavior_params(p):
             fields.append("    %s%s%s;   // %s" % (ctype, sep, pname, pdef.get("description", "")))
             if t == "choice":
                 for i, opt in enumerate(pdef["options"]):
-                    out.append("#define %s_%s_%s %d" % (up(b), up(pname), up(opt), i))
+                    if re.match(r"^\w+$", opt):    # "==", "<"... (comparisons) use CMP_* instead
+                        out.append("#define %s_%s_%s %d" % (up(b), up(pname), up(opt), i))
         if not fields:
             fields.append("    u8 unused;")
         out.append("// %s\ntypedef struct {\n%s\n} Params_%s;\n" % (spec.get("description", ""), "\n".join(fields), b))

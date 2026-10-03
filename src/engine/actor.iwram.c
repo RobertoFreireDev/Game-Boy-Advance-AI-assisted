@@ -77,6 +77,11 @@ void actor_play_slot(Actor *a, u8 slot) {
     if (!an && slot == ANIM_WALK) an = a->body->anims[ANIM_RUN];
     if (!an && slot == ANIM_FALL) an = a->body->anims[ANIM_JUMP];
     if (!an && slot == ANIM_DIE) an = a->body->anims[ANIM_HURT];
+    if (!an && slot == ANIM_DASH) an = a->body->anims[slot = ANIM_RUN];
+    if (!an && slot == ANIM_FOCUS) an = a->body->anims[slot = ANIM_IDLE];
+    if (!an && slot == ANIM_CAST) an = a->body->anims[slot = ANIM_ATTACK];
+    if (!an && slot == ANIM_WALL) an = a->body->anims[slot = ANIM_FALL];
+    if (!an && slot == ANIM_FALL) an = a->body->anims[ANIM_JUMP];
     if (!an && slot == ANIM_IDLE_UP) an = a->body->anims[slot = ANIM_IDLE];
     if (!an && slot == ANIM_IDLE_DOWN) an = a->body->anims[slot = ANIM_IDLE];
     if (!an && slot == ANIM_WALK_UP) an = a->body->anims[slot = ANIM_WALK];

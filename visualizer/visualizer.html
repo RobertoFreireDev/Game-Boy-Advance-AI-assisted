@@ -301,11 +301,13 @@ function bodyAnim(bodyId, slot) {
   const b = NODES[bodyId];
   if (!b || !b.animations) return null;
   const fallback = { run: "walk", walk: "run", fall: "jump", die: "hurt",
-    idle_up: "idle", idle_down: "idle", walk_up: "walk", walk_down: "walk", attack_up: "attack", attack_down: "attack" };
+    idle_up: "idle", idle_down: "idle", walk_up: "walk", walk_down: "walk", attack_up: "attack", attack_down: "attack",
+    dash: "run", focus: "idle", cast: "attack", wall: "fall" };
   return b.animations[slot] || b.animations[fallback[slot]] || b.animations[fallback[fallback[slot]]] ||
     b.animations[b.default_animation] || null;
 }
-// Slots seen from above / below (*_up, *_down) are never mirrored, like sprites.c.
+// Slots seen from above / below (*_up, *_down) are never mirrored on top-down bodies, like
+// sprites.c; side-view bodies (physics.gravity) mirror them like every other slot.
 const isVerticalSlot = slot => /_(up|down)$/.test(slot || "");
 // Draw an actor body like sprites.c: the origin mirrors with the art when flipped.
 function drawBody(ctx, bodyId, slot, wx, wy, tick, facingLeft) {
@@ -315,7 +317,8 @@ function drawBody(ctx, bodyId, slot, wx, wy, tick, facingLeft) {
   if (!b || !st) return null;
   const spr = NODES[st.sprite];
   if (!spr) return null;
-  const fx = !!st.frame.flip_x !== (!!facingLeft && !isVerticalSlot(slot)), fy = !!st.frame.flip_y;
+  const sideView = !!(b.physics && b.physics.gravity);
+  const fx = !!st.frame.flip_x !== (!!facingLeft && (sideView || !isVerticalSlot(slot))), fy = !!st.frame.flip_y;
   const o = b.origin || [0, 0];
   const ox = fx ? spr.width - o[0] : o[0], oy = fy ? spr.height - o[1] : o[1];
   blit(ctx, frameCanvas(st.sprite, st.frame.frame), wx - ox, wy - oy, fx, fy);

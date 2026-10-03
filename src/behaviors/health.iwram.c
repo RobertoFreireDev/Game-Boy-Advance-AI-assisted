@@ -65,7 +65,9 @@ int health_damage(Actor *a, int amount, const Actor *source) {
     hp_set(p, st, hp);
     st[ST_INVINCIBLE] = (u32)p->invincible_ticks;
     a->blink = (u16)p->invincible_ticks;
-    if (topdown(a)) {
+    if (!p->stagger) {
+        // Bosses only blink: no knockback, no hurt pose, whatever they were doing goes on.
+    } else if (topdown(a)) {
         // Knockback: straight away from what hit us (or backward for spikes), 4 directions.
         s32 dx = source ? fx_to_int(a->x - source->x) : 0;
         s32 dy = source ? fx_to_int(a->y - source->y) : 0;
@@ -89,7 +91,7 @@ int health_damage(Actor *a, int amount, const Actor *source) {
         if (a->gravity) a->vy = -fx_from_int(2);
         a->anim_lock = 20;
     }
-    actor_play_slot(a, ANIM_HURT);
+    if (p->stagger) actor_play_slot(a, ANIM_HURT);
     if (hp <= 0) {
         kill(a, p, st);
     } else {

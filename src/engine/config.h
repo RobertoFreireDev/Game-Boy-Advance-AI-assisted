@@ -5,7 +5,7 @@
 
 #define MAX_ACTORS      96      // actors alive at once (players, enemies, shots, pickups...); lives in EWRAM
 #define MAX_LOGIC       10      // behaviors per actor
-#define BSTATE_WORDS    5       // private state words each behavior gets per actor
+#define BSTATE_WORDS    7       // private state words each behavior gets per actor
 #define MAX_PARTICLES   64      // particles alive at once
 #define MAX_EMITTERS    8       // particle emitters placed directly in a scene
 #define MAX_SCRIPTS     24      // action lists running at once (waits, fades...)

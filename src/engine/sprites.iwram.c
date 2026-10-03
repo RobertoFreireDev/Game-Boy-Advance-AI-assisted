@@ -97,7 +97,9 @@ static void draw_actor(const Actor *a, s32 cx, s32 cy) {
     if (!f) return;
     const Sheet *sh = sheet_of(a->anim.anim->sprite);
     if (!sh) return;
-    int mirror = a->facing_left && !actor_slot_vertical(a->anim_slot);
+    // Top-down *_up / *_down art is never mirrored; side-view bodies (gravity) mirror their
+    // up / down slashes like every other slot.
+    int mirror = a->facing_left && (a->body->gravity || !actor_slot_vertical(a->anim_slot));
     u8 flip = f->flip ^ (mirror ? FLIP_X : 0);
     // The origin is mirrored with the art, so flipping keeps the feet in place.
     s32 ox = (flip & FLIP_X) ? sh->w - a->body->origin_x : a->body->origin_x;
