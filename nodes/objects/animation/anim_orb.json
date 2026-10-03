@@ -1,0 +1,11 @@
+{
+  "id": "anim_orb",
+  "kind": "object",
+  "type": "animation",
+  "name": "Holy orb glow",
+  "notes": "Two frames, 4 ticks each, so the shot pulses or spins.",
+  "sprite": "spr_shots",
+  "loop": true,
+  "frames": [{"frame": "orb_a", "ticks": 4}, {"frame": "orb_b", "ticks": 4}],
+  "events": []
+}

@@ -18,8 +18,11 @@ import validate  # noqa: E402
 import codegen  # noqa: E402
 import bundle  # noqa: E402
 
-CFLAGS = ["-mthumb", "-mcpu=arm7tdmi", "-mtune=arm7tdmi", "-O2", "-std=c11", "-Wall", "-Wextra",
-          "-ffunction-sections", "-fdata-sections"]
+CFLAGS = ["-mthumb", "-mthumb-interwork", "-mcpu=arm7tdmi", "-mtune=arm7tdmi", "-O2", "-std=c11", "-Wall",
+          "-Wextra", "-ffunction-sections", "-fdata-sections"]
+# Files named *.iwram.c hold measured hot code: compiled as ARM (32-bit) and placed in fast IWRAM by
+# the linker script (it puts every *iwram.* object there). Long calls reach ROM functions from IWRAM.
+IWRAM_FLAGS = ["-marm", "-mlong-calls"]
 LDFLAGS = ["-mthumb", "-mcpu=arm7tdmi", "-specs=gba.specs", "-Wl,--gc-sections"]
 OBJ_DIR = "build/obj"
 
@@ -139,7 +142,10 @@ def compile_all(tools):
         objs.append(obj)
         if not up_to_date(src, obj, dfile, flags_changed):
             os.makedirs(os.path.dirname(os.path.join(C.ROOT, obj)), exist_ok=True)
-            jobs.append((src, obj, [tools.gcc] + cflags + ["-MMD", "-MP", "-MF", dfile, "-c", src, "-o", obj]))
+            flags = cflags
+            if src.endswith(".iwram.c"):
+                flags = [f for f in cflags if f != "-mthumb"] + IWRAM_FLAGS
+            jobs.append((src, obj, [tools.gcc] + flags + ["-MMD", "-MP", "-MF", dfile, "-c", src, "-o", obj]))
     ok, problems = True, []
     if jobs:
         print("  compiling %d file(s)..." % len(jobs))

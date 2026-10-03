@@ -1,0 +1,11 @@
+{
+  "id": "anim_blade",
+  "kind": "object",
+  "type": "animation",
+  "name": "Golden star glow",
+  "notes": "Two frames, 4 ticks each, so the shot pulses or spins.",
+  "sprite": "spr_shots",
+  "loop": true,
+  "frames": [{"frame": "gold_a", "ticks": 4}, {"frame": "gold_b", "ticks": 4}],
+  "events": []
+}

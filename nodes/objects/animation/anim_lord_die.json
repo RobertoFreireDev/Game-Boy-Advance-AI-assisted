@@ -1,0 +1,22 @@
+{
+  "id": "anim_lord_die",
+  "kind": "object",
+  "type": "animation",
+  "name": "Night Lord defeat",
+  "notes": "Flashes white for 30 ticks before vanishing.",
+  "sprite": "spr_lord",
+  "loop": false,
+  "frames": [
+    {"frame": "flash", "ticks": 3},
+    {"frame": "walk_a", "ticks": 3},
+    {"frame": "flash", "ticks": 3},
+    {"frame": "walk_a", "ticks": 3},
+    {"frame": "flash", "ticks": 3},
+    {"frame": "walk_a", "ticks": 3},
+    {"frame": "flash", "ticks": 3},
+    {"frame": "walk_a", "ticks": 3},
+    {"frame": "flash", "ticks": 3},
+    {"frame": "walk_a", "ticks": 3}
+  ],
+  "events": []
+}

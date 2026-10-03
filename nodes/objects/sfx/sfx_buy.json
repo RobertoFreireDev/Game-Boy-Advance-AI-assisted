@@ -1,0 +1,11 @@
+{
+  "id": "sfx_buy",
+  "kind": "object",
+  "type": "sfx",
+  "name": "Buy",
+  "notes": "Happy ding when a power up is bought.",
+  "channel": "square2",
+  "duty": 2,
+  "priority": 2,
+  "steps": [{"note": "E6", "ticks": 3, "volume": 11}, {"note": "A6", "ticks": 8, "volume": 9}]
+}

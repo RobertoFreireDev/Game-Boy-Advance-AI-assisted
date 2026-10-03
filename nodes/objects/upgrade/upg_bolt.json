@@ -1,0 +1,20 @@
+{
+  "id": "upg_bolt",
+  "kind": "object",
+  "type": "upgrade",
+  "name": "Magic Bolt",
+  "notes": "Starting weapon (level 1 at the start of a run). Fires at the nearest monster; more bolts at levels 3 and 5. At level 5 with a Spell Tome it can evolve into the Arcane Storm.",
+  "category": "weapon",
+  "title": "MAGIC BOLT",
+  "icon": "icon_up_bolt",
+  "var": "w_bolt",
+  "max_level": 5,
+  "descriptions": [
+    "FIRES A BOLT AT THE NEAREST MONSTER.",
+    "+3 DAMAGE, FIRES FASTER.",
+    "+1 BOLT, +3 DAMAGE, FIRES FASTER.",
+    "+3 DAMAGE, FIRES FASTER.",
+    "+1 BOLT, +3 DAMAGE. MAX LEVEL!"
+  ],
+  "children": ["icon_up_bolt"]
+}

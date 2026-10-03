@@ -80,7 +80,9 @@ keep it up to date when you learn something new about the toolchain.
 
 Build details (owned by `tools/build.py`, no Makefile, no MSYS shell, so it works from a double-click):
 - Calls `arm-none-eabi-gcc` directly. Reference flags:
-  `-mthumb -mcpu=arm7tdmi -mtune=arm7tdmi -O2 -std=c11 -Wall -Wextra -ffunction-sections -fdata-sections`
+  `-mthumb -mthumb-interwork -mcpu=arm7tdmi -mtune=arm7tdmi -O2 -std=c11 -Wall -Wextra -ffunction-sections -fdata-sections`
+- **Hot code**: a source named `*.iwram.c` is compiled as ARM (`-marm -mlong-calls`) and the linker
+  script places it in IWRAM (fast, 32-bit). Only for code a measurement proved too slow (§8).
 - Links with `-specs=gba.specs -ltonc -Wl,--gc-sections`, then `objcopy -O binary`, then `gbafix`.
 - Only recompiles changed files (gcc `-MMD` dependency files in `build/obj/`).
 - Runs gcc **from the repo root with relative paths**, so the accents/spaces in the repo path
@@ -179,7 +181,8 @@ broken into the parts it is made of.
 `title` ≤ 12 chars, `game_code` exactly 4 chars (ROM header). `gravity` (px/tick², default 0.25)
 and `max_fall_speed` (px/tick, default 4) apply to every body with `physics.gravity`. Variables
 are the game's global state; HUD, behaviors and actions read and write them by name. Flags are
-stored as 0/1. Index order: scenes first, then objects.
+stored as 0/1. A variable with `"persistent": true` keeps its value through `reset_vars` (permanent
+unlocks, banked gold); `save_game` saves every variable. Index order: scenes first, then objects.
 
 ### 5.3 Common fields (every node file)
 
@@ -242,7 +245,7 @@ Structural rules (enforced by `validate.py`):
 | `player` | `plr_` | Controlled by the human. | `body`, `logic[]`, `sounds{}` | `body`, `particle`, `sfx` |
 | `enemy` | `enm_` | Hostile actor. | same as player | same |
 | `npc` | `npc_` | Friendly actor, usually talks. | same | same |
-| `prop` | `prop_` | Static or decorative thing: tree, rock, sign, door. | same | same |
+| `prop` | `prop_` | Static or decorative thing (tree, rock, door), a weapon's shot, or an invisible logic-only thing (no `body`: a run director). | same (`body` optional) | same |
 | `platform` | `plat_` | Moving / falling platform. | same | same |
 | `pickup` | `item_` | Collectible: coin, key, heart. | same | same |
 | `trigger` | `trg_` | Invisible zone that runs actions (exit, checkpoint). | `zone{w,h}`, `logic[]` | — |
@@ -250,6 +253,8 @@ Structural rules (enforced by `validate.py`):
 | `hud` | `hud_` | Always-on overlay bound to variables. | `font`, `elements[{kind: text│icon│icon_repeat│bar, x, y, …}]`; text uses `{var}` placeholders | `icon` |
 | `menu` | `menu_` | List of options the player picks from. | `font`, `title`, `options[{label, actions[]}]`, `cursor` (icon), `layout`, `on_cancel[]` | `icon` |
 | `dialog` | `dlg_` | Text box conversation. | `font`, `box{x,y,w,h}`, `lines[{speaker, portrait, text}]`, `choices[{label, actions[]}]`, `on_end[]` | `icon` |
+| **Progression** | | | | |
+| `upgrade` | `upg_` | One card of the level-up menu: a weapon, a passive item, an evolution or a bonus filler. | `category`, `title`, `icon`, `var`, `max_level`, `descriptions[]`, `requires[]`, `replaces`, `on_pick[]` | `icon` |
 
 Actor types (`player` … `pickup`) share one structure; the type gives sensible defaults and
 groups them for humans. **What an actor does comes only from its `logic` list.**
@@ -280,12 +285,26 @@ groups them for humans. **What an actor does comes only from its `logic` list.**
 - **actor** `sounds{event: sfx}` events: `jump land hurt die collect stomp talk attack`.
 - **trigger**: `zone{w,h}` with its top-left corner at the instance x, y; touches the player only.
 - **hud** elements (x, y multiples of 8): `text {text}` (`{var}` placeholders, 3 chars reserved
-  per value), `icon {icon}`, `icon_repeat {icon, empty_icon?, var, max, spacing?}`,
+  per value; `{var:02}` pads to 2 digits, for clocks), `icon {icon}`, `icon_repeat {icon, empty_icon?, var, max, spacing?}`,
   `bar {var, max, length (tiles), color, back}` (colors are indexes of the font palette).
 - **menu**: `layout {x, y, spacing, title_y}`, optional `box {x, y, w, h, paper, border}`,
   `sounds {move, select}`. Up/Down move, A picks, B runs `on_cancel`. Picking an option **locks**
   the menu (no more input) and runs its actions, so they should `close_menu`, `goto_scene`,
-  `open_menu` or `show_dialog` (the validator warns otherwise).
+  `open_menu` or `show_dialog` (the validator warns otherwise). Option labels and the title may use
+  `{var}` / `{var:02}` placeholders (re-`open_menu` to refresh them, e.g. a shop).
+- **upgrade menu**: a menu with `"upgrades": 1-3` instead of `options` (a `box` is required). Each time
+  it opens the engine picks that many random cards from every `upgrade` node: evolutions whose
+  recipe is complete first, then weapons/items below `max_level`, then `bonus` fillers. Card layout
+  (tiles): text at `layout.x`, the 16x16 icon 3 columns left of it, the cursor left of the icon;
+  title row with a NEW!/LV2/EVOLVE! tag 15 columns right, then 2 description rows of 22 chars;
+  `layout.spacing` ≥ 24 px. Picking a card adds 1 to its `var`, zeroes the weapon it `replaces`,
+  closes the menu and runs `on_pick`. Nothing to offer = the menu does not open.
+- **upgrade**: `category` weapon / item / evolution / bonus. `title` ≤ 14 chars; `icon` 16x16 (use the
+  menu font's palette so the box shows behind it). `var` holds the level (0 = not owned; not used by
+  bonus). `max_level` 1-9 (evolution: 1; bonus: unlimited, no max_level). `descriptions`: one per
+  level for weapons/items (index = current level, so [0] is the NEW card), one for the others; each
+  fits 2 lines of 22 chars. Evolutions need `requires[{upgrade, level (1-9 or "max")}]` and
+  `replaces` (a weapon). The level variable is what weapon behaviors read (`weapon.level_var`).
 - **dialog**: `box {x, y, w, h, paper, border}` (required), `ticks_per_char` (0 = instant).
   Codegen word-wraps each line (`common.wrap_text`); the speaker uses the first row, a 16×16
   portrait takes 3 columns. A/B skip typing / next line; choices show after the last line.
@@ -449,8 +468,11 @@ Every channel in a pattern has the same number of rows. Missing channels are sil
   `catalog/behaviors.json` (plain description, params with type, default and description).
 - Objects enable behaviors in `logic[]`; scenes can override params per instance.
 - Interface: `init(actor, params)`, `update(actor, params)`, optional `on_touch(actor, other, params)`.
-- Param types: `int`, `fixed`, `bool`, `ticks`, `button`, `var`, `node:<type>`, `actions`, `points`,
-  `choice` (one of `options`), `string`. Each param has a `default` or `required: true`.
+- Param types: `int`, `fixed`, `bool`, `ticks`, `button`, `var`, `node:<type>` (`node:actor` = any actor
+  type), `actions`, `points`, `choice` (one of `options`), `string`. Each param has a `default` or
+  `required: true`.
+- A logic list may use the same behavior more than once (several `weapon`s, several `spawn_wave`s);
+  a scene instance cannot override a behavior its object lists more than once.
 - Codegen turns the catalog into one C struct per behavior (`Params_<name>` in
   `generated/behavior_params.h`, choices as `<BEHAVIOR>_<PARAM>_<OPTION>` defines) and registers
   the `bhv_<name>_init/update/on_touch` functions it finds in the `.c` file. Behaviors keep
@@ -467,7 +489,9 @@ Every channel in a pattern has the same number of rows. Missing channels are sil
 - Starter set: `platformer_controller`, `topdown_controller`, `patrol`, `chase_player`,
   `follow_path`, `solid_platform`, `health`, `damage_on_touch`, `stompable`, `collectible`,
   `trigger_zone`, `talk`, `camera_target`, `spawn_particles`. Top-down set: `sword_attack`,
-  `wander`, `locked_door`. Add more as games need them.
+  `wander`, `locked_door`. Survivors set: `weapon` (auto-fire, level from a variable), `projectile`
+  (the shot), `aura`, `swarm` (horde movement with grid-based crowd spreading), `magnet` (pickups fly
+  to the player), `spawn_wave` (timed off-screen waves), `run_clock`, `level_up`. Add more as games need them.
 - Prefer a new reusable behavior over custom code.
 
 ### 7.2 Actions (what happens when something occurs)
@@ -475,7 +499,9 @@ Action lists appear in `on_start`, `on_enter`, `on_death`, menu options, dialog 
 animation events, etc. Format: `{ "do": "<action>", ...params }`, run in order; `wait` pauses
 the list. Catalog in `catalog/actions.json`. Starter set:
 `goto_scene`, `fade_in`, `fade_out`, `wait`, `play_sfx`, `play_music`, `stop_music`,
-`set_var`, `add_var`, `reset_vars`, `if_var` (`then[]`/`else[]`), `show_dialog`, `open_menu`,
+`set_var`, `add_var` (both take `value` or `from` another variable; `add_var` can cap at `max_var`),
+`reset_vars` (skips persistent variables), `if_var` (`then[]`/`else[]`), `if_chance` (`percent`,
+`then[]`/`else[]`, random drops), `show_dialog`, `open_menu`,
 `close_menu`, `spawn`, `destroy_self`, `shake_camera`, `save_game`, `load_game`, `call` (custom C, §7.3).
 Each catalog entry has a `sentence` the visualizer reads aloud ("Go to scene {scene}").
 Codegen maps every action to the generic `Action` struct (`src/engine/data.h`); a new action
@@ -504,15 +530,16 @@ src/engine/
 ├── fixed.h        fixed-point 24.8 math, sin/cos table, rng
 ├── vars.c/.h      game variables (get / set / add by id)
 ├── scene.c/.h     load / unload scenes, spawn instances, transitions and fades
-├── actor.c/.h     actor pool, runs each actor's logic list every tick
-├── physics.c/.h   gravity, tile collision (solid/one_way/hazard/ladder), actor overlaps
-├── anim.c/.h      animation players and frame events
+├── actor.iwram.c/.h   actor pool (in EWRAM), runs each actor's logic list every tick
+├── physics.iwram.c/.h gravity, tile collision (solid/one_way/hazard/ladder), actor overlaps
+│                      (contacts only test the categories an actor lists, via per-frame buckets)
+├── anim.iwram.c/.h    animation players and frame events
 ├── particles.c/.h particle pool
 ├── camera.c/.h    follow target, clamp to bounds, shake
 ├── bg.c/.h        tiles/palettes upload, tilemap scrolling, streaming for big maps
-├── sprites.c/.h   OAM shadow buffer and OBJ VRAM allocation
+├── sprites.iwram.c/.h OAM shadow buffer and OBJ VRAM allocation
 ├── audio.c/.h     PSG driver: music sequencer + sfx
-├── ui.c/.h        text, hud, menus, dialogs
+├── ui.c/.h        text, hud, menus (incl. upgrade cards), dialogs
 ├── actions.c/.h   action list interpreter
 └── save.c/.h      SRAM save/load of variables (only if game.save)
 ```
@@ -546,7 +573,10 @@ Palette banks are handed out per scene in first-use order (BG and OBJ separately
 - Every node gets an enum `NODE_<ID_IN_CAPS>` in `generated/node_ids.h`; variables get `VAR_<NAME>`;
   node data is `node_<id>` in `generated/game_data.c`.
 - One module, one job. Each public function has a one-line comment in plain English.
-- Move hot code to IWRAM (ARM mode) only when a measured slowdown requires it.
+- Move hot code to IWRAM (ARM mode) only when a measured slowdown requires it: rename the file
+  `*.iwram.c` (done for actor, physics, anim, sprites and the `swarm` behavior after profiling
+  hordes of 60+ monsters). IWRAM is 32 KB shared with globals and the stack; keep it lean.
+- Big pools live in EWRAM (`EWRAM_BSS`, not zeroed at boot: clear them yourself).
 - Zero warnings in our code.
 
 ---
@@ -631,7 +661,8 @@ Palette banks are handed out per scene in first-use order (BG and OBJ separately
 | particle | Live emitter simulation with restart button. |
 | body | Animation slots as tabs, live playback with hitbox and origin overlay, physics summary. |
 | player, enemy, npc, prop, platform, pickup, trigger | Body preview, hitbox, **logic list** (each behavior: plain description + params), sounds with play buttons, path preview for `follow_path`, zone for triggers. |
-| hud, menu, dialog | Rendered inside a 240×160 GBA screen with the real font and icons. HUD uses variables' initial values; dialog has prev/next line; menu shows the cursor on each option. |
+| hud, menu, dialog | Rendered inside a 240×160 GBA screen with the real font and icons. HUD uses variables' initial values; dialog has prev/next line; menu shows the cursor on each option (upgrade menus show sample cards). |
+| upgrade | Its card on the level-up menu with prev/next level, the text per level as wrapped on the GBA, the evolution recipe and what picking it does. |
 | sfx, music | **Audio player**: play/stop/loop + visual (step list for sfx; tracker grid per channel with playhead for music). Web Audio synth approximating the PSG: square with duty, 4-bit wave, noise, 0–15 volume. |
 
 ### 10.4 Fidelity and navigation

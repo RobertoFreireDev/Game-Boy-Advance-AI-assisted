@@ -1,6 +1,8 @@
 // core.c - boot and the main loop.
 #include <tonc_irq.h>
 #include <tonc_bios.h>
+#include <tonc_memmap.h>
+#include <tonc_memdef.h>
 #include "core.h"
 #include "fixed.h"
 #include "data.h"
@@ -40,9 +42,10 @@ u32 core_frame(void) { return s_frame; }
 int core_paused(void) { return s_paused; }
 
 void core_init(void) {
+    REG_WAITCNT = WS_STANDARD;      // faster cartridge reads (ROM 3/1 wait states + prefetch)
     irq_init(NULL);
     irq_add(II_VBLANK, NULL);
-    vars_reset();
+    vars_init();
     audio_init();
     save_init();
     scene_goto(g_game.start_scene);

@@ -1,0 +1,11 @@
+{
+  "id": "anim_bat_walk",
+  "kind": "object",
+  "type": "animation",
+  "name": "Bat walk",
+  "notes": "Two-frame walk / flap.",
+  "sprite": "spr_monsters",
+  "loop": true,
+  "frames": [{"frame": "bat_a", "ticks": 6}, {"frame": "bat_b", "ticks": 6}],
+  "events": []
+}

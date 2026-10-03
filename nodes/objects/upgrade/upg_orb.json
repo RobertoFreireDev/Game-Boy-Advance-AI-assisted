@@ -1,0 +1,20 @@
+{
+  "id": "upg_orb",
+  "kind": "object",
+  "type": "upgrade",
+  "name": "Holy Orbs",
+  "notes": "Orbs circle the hunter for 3 seconds, then rest. Evolves into the Halo with a Lodestone.",
+  "category": "weapon",
+  "title": "HOLY ORBS",
+  "icon": "icon_up_orb",
+  "var": "w_orb",
+  "max_level": 5,
+  "descriptions": [
+    "2 ORBS CIRCLE YOU AND HIT MONSTERS.",
+    "+1 ORB, +2 DAMAGE.",
+    "+1 ORB, +2 DAMAGE.",
+    "+1 ORB, +2 DAMAGE.",
+    "+1 ORB, +2 DAMAGE. MAX LEVEL!"
+  ],
+  "children": ["icon_up_orb"]
+}

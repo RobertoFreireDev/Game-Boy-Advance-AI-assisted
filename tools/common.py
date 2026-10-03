@@ -49,6 +49,7 @@ OBJECT_TYPES = {
     "hud":       ("hud_",  ["icon"]),
     "menu":      ("menu_", ["icon"]),
     "dialog":    ("dlg_",  ["icon"]),
+    "upgrade":   ("upg_",  ["icon"]),
 }
 SCENE_PREFIX = "scn_"
 
@@ -100,6 +101,15 @@ def expected_path(kind, type_, node_id):
     return "objects/%s/%s.json" % (type_, node_id)
 
 
+def behavior_source(name):
+    """Path of src/behaviors/<name>.c (or <name>.iwram.c for hot code in IWRAM), or None."""
+    for fn in (name + ".c", name + ".iwram.c"):
+        path = os.path.join(SRC_DIR, "behaviors", fn)
+        if os.path.isfile(path):
+            return path
+    return None
+
+
 def note_number(token):
     """MIDI-style note number for 'C#5' (C4 = 60), or None if not a note."""
     m = NOTE_RE.match(token)
@@ -133,6 +143,25 @@ def split_music_tokens(text):
 
 
 HUD_VAR_WIDTH = 3  # characters reserved for a {var} value when checking that text fits
+
+# {var} prints a game variable; {var:02} prints it with at least 2 digits (a clock: 05).
+PLACEHOLDER_RE = re.compile(r"\{(\w+)(:02)?\}")
+
+
+def placeholder_width(text):
+    """Columns a text with {var} placeholders takes (HUD_VAR_WIDTH reserved per value)."""
+    return len(PLACEHOLDER_RE.sub("x" * HUD_VAR_WIDTH, text))
+
+
+# Upgrade menus (CLAUDE.md §6.1b): each card = 16x16 icon left of the text, the title with a
+# NEW!/LV2/EVOLVE! tag, then up to 2 lines of description.
+UPGRADE_CATEGORIES = ["weapon", "item", "evolution", "bonus"]
+UPGRADE_TITLE_W = 14     # chars
+UPGRADE_TAG_DX = 15      # tag column, from the card's text x
+UPGRADE_TEXT_W = 22      # description width (chars); the tag "EVOLVE!" also ends here
+UPGRADE_TEXT_LINES = 2
+UPGRADE_ICON_DX = 3      # icon columns left of the text (2 wide + 1 gap); cursor left of that
+MAX_UPGRADE_CHOICES = 3
 
 
 def wrap_text(text, width):
@@ -186,10 +215,11 @@ def menu_layout(menu):
     box = menu.get("box")
     if box:
         bx, _by, bw, _bh = box_tiles(box)
-        title_x = bx + (bw - len(title)) // 2
+        title_x = bx + (bw - placeholder_width(title)) // 2
     else:
-        title_x = (30 - len(title)) // 2
-    opts = [(x, y + i * spacing) for i in range(len(menu.get("options", [])))]
+        title_x = (30 - placeholder_width(title)) // 2
+    count = menu.get("upgrades") if menu.get("upgrades") else len(menu.get("options", []))
+    opts = [(x, y + i * spacing) for i in range(count)]
     return {"title_x": title_x, "title_y": title_y, "options": opts}
 
 

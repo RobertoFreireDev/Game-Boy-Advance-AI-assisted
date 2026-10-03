@@ -2,14 +2,14 @@
   "id": "anim_poof",
   "kind": "object",
   "type": "animation",
-  "name": "Poof",
-  "notes": "Plays once when a monster is defeated (its 'die' animation). Every monster shares it.",
+  "name": "Defeat puff",
+  "notes": "Shared 'die' animation of every small monster (30 ticks, the time a defeated monster stays).",
   "sprite": "spr_poof",
   "loop": false,
   "frames": [
-    {"frame": "poof_0", "ticks": 6},
-    {"frame": "poof_1", "ticks": 8},
-    {"frame": "poof_2", "ticks": 16}
+    {"frame": "poof_a", "ticks": 8},
+    {"frame": "poof_b", "ticks": 10},
+    {"frame": "poof_c", "ticks": 12}
   ],
   "events": []
 }

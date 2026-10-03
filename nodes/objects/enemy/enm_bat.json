@@ -3,22 +3,33 @@
   "kind": "object",
   "type": "enemy",
   "name": "Bat",
-  "notes": "Shrine bat. Hangs in place until Kai comes close, then flies straight at him. One sword hit defeats it.",
-  "children": ["body_bat"],
+  "notes": "Fast, weak and everywhere: weaves toward the hunter in big flocks. One bolt defeats it. Drops a blue gem.",
   "body": "body_bat",
   "logic": [
     {
-      "behavior": "chase_player",
-      "params": {"speed": 0.6, "range": 72, "vertical": true}
+      "behavior": "swarm",
+      "params": {"leash": 220, "speed": 0.85, "wobble": true}
     },
-    {
-      "behavior": "damage_on_touch",
-      "params": {"amount": 1}
-    },
+    {"behavior": "damage_on_touch", "params": {"amount": 1}},
     {
       "behavior": "health",
-      "params": {"max": 1, "invincible_ticks": 10, "knockback": 2.0, "spikes": false}
+      "params": {
+        "max": 8,
+        "invincible_ticks": 8,
+        "knockback": 2.0,
+        "spikes": false,
+        "on_death": [
+          {"do": "add_var", "var": "kills", "value": 1},
+          {"do": "spawn", "object": "item_gem", "x": 0, "y": -6},
+          {
+            "do": "if_chance",
+            "percent": 3,
+            "then": [{"do": "spawn", "object": "item_coin", "x": 4, "y": -4}]
+          }
+        ]
+      }
     }
   ],
-  "sounds": {"hurt": "sfx_enemy_hit", "die": "sfx_enemy_die"}
+  "sounds": {"die": "sfx_enemy_die"},
+  "children": ["body_bat"]
 }

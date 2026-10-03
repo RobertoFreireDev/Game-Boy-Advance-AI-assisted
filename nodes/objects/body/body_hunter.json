@@ -1,0 +1,13 @@
+{
+  "id": "body_hunter",
+  "kind": "object",
+  "type": "body",
+  "name": "Hunter body",
+  "notes": "How the hunter looks and the box that touches monsters and pickups. The hitbox is a little smaller than the art so squeezing past monsters feels fair.",
+  "origin": [8, 16],
+  "hitbox": {"x": -4, "y": -12, "w": 8, "h": 11},
+  "physics": {"gravity": false, "collides_with": ["tiles", "enemy", "pickup"]},
+  "animations": {"idle": "anim_hunter_idle", "walk": "anim_hunter_walk", "hurt": "anim_hunter_hurt"},
+  "default_animation": "idle",
+  "children": ["spr_hunter", "anim_hunter_idle", "anim_hunter_walk", "anim_hunter_hurt"]
+}

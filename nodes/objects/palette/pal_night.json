@@ -1,0 +1,19 @@
+{
+  "id": "pal_night",
+  "kind": "object",
+  "type": "palette",
+  "name": "Night sky colors",
+  "notes": "Title and menu backgrounds: white stars, pale moon, very dark blue-black silhouettes, red glowing eyes.",
+  "colors": [
+    "#000000",
+    "#f8f8f8",
+    "#f0e8b0",
+    "#c8c090",
+    "#0c0c1c",
+    "#1a1a34",
+    "#2c2c50",
+    "#7878a8",
+    "#f03030",
+    "#a8a070"
+  ]
+}

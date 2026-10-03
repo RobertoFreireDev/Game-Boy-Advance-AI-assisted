@@ -5,7 +5,10 @@
 
 #include <tonc_types.h>
 
-// Put every variable back to its starting value.
+// Put every variable at its starting value (boot).
+void vars_init(void);
+// Put every non-persistent variable back to its starting value (a new run). Persistent
+// variables (permanent unlocks, banked gold) keep their value.
 void vars_reset(void);
 // Read a variable (0 for an invalid id).
 s32 vars_get(s16 id);

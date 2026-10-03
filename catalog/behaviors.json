@@ -3,133 +3,134 @@
   "platformer_controller": {
     "description": "Side-view control: run left/right with the D-pad, jump with a button, climb ladders with up/down. Picks the idle, run, jump, fall and climb animations.",
     "params": {
-      "speed":        { "type": "fixed",  "default": 1.5,  "description": "Top running speed (pixels per tick)." },
-      "acceleration": { "type": "fixed",  "default": 0.25, "description": "How fast it speeds up and slows down (pixels per tick, each tick)." },
-      "jump_height":  { "type": "int",    "default": 40,   "description": "How high a full jump goes (pixels). Letting go of the button early makes a smaller hop." },
-      "jump_button":  { "type": "button", "default": "A",  "description": "Button that jumps." },
-      "climb_speed":  { "type": "fixed",  "default": 1.0,  "description": "Speed on ladders (pixels per tick)." }
+      "speed":         {"type": "fixed", "default": 1.5, "description": "Top running speed (pixels per tick)."},
+      "acceleration":  {"type": "fixed", "default": 0.25, "description": "How fast it speeds up and slows down (pixels per tick, each tick)."},
+      "jump_height":   {"type": "int", "default": 40, "description": "How high a full jump goes (pixels). Letting go of the button early makes a smaller hop."},
+      "jump_button":   {"type": "button", "default": "A", "description": "Button that jumps."},
+      "climb_speed":   {"type": "fixed", "default": 1.0, "description": "Speed on ladders (pixels per tick)."}
     }
   },
   "topdown_controller": {
     "description": "Top-down control: walk in any direction with the D-pad (no gravity). Faces up, down, left or right and picks the matching idle / walk animations (idle_up, walk_down...).",
     "params": {
-      "speed":     { "type": "fixed", "default": 1.0,  "description": "Walking speed (pixels per tick)." },
-      "eight_way": { "type": "bool",  "default": true, "description": "Allow diagonal movement." }
+      "speed":      {"type": "fixed", "default": 1.0, "description": "Walking speed (pixels per tick)."},
+      "eight_way":  {"type": "bool", "default": true, "description": "Allow diagonal movement."},
+      "speed_var":  {"type": "var", "default": "", "description": "Each point of this game variable adds 10% speed (speed upgrades). Empty = no bonus."}
     }
   },
   "sword_attack": {
     "description": "Top-down sword: press the button to swing in the direction the actor faces. It stops while swinging and plays its attack animation. Anything with health inside the blade is hurt and pushed away.",
     "params": {
-      "button":   { "type": "button", "default": "B",     "description": "Button that swings the sword." },
-      "damage":   { "type": "int",    "default": 1,       "description": "Health removed per hit." },
-      "reach":    { "type": "int",    "default": 14,      "description": "How far the blade reaches past the body (pixels)." },
-      "width":    { "type": "int",    "default": 12,      "description": "How wide the blade's hit area is (pixels)." },
-      "ticks":    { "type": "ticks",  "default": 14,      "description": "How long one swing lasts (ticks). Make the attack animation about this long." },
-      "cooldown": { "type": "ticks",  "default": 6,       "description": "Extra wait after a swing before the next one (ticks)." },
-      "hits":     { "type": "choice", "default": "enemy", "options": ["enemy", "enemy_and_prop", "any"], "description": "What the blade hurts: enemies only, enemies and props (bushes, pots), or anything with health." },
-      "var":      { "type": "var",    "default": "",      "description": "Only works while this game variable is not 0 (for example, after getting the sword). Empty = always works." }
+      "button":    {"type": "button", "default": "B", "description": "Button that swings the sword."},
+      "damage":    {"type": "int", "default": 1, "description": "Health removed per hit."},
+      "reach":     {"type": "int", "default": 14, "description": "How far the blade reaches past the body (pixels)."},
+      "width":     {"type": "int", "default": 12, "description": "How wide the blade's hit area is (pixels)."},
+      "ticks":     {"type": "ticks", "default": 14, "description": "How long one swing lasts (ticks). Make the attack animation about this long."},
+      "cooldown":  {"type": "ticks", "default": 6, "description": "Extra wait after a swing before the next one (ticks)."},
+      "hits":      {"type": "choice", "default": "enemy", "options": ["enemy", "enemy_and_prop", "any"], "description": "What the blade hurts: enemies only, enemies and props (bushes, pots), or anything with health."},
+      "var":       {"type": "var", "default": "", "description": "Only works while this game variable is not 0 (for example, after getting the sword). Empty = always works."}
     }
   },
   "wander": {
     "description": "Top-down: walks around at random (up, down, left or right), resting now and then. Turns when it bumps into something.",
     "params": {
-      "speed":       { "type": "fixed", "default": 0.5, "description": "Walking speed (pixels per tick)." },
-      "min_ticks":   { "type": "ticks", "default": 30,  "description": "Shortest walk in one direction (ticks)." },
-      "max_ticks":   { "type": "ticks", "default": 90,  "description": "Longest walk in one direction (ticks)." },
-      "pause_ticks": { "type": "ticks", "default": 30,  "description": "Rest between walks (ticks). 0 = never rests." },
-      "distance":    { "type": "int",   "default": 0,   "description": "Heads back when it gets this many pixels away from where it was placed. 0 = roams anywhere." }
+      "speed":        {"type": "fixed", "default": 0.5, "description": "Walking speed (pixels per tick)."},
+      "min_ticks":    {"type": "ticks", "default": 30, "description": "Shortest walk in one direction (ticks)."},
+      "max_ticks":    {"type": "ticks", "default": 90, "description": "Longest walk in one direction (ticks)."},
+      "pause_ticks":  {"type": "ticks", "default": 30, "description": "Rest between walks (ticks). 0 = never rests."},
+      "distance":     {"type": "int", "default": 0, "description": "Heads back when it gets this many pixels away from where it was placed. 0 = roams anywhere."}
     }
   },
   "locked_door": {
     "description": "A door that opens when the player walks up to it with a key: uses one key, runs its actions and disappears (its 'die' animation plays as the opening). Give the body physics.solid so it blocks the way.",
     "params": {
-      "var":     { "type": "var",     "required": true, "description": "Game variable that counts the keys." },
-      "consume": { "type": "bool",    "default": true,  "description": "Use up one key when it opens." },
-      "range":   { "type": "int",     "default": 2,     "description": "How close the player must stand (pixels of gap)." },
-      "on_open": { "type": "actions", "default": [],    "description": "What happens when it opens." }
+      "var":      {"type": "var", "required": true, "description": "Game variable that counts the keys."},
+      "consume":  {"type": "bool", "default": true, "description": "Use up one key when it opens."},
+      "range":    {"type": "int", "default": 2, "description": "How close the player must stand (pixels of gap)."},
+      "on_open":  {"type": "actions", "default": [], "description": "What happens when it opens."}
     }
   },
   "patrol": {
     "description": "Walks left and right on its own, turning around at walls, at ledge edges, or after a set distance.",
     "params": {
-      "speed":         { "type": "fixed", "default": 0.5,   "description": "Walking speed (pixels per tick)." },
-      "distance":      { "type": "int",   "default": 0,     "description": "Never walk farther than this many pixels from the start (either side). 0 = only turn at walls and edges." },
-      "turn_at_edges": { "type": "bool",  "default": true,  "description": "Turn around instead of walking off a ledge." },
-      "start_left":    { "type": "bool",  "default": false, "description": "Start walking to the left instead of the right." }
+      "speed":          {"type": "fixed", "default": 0.5, "description": "Walking speed (pixels per tick)."},
+      "distance":       {"type": "int", "default": 0, "description": "Never walk farther than this many pixels from the start (either side). 0 = only turn at walls and edges."},
+      "turn_at_edges":  {"type": "bool", "default": true, "description": "Turn around instead of walking off a ledge."},
+      "start_left":     {"type": "bool", "default": false, "description": "Start walking to the left instead of the right."}
     }
   },
   "chase_player": {
     "description": "Moves toward the player when the player comes close, and stops when the player is far away. With 'vertical' it also faces up and down (top-down games).",
     "params": {
-      "speed":    { "type": "fixed", "default": 0.75,  "description": "Chasing speed (pixels per tick)." },
-      "range":    { "type": "int",   "default": 80,    "description": "Starts chasing when the player is this close (pixels)." },
-      "vertical": { "type": "bool",  "default": false, "description": "Also chase up and down (for flying things with no gravity)." }
+      "speed":     {"type": "fixed", "default": 0.75, "description": "Chasing speed (pixels per tick)."},
+      "range":     {"type": "int", "default": 80, "description": "Starts chasing when the player is this close (pixels)."},
+      "vertical":  {"type": "bool", "default": false, "description": "Also chase up and down (for flying things with no gravity)."}
     }
   },
   "follow_path": {
     "description": "Moves along a list of points (relative to where it was placed), pausing at each point.",
     "params": {
-      "points": { "type": "points", "default": [[0, 0], [64, 0]], "description": "Points to visit, in pixels from the starting position." },
-      "speed":  { "type": "fixed",  "default": 0.5, "description": "Travel speed (pixels per tick)." },
-      "mode":   { "type": "choice", "default": "ping_pong", "options": ["ping_pong", "loop", "once"], "description": "ping_pong = go back and forth; loop = from the last point travel back to the first and repeat; once = stop at the last point." },
-      "wait":   { "type": "ticks",  "default": 30,  "description": "Pause at each point (ticks)." }
+      "points":  {"type": "points", "default": [[0, 0], [64, 0]], "description": "Points to visit, in pixels from the starting position."},
+      "speed":   {"type": "fixed", "default": 0.5, "description": "Travel speed (pixels per tick)."},
+      "mode":    {"type": "choice", "default": "ping_pong", "options": ["ping_pong", "loop", "once"], "description": "ping_pong = go back and forth; loop = from the last point travel back to the first and repeat; once = stop at the last point."},
+      "wait":    {"type": "ticks", "default": 30, "description": "Pause at each point (ticks)."}
     }
   },
   "solid_platform": {
     "description": "Other things can stand on it and are carried when it moves.",
     "params": {
-      "one_way": { "type": "bool", "default": true, "description": "Only solid from above (you can jump up through it)." }
+      "one_way":  {"type": "bool", "default": true, "description": "Only solid from above (you can jump up through it)."}
     }
   },
   "health": {
     "description": "Can be hurt and can die. Blinks and is briefly invincible after a hit. Spikes and falling off the map also hurt. Side view: knocked sideways and falls off the screen when it dies. Top-down (no gravity): pushed straight away from the hit and vanishes in place.",
     "params": {
-      "var":              { "type": "var",     "default": "",  "description": "Game variable that holds the health (shared with the HUD). Empty = private health." },
-      "max":              { "type": "int",     "default": 1,   "description": "Starting health when no variable is used." },
-      "invincible_ticks": { "type": "ticks",   "default": 60,  "description": "Invincibility time after being hurt (ticks)." },
-      "knockback":        { "type": "fixed",   "default": 1.5, "description": "How far a hit pushes it back (pixels per tick)." },
-      "spikes":           { "type": "bool",    "default": true, "description": "Spike tiles (hazard) hurt it. Turn off for monsters that should walk over spikes safely." },
-      "on_hurt":          { "type": "actions", "default": [],  "description": "What happens on every hit." },
-      "on_death":         { "type": "actions", "default": [],  "description": "What happens when health reaches 0." }
+      "var":               {"type": "var", "default": "", "description": "Game variable that holds the health (shared with the HUD). Empty = private health."},
+      "max":               {"type": "int", "default": 1, "description": "Starting health when no variable is used."},
+      "invincible_ticks":  {"type": "ticks", "default": 60, "description": "Invincibility time after being hurt (ticks)."},
+      "knockback":         {"type": "fixed", "default": 1.5, "description": "How far a hit pushes it back (pixels per tick)."},
+      "spikes":            {"type": "bool", "default": true, "description": "Spike tiles (hazard) hurt it. Turn off for monsters that should walk over spikes safely."},
+      "on_hurt":           {"type": "actions", "default": [], "description": "What happens on every hit."},
+      "on_death":          {"type": "actions", "default": [], "description": "What happens when health reaches 0."}
     }
   },
   "damage_on_touch": {
     "description": "Hurts whoever touches it (if they have health). Does not hurt someone who stomps it from above when it is stompable.",
     "params": {
-      "amount": { "type": "int",    "default": 1,        "description": "Health removed per hit." },
-      "hurts":  { "type": "choice", "default": "player", "options": ["player", "enemy", "any"], "description": "Who it hurts." }
+      "amount":  {"type": "int", "default": 1, "description": "Health removed per hit."},
+      "hurts":   {"type": "choice", "default": "player", "options": ["player", "enemy", "any"], "description": "Who it hurts."}
     }
   },
   "stompable": {
     "description": "Defeated when the player lands on top of it. The player bounces off.",
     "params": {
-      "bounce":   { "type": "fixed",   "default": 3.0, "description": "Upward speed given to the player who stomps it (pixels per tick)." },
-      "on_stomp": { "type": "actions", "default": [],  "description": "What happens when it is stomped." }
+      "bounce":    {"type": "fixed", "default": 3.0, "description": "Upward speed given to the player who stomps it (pixels per tick)."},
+      "on_stomp":  {"type": "actions", "default": [], "description": "What happens when it is stomped."}
     }
   },
   "collectible": {
     "description": "The player picks it up by touching it: adds to a game variable, plays the 'collect' sound and disappears.",
     "params": {
-      "var":        { "type": "var",     "default": "", "description": "Game variable to add to. Empty = none." },
-      "amount":     { "type": "int",     "default": 1,  "description": "How much to add." },
-      "on_collect": { "type": "actions", "default": [], "description": "What happens when picked up." }
+      "var":         {"type": "var", "default": "", "description": "Game variable to add to. Empty = none."},
+      "amount":      {"type": "int", "default": 1, "description": "How much to add."},
+      "on_collect":  {"type": "actions", "default": [], "description": "What happens when picked up."}
     }
   },
   "trigger_zone": {
     "description": "Runs actions when the player walks into (or out of) its zone.",
     "params": {
-      "on_enter": { "type": "actions", "default": [],    "description": "What happens when the player enters." },
-      "on_exit":  { "type": "actions", "default": [],    "description": "What happens when the player leaves." },
-      "once":     { "type": "bool",    "default": false, "description": "Only fire the first time." }
+      "on_enter":  {"type": "actions", "default": [], "description": "What happens when the player enters."},
+      "on_exit":   {"type": "actions", "default": [], "description": "What happens when the player leaves."},
+      "once":      {"type": "bool", "default": false, "description": "Only fire the first time."}
     }
   },
   "talk": {
     "description": "When the player stands next to it and presses the button, a dialog opens.",
     "params": {
-      "dialog":      { "type": "node:dialog", "required": true, "description": "Dialog to show." },
-      "button":      { "type": "button",      "default": "B",  "description": "Button that starts the talk." },
-      "range":       { "type": "int",         "default": 12,   "description": "How close the player must stand (pixels of gap between them, sideways or up/down)." },
-      "face_player": { "type": "bool",        "default": true, "description": "Turn to look at the player." }
+      "dialog":       {"type": "node:dialog", "required": true, "description": "Dialog to show."},
+      "button":       {"type": "button", "default": "B", "description": "Button that starts the talk."},
+      "range":        {"type": "int", "default": 12, "description": "How close the player must stand (pixels of gap between them, sideways or up/down)."},
+      "face_player":  {"type": "bool", "default": true, "description": "Turn to look at the player."}
     }
   },
   "camera_target": {
@@ -139,10 +140,108 @@
   "spawn_particles": {
     "description": "Emits particles from this object: all the time, when landing, when jumping or while running.",
     "params": {
-      "particle": { "type": "node:particle", "required": true,    "description": "Particle emitter to use." },
-      "when":     { "type": "choice",        "default": "always", "options": ["always", "land", "jump", "run"], "description": "When to emit." },
-      "offset_x": { "type": "int",           "default": 0,        "description": "Emit point, pixels right of the object's origin." },
-      "offset_y": { "type": "int",           "default": 0,        "description": "Emit point, pixels below the object's origin." }
+      "particle":  {"type": "node:particle", "required": true, "description": "Particle emitter to use."},
+      "when":      {"type": "choice", "default": "always", "options": ["always", "land", "jump", "run"], "description": "When to emit."},
+      "offset_x":  {"type": "int", "default": 0, "description": "Emit point, pixels right of the object's origin."},
+      "offset_y":  {"type": "int", "default": 0, "description": "Emit point, pixels below the object's origin."}
+    }
+  },
+  "weapon": {
+    "description": "Auto-firing weapon: every few ticks it launches projectile objects by itself (no button). Its level is a game variable: 0 = not owned yet. Each level above 1 fires faster and hits harder, and every few levels one more projectile joins the volley.",
+    "params": {
+      "level_var":           {"type": "var", "required": true, "description": "Game variable with the weapon's level (0 = not owned, so it does nothing)."},
+      "projectile":          {"type": "node:actor", "required": true, "description": "Object launched (give it the projectile behavior)."},
+      "aim":                 {"type": "choice", "default": "nearest", "options": ["nearest", "facing", "random", "around", "orbit"], "description": "nearest = at the closest enemy; facing = the way the owner walks (or faces); random = any direction; around = evenly in every direction; orbit = shots circle the owner, evenly spaced."},
+      "cooldown":            {"type": "ticks", "default": 60, "description": "Wait between volleys at level 1 (ticks)."},
+      "cooldown_per_level":  {"type": "ticks", "default": 4, "description": "Each level above 1 shortens the wait by this many ticks."},
+      "min_cooldown":        {"type": "ticks", "default": 10, "description": "The wait never gets shorter than this (ticks)."},
+      "count":               {"type": "int", "default": 1, "description": "Projectiles per volley at level 1."},
+      "extra_every":         {"type": "int", "default": 2, "description": "One more projectile every this many levels (2 = levels 3, 5...). 0 = never."},
+      "damage_per_level":    {"type": "int", "default": 2, "description": "Each level above 1 adds this much damage to every projectile."},
+      "spread":              {"type": "int", "default": 12, "description": "Degrees between the projectiles of one volley (nearest / facing aim)."},
+      "range":               {"type": "int", "default": 160, "description": "nearest aim: only fires when an enemy is this close (pixels)."},
+      "haste_var":           {"type": "var", "default": "", "description": "Each point of this game variable shortens the wait by 8% (cooldown items). Empty = none."},
+      "sound":               {"type": "node:sfx", "default": "", "description": "Sound played with each volley. Empty = silent."}
+    }
+  },
+  "projectile": {
+    "description": "A shot launched by a weapon: flies straight (or circles its owner), hurts the enemies it touches and vanishes after its lifetime or after hitting enough enemies. Give its body physics.collides_with [\"enemy\"]. An enemy that is still blinking from a hit is not hurt again (the shot flies on).",
+    "params": {
+      "speed":      {"type": "fixed", "default": 2.0, "description": "Flying speed (pixels per tick). Not used when orbiting."},
+      "lifetime":   {"type": "ticks", "default": 60, "description": "Vanishes after this many ticks. 0 = never (orbiting shots of a permanent weapon)."},
+      "damage":     {"type": "int", "default": 10, "description": "Damage per hit at weapon level 1 (the weapon adds its level bonus)."},
+      "pierce":     {"type": "int", "default": 1, "description": "Enemies it can hurt before vanishing. 0 = unlimited."},
+      "motion":     {"type": "choice", "default": "straight", "options": ["straight", "orbit"], "description": "straight = flies in the launch direction; orbit = circles the owner."},
+      "radius":     {"type": "int", "default": 28, "description": "orbit: distance from the owner's middle (pixels)."},
+      "spin":       {"type": "int", "default": 4, "description": "orbit: degrees turned per tick (bigger = faster)."},
+      "power_var":  {"type": "var", "default": "", "description": "Each point of this game variable adds 10% damage (might items). Empty = none."}
+    }
+  },
+  "aura": {
+    "description": "Damaging field around its owner: every few ticks it hurts and pushes away every enemy within a radius. Its level is a game variable (0 = not owned); each level above 1 widens it and hits harder.",
+    "params": {
+      "level_var":         {"type": "var", "required": true, "description": "Game variable with the aura's level (0 = not owned)."},
+      "radius":            {"type": "int", "default": 24, "description": "Reach at level 1 (pixels from the owner's middle)."},
+      "radius_per_level":  {"type": "int", "default": 4, "description": "Extra reach per level above 1 (pixels)."},
+      "damage":            {"type": "int", "default": 5, "description": "Damage per pulse at level 1."},
+      "damage_per_level":  {"type": "int", "default": 2, "description": "Extra damage per level above 1."},
+      "every":             {"type": "ticks", "default": 40, "description": "Ticks between pulses."},
+      "particle":          {"type": "node:particle", "default": "", "description": "Particles shown on each pulse (a ring of sparks). Empty = invisible."},
+      "power_var":         {"type": "var", "default": "", "description": "Each point of this game variable adds 10% damage. Empty = none."},
+      "haste_var":         {"type": "var", "default": "", "description": "Each point of this game variable makes pulses 8% more frequent. Empty = none."}
+    }
+  },
+  "swarm": {
+    "description": "Horde movement (top-down): walks straight at the player from any direction and nudges away from others of its kind so crowds spread out. Members left far behind jump ahead of the player, off screen, so the horde keeps up.",
+    "params": {
+      "speed":   {"type": "fixed", "default": 0.5, "description": "Walking speed (pixels per tick)."},
+      "leash":   {"type": "int", "default": 220, "description": "Moved ahead of the player when farther than this (pixels; up/down uses 3/4 of it). 0 = never."},
+      "wobble":  {"type": "bool", "default": false, "description": "Weave from side to side while flying in (bats, ghosts)."}
+    }
+  },
+  "magnet": {
+    "description": "A pickup (XP gem, coin) that flies to the player once the player comes within range, speeding up until it is caught.",
+    "params": {
+      "range":         {"type": "int", "default": 24, "description": "Starts flying when the player is this close (pixels)."},
+      "range_var":     {"type": "var", "default": "", "description": "Each point of this game variable adds 12 pixels of range (magnet items). Empty = none."},
+      "acceleration":  {"type": "fixed", "default": 0.2, "description": "Speed gained each tick while flying (pixels per tick)."},
+      "max_speed":     {"type": "fixed", "default": 4.0, "description": "Top flying speed (pixels per tick)."},
+      "pull_after":    {"type": "ticks", "default": 0, "description": "Flies to the player on its own after lying around this long, wherever it is (nothing is lost and actor slots free up). 0 = never."}
+    }
+  },
+  "spawn_wave": {
+    "description": "Brings in enemies just off screen around the camera during a time window of the run (read from a seconds variable). Use several (on an invisible director prop) to script a whole run: who comes, when, how many.",
+    "params": {
+      "object":     {"type": "node:actor", "required": true, "description": "What to spawn."},
+      "clock_var":  {"type": "var", "required": true, "description": "Game variable counting the run's seconds (see run_clock)."},
+      "start":      {"type": "int", "default": 0, "description": "First second of the window."},
+      "end":        {"type": "int", "default": 0, "description": "Stops at this second. 0 = never stops."},
+      "every":      {"type": "ticks", "default": 60, "description": "Ticks between spawns."},
+      "count":      {"type": "int", "default": 1, "description": "How many appear each time."},
+      "max_alive":  {"type": "int", "default": 20, "description": "Never more than this many of this object alive at once."},
+      "formation":  {"type": "choice", "default": "scatter", "options": ["scatter", "group", "ring"], "description": "scatter = each one on a random side; group = a pack from one side; ring = a circle around the player that closes in."},
+      "reserve":    {"type": "int", "default": 24, "description": "Keeps this many actor slots free for shots, gems and coins (the wave waits)."},
+      "once":       {"type": "bool", "default": false, "description": "Spawn only once (a boss)."},
+      "on_spawn":   {"type": "actions", "default": [], "description": "What happens the first time it spawns (warning, boss music...)."}
+    }
+  },
+  "run_clock": {
+    "description": "Counts play time: adds 1 to a seconds variable every 60 ticks and keeps minutes / seconds variables for a mm:ss display. Stops while a menu pauses the game.",
+    "params": {
+      "total_var":    {"type": "var", "required": true, "description": "Game variable counting seconds since the run started."},
+      "minutes_var":  {"type": "var", "default": "", "description": "Game variable set to the whole minutes. Empty = none."},
+      "seconds_var":  {"type": "var", "default": "", "description": "Game variable set to the seconds within the minute (0-59). Empty = none."}
+    }
+  },
+  "level_up": {
+    "description": "Experience levels: when the XP variable reaches what the next level needs, that XP is spent, the level goes up and the actions run (for example: open the level-up menu). Needed XP = first + growth x (level - 1).",
+    "params": {
+      "xp_var":        {"type": "var", "required": true, "description": "Game variable holding the XP collected toward the next level."},
+      "level_var":     {"type": "var", "required": true, "description": "Game variable holding the current level (start it at 1)."},
+      "progress_var":  {"type": "var", "default": "", "description": "Game variable kept at 0-100 = progress to the next level (for an XP bar). Empty = none."},
+      "first":         {"type": "int", "default": 5, "description": "XP needed to go from level 1 to 2."},
+      "growth":        {"type": "int", "default": 6, "description": "Extra XP needed for each level after that."},
+      "on_level_up":   {"type": "actions", "default": [], "description": "What happens on each level gained."}
     }
   }
 }

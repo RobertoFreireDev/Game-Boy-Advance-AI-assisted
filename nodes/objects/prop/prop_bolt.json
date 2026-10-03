@@ -1,0 +1,16 @@
+{
+  "id": "prop_bolt",
+  "kind": "object",
+  "type": "prop",
+  "name": "Magic bolt",
+  "notes": "Blue spark fired by the Magic Bolt at the nearest monster. Hits one monster. Launched by a weapon on the hunter (never placed by hand).",
+  "body": "body_bolt",
+  "logic": [
+    {
+      "behavior": "projectile",
+      "params": {"speed": 2.5, "lifetime": 70, "damage": 10, "pierce": 1, "power_var": "might"}
+    }
+  ],
+  "children": ["body_bolt"],
+  "tags": ["shot"]
+}

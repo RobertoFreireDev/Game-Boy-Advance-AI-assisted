@@ -2,14 +2,14 @@
   "id": "hud_victory",
   "kind": "object",
   "type": "hud",
-  "name": "Ending text",
-  "notes": "The ending message with the number of gems collected.",
+  "name": "Victory results",
+  "notes": "Shown after defeating the Night Lord: run stats and the gold banked (with the +100 victory bonus).",
   "font": "font_default",
   "elements": [
-    {"kind": "text", "x": 32, "y": 32, "text": "THE SUN CRYSTAL IS HOME"},
-    {"kind": "text", "x": 32, "y": 48, "text": "AND DAWN RETURNS!"},
-    {"kind": "text", "x": 32, "y": 80, "text": "GEMS FOUND: {gems}"},
-    {"kind": "text", "x": 32, "y": 112, "text": "THANKS FOR PLAYING"},
-    {"kind": "text", "x": 32, "y": 128, "text": "A GAME MADE BY AI"}
+    {"kind": "text", "x": 24, "y": 16, "text": "YOU SURVIVED THE NIGHT!"},
+    {"kind": "text", "x": 64, "y": 40, "text": "LEVEL  {level}"},
+    {"kind": "text", "x": 64, "y": 56, "text": "KILLS  {kills}"},
+    {"kind": "text", "x": 64, "y": 72, "text": "GOLD   +{run_gold}"},
+    {"kind": "text", "x": 64, "y": 88, "text": "BONUS  +100"}
   ]
 }

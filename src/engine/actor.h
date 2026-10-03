@@ -84,6 +84,10 @@ int actor_logic_index(const Actor *a, u8 behavior);
 u32 *bhv_state(Actor *a);
 // Private state words of logic entry `index`.
 u32 *actor_state_of(Actor *a, int index);
+// Live (not dying) actors made from this node.
+int actor_count_node(s16 node);
+// Free slots in the actor pool.
+int actor_free_slots(void);
 // Index of the actor in the pool.
 int actor_index(const Actor *a);
 // Hitbox in world pixels (left, top, right, bottom are inclusive).

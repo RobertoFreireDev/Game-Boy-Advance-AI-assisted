@@ -1,0 +1,21 @@
+{
+  "id": "upg_ring",
+  "kind": "object",
+  "type": "upgrade",
+  "name": "Power Ring",
+  "notes": "Passive: +10% damage per level for every weapon (adds 1 to 'might').",
+  "category": "item",
+  "title": "POWER RING",
+  "icon": "icon_up_ring",
+  "var": "i_ring",
+  "max_level": 5,
+  "descriptions": [
+    "+10% DAMAGE FOR EVERY WEAPON.",
+    "+10% DAMAGE FOR EVERY WEAPON.",
+    "+10% DAMAGE FOR EVERY WEAPON.",
+    "+10% DAMAGE FOR EVERY WEAPON.",
+    "+10% DAMAGE. MAX LEVEL!"
+  ],
+  "on_pick": [{"do": "add_var", "var": "might", "value": 1}],
+  "children": ["icon_up_ring"]
+}

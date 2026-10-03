@@ -1,0 +1,11 @@
+{
+  "id": "anim_gem",
+  "kind": "object",
+  "type": "animation",
+  "name": "XP gem shine",
+  "notes": "Idle shine of the pickup.",
+  "sprite": "spr_pickups",
+  "loop": true,
+  "frames": [{"frame": "gem_a", "ticks": 40}, {"frame": "gem_b", "ticks": 8}],
+  "events": []
+}

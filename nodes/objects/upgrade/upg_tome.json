@@ -1,0 +1,21 @@
+{
+  "id": "upg_tome",
+  "kind": "object",
+  "type": "upgrade",
+  "name": "Spell Tome",
+  "notes": "Passive: every weapon waits 8% less per level (adds 1 to 'haste'). Partner item of the Magic Bolt.",
+  "category": "item",
+  "title": "SPELL TOME",
+  "icon": "icon_up_tome",
+  "var": "i_tome",
+  "max_level": 5,
+  "descriptions": [
+    "ATTACKS 8% FASTER. (EVOLVES MAGIC BOLT)",
+    "ATTACKS 8% FASTER.",
+    "ATTACKS 8% FASTER.",
+    "ATTACKS 8% FASTER.",
+    "ATTACKS 8% FASTER. MAX LEVEL!"
+  ],
+  "on_pick": [{"do": "add_var", "var": "haste", "value": 1}],
+  "children": ["icon_up_tome"]
+}

@@ -46,8 +46,9 @@ TYPE_FIELDS = {
     "body": {"origin", "hitbox", "physics", "animations", "default_animation"},
     "trigger": {"zone", "logic"},
     "hud": {"font", "elements"},
-    "menu": {"font", "title", "options", "cursor", "layout", "on_cancel", "box", "sounds"},
+    "menu": {"font", "title", "options", "upgrades", "cursor", "layout", "on_cancel", "box", "sounds"},
     "dialog": {"font", "box", "lines", "choices", "on_end", "ticks_per_char"},
+    "upgrade": {"category", "title", "icon", "var", "max_level", "descriptions", "requires", "replaces", "on_pick"},
 }
 for _t in C.ACTOR_TYPES:
     if _t != "trigger":
@@ -226,6 +227,8 @@ class Ctx:
                 self.ref(v, "scene", label, allow_empty)
             elif t == "spawnable":
                 self.ref(v, C.ACTOR_TYPES + ["particle"], label, allow_empty)
+            elif t == "actor":
+                self.ref(v, C.ACTOR_TYPES, label, allow_empty)
             else:
                 self.ref(v, [t], label, allow_empty)
         else:
@@ -254,6 +257,12 @@ class Ctx:
                         self.err("'%s' (%s) needs '%s'" % (where, a["do"], pname))
                     continue
                 self.param_value(pdef["type"], pdef, a[pname], "%s.%s" % (where, pname))
+            if a["do"] in ("set_var", "add_var") and "value" in a and a.get("from"):
+                self.err("'%s' (%s) has both 'value' and 'from'; use one" % (where, a["do"]))
+            if a["do"] in ("set_var", "add_var") and "value" not in a and not a.get("from"):
+                self.err("'%s' (%s) needs 'value' (or 'from')" % (where, a["do"]))
+            if a["do"] == "if_chance" and is_int(a.get("percent")) and not 0 <= a["percent"] <= 100:
+                self.err("'%s.percent' must be between 0 and 100" % where)
             if a["do"] in ("save_game", "load_game") and not self.p.game.get("save"):
                 self.err("'%s' uses %s but game.save is false in nodes.json" % (where, a["do"]))
             if a["do"] == "call" and isinstance(a.get("function"), str):
@@ -268,7 +277,6 @@ class Ctx:
         limit = C.read_engine_limits().get("MAX_LOGIC", 6)
         if len(lst) > limit:
             self.err("'%s' has %d behaviors; the engine allows %d (MAX_LOGIC)" % (label, len(lst), limit))
-        seen = set()
         for i, entry in enumerate(lst):
             where = "%s[%d]" % (label, i)
             if not isinstance(entry, dict) or not isinstance(entry.get("behavior"), str):
@@ -278,9 +286,6 @@ class Ctx:
                 if k not in ("behavior", "params"):
                     self.err("'%s' has unknown field '%s'" % (where, k))
             b = entry["behavior"]
-            if b in seen:
-                self.err("'%s' lists behavior '%s' twice" % (where, b))
-            seen.add(b)
             spec = self.p.behaviors.get(b)
             if spec is None:
                 self.err("'%s' uses unknown behavior '%s' (see catalog/behaviors.json)" % (where, b))
@@ -377,6 +382,9 @@ def V_scene(c):
                 for b, params in ov.items():
                     if b not in used:
                         c.err("'%s' overrides behavior '%s', but '%s' does not use it" % (where, b, obj))
+                    elif used.count(b) > 1:
+                        c.err("'%s' overrides behavior '%s', but '%s' lists it %d times (which one?)"
+                              % (where, b, obj, used.count(b)))
                     elif b in c.p.behaviors:
                         c.behavior_params(b, params, "%s.overrides.%s" % (where, b), False)
     if huds > 1:
@@ -412,7 +420,7 @@ def V_scene(c):
 def scene_budget(c, insts):
     """GBA limits for one scene: OBJ VRAM, palettes, BG tiles."""
     p = c.p
-    sprites, obj_pals, bg_pals = set(), set(), set()
+    sprites, obj_pals, bg_pals, icons = set(), set(), set(), set()
 
     def add_anim(a):
         an = p.nodes.get(a, {})
@@ -443,8 +451,12 @@ def scene_budget(c, insts):
                 c.err("tileset '%s' has %d tiles, too many for layer %s" % (node.get("tileset"), ntiles, node.get("layer")))
         if t in ("hud", "menu", "dialog"):
             bg_pals.add(p.nodes.get(node.get("font"), {}).get("palette"))
-            for ref in re.findall(r'"(icon_\w+)"', str(node).replace("'", '"')):
+            refs = set(re.findall(r'"(icon_\w+)"', str(node).replace("'", '"')))
+            if t == "menu" and node.get("upgrades"):
+                refs |= {u.get("icon") for u in upgrade_nodes(p).values() if u.get("icon")}
+            for ref in refs:
                 bg_pals.add(p.nodes.get(ref, {}).get("palette"))
+                icons.add(ref)
 
     for inst in insts:
         if isinstance(inst, dict) and inst.get("object") in p.nodes:
@@ -462,6 +474,15 @@ def scene_budget(c, insts):
         c.err("sprites use %d palettes; the GBA has 16 sprite palettes" % len(obj_pals))
     if len(bg_pals) > 16:
         c.err("backgrounds and UI use %d palettes; the GBA has 16" % len(bg_pals))
+    icons.discard(None)
+    max_icons = C.read_engine_limits().get("MAX_ICONS", 24)
+    if len(icons) > max_icons:
+        c.err("HUD, menus and dialogs here can show %d different icons; the engine holds %d (MAX_ICONS)"
+              % (len(icons), max_icons))
+
+
+def upgrade_nodes(p):
+    return {nid: n for nid, n in p.nodes.items() if p.type_of(nid) == "upgrade"}
 
 
 def V_palette(c):
@@ -768,7 +789,10 @@ def V_actor(c):
             c.get(z, "w", "int", "zone.w", lo=1, hi=1024)
             c.get(z, "h", "int", "zone.h", lo=1, hi=1024)
     else:
-        c.ref(n.get("body"), ["body"], "body")
+        if c.p.type_of(c.id) == "prop" and n.get("body") is None:
+            pass                # an invisible prop: only runs its logic (a director, a timer...)
+        else:
+            c.ref(n.get("body"), ["body"], "body")
         snd = c.get(n, "sounds", "dict", required=False, default={})
         for ev, s in snd.items():
             if ev not in C.SOUND_EVENTS:
@@ -778,7 +802,18 @@ def V_actor(c):
 
 
 def hud_text_width(text):
-    return len(re.sub(r"\{\w+\}", "x" * C.HUD_VAR_WIDTH, text))
+    return C.placeholder_width(text)
+
+
+def check_placeholders(c, text, font, label):
+    """{var} / {var:02} must name game variables; the rest must be in the font."""
+    for var, _pad in C.PLACEHOLDER_RE.findall(text):
+        if var not in c.p.var_names():
+            c.err("%s uses {%s}, which is not a game variable" % (label, var))
+    leftover = C.PLACEHOLDER_RE.sub("", text)
+    if "{" in leftover or "}" in leftover:
+        c.err("%s has a '{' or '}' that is not a {variable} or {variable:02} placeholder" % label)
+    c.text_in_font(leftover.replace("{", "").replace("}", ""), font, label)
 
 
 def V_hud(c):
@@ -808,10 +843,7 @@ def V_hud(c):
         width_tiles = 0
         if kind == "text":
             t = c.get(e, "text", "str", label + ".text", default="")
-            for var in re.findall(r"\{(\w+)\}", t):
-                if var not in c.p.var_names():
-                    c.err("%s.text uses {%s}, which is not a game variable" % (label, var))
-            c.text_in_font(re.sub(r"\{\w+\}", "", t), font, label + ".text")
+            check_placeholders(c, t, font, label + ".text")
             width_tiles = hud_text_width(t)
         elif kind in ("icon", "icon_repeat"):
             ic = c.ref(e.get("icon"), ["icon"], label + ".icon")
@@ -841,10 +873,14 @@ def V_menu(c):
     font = c.ref(n.get("font"), ["font"], "font")
     c.ref(n.get("cursor"), ["icon"], "cursor")
     title = c.get(n, "title", "str", required=False, default="")
-    c.text_in_font(title, font, "title")
+    check_placeholders(c, title, font, "title")
+    ups = n.get("upgrades")
+    if ups is not None:
+        V_upgrade_menu(c, font)
+        return
     opts = c.get(n, "options", "list", default=[])
     if not 1 <= len(opts) <= 10:
-        c.err("'options' must have 1 to 10 options")
+        c.err("'options' must have 1 to 10 options (or use 'upgrades')")
     lay = c.get(n, "layout", "dict", default={})
     for k in lay:
         if k not in ("x", "y", "spacing", "title_y"):
@@ -866,16 +902,21 @@ def V_menu(c):
             if k not in ("label", "actions"):
                 c.err("%s has unknown field '%s'" % (label, k))
         text = c.get(o, "label", "str", label + ".label", default="")
-        c.text_in_font(text, font, label + ".label")
+        check_placeholders(c, text, font, label + ".label")
         c.actions(o.get("actions", []), label + ".actions")
         if not ({"goto_scene", "close_menu", "open_menu", "show_dialog"} & set(re.findall(r"'do': '(\w+)'", str(o.get("actions", []))))):
             c.warn("%s never closes the menu or changes scene: after picking it the game stays paused" % label)
         if i < len(pos):
             x, y = pos[i]
-            if x + len(text) > 30 or y > 19:
+            if x + C.placeholder_width(text) > 30 or y > 19:
                 c.err("%s does not fit on the screen" % label)
             if x < 1:
                 c.err("'layout.x' must leave room for the cursor on the left")
+    menu_common(c)
+
+
+def menu_common(c):
+    n = c.n
     if "on_cancel" in n:
         c.actions(n["on_cancel"], "on_cancel")
     snd = c.get(n, "sounds", "dict", required=False, default={})
@@ -883,6 +924,109 @@ def V_menu(c):
         if k not in ("move", "select"):
             c.err("'sounds' has unknown event '%s' (use move, select)" % k)
         c.ref(v, ["sfx"], "sounds." + k)
+
+
+def V_upgrade_menu(c, font):
+    """A menu whose options are random upgrade cards (picked by the engine when it opens)."""
+    n = c.n
+    if "options" in n:
+        c.err("an upgrade menu ('upgrades') cannot also have 'options'")
+    count = c.get(n, "upgrades", "int", lo=1, hi=C.MAX_UPGRADE_CHOICES) or 1
+    lay = c.get(n, "layout", "dict", default={})
+    for k in lay:
+        if k not in ("x", "y", "spacing", "title_y"):
+            c.err("'layout' has unknown field '%s'" % k)
+    for k in ("x", "y", "spacing", "title_y"):
+        v = c.get(lay, k, "int", "layout." + k, required=k in ("x", "y"), lo=0, hi=C.SCREEN_W)
+        if v is not None and v % 8:
+            c.err("'layout.%s' must be a multiple of 8" % k)
+    if "box" not in n:
+        c.err("an upgrade menu needs a 'box' (cards are drawn on it)")
+    elif c.box(n["box"], "box") and isinstance(lay.get("x"), int) and isinstance(lay.get("y"), int):
+        bx, by, bw, bh = C.box_tiles(n["box"])
+        cw = len(c.p.nodes.get(n.get("cursor"), {}).get("pixels", [])) // 8 or 1
+        x, y = lay["x"] // 8, lay["y"] // 8
+        spacing = lay.get("spacing", 16) // 8
+        rows = 1 + C.UPGRADE_TEXT_LINES
+        if spacing < rows:
+            c.err("'layout.spacing' must be at least %d px: each card uses %d rows" % (rows * 8, rows))
+        if x - C.UPGRADE_ICON_DX - cw < bx + 1:
+            c.err("'layout.x' must leave %d columns inside the box for the cursor and the card icon" % (C.UPGRADE_ICON_DX + cw))
+        if x + C.UPGRADE_TEXT_W > bx + bw - 1:
+            c.err("cards need %d columns from layout.x, but the box ends sooner (make it wider or move x left)" % C.UPGRADE_TEXT_W)
+        if y < by + 1 or y + spacing * (count - 1) + rows > by + bh - 1:
+            c.err("%d cards do not fit inside the box (each uses %d rows)" % (count, rows))
+    ups = upgrade_nodes(c.p)
+    if not any(u.get("category") == "bonus" for u in ups.values()):
+        c.warn("no 'bonus' upgrade exists: once everything is maxed out the level-up menu has nothing to offer")
+    for uid, u in ups.items():
+        c.text_in_font(str(u.get("title", "")) + " NEW! LV123456789 EVOLVE!", font, "upgrade '%s' title" % uid)
+        for d in u.get("descriptions", []) if isinstance(u.get("descriptions"), list) else []:
+            c.text_in_font(str(d), font, "upgrade '%s' descriptions" % uid)
+    menu_common(c)
+
+
+def V_upgrade(c):
+    n = c.n
+    cat = n.get("category")
+    if cat not in C.UPGRADE_CATEGORIES:
+        c.err("'category' must be one of %s" % ", ".join(C.UPGRADE_CATEGORIES))
+        return
+    title = c.get(n, "title", "str", default="")
+    if len(title) > C.UPGRADE_TITLE_W:
+        c.err("'title' is %d chars; the card fits %d" % (len(title), C.UPGRADE_TITLE_W))
+    icon = c.ref(n.get("icon"), ["icon"], "icon")
+    if icon and len(c.p.nodes.get(icon, {}).get("pixels", [])) != 16:
+        c.err("'icon' must be a 16x16 icon")
+    if cat == "bonus":
+        if "max_level" in n or "requires" in n or "replaces" in n:
+            c.err("a bonus upgrade can be picked any number of times: no max_level, requires or replaces")
+        if n.get("var"):
+            c.param_value("var", {}, n["var"], "var")
+        levels = 1
+    else:
+        c.param_value("var", {"required": True}, n.get("var"), "var")
+        levels = c.get(n, "max_level", "int", lo=1, hi=9) or 1
+        if cat == "evolution" and levels != 1:
+            c.err("an evolution has max_level 1")
+    descs = c.get(n, "descriptions", "list", default=[])
+    want = levels if cat in ("weapon", "item") else 1
+    if len(descs) != want:
+        c.err("'descriptions' needs %d text(s): one per level the card can offer%s" % (
+            want, "" if want == 1 else " (the first is shown when it is new)"))
+    for i, d in enumerate(descs):
+        if not isinstance(d, str):
+            c.err("descriptions[%d] must be text" % i)
+            continue
+        wrapped, problem = C.wrap_text(d, C.UPGRADE_TEXT_W)
+        if problem:
+            c.err("descriptions[%d]: %s" % (i, problem))
+        elif len(wrapped) > C.UPGRADE_TEXT_LINES:
+            c.err("descriptions[%d] needs %d lines; a card fits %d lines of %d chars" % (
+                i, len(wrapped), C.UPGRADE_TEXT_LINES, C.UPGRADE_TEXT_W))
+    reqs = c.get(n, "requires", "list", required=False, default=[])
+    for i, r in enumerate(reqs):
+        label = "requires[%d]" % i
+        if not isinstance(r, dict):
+            c.err("%s must be {upgrade, level}" % label)
+            continue
+        for k in r:
+            if k not in ("upgrade", "level"):
+                c.err("%s has unknown field '%s'" % (label, k))
+        c.ref(r.get("upgrade"), ["upgrade"], label + ".upgrade")
+        lv = r.get("level")
+        if lv != "max" and not (is_int(lv) and 1 <= lv <= 9):
+            c.err("%s.level must be 1-9 or \"max\"" % label)
+    if cat == "evolution":
+        if not reqs:
+            c.err("an evolution needs 'requires' (the max-level weapon and the item that evolve it)")
+        rep = c.ref(n.get("replaces"), ["upgrade"], "replaces")
+        if rep and c.p.nodes.get(rep, {}).get("category") != "weapon":
+            c.err("'replaces' must name a weapon upgrade")
+    elif "replaces" in n:
+        c.err("only an evolution can have 'replaces'")
+    if "on_pick" in n:
+        c.actions(n["on_pick"], "on_pick")
 
 
 def V_dialog(c):
@@ -943,7 +1087,7 @@ def V_dialog(c):
 CHECKS = {"scene": V_scene, "palette": V_palette, "sprite": V_sprite, "tileset": V_tileset,
           "tilemap": V_tilemap, "font": V_font, "icon": V_icon, "sfx": V_sfx, "music": V_music,
           "animation": V_animation, "particle": V_particle, "body": V_body, "hud": V_hud,
-          "menu": V_menu, "dialog": V_dialog}
+          "menu": V_menu, "dialog": V_dialog, "upgrade": V_upgrade}
 for _t in C.ACTOR_TYPES:
     CHECKS[_t] = V_actor
 
@@ -1006,6 +1150,11 @@ def check_game(p, r):
             r.err(where, "%s.initial must be a whole number" % label)
         if not isinstance(v.get("notes"), str) or not v.get("notes").strip():
             r.err(where, "%s needs 'notes' explaining it" % label)
+        if not isinstance(v.get("persistent", False), bool):
+            r.err(where, "%s.persistent must be true or false" % label)
+        for k in v:
+            if k not in ("name", "type", "initial", "notes", "persistent"):
+                r.err(where, "%s has unknown field '%s'" % (label, k))
 
 
 def check_index(p, r):
@@ -1129,8 +1278,7 @@ def check_tree(p, r):
 
 def check_catalog(p, r):
     for b in p.behaviors:
-        src = os.path.join(C.SRC_DIR, "behaviors", b + ".c")
-        if not os.path.isfile(src):
+        if not C.behavior_source(b):
             r.err("catalog/behaviors.json", "behavior '%s' has no source file src/behaviors/%s.c" % (b, b))
         for pname, pdef in p.behaviors[b].get("params", {}).items():
             if "type" not in pdef or not pdef.get("description"):
@@ -1151,6 +1299,8 @@ def check_usage(p, r):
             if other != nid:
                 used.add(other)
     start = p.game.get("start_scene")
+    if any(p.type_of(m) == "menu" and n.get("upgrades") for m, n in p.nodes.items()):
+        used.update(upgrade_nodes(p))       # every upgrade can be offered by the upgrade menus
     for nid, e in p.by_id.items():
         if nid not in used and nid != start and e.get("parent") is None:
             r.warn("nodes/" + e.get("path", "?"), "nothing uses this node yet")

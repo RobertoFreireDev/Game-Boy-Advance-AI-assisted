@@ -1,0 +1,10 @@
+{
+  "id": "sfx_hurt",
+  "kind": "object",
+  "type": "sfx",
+  "name": "Hunter hurt",
+  "notes": "Harsh crunch when a monster hits the hunter.",
+  "channel": "noise",
+  "priority": 2,
+  "steps": [{"pitch": 4, "ticks": 4, "volume": 13}, {"pitch": 2, "ticks": 6, "volume": 8}]
+}

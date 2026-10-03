@@ -88,16 +88,22 @@ static int run(Script *s) {
             audio_stop_music();
             break;
         case ACT_SET_VAR:
-            vars_set(a->var, a->a);
+            vars_set(a->var, a->var_from >= 0 ? vars_get(a->var_from) : a->a);
             break;
-        case ACT_ADD_VAR:
-            vars_add(a->var, a->a);
+        case ACT_ADD_VAR: {
+            s32 v = vars_get(a->var) + (a->var_from >= 0 ? vars_get(a->var_from) : a->a);
+            if (a->var_max >= 0 && v > vars_get(a->var_max)) v = vars_get(a->var_max);
+            vars_set(a->var, v);
             break;
+        }
         case ACT_RESET_VARS:
             vars_reset();
             break;
         case ACT_IF_VAR:
             push(s, compare(vars_get(a->var), a->sub, a->a) ? a->then_list : a->else_list);
+            break;
+        case ACT_IF_CHANCE:
+            push(s, rng_range(1, 100) <= a->a ? a->then_list : a->else_list);
             break;
         case ACT_SHOW_DIALOG:
             if (a->node >= 0) ui_show_dialog((const DialogData *)g_nodes[a->node].data);

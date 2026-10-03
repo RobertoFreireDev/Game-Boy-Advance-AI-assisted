@@ -19,8 +19,10 @@ struct Action {
     u8 sub;             // if_var comparison (CMP_*) or spawn 'relative' flag
     s16 node;           // node argument (scene, sfx, music, dialog, menu, object), -1 = none
     s16 var;            // variable argument (VAR_*), -1 = none
+    s16 var_from;       // set_var / add_var: use this variable's value instead of a, -1 = none
+    s16 var_max;        // add_var: never go above this variable, -1 = none
     s16 pad;
-    s32 a, b;           // number arguments (ticks, value, x/y, strength)
+    s32 a, b;           // number arguments (ticks, value, x/y, strength, percent)
     ActionList then_list, else_list;
     ActionFn fn;        // 'call' target
 };
@@ -153,7 +155,7 @@ typedef struct {
     s16 var;
     u8 length, color, back, spacing;
     const IconData *icon, *empty_icon;
-    const char *text;                   // \001 + (var+1) marks a {var} placeholder
+    const char *text;                   // \001 + (var+1) = {var}; \002 + (var+1) = {var:02} (2 digits)
 } HudElement;
 
 typedef struct { const FontData *font; u8 count; const HudElement *elements; } HudData;
@@ -169,6 +171,7 @@ typedef struct {
     UiBox box;
     ActionList on_cancel;
     s16 sfx_move, sfx_select;
+    u8 upgrade_count;                   // > 0: an upgrade menu; options only hold the card slots
 } MenuData;
 
 typedef struct {
@@ -186,6 +189,22 @@ typedef struct {
     const MenuOption *choices;
     ActionList on_end;
 } DialogData;
+
+// ---- upgrades (level-up choices) ---------------------------------------------------
+enum { UPG_WEAPON, UPG_ITEM, UPG_EVOLUTION, UPG_BONUS };
+
+typedef struct { s16 upgrade; u8 level, pad; } UpgradeReq;      // needs that upgrade at >= level
+
+typedef struct {
+    u8 category, max_level, req_count, desc_count;
+    s16 var;                            // level variable, -1 = none (bonus)
+    s16 replaces;                       // upgrade node it replaces (evolution), -1 = none
+    const char *title;
+    const IconData *icon;
+    const char *const *descriptions;    // per level (index = current level), word-wrapped
+    const UpgradeReq *reqs;
+    ActionList on_pick;
+} UpgradeData;
 
 // ---- scenes and the game -------------------------------------------------------------
 enum { INST_TILEMAP, INST_ACTOR, INST_HUD, INST_MENU, INST_DIALOG, INST_PARTICLE };
@@ -227,6 +246,7 @@ typedef struct {
 extern const NodeEntry g_nodes[NODE_COUNT];
 extern const GameData g_game;
 extern const s32 g_var_initial[VAR_ARRAY_SIZE];
+extern const u8 g_var_persistent[VAR_ARRAY_SIZE];  // 1 = kept by reset_vars (permanent unlocks)
 extern const BehaviorDef g_behaviors[BHV_ARRAY_SIZE];
 
 #endif

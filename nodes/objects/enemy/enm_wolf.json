@@ -1,0 +1,34 @@
+{
+  "id": "enm_wolf",
+  "kind": "object",
+  "type": "enemy",
+  "name": "Werewolf",
+  "notes": "Elite hunter from 7:00: fast, very tough and barely pushed back. Drops two big gems, gold and often a roast.",
+  "body": "body_wolf",
+  "logic": [
+    {"behavior": "swarm", "params": {"leash": 220, "speed": 0.95}},
+    {"behavior": "damage_on_touch", "params": {"amount": 1}},
+    {
+      "behavior": "health",
+      "params": {
+        "max": 160,
+        "invincible_ticks": 8,
+        "knockback": 0.5,
+        "spikes": false,
+        "on_death": [
+          {"do": "add_var", "var": "kills", "value": 1},
+          {"do": "spawn", "object": "item_gem_big", "x": 0, "y": -6},
+          {"do": "spawn", "object": "item_gem_big", "x": 0, "y": -6},
+          {"do": "spawn", "object": "item_coin", "x": 6, "y": -4},
+          {
+            "do": "if_chance",
+            "percent": 50,
+            "then": [{"do": "spawn", "object": "item_meat", "x": -6, "y": -4}]
+          }
+        ]
+      }
+    }
+  ],
+  "sounds": {"die": "sfx_enemy_die"},
+  "children": ["body_wolf"]
+}

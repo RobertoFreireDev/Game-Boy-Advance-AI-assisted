@@ -1,0 +1,23 @@
+{
+  "id": "item_gem_big",
+  "kind": "object",
+  "type": "pickup",
+  "name": "Big XP gem",
+  "notes": "Green gem dropped by tougher monsters: 5 XP.",
+  "body": "body_gem_big",
+  "logic": [
+    {"behavior": "collectible", "params": {"var": "xp", "amount": 5}},
+    {
+      "behavior": "magnet",
+      "params": {
+        "range": 26,
+        "range_var": "magnet",
+        "acceleration": 0.25,
+        "max_speed": 4.5,
+        "pull_after": 480
+      }
+    }
+  ],
+  "sounds": {"collect": "sfx_gem"},
+  "children": ["body_gem_big"]
+}

@@ -1,0 +1,25 @@
+{
+  "id": "pal_field",
+  "kind": "object",
+  "type": "palette",
+  "name": "Graveyard field colors",
+  "notes": "Night meadow: dark greens for grass and trees, grays for stones and graves, bone white, two flower colors. The scene backdrop is the base grass color.",
+  "colors": [
+    "#000000",
+    "#1e3824",
+    "#3a6040",
+    "#56804e",
+    "#6a6a78",
+    "#9a9aa8",
+    "#2a2a38",
+    "#c8c0b0",
+    "#5a4030",
+    "#7a5a40",
+    "#10241a",
+    "#1e4426",
+    "#2e6234",
+    "#4a3020",
+    "#d8d070",
+    "#a070d0"
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "id": "hud_results",
+  "kind": "object",
+  "type": "hud",
+  "name": "Run results",
+  "notes": "Shown after the hunter falls: time survived, level reached, monsters defeated and gold banked.",
+  "font": "font_default",
+  "elements": [
+    {"kind": "text", "x": 40, "y": 16, "text": "THE NIGHT TOOK YOU..."},
+    {"kind": "text", "x": 64, "y": 40, "text": "TIME   {time_min:02}:{time_sec:02}"},
+    {"kind": "text", "x": 64, "y": 56, "text": "LEVEL  {level}"},
+    {"kind": "text", "x": 64, "y": 72, "text": "KILLS  {kills}"},
+    {"kind": "text", "x": 64, "y": 88, "text": "GOLD   +{run_gold}"}
+  ]
+}

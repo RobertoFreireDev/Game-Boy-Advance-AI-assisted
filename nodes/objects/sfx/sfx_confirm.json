@@ -3,7 +3,7 @@
   "kind": "object",
   "type": "sfx",
   "name": "Confirm",
-  "notes": "Bright two-note chirp when a menu option is chosen or Kai enters the shrine.",
+  "notes": "Bright two-note chirp when a menu option or an upgrade card is chosen.",
   "channel": "square2",
   "duty": 2,
   "priority": 1,

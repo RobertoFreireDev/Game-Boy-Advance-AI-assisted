@@ -1,0 +1,16 @@
+{
+  "id": "upg_meat",
+  "kind": "object",
+  "type": "upgrade",
+  "name": "Roast Meat",
+  "notes": "Filler card: heals 2 hearts (up to the maximum). Offered when there is not enough else to pick.",
+  "category": "bonus",
+  "title": "ROAST MEAT",
+  "icon": "icon_up_meat",
+  "descriptions": ["HEAL 2 HEARTS."],
+  "on_pick": [
+    {"do": "add_var", "var": "health", "value": 2, "max_var": "max_health"},
+    {"do": "play_sfx", "sfx": "sfx_heal"}
+  ],
+  "children": ["icon_up_meat"]
+}

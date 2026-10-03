@@ -1,0 +1,13 @@
+{
+  "id": "body_gem_big",
+  "kind": "object",
+  "type": "body",
+  "name": "Big XP gem body",
+  "notes": "6x6 hitbox in the middle of the 8x8 art. The hunter's body is what touches it.",
+  "origin": [4, 4],
+  "hitbox": {"x": -3, "y": -3, "w": 6, "h": 6},
+  "physics": {"gravity": false, "collides_with": []},
+  "animations": {"idle": "anim_gem_big"},
+  "default_animation": "idle",
+  "children": ["anim_gem_big"]
+}

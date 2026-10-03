@@ -1,0 +1,16 @@
+{
+  "id": "upg_flare",
+  "kind": "object",
+  "type": "upgrade",
+  "name": "Solar Flare",
+  "notes": "Evolution of the Sun Aura (level 5 plus a Hollow Heart): double the reach and much stronger pulses.",
+  "category": "evolution",
+  "title": "SOLAR FLARE",
+  "icon": "icon_up_flare",
+  "var": "w_sun",
+  "max_level": 1,
+  "descriptions": ["A HUGE AURA THAT BURNS EVERYTHING NEAR."],
+  "requires": [{"upgrade": "upg_aura", "level": "max"}, {"upgrade": "upg_heart", "level": 1}],
+  "replaces": "upg_aura",
+  "children": ["icon_up_flare"]
+}

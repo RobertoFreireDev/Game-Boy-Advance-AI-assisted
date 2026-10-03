@@ -3,39 +3,19 @@
   "kind": "object",
   "type": "menu",
   "name": "Game over menu",
-  "notes": "After losing every heart. TRY AGAIN refills the hearts and restarts the area you were in (keys found there are lost); gems and the sword are kept. TITLE goes back to the title screen.",
+  "notes": "RETRY starts a new night right away; TITLE goes back to the title screen.",
   "font": "font_default",
-  "title": "GAME OVER",
   "cursor": "icon_cursor",
-  "box": {"x": 48, "y": 40, "w": 144, "h": 80, "paper": 3, "border": 2},
-  "layout": {"x": 80, "y": 80, "spacing": 16, "title_y": 56},
+  "box": {"x": 64, "y": 104, "w": 112, "h": 48, "paper": 3, "border": 2},
+  "layout": {"x": 96, "y": 112, "spacing": 16},
   "options": [
     {
-      "label": "TRY AGAIN",
-      "actions": [
-        {"do": "set_var", "var": "health", "value": 5},
-        {"do": "set_var", "var": "keys", "value": 0},
-        {"do": "fade_out", "ticks": 20},
-        {
-          "do": "if_var",
-          "var": "checkpoint",
-          "op": "==",
-          "value": 1,
-          "then": [
-            {"do": "goto_scene", "scene": "scn_shrine"}
-          ],
-          "else": [
-            {"do": "goto_scene", "scene": "scn_meadow"}
-          ]
-        }
-      ]
+      "label": "RETRY",
+      "actions": [{"do": "fade_out", "ticks": 20}, {"do": "goto_scene", "scene": "scn_field"}]
     },
     {
       "label": "TITLE",
-      "actions": [
-        {"do": "fade_out", "ticks": 20},
-        {"do": "goto_scene", "scene": "scn_title"}
-      ]
+      "actions": [{"do": "fade_out", "ticks": 20}, {"do": "goto_scene", "scene": "scn_title"}]
     }
   ],
   "sounds": {"move": "sfx_select", "select": "sfx_confirm"}

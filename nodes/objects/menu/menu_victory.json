@@ -1,0 +1,22 @@
+{
+  "id": "menu_victory",
+  "kind": "object",
+  "type": "menu",
+  "name": "Victory menu",
+  "notes": "NEW RUN starts another night; TITLE goes back to the title screen.",
+  "font": "font_default",
+  "cursor": "icon_cursor",
+  "box": {"x": 64, "y": 104, "w": 112, "h": 48, "paper": 3, "border": 2},
+  "layout": {"x": 88, "y": 112, "spacing": 16},
+  "options": [
+    {
+      "label": "NEW RUN",
+      "actions": [{"do": "fade_out", "ticks": 20}, {"do": "goto_scene", "scene": "scn_field"}]
+    },
+    {
+      "label": "TITLE",
+      "actions": [{"do": "fade_out", "ticks": 20}, {"do": "goto_scene", "scene": "scn_title"}]
+    }
+  ],
+  "sounds": {"move": "sfx_select", "select": "sfx_confirm"}
+}

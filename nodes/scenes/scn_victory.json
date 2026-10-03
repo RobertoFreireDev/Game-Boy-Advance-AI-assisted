@@ -2,17 +2,20 @@
   "id": "scn_victory",
   "kind": "scene",
   "type": "credits",
-  "name": "Ending",
-  "notes": "The ending after taking the Sun Crystal: a warm dawn-colored screen, the fanfare, the number of gems found and thanks. Returns to the title after about 7 seconds.",
-  "backdrop": "#c86838",
+  "name": "Victory",
+  "notes": "The Night Lord is defeated: banks this run's gold plus a 100 gold bonus, saves, and shows the results.",
+  "backdrop": "#101028",
   "music": "mus_victory",
+  "camera": {"x": 0, "y": 0, "bounds": "none"},
   "instances": [
-    {"id": "text", "object": "hud_victory"}
+    {"id": "sky", "object": "map_night"},
+    {"id": "hud", "object": "hud_victory"},
+    {"id": "menu", "object": "menu_victory"}
   ],
   "on_start": [
-    {"do": "fade_in", "ticks": 40},
-    {"do": "wait", "ticks": 420},
-    {"do": "fade_out", "ticks": 40},
-    {"do": "goto_scene", "scene": "scn_title"}
+    {"do": "add_var", "var": "gold", "from": "run_gold"},
+    {"do": "add_var", "var": "gold", "value": 100},
+    {"do": "save_game"},
+    {"do": "fade_in", "ticks": 30}
   ]
 }

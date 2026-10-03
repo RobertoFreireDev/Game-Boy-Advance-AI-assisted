@@ -1,0 +1,13 @@
+{
+  "id": "hud_shop",
+  "kind": "object",
+  "type": "hud",
+  "name": "Power-up shop HUD",
+  "notes": "Banked gold at the top and a reminder that power ups are permanent.",
+  "font": "font_default",
+  "elements": [
+    {"kind": "icon", "x": 8, "y": 8, "icon": "icon_coin"},
+    {"kind": "text", "x": 16, "y": 8, "text": "GOLD {gold}"},
+    {"kind": "text", "x": 24, "y": 152, "text": "BONUSES LAST FOR EVERY RUN"}
+  ]
+}

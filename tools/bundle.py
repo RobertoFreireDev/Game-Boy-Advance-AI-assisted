@@ -17,7 +17,8 @@ import validate  # noqa: E402
 
 
 def derived(p):
-    out = {"dialogs": {}, "menus": {}}
+    out = {"dialogs": {}, "menus": {}, "upgrades": {},
+           "upgrade_card": {"icon_dx": C.UPGRADE_ICON_DX, "tag_dx": C.UPGRADE_TAG_DX, "text_w": C.UPGRADE_TEXT_W}}
     for nid, n in p.nodes.items():
         t = p.type_of(nid)
         try:
@@ -33,6 +34,8 @@ def derived(p):
                     [choice["inner_x"] + 1, choice["inner_y"] + i] for i in range(len(n.get("choices") or []))]}
             elif t == "menu":
                 out["menus"][nid] = C.menu_layout(n)
+            elif t == "upgrade":
+                out["upgrades"][nid] = [C.wrap_text(d, C.UPGRADE_TEXT_W)[0] for d in n.get("descriptions", [])]
         except (KeyError, TypeError, ValueError):
             pass
     return out

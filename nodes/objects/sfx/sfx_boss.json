@@ -1,0 +1,16 @@
+{
+  "id": "sfx_boss",
+  "kind": "object",
+  "type": "sfx",
+  "name": "Boss alarm",
+  "notes": "Ominous wobble when the Night Lord appears (and when he falls).",
+  "channel": "square1",
+  "duty": 3,
+  "priority": 3,
+  "steps": [
+    {"note": "E3", "ticks": 6, "volume": 13},
+    {"note": "D#3", "ticks": 6, "volume": 13},
+    {"note": "E3", "ticks": 6, "volume": 12},
+    {"note": "D#3", "ticks": 6, "volume": 10}
+  ]
+}

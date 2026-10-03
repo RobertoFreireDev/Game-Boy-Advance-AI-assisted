@@ -2,42 +2,27 @@
   "id": "mus_title",
   "kind": "object",
   "type": "music",
-  "name": "Title theme",
-  "notes": "Heroic march in C major for the title screen. Melody on square1, held chords on square2, bass on wave, drums on noise.",
-  "bpm": 120,
-  "rows_per_beat": 4,
+  "name": "Moonlight",
+  "notes": "Slow, eerie A-minor tune for the title, shop and how-to-play: lonely melody, distant high bell on square 2, long bass notes.",
+  "bpm": 90,
+  "rows_per_beat": 2,
   "loop": true,
   "instruments": {
-    "square1": {"duty": 2, "volume": 10, "decay": 1},
-    "square2": {"duty": 1, "volume": 6, "decay": 2},
-    "wave": {"wave": "0123456789abcdeffedcba9876543210", "volume": 3},
-    "noise": {"volume": 5, "decay": 1}
+    "square1": {"duty": 2, "volume": 8, "decay": 0},
+    "square2": {"duty": 0, "volume": 4, "decay": 3},
+    "wave": {"wave": "0123456789abcdeffedcba9876543210", "volume": 2}
   },
   "patterns": {
-    "A": {
-      "square1": "C5 -- -- G4 C5 -- E5 -- | G5 -- -- -- E5 -- C5 --",
-      "square2": "E4 -- -- -- -- -- -- -- | G4 -- -- -- -- -- -- --",
-      "wave": "C3 -- C3 -- G2 -- G2 -- | C3 -- C3 -- G2 -- G2 --",
-      "noise": "X3 .. X9 .. X3 .. X9 .. | X3 .. X9 .. X3 X3 X9 .."
+    "T1": {
+      "square1": "A4 -- -- -- C5 -- B4 -- | A4 -- -- -- E4 -- -- -- | F4 -- -- -- A4 -- G4 -- | E4 -- -- -- -- -- -- --",
+      "square2": "E6 .. .. .. .. .. .. .. | C6 .. .. .. .. .. .. .. | A5 .. .. .. .. .. .. .. | B5 .. .. .. .. .. .. ..",
+      "wave": "A2 -- -- -- -- -- -- -- | A2 -- -- -- G2 -- -- -- | F2 -- -- -- -- -- -- -- | E2 -- -- -- -- -- -- --"
     },
-    "B": {
-      "square1": "F5 -- -- E5 D5 -- C5 -- | D5 -- -- -- G4 -- -- --",
-      "square2": "A4 -- -- -- -- -- -- -- | B4 -- -- -- -- -- -- --",
-      "wave": "F2 -- F2 -- C3 -- C3 -- | G2 -- G2 -- D3 -- G2 --",
-      "noise": "X3 .. X9 .. X3 .. X9 .. | X3 .. X9 .. X3 X3 X9 .."
-    },
-    "C": {
-      "square1": "C5 -- -- G4 C5 -- E5 -- | G5 -- A5 -- G5 -- E5 --",
-      "square2": "E4 -- -- -- -- -- -- -- | C5 -- -- -- -- -- -- --",
-      "wave": "C3 -- C3 -- G2 -- G2 -- | A2 -- A2 -- E3 -- E3 --",
-      "noise": "X3 .. X9 .. X3 .. X9 .. | X3 .. X9 .. X3 X3 X9 .."
-    },
-    "D": {
-      "square1": "F5 -- E5 -- D5 -- G5 -- | C5 -- -- -- -- -- .. ..",
-      "square2": "A4 -- G4 -- F4 -- B4 -- | E4 -- -- -- -- -- .. ..",
-      "wave": "F2 -- F2 -- G2 -- G2 -- | C3 -- G2 -- C3 -- -- --",
-      "noise": "X3 .. X9 .. X3 .. X9 .. | X3 X3 X3 .. X9 .. .. .."
+    "T2": {
+      "square1": "C5 -- -- -- E5 -- D5 -- | C5 -- -- -- B4 -- A4 -- | D5 -- -- -- C5 -- B4 -- | A4 -- -- -- -- -- -- --",
+      "square2": "E6 .. .. .. .. .. .. .. | G5 .. .. .. .. .. .. .. | F5 .. .. .. .. .. .. .. | E5 .. .. .. .. .. .. ..",
+      "wave": "A2 -- -- -- -- -- -- -- | E2 -- -- -- -- -- -- -- | D2 -- -- -- F2 -- -- -- | A2 -- -- -- E2 -- -- --"
     }
   },
-  "order": ["A", "B", "C", "D"]
+  "order": ["T1", "T2", "T1", "T2"]
 }

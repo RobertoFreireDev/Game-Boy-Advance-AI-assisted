@@ -1,0 +1,11 @@
+{
+  "id": "anim_ghost_walk",
+  "kind": "object",
+  "type": "animation",
+  "name": "Ghost walk",
+  "notes": "Two-frame walk / flap.",
+  "sprite": "spr_monsters",
+  "loop": true,
+  "frames": [{"frame": "ghost_a", "ticks": 12}, {"frame": "ghost_b", "ticks": 12}],
+  "events": []
+}

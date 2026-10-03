@@ -1,0 +1,11 @@
+{
+  "id": "anim_wolf_walk",
+  "kind": "object",
+  "type": "animation",
+  "name": "Werewolf walk",
+  "notes": "Two-frame walk / flap.",
+  "sprite": "spr_monsters",
+  "loop": true,
+  "frames": [{"frame": "wolf_a", "ticks": 6}, {"frame": "wolf_b", "ticks": 6}],
+  "events": []
+}

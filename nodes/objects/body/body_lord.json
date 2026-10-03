@@ -1,0 +1,13 @@
+{
+  "id": "body_lord",
+  "kind": "object",
+  "type": "body",
+  "name": "Night Lord body",
+  "notes": "Big 20x24 hitbox. Touches only the hunter.",
+  "origin": [16, 32],
+  "hitbox": {"x": -10, "y": -26, "w": 20, "h": 24},
+  "physics": {"gravity": false, "collides_with": ["player"]},
+  "animations": {"idle": "anim_lord_walk", "walk": "anim_lord_walk", "die": "anim_lord_die"},
+  "default_animation": "walk",
+  "children": ["spr_lord", "anim_lord_walk", "anim_lord_die"]
+}

@@ -1,0 +1,26 @@
+{
+  "id": "scn_field",
+  "kind": "scene",
+  "type": "level",
+  "name": "The night field",
+  "notes": "The run. Everything for this run starts fresh (weapons, level, XP, hearts), then the permanent power ups are added: might, haste, speed, magnet and extra hearts. The director spawns monsters for 10 minutes, then the Night Lord comes. The camera follows the hunter.",
+  "backdrop": "#2a4a30",
+  "music": "mus_field",
+  "camera": {"follow": "hunter", "bounds": "map"},
+  "instances": [
+    {"id": "map", "object": "map_field"},
+    {"id": "director", "object": "prop_director"},
+    {"id": "hunter", "object": "plr_hunter", "x": 384, "y": 392},
+    {"id": "hud", "object": "hud_run"}
+  ],
+  "on_start": [
+    {"do": "reset_vars"},
+    {"do": "set_var", "var": "might", "from": "pu_might"},
+    {"do": "set_var", "var": "haste", "from": "pu_haste"},
+    {"do": "set_var", "var": "swift", "from": "pu_speed"},
+    {"do": "set_var", "var": "magnet", "from": "pu_magnet"},
+    {"do": "add_var", "var": "max_health", "from": "pu_health"},
+    {"do": "add_var", "var": "health", "from": "pu_health"},
+    {"do": "fade_in", "ticks": 20}
+  ]
+}

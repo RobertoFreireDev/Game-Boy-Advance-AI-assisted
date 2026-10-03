@@ -3,26 +3,24 @@
   "kind": "object",
   "type": "menu",
   "name": "Title menu",
-  "notes": "Title screen menu. NEW GAME resets everything and starts in the meadow; HOW TO PLAY explains the buttons.",
+  "notes": "START RUN begins a new night, POWER UPS opens the permanent shop, HOW TO PLAY explains the game.",
   "font": "font_default",
-  "title": "SUN SHRINE",
+  "title": "NIGHT SWARM",
   "cursor": "icon_cursor",
-  "box": {"x": 48, "y": 72, "w": 144, "h": 72, "paper": 3, "border": 2},
-  "layout": {"x": 72, "y": 112, "spacing": 16, "title_y": 88},
+  "box": {"x": 56, "y": 64, "w": 128, "h": 88, "paper": 3, "border": 2},
+  "layout": {"x": 80, "y": 96, "spacing": 16, "title_y": 80},
   "options": [
     {
-      "label": "NEW GAME",
-      "actions": [
-        {"do": "reset_vars"},
-        {"do": "fade_out", "ticks": 20},
-        {"do": "goto_scene", "scene": "scn_meadow"}
-      ]
+      "label": "START RUN",
+      "actions": [{"do": "fade_out", "ticks": 20}, {"do": "goto_scene", "scene": "scn_field"}]
+    },
+    {
+      "label": "POWER UPS",
+      "actions": [{"do": "fade_out", "ticks": 20}, {"do": "goto_scene", "scene": "scn_shop"}]
     },
     {
       "label": "HOW TO PLAY",
-      "actions": [
-        {"do": "show_dialog", "dialog": "dlg_how_to_play"}
-      ]
+      "actions": [{"do": "show_dialog", "dialog": "dlg_how_to_play"}]
     }
   ],
   "sounds": {"move": "sfx_select", "select": "sfx_confirm"}

@@ -1,0 +1,13 @@
+{
+  "id": "body_wolf",
+  "kind": "object",
+  "type": "body",
+  "name": "Werewolf body",
+  "notes": "Feet at the origin; the hitbox covers the body. Touches only the hunter (monsters pass through each other and through trees).",
+  "origin": [8, 16],
+  "hitbox": {"x": -6, "y": -12, "w": 12, "h": 12},
+  "physics": {"gravity": false, "collides_with": ["player"]},
+  "animations": {"idle": "anim_wolf_walk", "walk": "anim_wolf_walk", "die": "anim_poof"},
+  "default_animation": "walk",
+  "children": ["anim_wolf_walk"]
+}

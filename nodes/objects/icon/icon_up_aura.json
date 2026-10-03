@@ -1,0 +1,26 @@
+{
+  "id": "icon_up_aura",
+  "kind": "object",
+  "type": "icon",
+  "name": "Sun Aura icon",
+  "notes": "16x16 card picture for the Sun Aura upgrade (UI palette, so the box color shows behind it).",
+  "palette": "pal_ui",
+  "pixels": [
+    "................",
+    ".......44.......",
+    "..4....44....4..",
+    "...4.111111.4...",
+    "....1aaaaaa1....",
+    "...1aa4444aa1...",
+    "...1a444444a1...",
+    "4441a442244a1444",
+    "4441a442244a1444",
+    "...1a444444a1...",
+    "...1aa4444aa1...",
+    "....1aaaaaa1....",
+    "...4.111111.4...",
+    "..4....44....4..",
+    ".......44.......",
+    "................"
+  ]
+}

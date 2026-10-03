@@ -1,0 +1,25 @@
+{
+  "id": "pal_monsters",
+  "kind": "object",
+  "type": "palette",
+  "name": "Monster colors",
+  "notes": "Shared by every monster to save palette slots: purple bat, green zombie with brown rags, bone skeleton, pale blue ghost, brown werewolf, and the Night Lord (purple robe, gold crown, red eyes).",
+  "colors": [
+    "#000000",
+    "#100810",
+    "#503060",
+    "#8a58b0",
+    "#f04040",
+    "#3e6436",
+    "#6ea050",
+    "#7a5a44",
+    "#e8e0c8",
+    "#a09880",
+    "#b8e0f8",
+    "#6890c8",
+    "#4a3c38",
+    "#8a7262",
+    "#f8f8f8",
+    "#f0c040"
+  ]
+}

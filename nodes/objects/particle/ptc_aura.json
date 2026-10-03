@@ -1,0 +1,15 @@
+{
+  "id": "ptc_aura",
+  "kind": "object",
+  "type": "particle",
+  "name": "Sun Aura ring",
+  "notes": "10 yellow sparks burst outward each time the Sun Aura pulses, showing how far it reaches.",
+  "animation": "anim_spark",
+  "mode": "burst",
+  "count": 10,
+  "lifetime": 14,
+  "speed": [1.6, 2.0],
+  "angle": [0, 359],
+  "gravity": 0,
+  "children": ["anim_spark"]
+}

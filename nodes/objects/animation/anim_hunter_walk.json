@@ -1,0 +1,16 @@
+{
+  "id": "anim_hunter_walk",
+  "kind": "object",
+  "type": "animation",
+  "name": "Hunter walk",
+  "notes": "Quick steps; used for every direction (top-down, side art).",
+  "sprite": "spr_hunter",
+  "loop": true,
+  "frames": [
+    {"frame": "walk_a", "ticks": 8},
+    {"frame": "idle_a", "ticks": 6},
+    {"frame": "walk_b", "ticks": 8},
+    {"frame": "idle_a", "ticks": 6}
+  ],
+  "events": []
+}

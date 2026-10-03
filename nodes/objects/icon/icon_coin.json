@@ -1,0 +1,18 @@
+{
+  "id": "icon_coin",
+  "kind": "object",
+  "type": "icon",
+  "name": "Coin",
+  "notes": "8x8 coin before the gold counters.",
+  "palette": "pal_ui",
+  "pixels": [
+    "..1111..",
+    ".142441.",
+    "1424a441",
+    "144a4a41",
+    "144a4a41",
+    "1444aa41",
+    ".1a44a1.",
+    "..1111.."
+  ]
+}

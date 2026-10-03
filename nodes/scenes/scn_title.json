@@ -3,15 +3,14 @@
   "kind": "scene",
   "type": "title",
   "name": "Title",
-  "notes": "Title screen: the Sun Shrine in the meadow behind the title menu, with the title theme.",
-  "backdrop": "#68c050",
+  "notes": "Title screen. Loads the save (banked gold and power ups) and shows the title menu over the night backdrop.",
+  "backdrop": "#101028",
   "music": "mus_title",
-  "camera": {"bounds": "map", "x": 0, "y": 0},
+  "camera": {"x": 0, "y": 0, "bounds": "none"},
   "instances": [
-    {"id": "map", "object": "map_title"},
+    {"id": "sky", "object": "map_night"},
+    {"id": "hud", "object": "hud_title"},
     {"id": "menu", "object": "menu_title"}
   ],
-  "on_start": [
-    {"do": "fade_in", "ticks": 20}
-  ]
+  "on_start": [{"do": "load_game"}, {"do": "fade_in", "ticks": 30}]
 }

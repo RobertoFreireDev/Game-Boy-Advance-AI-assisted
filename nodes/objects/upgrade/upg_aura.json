@@ -1,0 +1,20 @@
+{
+  "id": "upg_aura",
+  "kind": "object",
+  "type": "upgrade",
+  "name": "Sun Aura",
+  "notes": "A pulse every 2/3 s hurts and pushes back every monster nearby. Evolves into the Solar Flare with a Hollow Heart.",
+  "category": "weapon",
+  "title": "SUN AURA",
+  "icon": "icon_up_aura",
+  "var": "w_aura",
+  "max_level": 5,
+  "descriptions": [
+    "BURNS MONSTERS THAT COME TOO CLOSE.",
+    "WIDER, +2 DAMAGE.",
+    "WIDER, +2 DAMAGE.",
+    "WIDER, +2 DAMAGE.",
+    "WIDER, +2 DAMAGE. MAX LEVEL!"
+  ],
+  "children": ["icon_up_aura"]
+}

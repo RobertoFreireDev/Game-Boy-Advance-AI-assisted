@@ -1,0 +1,11 @@
+{
+  "id": "anim_coin",
+  "kind": "object",
+  "type": "animation",
+  "name": "Gold coin shine",
+  "notes": "Idle shine of the pickup.",
+  "sprite": "spr_pickups",
+  "loop": true,
+  "frames": [{"frame": "coin_a", "ticks": 10}, {"frame": "coin_b", "ticks": 6}],
+  "events": []
+}

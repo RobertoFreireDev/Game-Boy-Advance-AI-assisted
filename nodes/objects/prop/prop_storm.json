@@ -1,0 +1,16 @@
+{
+  "id": "prop_storm",
+  "kind": "object",
+  "type": "prop",
+  "name": "Arcane bolt",
+  "notes": "Violet bolt of the evolved Arcane Storm: fast, strong, passes through 3 monsters. Launched by a weapon on the hunter (never placed by hand).",
+  "body": "body_storm",
+  "logic": [
+    {
+      "behavior": "projectile",
+      "params": {"speed": 3.2, "lifetime": 60, "damage": 16, "pierce": 3, "power_var": "might"}
+    }
+  ],
+  "children": ["body_storm"],
+  "tags": ["shot"]
+}

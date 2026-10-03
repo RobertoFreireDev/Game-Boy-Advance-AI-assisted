@@ -1,0 +1,11 @@
+{
+  "id": "sfx_coin",
+  "kind": "object",
+  "type": "sfx",
+  "name": "Coin",
+  "notes": "Bright two-note ding for gold.",
+  "channel": "square2",
+  "duty": 2,
+  "priority": 1,
+  "steps": [{"note": "B5", "ticks": 2, "volume": 9}, {"note": "E6", "ticks": 6, "volume": 7}]
+}

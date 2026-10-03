@@ -3,17 +3,15 @@
   "kind": "object",
   "type": "dialog",
   "name": "How to play",
-  "notes": "Opened from the title menu. Explains the buttons and the goal, then the menu comes back.",
+  "notes": "Four pages explaining the game, opened from the title menu. Returns to the title menu at the end.",
   "font": "font_default",
-  "box": {"x": 8, "y": 104, "w": 224, "h": 48, "paper": 3, "border": 2},
+  "box": {"x": 8, "y": 96, "w": 224, "h": 56, "paper": 3, "border": 2},
   "ticks_per_char": 1,
   "lines": [
-    {"text": "D-PAD WALKS. B SWINGS THE SWORD. A TALKS TO PEOPLE."},
-    {
-      "text": "BEAT MONSTERS FOR GEMS AND HEARTS. FIND THE KEY AND BRING BACK THE SUN CRYSTAL!"
-    }
+    {"text": "MOVE WITH THE D-PAD. YOUR WEAPONS ATTACK ON THEIR OWN: JUST DODGE!"},
+    {"text": "MONSTERS DROP GEMS. GRAB THEM TO LEVEL UP, THEN PICK 1 OF 3 UPGRADES."},
+    {"text": "MAX A WEAPON AND OWN ITS PARTNER ITEM: IT CAN EVOLVE INTO SOMETHING FAR STRONGER."},
+    {"text": "GOLD BUYS POWER UPS THAT LAST FOREVER. SURVIVE 10 MINUTES AND DEFEAT THE NIGHT LORD!"}
   ],
-  "on_end": [
-    {"do": "open_menu", "menu": "menu_title"}
-  ]
+  "on_end": [{"do": "open_menu", "menu": "menu_title"}]
 }

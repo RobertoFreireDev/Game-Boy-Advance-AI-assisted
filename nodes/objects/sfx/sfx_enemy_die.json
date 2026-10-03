@@ -3,13 +3,7 @@
   "kind": "object",
   "type": "sfx",
   "name": "Monster defeated",
-  "notes": "A puff of noise when a monster vanishes.",
+  "notes": "Soft thud-puff when a monster is defeated.",
   "channel": "noise",
-  "priority": 1,
-  "steps": [
-    {"pitch": 5, "ticks": 4, "volume": 12},
-    {"pitch": 7, "ticks": 4, "volume": 9},
-    {"pitch": 9, "ticks": 6, "volume": 6},
-    {"pitch": 11, "ticks": 6, "volume": 3}
-  ]
+  "steps": [{"pitch": 6, "ticks": 3, "volume": 8}, {"pitch": 3, "ticks": 4, "volume": 4}]
 }

@@ -2,6 +2,48 @@
 
 One entry per request, newest first. Written for humans: what changed and which nodes.
 
+## 2026-10-03 — Replace Sun Shrine with a survivors-like, "Night Swarm"
+
+**Request:** "remove all the logic related to current game and create a new game" — a survivors-like
+(bullet heaven): auto-firing weapons, hordes, XP gems, pick 1 of 3 upgrades, weapon evolutions,
+permadeath, gold for permanent unlocks, short runs ending with a boss. Run length chosen: 10 minutes.
+
+**Removed:** every Sun Shrine node (scenes, Kai, monsters, NPCs, maps, music, sounds, dialogs…).
+Kept the generic pieces: `font_default`, `pal_ui` (recolored), `icon_cursor`, `icon_heart`,
+`sfx_select`, `sfx_confirm`. Engine behaviors stay (they are reusable).
+
+**New game "Night Swarm"** (ROM `dist/night_swarm.gba`, saves to the cartridge):
+- Scenes: `scn_title`, `scn_shop` (permanent power ups), `scn_field` (the 10-minute run),
+  `scn_game_over`, `scn_victory`.
+- Hunter `plr_hunter`: 8-way walking; weapons fire by themselves. Weapons `upg_bolt` (Magic Bolt,
+  nearest monster), `upg_knife` (Star Knife, walking direction), `upg_orb` (Holy Orbs, circle you),
+  `upg_aura` (Sun Aura). Items `upg_tome`, `upg_wings`, `upg_lodestone`, `upg_heart`, `upg_ring`.
+  Evolutions `upg_storm`, `upg_starstorm`, `upg_halo`, `upg_flare` (max weapon + partner item).
+  Fillers `upg_gold`, `upg_meat`. Shots `prop_bolt`, `prop_knife`, `prop_orb`, `prop_storm`,
+  `prop_blade`, `prop_halo`.
+- Monsters `enm_bat`, `enm_zombie`, `enm_skeleton`, `enm_ghost`, `enm_wolf`, boss `enm_lord` (10:00).
+  Waves, clock and levels run on the invisible `prop_director`.
+- Pickups `item_gem`, `item_gem_big`, `item_coin`, `item_meat`. Menus `menu_title`, `menu_shop`,
+  `menu_level_up`, `menu_game_over`, `menu_victory`; HUDs `hud_run`, `hud_title`, `hud_shop`,
+  `hud_results`, `hud_victory`; dialog `dlg_how_to_play`.
+- Music `mus_title`, `mus_field`, `mus_boss`, `mus_game_over`, `mus_victory`; 11 new sound effects.
+- Maps `map_field` (96x96-tile graveyard field), `map_night` (title/menu backdrop).
+
+**Engine and tools (shared):**
+- New node type `upgrade` (approved), and menus with `"upgrades": 3` that show random upgrade cards.
+- New behaviors: `weapon`, `projectile`, `aura`, `swarm`, `magnet`, `spawn_wave`, `run_clock`,
+  `level_up`; `topdown_controller` gained `speed_var`.
+- Actions: `if_chance`; `set_var` / `add_var` can copy `from` another variable, `add_var` can cap at
+  `max_var`. Variables can be `persistent` (kept by `reset_vars`). HUD/menu text: `{var:02}`, and
+  menu labels/titles can show variables. Props may have no body (invisible logic). A logic list may
+  use a behavior more than once.
+- Performance for hordes (measured in the emulator): actor pool 96 in EWRAM, contact checks by
+  category buckets with cached hitboxes, still actors skip physics, hot files moved to IWRAM as ARM
+  code (`*.iwram.c`, new build rule), horde aiming every 8 frames, crowd spreading through a small
+  occupancy grid, waves spawn at most 3 monsters per frame. Result: ~65 monsters on screen with
+  about 1 slow frame per 10 seconds.
+- Visualizer: upgrade preview (card per level, recipe), upgrade-menu sample cards, `{var:02}`.
+
 ## 2026-10-03 — Replace Hero Quest with a top-down adventure, "Sun Shrine"
 
 **Request:** "remove all the logic related to this game and create a new top down zelda 2d like game".

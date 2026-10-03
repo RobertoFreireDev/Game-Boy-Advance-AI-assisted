@@ -9,8 +9,9 @@ You only look and play.
 | build the game ROM | `build.bat` |
 | play it in the mGBA emulator | `run.bat` |
 
-**Controls in the current game with mGBA's default keys:**
-arrows = D-pad, **Z** = B and **X** = A
+**Current game: "Night Swarm"**, a survivors-like: walk with the D-pad and your weapons fire on
+their own. With mGBA's default keys: arrows = D-pad, **X** = A (pick a menu option / upgrade card),
+**Z** = B (back, in the power-up shop).
 
 How it all works — the node format, the engine and the rules the AI follows — is in
 [`CLAUDE.md`](CLAUDE.md). Installing the tools is in [`SETUP.md`](SETUP.md).

@@ -131,6 +131,7 @@ class Gen:
 
         op = "ACT_%s" % up(do)
         sub, node, var, va, vb = 0, "-1", "-1", 0, 0
+        var_from = var_max = "-1"
         then_l = else_l = "{ NULL, 0 }"
         fn = "NULL"
         if do == "goto_scene":
@@ -142,7 +143,14 @@ class Gen:
         elif do == "play_music":
             node = self.node_enum(val("music"))
         elif do in ("set_var", "add_var"):
-            var, va = self.var_enum(val("var")), int(val("value"))
+            var, va = self.var_enum(val("var")), int(val("value") or 0)
+            var_from = self.var_enum(val("from"))
+            if do == "add_var":
+                var_max = self.var_enum(val("max_var"))
+        elif do == "if_chance":
+            va = int(val("percent"))
+            then_l = self.actions(val("then") or [], base + "_then")
+            else_l = self.actions(val("else") or [], base + "_else")
         elif do == "if_var":
             ops = spec["op"]["options"]
             var, va, sub = self.var_enum(val("var")), int(val("value")), ops.index(val("op"))
@@ -160,8 +168,16 @@ class Gen:
         elif do == "call":
             fn = val("function")
             self.extern_fns.add("void %s(struct Actor *self);" % fn)
-        return ("{ %s, %d, %s, %s, 0, %d, %d, %s, %s, %s }"
-                % (op, sub, node, var, va, vb, then_l, else_l, fn))
+        return ("{ %s, %d, %s, %s, %s, %s, 0, %d, %d, %s, %s, %s }"
+                % (op, sub, node, var, var_from, var_max, va, vb, then_l, else_l, fn))
+
+    def text(self, t):
+        """C string for UI text: {var} -> \\001 + (var+1), {var:02} -> \\002 + (var+1)."""
+        if t is None:
+            return "NULL"
+        t = C.PLACEHOLDER_RE.sub(
+            lambda m: ("\x02" if m.group(2) else "\x01") + chr(self.vars.index(m.group(1)) + 1), t)
+        return cstr(t)
 
     # ---- behavior params ----
     def param_init(self, ptype, pdef, v, base):
@@ -422,9 +438,7 @@ class Gen:
             var = self.var_enum(e.get("var"))
             mx = length = color = back = spacing = 0
             if kind == "text":
-                t = e["text"]
-                t = re.sub(r"\{(\w+)\}", lambda m: "\x01" + chr(self.vars.index(m.group(1)) + 1), t)
-                text = cstr(t)
+                text = self.text(e["text"])
             elif kind == "icon_repeat":
                 size = len(self.p.nodes[e["icon"]]["pixels"])
                 mx, spacing = e["max"], e.get("spacing", size) // 8
@@ -444,22 +458,47 @@ class Gen:
 
     def options(self, opts, positions, base):
         items = []
-        for i, o in enumerate(opts):
-            x, y = positions[i]
-            items.append("{ %s, %d, %d, %s }" % (cstr(o["label"]), x, y, self.actions(o.get("actions") or [], "%s_opt%d" % (base, i))))
+        for i, (x, y) in enumerate(positions):
+            o = opts[i] if i < len(opts) else {}            # upgrade menus: card slots only
+            items.append("{ %s, %d, %d, %s }" % (self.text(o.get("label")), x, y, self.actions(o.get("actions") or [], "%s_opt%d" % (base, i))))
         s = self.sym(base + "_options")
         self.emit("static const MenuOption %s[] = {\n    %s\n};" % (s, ",\n    ".join(items)))
         return s
 
     def E_menu(self, nid, n):
         lay = C.menu_layout(n)
-        opts = self.options(n["options"], lay["options"], nid)
+        opts = self.options(n.get("options") or [], lay["options"], nid)
         snd = n.get("sounds") or {}
         cancel = self.actions(n.get("on_cancel") or [], nid + "_cancel")
-        self.emit("const MenuData node_%s = { %s, %s, %d, %d, %d, %d, %s, %s, %s, %s, %s, %s };" % (
-            nid, self.ptr(n["font"]), cstr(n.get("title") or None), lay["title_x"], lay["title_y"],
-            len(n["options"]), 1 if n.get("box") else 0, opts, self.ptr(n["cursor"]), self.box(n.get("box")),
-            cancel, self.node_enum(snd.get("move")), self.node_enum(snd.get("select"))))
+        self.emit("const MenuData node_%s = { %s, %s, %d, %d, %d, %d, %s, %s, %s, %s, %s, %s, %d };" % (
+            nid, self.ptr(n["font"]), self.text(n.get("title") or None), lay["title_x"], lay["title_y"],
+            len(lay["options"]), 1 if n.get("box") else 0, opts, self.ptr(n["cursor"]), self.box(n.get("box")),
+            cancel, self.node_enum(snd.get("move")), self.node_enum(snd.get("select")), n.get("upgrades", 0)))
+
+    def E_upgrade(self, nid, n):
+        cat = n["category"]
+        descs = []
+        for d in n["descriptions"]:
+            wrapped, _ = C.wrap_text(d, C.UPGRADE_TEXT_W)
+            descs.append(cstr("\n".join(wrapped)))
+        ds = self.sym(nid + "_desc")
+        self.emit("static const char *const %s[] = { %s };" % (ds, ", ".join(descs)))
+        reqs = n.get("requires") or []
+        rs = "NULL"
+        if reqs:
+            items = []
+            for r in reqs:
+                lv = r["level"]
+                if lv == "max":
+                    lv = self.p.nodes[r["upgrade"]].get("max_level", 1)
+                items.append("{ %s, %d, 0 }" % (self.node_enum(r["upgrade"]), lv))
+            rs = self.sym(nid + "_reqs")
+            self.emit("static const UpgradeReq %s[] = { %s };" % (rs, ", ".join(items)))
+        on_pick = self.actions(n.get("on_pick") or [], nid + "_pick")
+        self.emit("const UpgradeData node_%s = { UPG_%s, %d, %d, %d, %s, %s, %s, %s, %s, %s, %s };" % (
+            nid, up(cat), 255 if cat == "bonus" else n.get("max_level", 1), len(reqs), len(descs),
+            self.var_enum(n.get("var")), self.node_enum(n.get("replaces")), cstr(n["title"]),
+            self.ptr(n.get("icon")), ds, rs, on_pick))
 
     def E_dialog(self, nid, n):
         lines = []
@@ -527,7 +566,8 @@ C_TYPES = {"int": "s32", "fixed": "fixed", "bool": "u8", "ticks": "s32", "button
 STRUCT_OF = {"palette": "PaletteData", "sprite": "SpriteData", "tileset": "TilesetData",
              "tilemap": "TilemapData", "font": "FontData", "icon": "IconData", "sfx": "SfxData",
              "music": "MusicData", "animation": "AnimationData", "particle": "ParticleData",
-             "body": "BodyData", "hud": "HudData", "menu": "MenuData", "dialog": "DialogData"}
+             "body": "BodyData", "hud": "HudData", "menu": "MenuData", "dialog": "DialogData",
+             "upgrade": "UpgradeData"}
 for _t in C.ACTOR_TYPES:
     STRUCT_OF[_t] = "ActorData"
 
@@ -614,6 +654,8 @@ def gen_game_data(p):
         fx(game.get("gravity", 0.25)), fx(game.get("max_fall_speed", 4))))
     inits = [int(v["initial"]) for v in game.get("variables", [])] or [0]
     g.emit("const s32 g_var_initial[VAR_ARRAY_SIZE] = { %s };" % ", ".join(str(v) for v in inits))
+    keep = [1 if v.get("persistent") else 0 for v in game.get("variables", [])] or [0]
+    g.emit("const u8 g_var_persistent[VAR_ARRAY_SIZE] = { %s };" % ", ".join(str(v) for v in keep))
     sq, wv = [], []
     for note in range(128):
         f = 440.0 * math.pow(2, (note - 69) / 12.0)
@@ -640,8 +682,8 @@ def gen_behaviors_table(p):
     out = [HEADER, '#include "engine/data.h"\n']
     rows = []
     for b in p.behaviors:
-        path = os.path.join(C.SRC_DIR, "behaviors", b + ".c")
-        src = open(path, "r", encoding="utf-8").read() if os.path.isfile(path) else ""
+        path = C.behavior_source(b)
+        src = open(path, "r", encoding="utf-8").read() if path else ""
         fns = []
         for hook, proto in (("init", "void bhv_%s_init(struct Actor *self, const void *params);"),
                             ("update", "void bhv_%s_update(struct Actor *self, const void *params);"),

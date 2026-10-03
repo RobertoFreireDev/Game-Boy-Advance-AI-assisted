@@ -3,12 +3,8 @@
   "kind": "object",
   "type": "sfx",
   "name": "Gem",
-  "notes": "Bright two-note 'ching' for a gem.",
+  "notes": "Tiny high blip when an XP gem is picked up.",
   "channel": "square2",
   "duty": 2,
-  "priority": 1,
-  "steps": [
-    {"note": "E6", "ticks": 3, "volume": 10},
-    {"note": "B6", "ticks": 6, "volume": 9}
-  ]
+  "steps": [{"note": "C6", "ticks": 2, "volume": 7}, {"note": "G6", "ticks": 3, "volume": 5}]
 }

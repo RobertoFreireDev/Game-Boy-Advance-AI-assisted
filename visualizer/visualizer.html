@@ -175,7 +175,7 @@ const CAT = (D.catalog || {});
 const BEHAVIORS = CAT.behaviors || {};
 const ACTIONS = CAT.actions || {};
 const ENGINE = D.engine || {};
-const DERIVED = D.derived || { dialogs: {}, menus: {} };
+const DERIVED = Object.assign({ dialogs: {}, menus: {}, upgrades: {}, upgrade_card: { icon_dx: 3, tag_dx: 15, text_w: 22 } }, D.derived || {});
 const VARS = ((D.game || {}).variables || []);
 const ACTOR_TYPES = ["player", "enemy", "npc", "prop", "platform", "pickup", "trigger"];
 
@@ -183,7 +183,7 @@ const ICONS = {
   intro: "🎬", title: "🏷️", level: "🗺️", inventory: "🎒", cutscene: "🎞️", game_over: "💀", credits: "📜",
   palette: "🎨", sprite: "👾", tileset: "🧱", tilemap: "🗾", font: "🔤", icon: "🖼️", sfx: "🔊", music: "🎵",
   animation: "🎞", particle: "✨", body: "🧍", player: "🕹️", enemy: "👹", npc: "🧙", prop: "🌳", platform: "🛗",
-  pickup: "🪙", trigger: "⚑", hud: "📊", menu: "📋", dialog: "💬"
+  pickup: "🪙", trigger: "⚑", hud: "📊", menu: "📋", dialog: "💬", upgrade: "⬆️"
 };
 const typeOf = id => (IDX[id] || {}).type;
 const kindOf = id => (IDX[id] || {}).kind;
@@ -392,13 +392,18 @@ function drawIcon(ctx, iconId, tx, ty, paper, paperPal) {
   ctx.drawImage(pixelsCanvas(ic.pixels, ic.palette, usePaper ? paper : undefined), tx * 8, ty * 8);
 }
 function varInitial(name) { const v = VARS.find(v => v.name === name); return v ? (v.initial === true ? 1 : v.initial === false ? 0 : v.initial) : 0; }
+// {var} -> its value, {var:02} -> at least 2 digits (like ui.c). get(name) returns the value.
+function fillText(text, get) {
+  get = get || varInitial;
+  return String(text || "").replace(/\{(\w+)(:02)?\}/g, (m, v, pad) => { const s = String(get(v)); return pad && s.length < 2 ? "0" + s : s; });
+}
 function drawHud(ctx, hudId, values) {
   const hd = NODES[hudId];
   if (!hd || !Array.isArray(hd.elements)) return;
   const get = n => (values && n in values) ? values[n] : varInitial(n);
   for (const e of hd.elements) {
     const x = e.x >> 3, y = e.y >> 3;
-    if (e.kind === "text") drawText(ctx, hd.font, String(e.text || "").replace(/\{(\w+)\}/g, (m, v) => String(get(v))), x, y);
+    if (e.kind === "text") drawText(ctx, hd.font, fillText(e.text, get), x, y);
     else if (e.kind === "icon") drawIcon(ctx, e.icon, x, y);
     else if (e.kind === "icon_repeat") {
       const ic = NODES[e.icon]; const size = ic ? ic.pixels.length / 8 : 1;
@@ -420,14 +425,46 @@ function drawMenu(ctx, menuId, cursor) {
   if (!m || !lay) return;
   const paper = m.box ? (m.box.paper === undefined ? 1 : m.box.paper) : undefined;
   if (m.box) drawBox(ctx, m.font, m.box);
-  if (m.title) drawText(ctx, m.font, m.title, lay.title_x, lay.title_y, paper);
+  if (m.title) drawText(ctx, m.font, fillText(m.title), lay.title_x, lay.title_y, paper);
   const f = NODES[m.font];
   const cw = NODES[m.cursor] ? NODES[m.cursor].pixels.length / 8 : 1;
+  if (m.upgrades) {                          // card slots, filled with sample upgrades
+    const picks = sampleUpgrades(m.upgrades);
+    picks.forEach((u, i) => {
+      const [x, y] = lay.options[i] || [0, 0];
+      drawUpgradeCard(ctx, m.font, paper, u, upgLevel(u), x, y);
+      if (i === cursor) drawIcon(ctx, m.cursor, x - DERIVED.upgrade_card.icon_dx - cw, y, paper, f && f.palette);
+    });
+    return;
+  }
   (m.options || []).forEach((o, i) => {
     const [x, y] = lay.options[i] || [0, 0];
-    drawText(ctx, m.font, o.label, x, y, paper);
+    drawText(ctx, m.font, fillText(o.label), x, y, paper);
     if (i === cursor) drawIcon(ctx, m.cursor, x - cw, y, paper, f && f.palette);
   });
+}
+// ---- upgrade cards (same layout as ui.c draw_upgrade_card) ----
+const UPGRADES = INDEX.filter(e => e.type === "upgrade").map(e => e.id);
+function upgLevel(id) { const u = NODES[id] || {}; return u.var ? varInitial(u.var) : 0; }
+// What a fresh run would offer: weapons/items first (as the engine picks at random, show the first ones).
+function sampleUpgrades(n) {
+  const ok = UPGRADES.filter(id => { const u = NODES[id] || {}; return (u.category === "weapon" || u.category === "item") && upgLevel(id) < (u.max_level || 1); });
+  return ok.concat(UPGRADES.filter(id => (NODES[id] || {}).category === "bonus")).slice(0, n);
+}
+function upgradeTag(u, level) {
+  if (u.category === "evolution") return "EVOLVE!";
+  if (u.category === "bonus") return "";
+  return level === 0 ? "NEW!" : "LV" + (level + 1);
+}
+function drawUpgradeCard(ctx, fontId, paper, upgId, level, x, y) {
+  const u = NODES[upgId], f = NODES[fontId];
+  if (!u) return;
+  const lines = DERIVED.upgrades[upgId] || [];
+  const d = Math.max(0, Math.min(level, lines.length - 1));
+  drawIcon(ctx, u.icon, x - DERIVED.upgrade_card.icon_dx, y, paper, f && f.palette);
+  drawText(ctx, fontId, u.title || "", x, y, paper);
+  drawText(ctx, fontId, upgradeTag(u, level), x + DERIVED.upgrade_card.tag_dx, y, paper);
+  drawText(ctx, fontId, (lines[d] || []).join("\n"), x, y + 1, paper);
 }
 function drawDialog(ctx, dlgId, lineIdx, chars, choosing, choice) {
   const d = NODES[dlgId], lay = DERIVED.dialogs[dlgId];
@@ -627,7 +664,9 @@ function actionItem(a) {
   if (!spec) return h("li", { class: "warnline" }, "Unknown action: " + a.do);
   const li = h("li");
   const params = spec.params || {};
-  const sentence = spec.sentence || a.do;
+  let sentence = spec.sentence || a.do;
+  if ((a.do === "set_var" || a.do === "add_var") && a.from) sentence = a.do === "set_var" ? "Set {var} to the value of {from}" : "Add the value of {from} to {var}";
+  if (a.do === "add_var" && a.max_var) sentence += " (never above {max_var})";
   const parts = sentence.split(/(\{\w+\})/);
   for (const p of parts) {
     const m = /^\{(\w+)\}$/.exec(p);
@@ -636,7 +675,7 @@ function actionItem(a) {
     const v = key in a ? a[key] : pdef.default;
     li.append(valueNode(pdef.type || "", v));
   }
-  if (a.do === "if_var") {
+  if (a.do === "if_var" || a.do === "if_chance") {
     li.append(h("div", {}, "then:", actionList(a.then)), h("div", {}, "otherwise:", actionList(a.else)));
   }
   return li;
@@ -965,6 +1004,8 @@ function actorPreview(id, n) {
     ctx.fillStyle = "rgba(255,207,92,.25)"; ctx.fillRect(8, 8, z.w, z.h);
     ctx.strokeStyle = "#ffcf5c"; ctx.lineWidth = 1 / sc; ctx.strokeRect(8, 8, z.w, z.h);
     out.push(card(`Invisible zone — ${z.w}×${z.h} px (top-left corner is the instance x, y)`, c));
+  } else if (!n.body) {
+    out.push(card("Invisible", h("div", { class: "small" }, "No body: nothing is drawn and nothing touches it. It only runs its logic (below) every tick.")));
   } else if (n.body) {
     let slot = (NODES[n.body] || {}).default_animation || "idle";
     const st = { hitbox: true, origin: true };
@@ -994,13 +1035,64 @@ PREVIEW.hud = (id, n) => {
   drawHud(ctx, id);
   return card("On a 240×160 screen — variables at their starting values (" + VARS.map(v => v.name + " = " + v.initial).join(", ") + ")", c);
 };
+PREVIEW.upgrade = (id, n) => {
+  const levels = n.category === "weapon" || n.category === "item" ? (n.max_level || 1) : 1;
+  let lv = Math.min(upgLevel(id), levels - 1);
+  const menuId = INDEX.find(e => e.type === "menu" && (NODES[e.id] || {}).upgrades);
+  const m = menuId ? NODES[menuId.id] : null;
+  const [c, ctx] = screenCanvas(3);
+  const label = h("span", { class: "small" });
+  const draw = () => {
+    ctx.fillStyle = "#3a4458"; ctx.fillRect(0, 0, 240, 160);
+    if (m) {
+      const lay = DERIVED.menus[menuId.id], paper = m.box.paper === undefined ? 1 : m.box.paper;
+      drawBox(ctx, m.font, m.box);
+      if (m.title) drawText(ctx, m.font, fillText(m.title), lay.title_x, lay.title_y, paper);
+      const [x, y] = lay.options[0] || [6, 4];
+      drawUpgradeCard(ctx, m.font, paper, id, lv, x, y);
+      drawIcon(ctx, m.cursor, x - DERIVED.upgrade_card.icon_dx - 1, y, paper, (NODES[m.font] || {}).palette);
+    }
+    label.textContent = n.category === "bonus" ? "can be picked any number of times" :
+      n.category === "evolution" ? "evolution card" : (lv === 0 ? "card shown when it is new" : `card for going from level ${lv} to ${lv + 1}`);
+  };
+  draw();
+  const parts = [card("Card on the level-up menu (240×160)", h("div", { class: "toolbar" },
+    h("button", { onclick: () => { lv = Math.max(0, lv - 1); draw(); } }, "◀ Level"),
+    h("button", { onclick: () => { lv = Math.min(levels - 1, lv + 1); draw(); } }, "Level ▶"), label), c,
+    m ? null : h("div", { class: "warnline" }, "No menu with 'upgrades' exists yet, so this card is never offered."))];
+  const kv = h("div", { class: "kv" },
+    h("div", { class: "k" }, "kind"), h("div", {}, { weapon: "Weapon", item: "Passive item", evolution: "Evolution (replaces a weapon)", bonus: "Bonus filler (only when nothing else is left)" }[n.category] || n.category),
+    h("div", { class: "k" }, "level variable"), h("div", {}, n.var ? h("b", {}, n.var) : "(none)"),
+    h("div", { class: "k" }, "levels"), h("div", {}, n.category === "bonus" ? "unlimited" : String(n.max_level || 1)));
+  parts.push(card("What it is", kv));
+  if ((n.requires || []).length || n.replaces) parts.push(card("Evolution recipe", h("ul", {},
+    (n.requires || []).map(r => h("li", {}, "Needs ", nodeLink(r.upgrade), " at level ", h("b", {}, r.level === "max" ? "max (" + ((NODES[r.upgrade] || {}).max_level || 1) + ")" : String(r.level)))),
+    n.replaces ? h("li", {}, "Replaces ", nodeLink(n.replaces), " (its level goes back to 0 and it is never offered again)") : null)));
+  parts.push(card("Card text per level (as the GBA wraps it)", (DERIVED.upgrades[id] || []).map((ln, i) =>
+    h("div", { class: "bhv" }, h("div", { class: "bn" }, n.category === "weapon" || n.category === "item" ? (i === 0 ? "New" : "Level " + i + " → " + (i + 1)) : "Card"), h("pre", { class: "mono", style: "margin:2px 0" }, ln.join("\n"))))));
+  parts.push(card("When picked", h("div", {}, n.var ? ["Adds 1 to ", h("b", {}, n.var), ", then: "] : "Runs: ", actionList(n.on_pick))));
+  return parts;
+};
 PREVIEW.menu = (id, n) => {
+  if (n.upgrades) {
+    let cur = 0;
+    const [c, ctx] = screenCanvas(3);
+    const count = sampleUpgrades(n.upgrades).length || 1;
+    const draw = () => { ctx.fillStyle = "#3a4458"; ctx.fillRect(0, 0, 240, 160); drawMenu(ctx, id, cur); };
+    draw();
+    return [card("On a 240×160 screen — sample cards", h("div", { class: "toolbar" },
+      h("button", { onclick: () => { cur = (cur + count - 1) % count; draw(); } }, "▲ Up"),
+      h("button", { onclick: () => { cur = (cur + 1) % count; draw(); } }, "▼ Down"),
+      h("span", { class: "small" }, "The engine picks " + n.upgrades + " random cards each time it opens: evolutions whose recipe is complete come first, then weapons and items not yet maxed, then bonus fillers. A takes the card, which levels it up, runs its 'on pick' actions and closes the menu.")), c),
+    card("Upgrades it can offer (" + UPGRADES.length + ")", h("div", {}, UPGRADES.map(u => h("div", {}, nodeLink(u), h("span", { class: "small" }, " — " + ((NODES[u] || {}).category || "")))))),
+    n.on_cancel ? card("When B is pressed", actionList(n.on_cancel)) : null];
+  }
   let cur = 0;
   const [c, ctx] = screenCanvas(3);
   const draw = () => { ctx.fillStyle = "#3a4458"; ctx.fillRect(0, 0, 240, 160); drawMenu(ctx, id, cur); };
   draw();
   const opts = h("div");
-  (n.options || []).forEach((o, i) => opts.append(h("div", { class: "bhv" }, h("div", { class: "bn" }, "Option " + (i + 1) + ": " + o.label), actionList(o.actions))));
+  (n.options || []).forEach((o, i) => opts.append(h("div", { class: "bhv" }, h("div", { class: "bn" }, "Option " + (i + 1) + ": " + fillText(o.label)), actionList(o.actions))));
   return [card("On a 240×160 screen", h("div", { class: "toolbar" },
     h("button", { onclick: () => { cur = (cur + (n.options || [1]).length - 1) % (n.options || [1]).length; draw(); } }, "▲ Up"),
     h("button", { onclick: () => { cur = (cur + 1) % (n.options || [1]).length; draw(); } }, "▼ Down"),

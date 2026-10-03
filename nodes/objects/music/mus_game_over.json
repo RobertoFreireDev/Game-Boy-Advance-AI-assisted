@@ -2,28 +2,20 @@
   "id": "mus_game_over",
   "kind": "object",
   "type": "music",
-  "name": "Game over",
-  "notes": "Short sad descending tune that plays once on the game over screen.",
+  "name": "Fallen",
+  "notes": "Short sad phrase after the hunter falls. Plays once.",
   "bpm": 80,
-  "rows_per_beat": 4,
+  "rows_per_beat": 2,
   "loop": false,
   "instruments": {
-    "square1": {"duty": 2, "volume": 10, "decay": 1},
-    "square2": {"duty": 1, "volume": 6, "decay": 2},
-    "wave": {"wave": "0123456789abcdeffedcba9876543210", "volume": 3},
-    "noise": {"volume": 5, "decay": 1}
+    "square1": {"duty": 2, "volume": 9, "decay": 0},
+    "wave": {"wave": "0123456789abcdeffedcba9876543210", "volume": 2}
   },
   "patterns": {
-    "A": {
-      "square1": "E5 -- -- -- D5 -- -- -- | C5 -- -- -- B4 -- -- --",
-      "square2": "C5 -- -- -- B4 -- -- -- | A4 -- -- -- G#4 -- -- --",
-      "wave": "A2 -- -- -- G2 -- -- -- | F2 -- -- -- E2 -- -- --"
-    },
-    "B": {
-      "square1": "A4 -- -- -- -- -- -- -- | -- -- -- -- .. .. .. ..",
-      "square2": "E4 -- -- -- -- -- -- -- | -- -- -- -- .. .. .. ..",
-      "wave": "A2 -- -- -- -- -- -- -- | -- -- -- -- .. .. .. .."
+    "G": {
+      "square1": "E5 -- D5 -- C5 -- B4 -- | A4 -- -- -- G#4 -- -- -- | A4 -- -- -- -- -- -- -- | .. .. .. .. .. .. .. ..",
+      "wave": "A2 -- -- -- -- -- -- -- | E2 -- -- -- -- -- -- -- | A2 -- -- -- -- -- -- -- | .. .. .. .. .. .. .. .."
     }
   },
-  "order": ["A", "B"]
+  "order": ["G"]
 }

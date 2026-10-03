@@ -3,32 +3,44 @@
   "goto_scene": {
     "description": "Switch to another scene.",
     "sentence": "Go to scene {scene}",
-    "params": { "scene": { "type": "node:scene", "required": true, "description": "Scene to go to." } }
+    "params": {
+      "scene":  {"type": "node:scene", "required": true, "description": "Scene to go to."}
+    }
   },
   "fade_in": {
     "description": "Fade the screen in from black. The list waits until the fade ends.",
     "sentence": "Fade in from black over {ticks} ticks",
-    "params": { "ticks": { "type": "ticks", "default": 20, "description": "Fade length." } }
+    "params": {
+      "ticks":  {"type": "ticks", "default": 20, "description": "Fade length."}
+    }
   },
   "fade_out": {
     "description": "Fade the screen out to black. The list waits until the fade ends.",
     "sentence": "Fade out to black over {ticks} ticks",
-    "params": { "ticks": { "type": "ticks", "default": 20, "description": "Fade length." } }
+    "params": {
+      "ticks":  {"type": "ticks", "default": 20, "description": "Fade length."}
+    }
   },
   "wait": {
     "description": "Pause this action list.",
     "sentence": "Wait {ticks} ticks",
-    "params": { "ticks": { "type": "ticks", "required": true, "description": "How long to wait." } }
+    "params": {
+      "ticks":  {"type": "ticks", "required": true, "description": "How long to wait."}
+    }
   },
   "play_sfx": {
     "description": "Play a sound effect.",
     "sentence": "Play sound {sfx}",
-    "params": { "sfx": { "type": "node:sfx", "required": true, "description": "Sound to play." } }
+    "params": {
+      "sfx":  {"type": "node:sfx", "required": true, "description": "Sound to play."}
+    }
   },
   "play_music": {
     "description": "Start a song (keeps playing if it is already the current song).",
     "sentence": "Play music {music}",
-    "params": { "music": { "type": "node:music", "required": true, "description": "Song to play." } }
+    "params": {
+      "music":  {"type": "node:music", "required": true, "description": "Song to play."}
+    }
   },
   "stop_music": {
     "description": "Stop the music.",
@@ -39,16 +51,19 @@
     "description": "Set a game variable.",
     "sentence": "Set {var} to {value}",
     "params": {
-      "var":   { "type": "var", "required": true, "description": "Variable to change." },
-      "value": { "type": "int", "required": true, "description": "New value (true/false for flags)." }
+      "var":    {"type": "var", "required": true, "description": "Variable to change."},
+      "value":  {"type": "int", "default": 0, "description": "New value (true/false for flags)."},
+      "from":   {"type": "var", "default": "", "description": "Copy this other variable's value instead of 'value'. Empty = use 'value'."}
     }
   },
   "add_var": {
     "description": "Add to a game variable (use a negative number to subtract).",
     "sentence": "Add {value} to {var}",
     "params": {
-      "var":   { "type": "var", "required": true, "description": "Variable to change." },
-      "value": { "type": "int", "required": true, "description": "Amount to add." }
+      "var":      {"type": "var", "required": true, "description": "Variable to change."},
+      "value":    {"type": "int", "default": 0, "description": "Amount to add (negative to subtract)."},
+      "from":     {"type": "var", "default": "", "description": "Add this other variable's value instead of 'value'. Empty = use 'value'."},
+      "max_var":  {"type": "var", "default": "", "description": "Never go above this other variable (health up to max health). Empty = no limit."}
     }
   },
   "reset_vars": {
@@ -60,22 +75,35 @@
     "description": "Check a game variable and run one of two lists.",
     "sentence": "If {var} {op} {value}",
     "params": {
-      "var":   { "type": "var",     "required": true, "description": "Variable to check." },
-      "op":    { "type": "choice",  "default": "==", "options": ["==", "!=", "<", "<=", ">", ">="], "description": "Comparison." },
-      "value": { "type": "int",     "required": true, "description": "Value to compare with." },
-      "then":  { "type": "actions", "default": [], "description": "Runs when the check is true." },
-      "else":  { "type": "actions", "default": [], "description": "Runs when the check is false." }
+      "var":    {"type": "var", "required": true, "description": "Variable to check."},
+      "op":     {"type": "choice", "default": "==", "options": ["==", "!=", "<", "<=", ">", ">="], "description": "Comparison."},
+      "value":  {"type": "int", "required": true, "description": "Value to compare with."},
+      "then":   {"type": "actions", "default": [], "description": "Runs when the check is true."},
+      "else":   {"type": "actions", "default": [], "description": "Runs when the check is false."}
+    }
+  },
+  "if_chance": {
+    "description": "Roll the dice: run one list with the given chance, the other list otherwise (random drops).",
+    "sentence": "With a {percent}% chance",
+    "params": {
+      "percent":  {"type": "int", "required": true, "description": "Chance of running 'then', 0-100."},
+      "then":     {"type": "actions", "default": [], "description": "Runs when the roll succeeds."},
+      "else":     {"type": "actions", "default": [], "description": "Runs otherwise."}
     }
   },
   "show_dialog": {
     "description": "Open a dialog box. The game pauses until it closes.",
     "sentence": "Show dialog {dialog}",
-    "params": { "dialog": { "type": "node:dialog", "required": true, "description": "Dialog to show." } }
+    "params": {
+      "dialog":  {"type": "node:dialog", "required": true, "description": "Dialog to show."}
+    }
   },
   "open_menu": {
     "description": "Open a menu. The game pauses until it closes.",
     "sentence": "Open menu {menu}",
-    "params": { "menu": { "type": "node:menu", "required": true, "description": "Menu to open." } }
+    "params": {
+      "menu":  {"type": "node:menu", "required": true, "description": "Menu to open."}
+    }
   },
   "close_menu": {
     "description": "Close the open menu.",
@@ -86,10 +114,10 @@
     "description": "Create an object (or a particle burst). Position is relative to the object running the action, or to the scene when 'relative' is false.",
     "sentence": "Spawn {object} at ({x}, {y})",
     "params": {
-      "object":   { "type": "node:spawnable", "required": true, "description": "Object or particle to create." },
-      "x":        { "type": "int",  "default": 0,    "description": "X position (pixels)." },
-      "y":        { "type": "int",  "default": 0,    "description": "Y position (pixels)." },
-      "relative": { "type": "bool", "default": true, "description": "Position is relative to the object running the action." }
+      "object":    {"type": "node:spawnable", "required": true, "description": "Object or particle to create."},
+      "x":         {"type": "int", "default": 0, "description": "X position (pixels)."},
+      "y":         {"type": "int", "default": 0, "description": "Y position (pixels)."},
+      "relative":  {"type": "bool", "default": true, "description": "Position is relative to the object running the action."}
     }
   },
   "destroy_self": {
@@ -101,8 +129,8 @@
     "description": "Shake the screen.",
     "sentence": "Shake the camera for {ticks} ticks (strength {strength})",
     "params": {
-      "ticks":    { "type": "ticks", "default": 20, "description": "How long." },
-      "strength": { "type": "int",   "default": 2,  "description": "How far it moves (pixels)." }
+      "ticks":     {"type": "ticks", "default": 20, "description": "How long."},
+      "strength":  {"type": "int", "default": 2, "description": "How far it moves (pixels)."}
     }
   },
   "save_game": {
@@ -118,6 +146,8 @@
   "call": {
     "description": "Run a custom C function from src/game/ (last resort).",
     "sentence": "Run custom code {function}",
-    "params": { "function": { "type": "string", "required": true, "description": "Name of the C function: void name(Actor *self)." } }
+    "params": {
+      "function":  {"type": "string", "required": true, "description": "Name of the C function: void name(Actor *self)."}
+    }
   }
 }

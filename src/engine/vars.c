@@ -5,8 +5,14 @@
 static s32 s_vars[VAR_ARRAY_SIZE];
 static u32 s_version;
 
-void vars_reset(void) {
+void vars_init(void) {
     for (int i = 0; i < VAR_COUNT; i++) s_vars[i] = g_var_initial[i];
+    s_version++;
+}
+
+void vars_reset(void) {
+    for (int i = 0; i < VAR_COUNT; i++)
+        if (!g_var_persistent[i]) s_vars[i] = g_var_initial[i];
     s_version++;
 }
 

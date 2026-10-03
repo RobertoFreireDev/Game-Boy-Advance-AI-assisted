@@ -1,0 +1,11 @@
+{
+  "id": "anim_storm",
+  "kind": "object",
+  "type": "animation",
+  "name": "Arcane bolt glow",
+  "notes": "Two frames, 4 ticks each, so the shot pulses or spins.",
+  "sprite": "spr_shots",
+  "loop": true,
+  "frames": [{"frame": "storm_a", "ticks": 4}, {"frame": "storm_b", "ticks": 4}],
+  "events": []
+}

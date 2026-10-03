@@ -77,6 +77,7 @@ static u32 on_paper(u32 w, u8 paper) {
 
 // Glyphs with transparent pixels painted in the paper color, so text sits on the box.
 static void load_paper_font(const FontData *f, u8 paper, u8 border) {
+    if (s_paper_font == f && s_paper == paper && s_border == border) return;    // already in VRAM
     s_paper = paper;
     s_border = border;
     s_paper_bank = (u8)bg_pal_bank(f->palette);
@@ -152,18 +153,20 @@ static u16 glyph(char c, int paper) {
     return paper ? (u16)((T_PAPER + g - 1) | (s_paper_bank << 12)) : (u16)((T_FONT + g - 1) | (s_font_bank << 12));
 }
 
-// Draw text; \n starts a new line, \001 + (var+1) prints a variable. Returns columns used.
+// Draw text; \n starts a new line, \001 + (var+1) prints a variable, \002 + (var+1) prints it
+// with at least 2 digits (05). Returns columns used.
 static int draw_text(int x, int y, const char *s, int paper) {
     int cx = x;
     for (; *s; s++) {
         if (*s == '\n') { y++; cx = x; continue; }
-        if (*s == '\001' && s[1]) {
+        if ((*s == '\001' || *s == '\002') && s[1]) {
             char buf[12];
+            int digits = *s == '\002' ? 2 : 1;
             s32 v = vars_get((s16)((u8)s[1] - 1));
             s++;
             int neg = v < 0, n = 0;
             u32 u = neg ? (u32)-v : (u32)v;
-            do { buf[n++] = (char)('0' + u % 10); u /= 10; } while (u && n < 10);
+            do { buf[n++] = (char)('0' + u % 10); u /= 10; } while ((u || n < digits) && n < 10);
             if (neg) buf[n++] = '-';
             while (n) put(cx++, y, glyph(buf[--n], paper));
             continue;
@@ -192,7 +195,7 @@ static void fill_paper(int x, int y, int w, int h) {
 static int text_span(const char *s) {
     int n = 0;
     for (; *s; s++) {
-        if (*s == '\001' && s[1]) { s++; n += 3; }
+        if ((*s == '\001' || *s == '\002') && s[1]) { s++; n += 3; }
         else n++;
     }
     return n;
@@ -247,15 +250,114 @@ void ui_show_hud(const HudData *h) {
     draw_hud();
 }
 
+// ---- upgrade menus: pick up to N random upgrades the player can take -----------------
+#define UPG_ICON_DX 3       // the card icon sits 3 columns left of the text (2 wide + 1 gap)
+#define UPG_TAG_DX  15      // "NEW!" / "LV2" / "EVOLVE!" column, right of the title
+
+static s16 s_up[MAX_UPGRADE_CHOICES];
+static u8 s_up_count;
+static s16 s_upg_nodes[NODE_COUNT];     // every upgrade node, found once
+static s16 s_upg_total = -1;
+
+static void upg_find_all(void) {
+    if (s_upg_total >= 0) return;
+    s_upg_total = 0;
+    for (int n = 0; n < NODE_COUNT; n++)
+        if (g_nodes[n].type == NT_UPGRADE) s_upg_nodes[s_upg_total++] = (s16)n;
+}
+
+static const UpgradeData *upg(s16 node) { return (const UpgradeData *)g_nodes[node].data; }
+static s32 upg_level(const UpgradeData *u) { return u->var >= 0 ? vars_get(u->var) : 0; }
+
+// Can this weapon / item / evolution be offered now?
+static int upg_available(s16 node) {
+    const UpgradeData *u = upg(node);
+    if (upg_level(u) >= u->max_level) return 0;
+    for (int i = 0; i < u->req_count; i++)
+        if (upg_level(upg(u->reqs[i].upgrade)) < u->reqs[i].level) return 0;
+    for (int k = 0; k < s_upg_total; k++) {     // replaced by an evolution the player owns
+        const UpgradeData *e = upg(s_upg_nodes[k]);
+        if (e->replaces == node && upg_level(e) > 0) return 0;
+    }
+    return 1;
+}
+
+// Class 0 = evolutions, 1 = weapons and items, 2 = bonus fillers.
+static int upg_in_class(s16 node, int cls) {
+    u8 c = upg(node)->category;
+    if (cls == 2) return c == UPG_BONUS;
+    if (c == UPG_BONUS || (c == UPG_EVOLUTION) != (cls == 0)) return 0;
+    return upg_available(node);
+}
+
+static int upg_picked(s16 node) {
+    for (int i = 0; i < s_up_count; i++)
+        if (s_up[i] == node) return 1;
+    return 0;
+}
+
+static int upg_candidate(s16 n, int cls) {
+    return !upg_picked(n) && upg_in_class(n, cls);
+}
+
+// Add random upgrades of one class until there are `want` choices (or none are left).
+static void upg_pick_class(int cls, int want) {
+    while (s_up_count < want) {
+        int k = 0;
+        for (int i = 0; i < s_upg_total; i++)
+            if (upg_candidate(s_upg_nodes[i], cls)) k++;
+        if (!k) return;
+        int r = rng_range(0, k - 1);
+        for (int i = 0; i < s_upg_total; i++)
+            if (upg_candidate(s_upg_nodes[i], cls) && r-- == 0) {
+                s_up[s_up_count++] = s_upg_nodes[i];
+                break;
+            }
+    }
+}
+
+// Evolutions first (they are rare and earned), then weapons/items, then bonus fillers.
+static void upg_pick(int want) {
+    if (want > MAX_UPGRADE_CHOICES) want = MAX_UPGRADE_CHOICES;
+    upg_find_all();
+    s_up_count = 0;
+    for (int cls = 0; cls < 3; cls++) upg_pick_class(cls, want);
+}
+
+static void draw_upgrade_card(int i) {
+    const MenuOption *slot = &s_menu->options[i];
+    const UpgradeData *u = upg(s_up[i]);
+    s32 lv = upg_level(u);
+    char tag[8] = "";
+    if (u->category == UPG_EVOLUTION) memcpy(tag, "EVOLVE!", 8);
+    else if (u->category != UPG_BONUS && lv == 0) memcpy(tag, "NEW!", 5);
+    else if (u->category != UPG_BONUS) { tag[0] = 'L'; tag[1] = 'V'; tag[2] = (char)('1' + (lv > 8 ? 8 : lv)); }
+    int d = lv < u->desc_count ? lv : u->desc_count - 1;
+    if (u->icon) draw_icon(slot->x - UPG_ICON_DX, slot->y, u->icon, s_menu->box.paper);
+    draw_text(slot->x, slot->y, u->title, 1);
+    draw_text(slot->x + UPG_TAG_DX, slot->y, tag, 1);
+    if (d >= 0) draw_text(slot->x, slot->y + 1, u->descriptions[d], 1);
+}
+
+// Level up the picked upgrade (an evolution also removes the weapon it replaces).
+static void apply_upgrade(s16 node) {
+    const UpgradeData *u = upg(node);
+    if (u->var >= 0) vars_add(u->var, 1);
+    if (u->replaces >= 0 && upg(u->replaces)->var >= 0) vars_set(upg(u->replaces)->var, 0);
+    ui_close_menu();
+    scripts_start(u->on_pick, NULL);
+}
+
 // ---- menus ---------------------------------------------------------------------------
 static int cursor_w(void) { return s_menu->cursor ? s_menu->cursor->width / 8 : 1; }
+static int menu_count(void) { return s_menu->upgrade_count ? s_up_count : s_menu->option_count; }
 
 static void draw_menu_cursor(void) {
     const MenuData *m = s_menu;
     int cw = cursor_w();
-    for (int i = 0; i < m->option_count; i++) {
+    for (int i = 0; i < menu_count(); i++) {
         const MenuOption *o = &m->options[i];
-        int x = o->x - cw;
+        int x = o->x - cw - (m->upgrade_count ? UPG_ICON_DX : 0);
         if (i == s_cursor && m->cursor) {
             draw_icon(x, o->y, m->cursor, m->has_box ? m->box.paper : 0xFF);
         } else if (m->has_box) {
@@ -276,7 +378,10 @@ static void draw_menu(void) {
         load_font(m->font);
     }
     if (m->title) draw_text(m->title_x, m->title_y, m->title, paper);
-    for (int i = 0; i < m->option_count; i++) draw_text(m->options[i].x, m->options[i].y, m->options[i].label, paper);
+    for (int i = 0; i < menu_count(); i++) {
+        if (m->upgrade_count) draw_upgrade_card(i);
+        else draw_text(m->options[i].x, m->options[i].y, m->options[i].label, paper);
+    }
     draw_menu_cursor();
 }
 
@@ -286,6 +391,10 @@ static void close_box(void) {
 }
 
 void ui_open_menu(const MenuData *m) {
+    if (m->upgrade_count) {
+        upg_pick(m->upgrade_count);
+        if (!s_up_count) return;                // nothing left to offer: skip the menu
+    }
     if (s_dlg) { s_dlg = NULL; close_box(); }
     if (s_menu) close_box();
     s_menu = m;
@@ -306,13 +415,17 @@ static void menu_update(void) {
     if (s_menu_locked || s_opened == core_frame()) return;
     int dir = input_pressed(KEY_DOWN) - input_pressed(KEY_UP);
     if (dir) {
-        s_cursor = (u8)((s_cursor + dir + m->option_count) % m->option_count);
+        s_cursor = (u8)((s_cursor + dir + menu_count()) % menu_count());
         if (m->sfx_move >= 0) audio_play_sfx((const SfxData *)g_nodes[m->sfx_move].data);
         draw_menu_cursor();
     } else if (input_pressed(KEY_A)) {
+        if (m->sfx_select >= 0) audio_play_sfx((const SfxData *)g_nodes[m->sfx_select].data);
+        if (m->upgrade_count) {                 // upgrade cards apply themselves and close
+            apply_upgrade(s_up[s_cursor]);
+            return;
+        }
         // The menu stops taking input; its actions decide what happens (close_menu, goto_scene...).
         s_menu_locked = 1;
-        if (m->sfx_select >= 0) audio_play_sfx((const SfxData *)g_nodes[m->sfx_select].data);
         scripts_start(m->options[s_cursor].actions, NULL);
     } else if (input_pressed(KEY_B) && m->on_cancel.count) {
         s_menu_locked = 1;

@@ -1,0 +1,37 @@
+{
+  "id": "enm_skeleton",
+  "kind": "object",
+  "type": "enemy",
+  "name": "Skeleton",
+  "notes": "Arrives in packs from one side after 2:50. Steady and sturdy. Drops a gem, often a big green one.",
+  "body": "body_skeleton",
+  "logic": [
+    {"behavior": "swarm", "params": {"leash": 220, "speed": 0.6}},
+    {"behavior": "damage_on_touch", "params": {"amount": 1}},
+    {
+      "behavior": "health",
+      "params": {
+        "max": 40,
+        "invincible_ticks": 8,
+        "knockback": 1.2,
+        "spikes": false,
+        "on_death": [
+          {"do": "add_var", "var": "kills", "value": 1},
+          {"do": "spawn", "object": "item_gem", "x": 0, "y": -6},
+          {
+            "do": "if_chance",
+            "percent": 25,
+            "then": [{"do": "spawn", "object": "item_gem_big", "x": 4, "y": -4}]
+          },
+          {
+            "do": "if_chance",
+            "percent": 5,
+            "then": [{"do": "spawn", "object": "item_coin", "x": -4, "y": -4}]
+          }
+        ]
+      }
+    }
+  ],
+  "sounds": {"die": "sfx_enemy_die"},
+  "children": ["body_skeleton"]
+}

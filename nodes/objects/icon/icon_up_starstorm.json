@@ -1,0 +1,26 @@
+{
+  "id": "icon_up_starstorm",
+  "kind": "object",
+  "type": "icon",
+  "name": "Star Storm icon",
+  "notes": "16x16 card picture for the Star Storm upgrade (UI palette, so the box color shows behind it).",
+  "palette": "pal_ui",
+  "pixels": [
+    "................",
+    ".......aa.......",
+    "......a44a......",
+    "......a44a......",
+    ".....a4444a.....",
+    ".....a4444a.....",
+    "...aa444444aa...",
+    "aa444442244444aa",
+    "aa444442244444aa",
+    "...aa444444aa...",
+    ".....a4444a.....",
+    ".....a4444a.....",
+    "......a44a......",
+    "......a44a......",
+    ".......aa.......",
+    "................"
+  ]
+}

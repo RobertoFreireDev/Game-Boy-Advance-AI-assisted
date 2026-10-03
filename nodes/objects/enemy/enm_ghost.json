@@ -1,0 +1,35 @@
+{
+  "id": "enm_ghost",
+  "kind": "object",
+  "type": "enemy",
+  "name": "Ghost",
+  "notes": "Drifts in from all sides after 4:40, weaving. Drops a big green gem (5 XP).",
+  "body": "body_ghost",
+  "logic": [
+    {
+      "behavior": "swarm",
+      "params": {"leash": 220, "speed": 0.75, "wobble": true}
+    },
+    {"behavior": "damage_on_touch", "params": {"amount": 1}},
+    {
+      "behavior": "health",
+      "params": {
+        "max": 30,
+        "invincible_ticks": 8,
+        "knockback": 1.5,
+        "spikes": false,
+        "on_death": [
+          {"do": "add_var", "var": "kills", "value": 1},
+          {"do": "spawn", "object": "item_gem_big", "x": 0, "y": -6},
+          {
+            "do": "if_chance",
+            "percent": 5,
+            "then": [{"do": "spawn", "object": "item_coin", "x": 4, "y": -4}]
+          }
+        ]
+      }
+    }
+  ],
+  "sounds": {"die": "sfx_enemy_die"},
+  "children": ["body_ghost"]
+}

@@ -1,0 +1,14 @@
+{
+  "id": "sfx_bolt",
+  "kind": "object",
+  "type": "sfx",
+  "name": "Zap",
+  "notes": "Short falling zap for the Magic Bolt and Arcane Storm (square 2, so the melody keeps going).",
+  "channel": "square2",
+  "duty": 2,
+  "steps": [
+    {"note": "E6", "ticks": 2, "volume": 7},
+    {"note": "B5", "ticks": 2, "volume": 5},
+    {"note": "G5", "ticks": 2, "volume": 3}
+  ]
+}

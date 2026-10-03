@@ -1,0 +1,26 @@
+{
+  "id": "icon_up_wings",
+  "kind": "object",
+  "type": "icon",
+  "name": "Swift Wings icon",
+  "notes": "16x16 card picture for the Swift Wings upgrade (UI palette, so the box color shows behind it).",
+  "palette": "pal_ui",
+  "pixels": [
+    "................",
+    "................",
+    "1..............1",
+    "21............12",
+    "221..........122",
+    "2f21........12f2",
+    "2ff21......12ff2",
+    "12ff21....12ff21",
+    ".12ff21..12ff21.",
+    ".12fff2112fff21.",
+    "..12ff2112ff21..",
+    "..122f2112f221..",
+    "...1222112221...",
+    "....11111111....",
+    "................",
+    "................"
+  ]
+}

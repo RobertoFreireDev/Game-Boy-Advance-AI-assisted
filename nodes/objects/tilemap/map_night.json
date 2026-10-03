@@ -1,0 +1,33 @@
+{
+  "id": "map_night",
+  "kind": "object",
+  "type": "tilemap",
+  "name": "Night backdrop",
+  "notes": "One screen (30x20 tiles) used behind the title, the shop and the results: starry sky with the moon, dark hills, graves and pairs of red eyes in the dark.",
+  "tileset": "ts_night",
+  "layer": 2,
+  "parallax": 1,
+  "rows": [
+    "...........+..........*.......",
+    "................+............+",
+    "*.............................",
+    ".....+......*.......+.........",
+    "...*......................AB..",
+    "+.........................CD.+",
+    "..+....*.......+.......+......",
+    "*............................*",
+    ".....+.......*..........+.....",
+    "+............................+",
+    "..+........+........*.......*.",
+    "*............................+",
+    "....../^\\...........+.........",
+    "..../^HHHH^\\...../^^\\.....*...",
+    "^^^^HHHHHHHHH^^^HHHHHH^^^^/^^^",
+    "GGgGGGGtGGGGGGGGGGGGGtGGGgGGGG",
+    "GeGGGGGGGGGGGGGGGGGGGGGGGGGGeG",
+    "####E################E########",
+    "##############################",
+    "######E##############E########"
+  ],
+  "children": ["ts_night"]
+}

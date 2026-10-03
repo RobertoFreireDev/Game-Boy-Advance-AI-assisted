@@ -1,0 +1,22 @@
+{
+  "id": "item_meat",
+  "kind": "object",
+  "type": "pickup",
+  "name": "Roast",
+  "notes": "Rare food drop: heals 2 hearts (never above the hunter's max). Walk over it, or it comes to the hunter after 15 seconds.",
+  "body": "body_meat",
+  "logic": [
+    {
+      "behavior": "collectible",
+      "params": {
+        "on_collect": [{"do": "add_var", "var": "health", "value": 2, "max_var": "max_health"}]
+      }
+    },
+    {
+      "behavior": "magnet",
+      "params": {"range": 10, "acceleration": 0.2, "max_speed": 3.0, "pull_after": 900}
+    }
+  ],
+  "sounds": {"collect": "sfx_heal"},
+  "children": ["body_meat"]
+}

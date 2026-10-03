@@ -3,13 +3,18 @@
   "kind": "scene",
   "type": "game_over",
   "name": "Game over",
-  "notes": "Shown after losing every heart: a sad jingle and a menu to try again or go to the title.",
-  "backdrop": "#000000",
+  "notes": "The hunter fell. Banks the gold found this run (saved to the cartridge) and shows the results.",
+  "backdrop": "#101028",
   "music": "mus_game_over",
+  "camera": {"x": 0, "y": 0, "bounds": "none"},
   "instances": [
+    {"id": "sky", "object": "map_night"},
+    {"id": "hud", "object": "hud_results"},
     {"id": "menu", "object": "menu_game_over"}
   ],
   "on_start": [
-    {"do": "fade_in", "ticks": 20}
+    {"do": "add_var", "var": "gold", "from": "run_gold"},
+    {"do": "save_game"},
+    {"do": "fade_in", "ticks": 30}
   ]
 }
