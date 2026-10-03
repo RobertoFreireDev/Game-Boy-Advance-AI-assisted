@@ -3,7 +3,7 @@
   "kind": "object",
   "type": "font",
   "name": "Default font",
-  "notes": "8x8 capital letters, digits and punctuation used by every HUD, menu and dialog. White letters with a dark shadow so they read on any background. Lowercase letters show as capitals (except 'x', used for 'x3' counters). Space needs no glyph.",
+  "notes": "8x8 capital letters, digits and punctuation used by every HUD, menu and dialog. White letters with a dark shadow so they read on any background. Lowercase letters show as capitals (except 'x', for 'x3' style counters). Space needs no glyph.",
   "palette": "pal_ui",
   "glyphs": {
     "A": [

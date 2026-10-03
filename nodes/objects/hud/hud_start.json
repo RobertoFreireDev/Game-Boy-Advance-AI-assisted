@@ -1,0 +1,22 @@
+{
+  "id": "hud_start",
+  "kind": "object",
+  "type": "hud",
+  "name": "Start screen text",
+  "notes": "Placeholder text for the empty template. Replace it (and the start scene) when the first real game is made.",
+  "font": "font_default",
+  "elements": [
+    {
+      "kind": "text",
+      "x": 88,
+      "y": 64,
+      "text": "NEW GAME"
+    },
+    {
+      "kind": "text",
+      "x": 8,
+      "y": 88,
+      "text": "ASK THE AI TO MAKE YOUR GAME"
+    }
+  ]
+}

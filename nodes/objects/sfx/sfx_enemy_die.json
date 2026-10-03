@@ -1,9 +1,0 @@
-{
-  "id": "sfx_enemy_die",
-  "kind": "object",
-  "type": "sfx",
-  "name": "Monster defeated",
-  "notes": "Soft thud-puff when a monster is defeated.",
-  "channel": "noise",
-  "steps": [{"pitch": 6, "ticks": 3, "volume": 8}, {"pitch": 3, "ticks": 4, "volume": 4}]
-}

@@ -3,7 +3,7 @@
   "kind": "object",
   "type": "palette",
   "name": "UI colors",
-  "notes": "Colors for text, menus, the HUD and upgrade icons. 1 = dark outline, 2 = white text, 3 = deep indigo box background, 4 = yellow, 5 = red, 6 = light blue (XP bar), 7 = gray, 8 = brown, 9 = green, 10 = orange, 11 = purple, 12 = tan, 13 = slate (XP bar background), 14 = blue, 15 = pale cyan.",
+  "notes": "Shared colors for text, menus, the HUD and UI icons. 1 = dark outline, 2 = white text, 3 = deep indigo box background, 4 = yellow, 5 = red, 6 = light blue, 7 = gray, 8 = brown, 9 = green, 10 = orange, 11 = purple, 12 = tan, 13 = slate, 14 = blue, 15 = pale cyan.",
   "colors": [
     "#000000",
     "#101820",

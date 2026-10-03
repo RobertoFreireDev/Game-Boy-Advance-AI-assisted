@@ -3,12 +3,20 @@
   "kind": "object",
   "type": "sfx",
   "name": "Confirm",
-  "notes": "Bright two-note chirp when a menu option or an upgrade card is chosen.",
+  "notes": "Bright two-note chirp when a menu option is chosen.",
   "channel": "square2",
   "duty": 2,
   "priority": 1,
   "steps": [
-    {"note": "C6", "ticks": 3, "volume": 11},
-    {"note": "G6", "ticks": 7, "volume": 9}
+    {
+      "note": "C6",
+      "ticks": 3,
+      "volume": 11
+    },
+    {
+      "note": "G6",
+      "ticks": 7,
+      "volume": 9
+    }
   ]
 }

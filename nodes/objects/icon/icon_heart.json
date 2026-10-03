@@ -3,7 +3,7 @@
   "kind": "object",
   "type": "icon",
   "name": "Heart",
-  "notes": "One heart of health in the HUD.",
+  "notes": "One heart of health, for a HUD.",
   "palette": "pal_ui",
   "pixels": [
     ".11.11..",

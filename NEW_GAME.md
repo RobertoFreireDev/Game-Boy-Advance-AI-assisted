@@ -8,7 +8,7 @@ skip, and how to test the result. It is AI-maintained: update it when you learn 
 
 ## 1. Load context efficiently
 
-The repo is ~8.6k lines of engine/tools plus ~150 node files. Don't read everything. Read in
+The repo is ~8.6k lines of engine/tools plus a handful of template nodes (a full game is ~150). Don't read everything. Read in
 **parallel batches** (several Read calls in one message) and stop at the tier you need.
 
 ### Tier 1 — always (enough to plan most games)
@@ -47,9 +47,10 @@ The repo is ~8.6k lines of engine/tools plus ~150 node files. Don't read everyth
 
 ## 2. Genre → building blocks that already exist
 
-Three games have been built so far (see `git log`): **Hero Quest** (side platformer),
-**Sun Shrine** (top-down Zelda-like), **Night Swarm** (survivors-like, current). Their engine
-features stayed, so all three genres are covered without new code:
+Three games have been built so far: **Hero Quest** (side platformer, commit `ba0261a^`),
+**Sun Shrine** (top-down Zelda-like, commit `1c794e3^`), **Night Swarm** (survivors-like, branch
+`games/night_swarm`). `main` is now an **empty template** (one start scene + the generic UI
+nodes), but their engine features stayed, so all three genres are covered without new code:
 
 | Genre | Player | Enemies | World / progression |
 |-------|--------|---------|---------------------|
@@ -63,7 +64,10 @@ engine architecture (CLAUDE.md rule 8).
 
 ---
 
-## 3. Good example nodes to copy from (current game)
+## 3. Good example nodes to copy from (Night Swarm)
+
+These live on the `games/night_swarm` branch, not on `main`. Read them without switching branch:
+`git show games/night_swarm:nodes/objects/player/plr_hunter.json`.
 
 | Need | Example |
 |------|---------|
@@ -78,8 +82,8 @@ engine architecture (CLAUDE.md rule 8).
 | HUD / menu / dialog | `hud_run`, `menu_title`, `menu_level_up`, `dlg_how_to_play` |
 | Music / sfx | `mus_field`, `sfx_hurt` |
 
-**Generic nodes kept across games** (reuse, recolor if needed, don't delete): `font_default`,
-`pal_ui`, `icon_cursor`, `icon_heart`, `sfx_select`, `sfx_confirm`. Check they still exist.
+**Generic nodes kept across games** (on `main` too; reuse, recolor if needed, don't delete):
+`font_default`, `pal_ui`, `icon_cursor`, `icon_heart`, `sfx_select`, `sfx_confirm`.
 
 ---
 
@@ -91,9 +95,10 @@ engine architecture (CLAUDE.md rule 8).
 2. **Plan the node list** before writing files: scenes → actors → bodies/sprites/animations →
    maps/tilesets → UI → audio → variables. Check it against `config.h` limits and GBA limits
    (CLAUDE.md §9): palettes (16 OBJ + 16 BG banks), OBJ VRAM 1024 tiles, ≤ 32 sprite sheets.
-3. **Remove the old game** (when replacing): delete its node files *and* their `nodes.json`
-   entries in the same change; delete `src/game/*` that only the old game used. Keep engine
-   behaviors — they are reusable.
+3. **Start from the template**: work on `main` (empty template) or a new `games/<name>` branch
+   made from it. When replacing a game, delete its node files *and* their `nodes.json` entries in
+   the same change; delete `src/game/*` that only the old game used. Keep engine behaviors —
+   they are reusable. Replace the template's `scn_start` / `hud_start` placeholders.
 4. **Update `game`** in `nodes.json`: `title` (≤ 12), `game_code` (4 chars, new one),
    `rom_name`, `start_scene`, `save`, `variables`.
 5. **Write nodes bottom-up**: palettes → sprites → animations → particles → bodies → actors →

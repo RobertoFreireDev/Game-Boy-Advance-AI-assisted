@@ -1,9 +1,0 @@
-{
-  "id": "sfx_knife",
-  "kind": "object",
-  "type": "sfx",
-  "name": "Swish",
-  "notes": "Airy swish when stars are thrown.",
-  "channel": "noise",
-  "steps": [{"pitch": 12, "ticks": 2, "volume": 6}, {"pitch": 10, "ticks": 2, "volume": 3}]
-}
