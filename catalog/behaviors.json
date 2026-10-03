@@ -243,5 +243,12 @@
       "growth":        {"type": "int", "default": 6, "description": "Extra XP needed for each level after that."},
       "on_level_up":   {"type": "actions", "default": [], "description": "What happens on each level gained."}
     }
+  },
+  "button_actions": {
+    "description": "When a button is pressed, run actions (for example: START opens the pause menu). Does nothing while a menu or dialog is open.",
+    "params": {
+      "button":   {"type": "button", "default": "START", "description": "Button to watch."},
+      "on_press": {"type": "actions", "default": [], "description": "What happens when the button is pressed."}
+    }
   }
 }

@@ -1085,7 +1085,7 @@ PREVIEW.menu = (id, n) => {
       h("button", { onclick: () => { cur = (cur + 1) % count; draw(); } }, "▼ Down"),
       h("span", { class: "small" }, "The engine picks " + n.upgrades + " random cards each time it opens: evolutions whose recipe is complete come first, then weapons and items not yet maxed, then bonus fillers. A takes the card, which levels it up, runs its 'on pick' actions and closes the menu.")), c),
     card("Upgrades it can offer (" + UPGRADES.length + ")", h("div", {}, UPGRADES.map(u => h("div", {}, nodeLink(u), h("span", { class: "small" }, " — " + ((NODES[u] || {}).category || "")))))),
-    n.on_cancel ? card("When B is pressed", actionList(n.on_cancel)) : null];
+    n.on_cancel ? card("When B or START is pressed", actionList(n.on_cancel)) : null];
   }
   let cur = 0;
   const [c, ctx] = screenCanvas(3);
@@ -1098,7 +1098,7 @@ PREVIEW.menu = (id, n) => {
     h("button", { onclick: () => { cur = (cur + 1) % (n.options || [1]).length; draw(); } }, "▼ Down"),
     h("span", { class: "small" }, "Up/Down move the cursor; A picks. The menu stays on screen (locked) until its actions close it or change scene.")), c),
   card("What each option does", opts),
-  n.on_cancel ? card("When B is pressed", actionList(n.on_cancel)) : null];
+  n.on_cancel ? card("When B or START is pressed", actionList(n.on_cancel)) : null];
 };
 PREVIEW.dialog = (id, n) => {
   let line = 0, choosing = false, choice = 0, typedFrom = clock.tick;

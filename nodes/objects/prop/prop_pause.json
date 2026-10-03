@@ -1,0 +1,18 @@
+{
+  "id": "prop_pause",
+  "kind": "object",
+  "type": "prop",
+  "name": "Pause button",
+  "notes": "Invisible (no body): watches the START button during a run and opens the pause menu. It does nothing once the run is ending (the hunter or the Night Lord has died), so the ending can't be interrupted.",
+  "logic": [
+    {
+      "behavior": "button_actions",
+      "params": {
+        "button": "START",
+        "on_press": [
+          {"do": "if_var", "var": "run_over", "value": 0, "then": [{"do": "open_menu", "menu": "menu_pause"}]}
+        ]
+      }
+    }
+  ]
+}

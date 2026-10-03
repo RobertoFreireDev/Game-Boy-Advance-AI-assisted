@@ -292,7 +292,7 @@ groups them for humans. **What an actor does comes only from its `logic` list.**
   per value; `{var:02}` pads to 2 digits, for clocks), `icon {icon}`, `icon_repeat {icon, empty_icon?, var, max, spacing?}`,
   `bar {var, max, length (tiles), color, back}` (colors are indexes of the font palette).
 - **menu**: `layout {x, y, spacing, title_y}`, optional `box {x, y, w, h, paper, border}`,
-  `sounds {move, select}`. Up/Down move, A picks, B runs `on_cancel`. Picking an option **locks**
+  `sounds {move, select}`. Up/Down move, A picks, B or START runs `on_cancel`. Picking an option **locks**
   the menu (no more input) and runs its actions, so they should `close_menu`, `goto_scene`,
   `open_menu` or `show_dialog` (the validator warns otherwise). Option labels and the title may use
   `{var}` / `{var:02}` placeholders (re-`open_menu` to refresh them, e.g. a shop).
@@ -492,7 +492,8 @@ Every channel in a pattern has the same number of rows. Missing channels are sil
   down) and dies in place; with gravity it knocks sideways and falls off the screen.
 - Starter set: `platformer_controller`, `topdown_controller`, `patrol`, `chase_player`,
   `follow_path`, `solid_platform`, `health`, `damage_on_touch`, `stompable`, `collectible`,
-  `trigger_zone`, `talk`, `camera_target`, `spawn_particles`. Top-down set: `sword_attack`,
+  `trigger_zone`, `talk`, `camera_target`, `spawn_particles`, `button_actions` (a button press runs
+  actions, e.g. START opens a pause menu). Top-down set: `sword_attack`,
   `wander`, `locked_door`. Survivors set: `weapon` (auto-fire, level from a variable), `projectile`
   (the shot), `aura`, `swarm` (horde movement with grid-based crowd spreading), `magnet` (pickups fly
   to the player), `spawn_wave` (timed off-screen waves), `run_clock`, `level_up`. Add more as games need them.

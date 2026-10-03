@@ -455,7 +455,7 @@ static void menu_update(void) {
         // The menu stops taking input; its actions decide what happens (close_menu, goto_scene...).
         s_menu_locked = 1;
         scripts_start(m->options[s_cursor].actions, NULL);
-    } else if (input_pressed(KEY_B) && m->on_cancel.count) {
+    } else if (input_pressed(KEY_B | KEY_START) && m->on_cancel.count) {
         s_menu_locked = 1;
         scripts_start(m->on_cancel, NULL);
     }

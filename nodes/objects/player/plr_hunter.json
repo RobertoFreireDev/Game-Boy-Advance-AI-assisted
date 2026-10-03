@@ -18,6 +18,7 @@
         "knockback": 0.75,
         "spikes": false,
         "on_death": [
+          {"do": "set_var", "var": "run_over", "value": 1},
           {"do": "stop_music"},
           {"do": "wait", "ticks": 60},
           {"do": "fade_out", "ticks": 40},

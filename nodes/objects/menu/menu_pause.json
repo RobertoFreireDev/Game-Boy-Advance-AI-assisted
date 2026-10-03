@@ -1,0 +1,40 @@
+{
+  "id": "menu_pause",
+  "kind": "object",
+  "type": "menu",
+  "name": "Pause menu",
+  "notes": "Opens when START is pressed during a run; the night freezes while it is open. RESUME (or B / START) goes back to the fight. RESTART and TITLE end this run: the gold found so far is banked and saved first, just like when the hunter falls, then a fresh night starts or the title screen comes back.",
+  "font": "font_default",
+  "title": "PAUSED",
+  "cursor": "icon_cursor",
+  "box": {"x": 56, "y": 32, "w": 128, "h": 88, "paper": 3, "border": 2},
+  "layout": {"x": 80, "y": 64, "spacing": 16, "title_y": 48},
+  "options": [
+    {
+      "label": "RESUME",
+      "actions": [{"do": "close_menu"}]
+    },
+    {
+      "label": "RESTART",
+      "actions": [
+        {"do": "add_var", "var": "gold", "from": "run_gold"},
+        {"do": "set_var", "var": "run_gold", "value": 0},
+        {"do": "save_game"},
+        {"do": "fade_out", "ticks": 20},
+        {"do": "goto_scene", "scene": "scn_field"}
+      ]
+    },
+    {
+      "label": "TITLE",
+      "actions": [
+        {"do": "add_var", "var": "gold", "from": "run_gold"},
+        {"do": "set_var", "var": "run_gold", "value": 0},
+        {"do": "save_game"},
+        {"do": "fade_out", "ticks": 20},
+        {"do": "goto_scene", "scene": "scn_title"}
+      ]
+    }
+  ],
+  "on_cancel": [{"do": "close_menu"}],
+  "sounds": {"move": "sfx_select", "select": "sfx_confirm"}
+}

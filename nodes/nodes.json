@@ -78,6 +78,12 @@
       },
       {"name": "kills", "type": "int", "initial": 0, "notes": "Monsters defeated this run."},
       {
+        "name": "run_over",
+        "type": "flag",
+        "initial": false,
+        "notes": "Set when the hunter or the Night Lord dies: the run is ending, so START no longer pauses."
+      },
+      {
         "name": "run_gold",
         "type": "int",
         "initial": 0,
@@ -234,6 +240,7 @@
     {"id": "enm_lord", "kind": "object", "type": "enemy", "path": "objects/enemy/enm_lord.json", "parent": null},
     {"id": "plr_hunter", "kind": "object", "type": "player", "path": "objects/player/plr_hunter.json", "parent": null},
     {"id": "prop_director", "kind": "object", "type": "prop", "path": "objects/prop/prop_director.json", "parent": null},
+    {"id": "prop_pause", "kind": "object", "type": "prop", "path": "objects/prop/prop_pause.json", "parent": null},
     {"id": "icon_up_bolt", "kind": "object", "type": "icon", "path": "objects/icon/icon_up_bolt.json", "parent": "upg_bolt"},
     {"id": "upg_bolt", "kind": "object", "type": "upgrade", "path": "objects/upgrade/upg_bolt.json", "parent": null},
     {"id": "icon_up_knife", "kind": "object", "type": "icon", "path": "objects/icon/icon_up_knife.json", "parent": "upg_knife"},
@@ -276,6 +283,7 @@
     {"id": "menu_level_up", "kind": "object", "type": "menu", "path": "objects/menu/menu_level_up.json", "parent": null},
     {"id": "menu_game_over", "kind": "object", "type": "menu", "path": "objects/menu/menu_game_over.json", "parent": null},
     {"id": "menu_victory", "kind": "object", "type": "menu", "path": "objects/menu/menu_victory.json", "parent": null},
+    {"id": "menu_pause", "kind": "object", "type": "menu", "path": "objects/menu/menu_pause.json", "parent": null},
     {"id": "dlg_how_to_play", "kind": "object", "type": "dialog", "path": "objects/dialog/dlg_how_to_play.json", "parent": null},
     {"id": "sfx_bolt", "kind": "object", "type": "sfx", "path": "objects/sfx/sfx_bolt.json", "parent": null},
     {"id": "sfx_knife", "kind": "object", "type": "sfx", "path": "objects/sfx/sfx_knife.json", "parent": null},

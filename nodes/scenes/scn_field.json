@@ -3,13 +3,14 @@
   "kind": "scene",
   "type": "level",
   "name": "The night field",
-  "notes": "The run. Everything for this run starts fresh (weapons, level, XP, hearts), then the permanent power ups are added: might, haste, speed, magnet and extra hearts. The director spawns monsters for 10 minutes, then the Night Lord comes. The camera follows the hunter.",
+  "notes": "The run. Everything for this run starts fresh (weapons, level, XP, hearts), then the permanent power ups are added: might, haste, speed, magnet and extra hearts. The director spawns monsters for 10 minutes, then the Night Lord comes. START pauses the run (resume, restart or go back to the title). The camera follows the hunter.",
   "backdrop": "#2a4a30",
   "music": "mus_field",
   "camera": {"follow": "hunter", "bounds": "map"},
   "instances": [
     {"id": "map", "object": "map_field"},
     {"id": "director", "object": "prop_director"},
+    {"id": "pause", "object": "prop_pause"},
     {"id": "hunter", "object": "plr_hunter", "x": 384, "y": 392},
     {"id": "hud", "object": "hud_run"}
   ],
