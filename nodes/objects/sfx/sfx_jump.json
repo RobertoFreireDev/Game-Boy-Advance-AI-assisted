@@ -1,0 +1,16 @@
+{
+  "id": "sfx_jump",
+  "kind": "object",
+  "type": "sfx",
+  "name": "Jump",
+  "notes": "Short rising blip when the hero jumps.",
+  "channel": "square1",
+  "duty": 2,
+  "priority": 1,
+  "steps": [
+             {"note": "C5", "ticks": 2, "volume": 12},
+             {"note": "E5", "ticks": 2, "volume": 10},
+             {"note": "G5", "ticks": 3, "volume": 8},
+             {"note": "C6", "ticks": 3, "volume": 5}
+           ]
+}

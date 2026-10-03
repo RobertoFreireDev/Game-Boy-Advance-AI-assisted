@@ -1,0 +1,11 @@
+{
+  "id": "anim_sparkle_twinkle",
+  "kind": "object",
+  "type": "animation",
+  "name": "Sparkle twinkle",
+  "notes": "Flickers between the small and big star.",
+  "sprite": "spr_sparkle",
+  "loop": true,
+  "frames": [{"frame": "star_a", "ticks": 4}, {"frame": "star_b", "ticks": 4}],
+  "events": []
+}

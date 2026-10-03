@@ -1,0 +1,26 @@
+{
+  "id": "menu_title",
+  "kind": "object",
+  "type": "menu",
+  "name": "Title menu",
+  "notes": "Main menu on the title screen. START GAME resets hearts and coins and starts level 1; CREDITS shows the credits.",
+  "font": "font_default",
+  "title": "HERO QUEST",
+  "cursor": "icon_cursor",
+  "layout": {"x": 88, "y": 96, "spacing": 16, "title_y": 48},
+  "options": [
+               {
+                 "label": "START GAME",
+                 "actions": [
+                              {"do": "reset_vars"},
+                              {"do": "fade_out", "ticks": 20},
+                              {"do": "goto_scene", "scene": "scn_level_1"}
+                            ]
+               },
+               {
+                 "label": "CREDITS",
+                 "actions": [{"do": "fade_out", "ticks": 20}, {"do": "goto_scene", "scene": "scn_credits"}]
+               }
+             ],
+  "sounds": {"move": "sfx_select", "select": "sfx_confirm"}
+}

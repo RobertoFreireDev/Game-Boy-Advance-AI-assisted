@@ -1,0 +1,115 @@
+{
+  "_notes": "Every behavior an object can list in its logic[]. Each one is src/behaviors/<name>.c/.h. Param types: int, fixed, bool, ticks, button, var, node:<type>, actions, points, choice (one of options), string.",
+  "platformer_controller": {
+    "description": "Side-view control: run left/right with the D-pad, jump with a button, climb ladders with up/down. Picks the idle, run, jump, fall and climb animations.",
+    "params": {
+      "speed":        { "type": "fixed",  "default": 1.5,  "description": "Top running speed (pixels per tick)." },
+      "acceleration": { "type": "fixed",  "default": 0.25, "description": "How fast it speeds up and slows down (pixels per tick, each tick)." },
+      "jump_height":  { "type": "int",    "default": 40,   "description": "How high a full jump goes (pixels). Letting go of the button early makes a smaller hop." },
+      "jump_button":  { "type": "button", "default": "A",  "description": "Button that jumps." },
+      "climb_speed":  { "type": "fixed",  "default": 1.0,  "description": "Speed on ladders (pixels per tick)." }
+    }
+  },
+  "topdown_controller": {
+    "description": "Top-down control: walk in any direction with the D-pad (no gravity). Picks the idle and walk animations.",
+    "params": {
+      "speed":     { "type": "fixed", "default": 1.0,  "description": "Walking speed (pixels per tick)." },
+      "eight_way": { "type": "bool",  "default": true, "description": "Allow diagonal movement." }
+    }
+  },
+  "patrol": {
+    "description": "Walks left and right on its own, turning around at walls, at ledge edges, or after a set distance.",
+    "params": {
+      "speed":         { "type": "fixed", "default": 0.5,   "description": "Walking speed (pixels per tick)." },
+      "distance":      { "type": "int",   "default": 0,     "description": "Never walk farther than this many pixels from the start (either side). 0 = only turn at walls and edges." },
+      "turn_at_edges": { "type": "bool",  "default": true,  "description": "Turn around instead of walking off a ledge." },
+      "start_left":    { "type": "bool",  "default": false, "description": "Start walking to the left instead of the right." }
+    }
+  },
+  "chase_player": {
+    "description": "Moves toward the player when the player comes close, and stops when the player is far away.",
+    "params": {
+      "speed":    { "type": "fixed", "default": 0.75,  "description": "Chasing speed (pixels per tick)." },
+      "range":    { "type": "int",   "default": 80,    "description": "Starts chasing when the player is this close (pixels)." },
+      "vertical": { "type": "bool",  "default": false, "description": "Also chase up and down (for flying things with no gravity)." }
+    }
+  },
+  "follow_path": {
+    "description": "Moves along a list of points (relative to where it was placed), pausing at each point.",
+    "params": {
+      "points": { "type": "points", "default": [[0, 0], [64, 0]], "description": "Points to visit, in pixels from the starting position." },
+      "speed":  { "type": "fixed",  "default": 0.5, "description": "Travel speed (pixels per tick)." },
+      "mode":   { "type": "choice", "default": "ping_pong", "options": ["ping_pong", "loop", "once"], "description": "ping_pong = go back and forth; loop = from the last point travel back to the first and repeat; once = stop at the last point." },
+      "wait":   { "type": "ticks",  "default": 30,  "description": "Pause at each point (ticks)." }
+    }
+  },
+  "solid_platform": {
+    "description": "Other things can stand on it and are carried when it moves.",
+    "params": {
+      "one_way": { "type": "bool", "default": true, "description": "Only solid from above (you can jump up through it)." }
+    }
+  },
+  "health": {
+    "description": "Can be hurt and can die. Blinks and is briefly invincible after a hit. Spikes and falling off the map also hurt.",
+    "params": {
+      "var":              { "type": "var",     "default": "",  "description": "Game variable that holds the health (shared with the HUD). Empty = private health." },
+      "max":              { "type": "int",     "default": 1,   "description": "Starting health when no variable is used." },
+      "invincible_ticks": { "type": "ticks",   "default": 60,  "description": "Invincibility time after being hurt (ticks)." },
+      "knockback":        { "type": "fixed",   "default": 1.5, "description": "How far a hit pushes it back (pixels per tick)." },
+      "on_hurt":          { "type": "actions", "default": [],  "description": "What happens on every hit." },
+      "on_death":         { "type": "actions", "default": [],  "description": "What happens when health reaches 0." }
+    }
+  },
+  "damage_on_touch": {
+    "description": "Hurts whoever touches it (if they have health). Does not hurt someone who stomps it from above when it is stompable.",
+    "params": {
+      "amount": { "type": "int",    "default": 1,        "description": "Health removed per hit." },
+      "hurts":  { "type": "choice", "default": "player", "options": ["player", "enemy", "any"], "description": "Who it hurts." }
+    }
+  },
+  "stompable": {
+    "description": "Defeated when the player lands on top of it. The player bounces off.",
+    "params": {
+      "bounce":   { "type": "fixed",   "default": 3.0, "description": "Upward speed given to the player who stomps it (pixels per tick)." },
+      "on_stomp": { "type": "actions", "default": [],  "description": "What happens when it is stomped." }
+    }
+  },
+  "collectible": {
+    "description": "The player picks it up by touching it: adds to a game variable, plays the 'collect' sound and disappears.",
+    "params": {
+      "var":        { "type": "var",     "default": "", "description": "Game variable to add to. Empty = none." },
+      "amount":     { "type": "int",     "default": 1,  "description": "How much to add." },
+      "on_collect": { "type": "actions", "default": [], "description": "What happens when picked up." }
+    }
+  },
+  "trigger_zone": {
+    "description": "Runs actions when the player walks into (or out of) its zone.",
+    "params": {
+      "on_enter": { "type": "actions", "default": [],    "description": "What happens when the player enters." },
+      "on_exit":  { "type": "actions", "default": [],    "description": "What happens when the player leaves." },
+      "once":     { "type": "bool",    "default": false, "description": "Only fire the first time." }
+    }
+  },
+  "talk": {
+    "description": "When the player stands next to it and presses the button, a dialog opens.",
+    "params": {
+      "dialog":      { "type": "node:dialog", "required": true, "description": "Dialog to show." },
+      "button":      { "type": "button",      "default": "B",  "description": "Button that starts the talk." },
+      "range":       { "type": "int",         "default": 12,   "description": "How close the player must stand (pixels of gap between them)." },
+      "face_player": { "type": "bool",        "default": true, "description": "Turn to look at the player." }
+    }
+  },
+  "camera_target": {
+    "description": "The camera follows this object.",
+    "params": {}
+  },
+  "spawn_particles": {
+    "description": "Emits particles from this object: all the time, when landing, when jumping or while running.",
+    "params": {
+      "particle": { "type": "node:particle", "required": true,    "description": "Particle emitter to use." },
+      "when":     { "type": "choice",        "default": "always", "options": ["always", "land", "jump", "run"], "description": "When to emit." },
+      "offset_x": { "type": "int",           "default": 0,        "description": "Emit point, pixels right of the object's origin." },
+      "offset_y": { "type": "int",           "default": 0,        "description": "Emit point, pixels below the object's origin." }
+    }
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "id": "hud_intro",
+  "kind": "object",
+  "type": "hud",
+  "name": "Intro text",
+  "notes": "The game title and a subtitle, in the middle of the intro screen.",
+  "font": "font_default",
+  "elements": [
+                {"kind": "text", "x": 80, "y": 64, "text": "HERO QUEST"},
+                {"kind": "text", "x": 48, "y": 88, "text": "A GAME MADE BY AI"}
+              ]
+}

@@ -1,0 +1,11 @@
+{
+  "id": "anim_hero_climb",
+  "kind": "object",
+  "type": "animation",
+  "name": "Hero climb",
+  "notes": "Climbing a ladder, seen from behind.",
+  "sprite": "spr_hero",
+  "loop": true,
+  "frames": [{"frame": "climb_a", "ticks": 10}, {"frame": "climb_b", "ticks": 10}],
+  "events": []
+}

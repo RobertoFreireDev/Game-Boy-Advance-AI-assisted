@@ -1,0 +1,11 @@
+{
+  "id": "scn_title",
+  "kind": "scene",
+  "type": "title",
+  "name": "Title screen",
+  "notes": "Title menu over the sky and the far hills. Up/Down picks an option, A confirms.",
+  "backdrop": "#78c8f8",
+  "music": "mus_title",
+  "instances": [{"id": "hills", "object": "map_hills"}, {"id": "menu", "object": "menu_title"}],
+  "on_start": [{"do": "fade_in", "ticks": 20}]
+}

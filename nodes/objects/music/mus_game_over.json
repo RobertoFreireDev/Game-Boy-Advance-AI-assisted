@@ -1,0 +1,23 @@
+{
+  "id": "mus_game_over",
+  "kind": "object",
+  "type": "music",
+  "name": "Game over jingle",
+  "notes": "Short sad descending tune that plays once on the game over screen.",
+  "bpm": 80,
+  "rows_per_beat": 2,
+  "loop": false,
+  "instruments": {
+                   "square1": {"duty": 2, "volume": 10, "decay": 0},
+                   "square2": {"duty": 1, "volume": 6, "decay": 0},
+                   "wave": {"wave": "0123456789abcdeffedcba9876543210", "volume": 2}
+                 },
+  "patterns": {
+                "A": {
+                       "square1": "G5 -- F#5 -- F5 -- E5 -- | D#5 -- D5 -- -- -- .. ..",
+                       "square2": "B4 -- A#4 -- A4 -- G#4 -- | G4 -- F#4 -- -- -- .. ..",
+                       "wave": "G3 -- -- -- C3 -- -- -- | G2 -- -- -- -- -- .. .."
+                     }
+              },
+  "order": ["A"]
+}

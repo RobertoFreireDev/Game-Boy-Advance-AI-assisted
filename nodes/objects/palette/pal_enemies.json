@@ -1,0 +1,8 @@
+{
+  "id": "pal_enemies",
+  "kind": "object",
+  "type": "palette",
+  "name": "Enemies",
+  "notes": "Purple slime colors with white eyes.",
+  "colors": ["#000000", "#200818", "#b838a0", "#e878d0", "#f8f8f8", "#101010", "#782068"]
+}

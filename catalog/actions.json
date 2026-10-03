@@ -1,0 +1,123 @@
+{
+  "_notes": "Every action usable in an action list: { \"do\": \"<action>\", ...params }. 'sentence' is how the visualizer reads it aloud; {param} is replaced by the value. Actions run in order; wait and the fades pause the list.",
+  "goto_scene": {
+    "description": "Switch to another scene.",
+    "sentence": "Go to scene {scene}",
+    "params": { "scene": { "type": "node:scene", "required": true, "description": "Scene to go to." } }
+  },
+  "fade_in": {
+    "description": "Fade the screen in from black. The list waits until the fade ends.",
+    "sentence": "Fade in from black over {ticks} ticks",
+    "params": { "ticks": { "type": "ticks", "default": 20, "description": "Fade length." } }
+  },
+  "fade_out": {
+    "description": "Fade the screen out to black. The list waits until the fade ends.",
+    "sentence": "Fade out to black over {ticks} ticks",
+    "params": { "ticks": { "type": "ticks", "default": 20, "description": "Fade length." } }
+  },
+  "wait": {
+    "description": "Pause this action list.",
+    "sentence": "Wait {ticks} ticks",
+    "params": { "ticks": { "type": "ticks", "required": true, "description": "How long to wait." } }
+  },
+  "play_sfx": {
+    "description": "Play a sound effect.",
+    "sentence": "Play sound {sfx}",
+    "params": { "sfx": { "type": "node:sfx", "required": true, "description": "Sound to play." } }
+  },
+  "play_music": {
+    "description": "Start a song (keeps playing if it is already the current song).",
+    "sentence": "Play music {music}",
+    "params": { "music": { "type": "node:music", "required": true, "description": "Song to play." } }
+  },
+  "stop_music": {
+    "description": "Stop the music.",
+    "sentence": "Stop the music",
+    "params": {}
+  },
+  "set_var": {
+    "description": "Set a game variable.",
+    "sentence": "Set {var} to {value}",
+    "params": {
+      "var":   { "type": "var", "required": true, "description": "Variable to change." },
+      "value": { "type": "int", "required": true, "description": "New value (true/false for flags)." }
+    }
+  },
+  "add_var": {
+    "description": "Add to a game variable (use a negative number to subtract).",
+    "sentence": "Add {value} to {var}",
+    "params": {
+      "var":   { "type": "var", "required": true, "description": "Variable to change." },
+      "value": { "type": "int", "required": true, "description": "Amount to add." }
+    }
+  },
+  "reset_vars": {
+    "description": "Put every game variable back to its starting value (for a new game).",
+    "sentence": "Reset all game variables to their starting values",
+    "params": {}
+  },
+  "if_var": {
+    "description": "Check a game variable and run one of two lists.",
+    "sentence": "If {var} {op} {value}",
+    "params": {
+      "var":   { "type": "var",     "required": true, "description": "Variable to check." },
+      "op":    { "type": "choice",  "default": "==", "options": ["==", "!=", "<", "<=", ">", ">="], "description": "Comparison." },
+      "value": { "type": "int",     "required": true, "description": "Value to compare with." },
+      "then":  { "type": "actions", "default": [], "description": "Runs when the check is true." },
+      "else":  { "type": "actions", "default": [], "description": "Runs when the check is false." }
+    }
+  },
+  "show_dialog": {
+    "description": "Open a dialog box. The game pauses until it closes.",
+    "sentence": "Show dialog {dialog}",
+    "params": { "dialog": { "type": "node:dialog", "required": true, "description": "Dialog to show." } }
+  },
+  "open_menu": {
+    "description": "Open a menu. The game pauses until it closes.",
+    "sentence": "Open menu {menu}",
+    "params": { "menu": { "type": "node:menu", "required": true, "description": "Menu to open." } }
+  },
+  "close_menu": {
+    "description": "Close the open menu.",
+    "sentence": "Close the menu",
+    "params": {}
+  },
+  "spawn": {
+    "description": "Create an object (or a particle burst). Position is relative to the object running the action, or to the scene when 'relative' is false.",
+    "sentence": "Spawn {object} at ({x}, {y})",
+    "params": {
+      "object":   { "type": "node:spawnable", "required": true, "description": "Object or particle to create." },
+      "x":        { "type": "int",  "default": 0,    "description": "X position (pixels)." },
+      "y":        { "type": "int",  "default": 0,    "description": "Y position (pixels)." },
+      "relative": { "type": "bool", "default": true, "description": "Position is relative to the object running the action." }
+    }
+  },
+  "destroy_self": {
+    "description": "Remove the object running this action.",
+    "sentence": "Remove this object",
+    "params": {}
+  },
+  "shake_camera": {
+    "description": "Shake the screen.",
+    "sentence": "Shake the camera for {ticks} ticks (strength {strength})",
+    "params": {
+      "ticks":    { "type": "ticks", "default": 20, "description": "How long." },
+      "strength": { "type": "int",   "default": 2,  "description": "How far it moves (pixels)." }
+    }
+  },
+  "save_game": {
+    "description": "Save every game variable to the cartridge (needs game.save = true).",
+    "sentence": "Save the game",
+    "params": {}
+  },
+  "load_game": {
+    "description": "Load the saved game variables, if there is a save (needs game.save = true).",
+    "sentence": "Load the saved game",
+    "params": {}
+  },
+  "call": {
+    "description": "Run a custom C function from src/game/ (last resort).",
+    "sentence": "Run custom code {function}",
+    "params": { "function": { "type": "string", "required": true, "description": "Name of the C function: void name(Actor *self)." } }
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "id": "anim_hero_hurt",
+  "kind": "object",
+  "type": "animation",
+  "name": "Hero hurt",
+  "notes": "Shown for a moment after being hit (and while falling after losing the last heart).",
+  "sprite": "spr_hero",
+  "loop": false,
+  "frames": [{"frame": "hurt", "ticks": 8}],
+  "events": []
+}

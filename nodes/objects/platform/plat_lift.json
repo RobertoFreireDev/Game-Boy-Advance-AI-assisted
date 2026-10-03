@@ -1,0 +1,16 @@
+{
+  "id": "plat_lift",
+  "kind": "object",
+  "type": "platform",
+  "name": "Moving lift",
+  "notes": "A wooden plank that glides back and forth, pausing at each end. The hero can ride it across the big pit. You can jump up through it from below.",
+  "children": ["body_lift"],
+  "body": "body_lift",
+  "logic": [
+             {
+               "behavior": "follow_path",
+               "params": {"points": [[0, 0], [48, 0]], "speed": 0.5, "mode": "ping_pong", "wait": 40}
+             },
+             {"behavior": "solid_platform", "params": {"one_way": true}}
+           ]
+}

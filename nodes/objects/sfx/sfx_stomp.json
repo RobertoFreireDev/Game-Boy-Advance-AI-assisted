@@ -1,0 +1,15 @@
+{
+  "id": "sfx_stomp",
+  "kind": "object",
+  "type": "sfx",
+  "name": "Stomp",
+  "notes": "Falling 'boing' when a slime is stomped.",
+  "channel": "square1",
+  "duty": 2,
+  "priority": 1,
+  "steps": [
+             {"note": "G4", "ticks": 2, "volume": 14},
+             {"note": "D4", "ticks": 2, "volume": 12},
+             {"note": "G3", "ticks": 5, "volume": 8}
+           ]
+}

@@ -1,0 +1,31 @@
+{
+  "id": "plr_hero",
+  "kind": "object",
+  "type": "player",
+  "name": "Hero",
+  "notes": "The character the human controls. Runs (D-pad), jumps (A, hold for higher), climbs ladders (up/down), talks to people (B). Has 3 hearts shared with the HUD; losing them all leads to Game Over.",
+  "children": ["body_hero", "sfx_jump", "sfx_hurt"],
+  "body": "body_hero",
+  "logic": [
+             {
+               "behavior": "platformer_controller",
+               "params": {"speed": 1.5, "jump_height": 44, "jump_button": "A"}
+             },
+             {
+               "behavior": "health",
+               "params": {
+                           "var": "health",
+                           "invincible_ticks": 90,
+                           "knockback": 1.5,
+                           "on_death": [
+                                         {"do": "wait", "ticks": 30},
+                                         {"do": "fade_out", "ticks": 30},
+                                         {"do": "goto_scene", "scene": "scn_game_over"}
+                                       ]
+                         }
+             },
+             {"behavior": "spawn_particles", "params": {"particle": "ptc_hero_dust", "when": "land"}},
+             {"behavior": "camera_target", "params": {}}
+           ],
+  "sounds": {"jump": "sfx_jump", "hurt": "sfx_hurt", "die": "sfx_hurt"}
+}

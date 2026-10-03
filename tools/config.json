@@ -1,0 +1,5 @@
+{
+  "_notes": "Local tool paths. Leave empty to auto-detect (devkitPro: env DEVKITPRO, then C:\\devkitPro; emulator: Program Files\\mGBA, then PATH).",
+  "devkitpro": "",
+  "emulator": ""
+}

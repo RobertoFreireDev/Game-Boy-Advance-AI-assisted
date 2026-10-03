@@ -82,7 +82,11 @@ Build details (owned by `tools/build.py`, no Makefile, no MSYS shell, so it work
 - Calls `arm-none-eabi-gcc` directly. Reference flags:
   `-mthumb -mcpu=arm7tdmi -mtune=arm7tdmi -O2 -std=c11 -Wall -Wextra -ffunction-sections -fdata-sections`
 - Links with `-specs=gba.specs -ltonc -Wl,--gc-sections`, then `objcopy -O binary`, then `gbafix`.
-- Only recompiles changed files.
+- Only recompiles changed files (gcc `-MMD` dependency files in `build/obj/`).
+- Runs gcc **from the repo root with relative paths**, so the accents/spaces in the repo path
+  never reach gcc. libtonc is passed explicitly: `-I <dkp>/libtonc/include`, `-L <dkp>/libtonc/lib`.
+- Include paths: `-Isrc -Igenerated` (so code writes `#include "engine/actor.h"`, `"node_ids.h"`).
+- **Any compiler or linker warning fails the build** (zero-warnings rule, §8).
 - Path resolution: `tools/config.json` → env `DEVKITPRO` (map `/opt/devkitpro` to `C:\devkitPro`)
   → `C:\devkitPro`. Emulator: `tools/config.json` → common install folders → `PATH`.
 - If anything is missing, print one short friendly message saying exactly what to install and
@@ -97,6 +101,7 @@ Build details (owned by `tools/build.py`, no Makefile, no MSYS shell, so it work
 ├── CLAUDE.md                ← this file (AI-maintained)
 ├── SETUP.md                 ← install + verify the toolchain (AI-maintained)
 ├── CHANGELOG.md             ← one entry per human request, plain language
+├── .gitignore               ← generated/, build/, dist/, visualizer/data.js
 ├── build.bat                ← human: build the ROM
 ├── run.bat                  ← human: play the ROM in mGBA
 ├── view.bat                 ← human: refresh data and open the visualizer
@@ -109,11 +114,12 @@ Build details (owned by `tools/build.py`, no Makefile, no MSYS shell, so it work
 │   └── actions.json         ← every action: description + params (§7)
 ├── src/
 │   ├── main.c               ← boots the engine, nothing else
-│   ├── engine/              ← generic, game-agnostic engine (§8)
+│   ├── engine/              ← generic, game-agnostic engine (§8); data.h = layout of generated data
 │   ├── behaviors/           ← one .c/.h per behavior
 │   └── game/                ← game-specific code, only when nodes can't express it
 ├── tools/
 │   ├── validate.py  codegen.py  bundle.py  build.py  run.py
+│   ├── common.py            ← shared: node-type registry, loading, text layout (wrap, boxes)
 │   └── config.json          ← local paths (devkitPro, emulator)
 ├── visualizer/
 │   ├── visualizer.html      ← single file: HTML + CSS + JS inline, no dependencies
@@ -154,6 +160,8 @@ broken into the parts it is made of.
     "rom_name": "hero_quest",
     "start_scene": "scn_intro",
     "save": false,
+    "gravity": 0.25,
+    "max_fall_speed": 4,
     "variables": [
       { "name": "coins",   "type": "int",  "initial": 0,     "notes": "Coins collected." },
       { "name": "health",  "type": "int",  "initial": 3,     "notes": "Hearts left." },
@@ -168,8 +176,10 @@ broken into the parts it is made of.
   ]
 }
 ```
-`title` ≤ 12 chars, `game_code` exactly 4 chars (ROM header). Variables are the game's global
-state; HUD, behaviors and actions read and write them by name.
+`title` ≤ 12 chars, `game_code` exactly 4 chars (ROM header). `gravity` (px/tick², default 0.25)
+and `max_fall_speed` (px/tick, default 4) apply to every body with `physics.gravity`. Variables
+are the game's global state; HUD, behaviors and actions read and write them by name. Flags are
+stored as 0/1. Index order: scenes first, then objects.
 
 ### 5.3 Common fields (every node file)
 
@@ -198,9 +208,11 @@ Structural rules (enforced by `validate.py`):
 - **Color**: `"#RRGGBB"`. Codegen and visualizer both quantize to 15-bit BGR555.
 - **Pixels**: array of strings, one string per row, one char per pixel. `.` = transparent
   (palette index 0), `1`–`9`, `a`–`f` = palette index 1–15. All rows the same length.
-- **Notes (audio)**: `C3`…`B7`, sharps as `C#5`. `--` = hold, `..` = silence, `|` = bar line
+- **Notes (audio)**: `C2`…`B7` (C2/B2 only for wave bass), sharps as `C#5`. `--` = hold, `..` = silence, `|` = bar line
   (ignored, readability only). Tokens separated by spaces. Noise channel uses `X0`…`Xf` (noise pitch).
 - **Tile maps**: one char per 8×8 tile, legend defined in the tileset. `.` is always the empty tile.
+- **UI positions** (HUD elements, menu layout, boxes) are pixels but must be multiples of 8:
+  BG0 text sits on the 8×8 tile grid.
 
 ---
 
@@ -241,6 +253,42 @@ Structural rules (enforced by `validate.py`):
 
 Actor types (`player` … `pickup`) share one structure; the type gives sensible defaults and
 groups them for humans. **What an actor does comes only from its `logic` list.**
+
+### 6.1b Field details (what `validate.py` enforces)
+
+- **scene**: `backdrop` color; `music` id or `null` (silence); `camera {follow: instance id,
+  bounds: "map"|"none", x, y}` (x, y = start when not following); `instances[{id, object, x, y,
+  overrides}]` — `object` may be a tilemap, actor, hud, menu, dialog or particle (a placed particle
+  is a permanent emitter); at most one HUD and one menu-or-dialog; one tilemap per layer.
+- **palette**: `colors[0]` is the transparent slot (its value is ignored).
+- **sprite** frames are listed in order; the art faces **right** (the engine mirrors it).
+- **tileset** keys are one printable ASCII char (not `.` or space); flags `solid`, `one_way`,
+  `hazard`, `ladder` (a tile can't be both solid and one-way; `ladder` + `one_way` = ladder top).
+- **tilemap**: layer 1 is the collision layer and must have `parallax` 1; `repeat_x: true` makes a
+  background layer wrap sideways. The map sides are invisible walls; falling below the map kills.
+- **font**: glyph keys are ASCII 32–126; lowercase falls back to uppercase; space needs no glyph.
+- **sfx** steps: `note` (or `".."` silence) for square/wave, `pitch` 0–15 for noise.
+- **animation** `events[{at: frame index, action | actions}]` run when that frame starts.
+- **particle**: positions are the sprite's center; `rate` = ticks between stream particles.
+- **body** animation slots: `idle walk run jump fall hurt die attack climb`. `origin` mirrors with
+  the art when it faces left; the **hitbox does not mirror**. `physics.collides_with` categories:
+  `tiles player enemy npc prop platform pickup trigger`. Two actors touch (and both get
+  `on_touch`) when either lists the other's category. `physics.solid` = others can't walk through
+  it and can stand on it (like a crate).
+- **actor** `sounds{event: sfx}` events: `jump land hurt die collect stomp talk attack`.
+- **trigger**: `zone{w,h}` with its top-left corner at the instance x, y; touches the player only.
+- **hud** elements (x, y multiples of 8): `text {text}` (`{var}` placeholders, 3 chars reserved
+  per value), `icon {icon}`, `icon_repeat {icon, empty_icon?, var, max, spacing?}`,
+  `bar {var, max, length (tiles), color, back}` (colors are indexes of the font palette).
+- **menu**: `layout {x, y, spacing, title_y}`, optional `box {x, y, w, h, paper, border}`,
+  `sounds {move, select}`. Up/Down move, A picks, B runs `on_cancel`. Picking an option **locks**
+  the menu (no more input) and runs its actions, so they should `close_menu`, `goto_scene`,
+  `open_menu` or `show_dialog` (the validator warns otherwise).
+- **dialog**: `box {x, y, w, h, paper, border}` (required), `ticks_per_char` (0 = instant).
+  Codegen word-wraps each line (`common.wrap_text`); the speaker uses the first row, a 16×16
+  portrait takes 3 columns. A/B skip typing / next line; choices show after the last line.
+- A menu or dialog **pauses the world** (actor logic, physics, animations) until it closes.
+- Use **one font per scene** for the HUD and box-less menus (BG0 has one transparent-font slot).
 
 ### 6.2 Examples
 
@@ -396,9 +444,15 @@ Every channel in a pattern has the same number of rows. Missing channels are sil
   `catalog/behaviors.json` (plain description, params with type, default and description).
 - Objects enable behaviors in `logic[]`; scenes can override params per instance.
 - Interface: `init(actor, params)`, `update(actor, params)`, optional `on_touch(actor, other, params)`.
-- Param types: `int`, `fixed`, `bool`, `ticks`, `button`, `var`, `node:<type>`, `actions`, `points`.
+- Param types: `int`, `fixed`, `bool`, `ticks`, `button`, `var`, `node:<type>`, `actions`, `points`,
+  `choice` (one of `options`), `string`. Each param has a `default` or `required: true`.
+- Codegen turns the catalog into one C struct per behavior (`Params_<name>` in
+  `generated/behavior_params.h`, choices as `<BEHAVIOR>_<PARAM>_<OPTION>` defines) and registers
+  the `bhv_<name>_init/update/on_touch` functions it finds in the `.c` file. Behaviors keep
+  private per-actor state in `bhv_state(actor)` (`BSTATE_WORDS` words each).
 - Movement behaviors pick body animation slots by convention: `idle`, `walk`, `run`, `jump`,
-  `fall`, `hurt`, `die`, `attack` (missing slots fall back to `default_animation`).
+  `fall`, `hurt`, `die`, `attack`, `climb` (a missing `run` uses `walk` and back, `fall` uses
+  `jump`, `die` uses `hurt`, then `default_animation`).
 - Starter set: `platformer_controller`, `topdown_controller`, `patrol`, `chase_player`,
   `follow_path`, `solid_platform`, `health`, `damage_on_touch`, `stompable`, `collectible`,
   `trigger_zone`, `talk`, `camera_target`, `spawn_particles`. Add more as games need them.
@@ -409,12 +463,18 @@ Action lists appear in `on_start`, `on_enter`, `on_death`, menu options, dialog 
 animation events, etc. Format: `{ "do": "<action>", ...params }`, run in order; `wait` pauses
 the list. Catalog in `catalog/actions.json`. Starter set:
 `goto_scene`, `fade_in`, `fade_out`, `wait`, `play_sfx`, `play_music`, `stop_music`,
-`set_var`, `add_var`, `if_var` (`then[]`/`else[]`), `show_dialog`, `open_menu`, `close_menu`,
-`spawn`, `destroy_self`, `shake_camera`, `save_game`, `load_game`, `call` (custom C, §7.3).
+`set_var`, `add_var`, `reset_vars`, `if_var` (`then[]`/`else[]`), `show_dialog`, `open_menu`,
+`close_menu`, `spawn`, `destroy_self`, `shake_camera`, `save_game`, `load_game`, `call` (custom C, §7.3).
+Each catalog entry has a `sentence` the visualizer reads aloud ("Go to scene {scene}").
+Codegen maps every action to the generic `Action` struct (`src/engine/data.h`); a new action
+needs a case in `codegen.py` (`Gen.action`) and in `src/engine/actions.c`.
 
 ### 7.3 Custom code (last resort)
 When something truly can't be expressed with behaviors and actions, set `"code":
-"src/game/<id>.c"` on the node. Codegen registers its hooks (`<id>_on_start`, `<id>_on_update`).
+"src/game/<id>.c"` on the node (scenes and actors only). Codegen registers the hooks it finds:
+scenes `void <id>_on_start(void)` / `void <id>_on_update(void)`, actors
+`void <id>_on_start(Actor *self)` / `void <id>_on_update(Actor *self)`. The `call` action runs any
+`void name(Actor *self)` defined in `src/game/*.c`.
 Explain in the node's `notes` what the code does, so the visualizer shows it in plain words.
 
 ---
@@ -425,7 +485,8 @@ Designed so a human can follow "what runs when" without reading code.
 
 ```
 src/engine/
-├── config.h       pool sizes and limits (MAX_ACTORS, MAX_PARTICLES, …)
+├── data.h         layout of every generated const struct (must match codegen.py)
+├── config.h       pool sizes and limits (MAX_ACTORS, MAX_PARTICLES, …) — validate.py reads them
 ├── core.c/.h      main loop, VBlank wait, frame counter
 ├── input.c/.h     pressed / held / released for every button
 ├── fixed.h        fixed-point 24.8 math, sin/cos table, rng
@@ -455,12 +516,23 @@ src/engine/
 8. `audio_update`
 9. Build the OAM shadow for the next VBlank
 
+Steps 3 (actor logic), 4 and 5 are skipped while a menu or dialog is open; action lists, fades,
+camera, UI and audio keep running. A scene switch (`goto_scene`) happens at the start of the next
+frame's `scene_update`; the new scene's `on_start` runs in that same frame (so `fade_in` never
+flashes).
+
+**VRAM plan** (mode 0, 4bpp): BG0 = UI on charblock 0 / screenblock 31; tilemap layer *n* (1–3)
+= charblock *n* / screenblock 31−*n*, priority *n*; big maps stream into the 32×32 hardware map as
+the camera moves. Sprites use priority 1 (above every map, below the UI); players draw on top.
+Palette banks are handed out per scene in first-use order (BG and OBJ separately).
+
 **Code rules:**
 - The engine is game-agnostic: it never mentions a specific node id. Game-specific code lives in `src/game/`.
 - No `malloc`. Fixed pools sized in `config.h`.
 - No `float`/`double`. Fixed-point only.
 - Node data is `const` and lives in ROM. Runtime state lives in RAM structs.
-- Every node gets an enum `NODE_<ID_IN_CAPS>` in `generated/node_ids.h`; variables get `VAR_<NAME>`.
+- Every node gets an enum `NODE_<ID_IN_CAPS>` in `generated/node_ids.h`; variables get `VAR_<NAME>`;
+  node data is `node_<id>` in `generated/game_data.c`.
 - One module, one job. Each public function has a one-line comment in plain English.
 - Move hot code to IWRAM (ARM mode) only when a measured slowdown requires it.
 - Zero warnings in our code.
@@ -491,7 +563,9 @@ src/engine/
 - `visualizer/visualizer.html` — the whole app in **one file** (HTML, CSS, JS inline).
   No frameworks, no CDN, no internet. Works by double-clicking (`file://`).
 - `visualizer/data.js` — generated by `tools/bundle.py`:
-  `window.GAME_DATA = { generated_at, game, index, nodes: {id: json}, catalog: {behaviors, actions}, validation: {ok, errors[], warnings[]} }`.
+  `window.GAME_DATA = { generated_at, game, index, nodes: {id: json}, catalog: {behaviors, actions}, validation: {ok, errors[], warnings[]}, engine: {...}, derived: {dialogs, menus} }`.
+  `derived` holds the layouts codegen computes (dialog word-wrap, menu positions) so the
+  visualizer draws exactly what the GBA draws.
   Loaded with `<script src="data.js">` because `fetch` doesn't work on `file://`.
 - `bundle.py` runs after every AI change, so a browser refresh shows the latest work.
 - Missing `data.js` → friendly message "Run view.bat". Validation errors → red banner listing
@@ -604,6 +678,7 @@ The AI runs the Python scripts directly; the `.bat` files exist for the human.
 ## 14. Bootstrap (empty repository)
 
 Build in milestones. Each one ends with a ROM that builds and runs and a visualizer that opens.
+**Status: M0–M6 done (2026-10-02)** with the demo game "Hero Quest" (see `CHANGELOG.md`).
 
 1. **M0 – Skeleton**: folders, `config.json`, `.bat` files, `validate.py`, `bundle.py`, `build.py`,
    `run.py`, empty `nodes.json`, `CHANGELOG.md`.

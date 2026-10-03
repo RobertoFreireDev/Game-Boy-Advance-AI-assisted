@@ -1,0 +1,11 @@
+{
+  "id": "anim_hero_jump",
+  "kind": "object",
+  "type": "animation",
+  "name": "Hero jump",
+  "notes": "Going up during a jump.",
+  "sprite": "spr_hero",
+  "loop": false,
+  "frames": [{"frame": "jump", "ticks": 8}],
+  "events": []
+}

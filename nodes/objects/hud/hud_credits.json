@@ -1,0 +1,13 @@
+{
+  "id": "hud_credits",
+  "kind": "object",
+  "type": "hud",
+  "name": "Credits text",
+  "notes": "Thank-you lines shown after the level, including how many coins you found.",
+  "font": "font_default",
+  "elements": [
+                {"kind": "text", "x": 40, "y": 48, "text": "THANKS FOR PLAYING!"},
+                {"kind": "text", "x": 40, "y": 72, "text": "YOU FOUND {coins} COINS"},
+                {"kind": "text", "x": 56, "y": 96, "text": "MADE 100% BY AI"}
+              ]
+}

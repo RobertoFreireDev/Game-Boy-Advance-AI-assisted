@@ -1,0 +1,15 @@
+{
+  "id": "ptc_hero_dust",
+  "kind": "object",
+  "type": "particle",
+  "name": "Landing dust",
+  "notes": "Three little dust clouds that drift up and sideways when the hero lands.",
+  "children": ["anim_dust_puff"],
+  "animation": "anim_dust_puff",
+  "mode": "burst",
+  "count": 3,
+  "lifetime": 16,
+  "speed": [0.2, 0.6],
+  "angle": [20, 160],
+  "gravity": -0.02
+}

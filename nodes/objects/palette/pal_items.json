@@ -1,0 +1,18 @@
+{
+  "id": "pal_items",
+  "kind": "object",
+  "type": "palette",
+  "name": "Items",
+  "notes": "Gold for coins and sparkles, wood for the moving lift and the goal flag.",
+  "colors": [
+              "#000000",
+              "#402000",
+              "#f8b800",
+              "#f8f080",
+              "#c07000",
+              "#f8f8f8",
+              "#d0a058",
+              "#806030",
+              "#e83838"
+            ]
+}

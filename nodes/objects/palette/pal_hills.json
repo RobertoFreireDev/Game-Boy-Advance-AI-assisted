@@ -1,0 +1,8 @@
+{
+  "id": "pal_hills",
+  "kind": "object",
+  "type": "palette",
+  "name": "Far hills",
+  "notes": "Soft colors for the far background hills and clouds, so they look distant.",
+  "colors": ["#000000", "#58b068", "#409050", "#f8f8f8", "#c8e0f8", "#80c878"]
+}

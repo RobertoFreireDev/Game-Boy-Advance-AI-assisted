@@ -1,0 +1,18 @@
+{
+  "id": "pal_hero",
+  "kind": "object",
+  "type": "palette",
+  "name": "Hero colors",
+  "notes": "The hero's colors: dark outline, skin, blue tunic, brown hair and boots, gold belt.",
+  "colors": [
+              "#000000",
+              "#181010",
+              "#f8c898",
+              "#c07850",
+              "#3868d8",
+              "#183888",
+              "#f8f8f8",
+              "#884018",
+              "#f0b020"
+            ]
+}

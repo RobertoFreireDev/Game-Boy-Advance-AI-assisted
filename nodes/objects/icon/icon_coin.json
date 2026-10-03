@@ -1,0 +1,9 @@
+{
+  "id": "icon_coin",
+  "kind": "object",
+  "type": "icon",
+  "name": "Coin counter icon",
+  "notes": "Small coin shown next to the coin count in the HUD.",
+  "palette": "pal_items",
+  "pixels": ["..1111..", ".123321.", "12322421", "12322421", "12322421", "12322421", ".124421.", "..1111.."]
+}

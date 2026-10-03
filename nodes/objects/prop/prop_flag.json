@@ -1,0 +1,10 @@
+{
+  "id": "prop_flag",
+  "kind": "object",
+  "type": "prop",
+  "name": "Goal flag",
+  "notes": "Marks the end of the level so the player knows where to go.",
+  "children": ["body_flag"],
+  "body": "body_flag",
+  "logic": []
+}

@@ -1,0 +1,16 @@
+{
+  "id": "anim_hero_run",
+  "kind": "object",
+  "type": "animation",
+  "name": "Hero run",
+  "notes": "Four-step running cycle.",
+  "sprite": "spr_hero",
+  "loop": true,
+  "frames": [
+              {"frame": "run_a", "ticks": 6},
+              {"frame": "run_b", "ticks": 6},
+              {"frame": "run_c", "ticks": 6},
+              {"frame": "run_b", "ticks": 6}
+            ],
+  "events": []
+}

@@ -1,0 +1,27 @@
+{
+  "id": "menu_game_over",
+  "kind": "object",
+  "type": "menu",
+  "name": "Game over menu",
+  "notes": "Shown in a blue box after losing all hearts. TRY AGAIN restarts level 1 with full hearts; TITLE goes back to the title.",
+  "font": "font_default",
+  "title": "GAME OVER",
+  "cursor": "icon_cursor",
+  "box": {"x": 48, "y": 40, "w": 144, "h": 80, "paper": 3, "border": 2},
+  "layout": {"x": 88, "y": 80, "spacing": 16, "title_y": 56},
+  "options": [
+               {
+                 "label": "TRY AGAIN",
+                 "actions": [
+                              {"do": "reset_vars"},
+                              {"do": "fade_out", "ticks": 20},
+                              {"do": "goto_scene", "scene": "scn_level_1"}
+                            ]
+               },
+               {
+                 "label": "TITLE",
+                 "actions": [{"do": "fade_out", "ticks": 20}, {"do": "goto_scene", "scene": "scn_title"}]
+               }
+             ],
+  "sounds": {"move": "sfx_select", "select": "sfx_confirm"}
+}

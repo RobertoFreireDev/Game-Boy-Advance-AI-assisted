@@ -1,0 +1,11 @@
+{
+  "id": "scn_game_over",
+  "kind": "scene",
+  "type": "game_over",
+  "name": "Game over",
+  "notes": "Shown after losing all hearts: a sad jingle and a menu to try again or go back to the title.",
+  "backdrop": "#000000",
+  "music": "mus_game_over",
+  "instances": [{"id": "menu", "object": "menu_game_over"}],
+  "on_start": [{"do": "fade_in", "ticks": 20}]
+}

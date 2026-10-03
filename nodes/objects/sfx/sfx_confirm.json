@@ -1,0 +1,11 @@
+{
+  "id": "sfx_confirm",
+  "kind": "object",
+  "type": "sfx",
+  "name": "Confirm",
+  "notes": "Bright two-note chirp when an option is chosen or the goal is reached.",
+  "channel": "square2",
+  "duty": 2,
+  "priority": 1,
+  "steps": [{"note": "C6", "ticks": 3, "volume": 11}, {"note": "G6", "ticks": 7, "volume": 9}]
+}

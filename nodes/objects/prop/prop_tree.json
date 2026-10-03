@@ -1,0 +1,10 @@
+{
+  "id": "prop_tree",
+  "kind": "object",
+  "type": "prop",
+  "name": "Tree",
+  "notes": "A decorative tree in the background. You walk in front of it.",
+  "children": ["body_tree"],
+  "body": "body_tree",
+  "logic": []
+}

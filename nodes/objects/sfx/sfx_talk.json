@@ -1,0 +1,10 @@
+{
+  "id": "sfx_talk",
+  "kind": "object",
+  "type": "sfx",
+  "name": "Talk",
+  "notes": "Soft blip when the sage starts talking.",
+  "channel": "square2",
+  "duty": 1,
+  "steps": [{"note": "E6", "ticks": 2, "volume": 8}, {"note": "C6", "ticks": 3, "volume": 6}]
+}

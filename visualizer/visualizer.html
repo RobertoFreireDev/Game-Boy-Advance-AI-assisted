@@ -1,0 +1,1304 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GBA Node Visualizer</title>
+<!--
+  AI work visualizer (CLAUDE.md §10). One file, no dependencies, works from file://.
+  READ-ONLY: controls only change how you look at the data. Data comes from data.js
+  (written by tools/bundle.py). This file is one of the "four mirrors": every node type
+  has a preview function in PREVIEW below.
+-->
+<style>
+:root {
+  --bg: #15171c; --panel: #1d2027; --panel2: #252933; --line: #323745; --text: #e4e6eb;
+  --dim: #9aa1b1; --accent: #6cb4ff; --accent2: #ffcf5c; --bad: #ff6b6b; --good: #5fd38d; --warn: #f0b04a;
+}
+* { box-sizing: border-box; }
+html, body { height: 100%; margin: 0; }
+body { background: var(--bg); color: var(--text); font: 13px/1.45 "Segoe UI", system-ui, sans-serif; display: flex; flex-direction: column; }
+a { color: var(--accent); text-decoration: none; cursor: pointer; }
+a:hover { text-decoration: underline; }
+button, select, input { font: inherit; color: var(--text); background: var(--panel2); border: 1px solid var(--line); border-radius: 6px; padding: 3px 9px; }
+button { cursor: pointer; }
+button:hover { border-color: var(--accent); }
+button.on { background: #2d4a6b; border-color: var(--accent); }
+code, .mono { font-family: Consolas, "Cascadia Mono", monospace; font-size: 12px; }
+canvas { image-rendering: pixelated; image-rendering: crisp-edges; }
+header { display: flex; align-items: center; gap: 16px; padding: 8px 14px; background: var(--panel); border-bottom: 1px solid var(--line); flex-wrap: wrap; }
+header h1 { font-size: 17px; margin: 0; letter-spacing: .5px; }
+header .meta { color: var(--dim); }
+header .hint { margin-left: auto; color: var(--accent2); font-weight: 600; }
+.pill { padding: 2px 9px; border-radius: 99px; font-weight: 600; font-size: 12px; }
+.pill.ok { background: #1f4630; color: var(--good); }
+.pill.bad { background: #4a1f24; color: var(--bad); cursor: pointer; }
+#banner { display: none; background: #3a1d22; border-bottom: 1px solid #6b2a33; padding: 8px 14px; max-height: 30vh; overflow: auto; }
+#banner.show { display: block; }
+#banner li { color: #ffb3b3; }
+#banner .w li { color: #f3d29a; }
+main { flex: 1; display: grid; grid-template-columns: 300px 1fr 360px; min-height: 0; }
+aside, #center { overflow: auto; min-height: 0; }
+aside { background: var(--panel); }
+#left { border-right: 1px solid var(--line); display: flex; flex-direction: column; }
+#right { border-left: 1px solid var(--line); padding: 12px 14px; }
+.sec { padding: 10px 12px; border-bottom: 1px solid var(--line); }
+.sec h2 { font-size: 11px; text-transform: uppercase; letter-spacing: 1.2px; color: var(--dim); margin: 0 0 8px; }
+#search { width: 100%; margin-bottom: 8px; }
+.chips { display: flex; flex-wrap: wrap; gap: 4px; }
+.chip { font-size: 11px; padding: 1px 7px; border-radius: 99px; border: 1px solid var(--line); background: transparent; color: var(--dim); }
+.chip.on { background: #2d4a6b; color: var(--text); border-color: var(--accent); }
+#list { max-height: 38vh; overflow: auto; }
+.row { display: flex; align-items: center; gap: 7px; padding: 3px 6px; border-radius: 5px; cursor: pointer; white-space: nowrap; }
+.row:hover { background: var(--panel2); }
+.row.sel { background: #2d4a6b; }
+.row .ic { width: 18px; text-align: center; }
+.row .nm { overflow: hidden; text-overflow: ellipsis; }
+.row .id { color: var(--dim); font-size: 11px; margin-left: auto; font-family: Consolas, monospace; }
+#tree { flex: 1; overflow: auto; }
+.tnode { padding-left: 14px; }
+.tlabel { display: flex; align-items: center; gap: 4px; padding: 2px 4px; border-radius: 5px; cursor: pointer; white-space: nowrap; }
+.tlabel:hover { background: var(--panel2); }
+.tlabel.sel { background: #2d4a6b; }
+.tog { width: 14px; color: var(--dim); text-align: center; flex: none; }
+.tlabel .sub { color: var(--dim); font-size: 11px; }
+#center { padding: 14px 18px; }
+.empty { color: var(--dim); padding: 40px; text-align: center; font-size: 15px; }
+.card { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 12px; margin-bottom: 14px; }
+.card h3 { margin: 0 0 10px; font-size: 13px; color: var(--dim); text-transform: uppercase; letter-spacing: 1px; }
+.toolbar { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; margin-bottom: 10px; }
+.toolbar label { color: var(--dim); }
+.frames { display: flex; flex-wrap: wrap; gap: 12px; }
+.frame { text-align: center; }
+.frame .cap { color: var(--dim); font-size: 11px; margin-top: 3px; }
+.frame canvas, .stage canvas { background: repeating-conic-gradient(#2a2e38 0% 25%, #22252d 0% 50%) 50% / 16px 16px; border: 1px solid var(--line); }
+.frame.cur canvas { outline: 2px solid var(--accent2); }
+.swatches { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 8px; }
+.swatch { border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
+.swatch .c { height: 46px; }
+.swatch .t { padding: 4px 7px; font-size: 11px; }
+.swatch .t b { color: var(--accent2); }
+.badge { display: inline-block; font-size: 10px; padding: 0 6px; border-radius: 99px; margin: 1px; background: #333a48; color: var(--dim); }
+.badge.solid { background: #5a2a2a; color: #ffb0b0; }
+.badge.one_way { background: #2a3f5a; color: #a8d0ff; }
+.badge.hazard { background: #5a4520; color: #ffd28a; }
+.badge.ladder { background: #24502f; color: #9ff0b5; }
+.badge.default { background: #2c3140; color: #8b93a6; }
+.badge.set { background: #2d4a6b; color: #cfe5ff; }
+.badge.over { background: #5a3d16; color: #ffd28a; }
+.pname { font-size: 18px; margin: 0 0 2px; }
+.pid { color: var(--dim); display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.notes { background: #23324a; border-left: 3px solid var(--accent); padding: 9px 11px; border-radius: 6px; margin: 12px 0; font-size: 14px; line-height: 1.5; }
+.kv { display: grid; grid-template-columns: max-content 1fr; gap: 3px 10px; margin: 4px 0; }
+.kv > .k { color: var(--dim); }
+.kv > .v { word-break: break-word; }
+.prop-sec { margin-top: 14px; }
+.prop-sec > h4 { margin: 0 0 6px; font-size: 11px; text-transform: uppercase; letter-spacing: 1.2px; color: var(--dim); }
+.bhv { border: 1px solid var(--line); border-radius: 8px; padding: 7px 9px; margin-bottom: 7px; background: var(--panel2); }
+.bhv .bn { font-weight: 700; color: var(--accent2); }
+.bhv .bd { color: var(--dim); font-size: 12px; margin: 2px 0 5px; }
+ul.acts { margin: 2px 0 2px 0; padding-left: 18px; }
+ul.acts li { margin: 1px 0; }
+.sw { display: inline-block; width: 12px; height: 12px; border-radius: 3px; border: 1px solid #0006; vertical-align: -2px; margin-right: 4px; }
+details summary { cursor: pointer; color: var(--dim); }
+pre.raw { background: #101216; padding: 8px; border-radius: 6px; overflow: auto; max-height: 50vh; font-size: 11px; }
+table.grid { border-collapse: collapse; font-family: Consolas, monospace; font-size: 11px; }
+table.grid td, table.grid th { border: 1px solid var(--line); padding: 1px 5px; text-align: center; min-width: 30px; }
+table.grid th { color: var(--dim); position: sticky; top: 0; background: var(--panel); }
+table.grid tr.cur td { background: #3c3416; }
+table.grid td.hold { color: #6b7385; }
+table.grid td.rest { color: #4a5060; }
+.tracker { max-height: 360px; overflow: auto; }
+.steps td { padding: 2px 8px; }
+.inst-table td { padding: 2px 6px; border-bottom: 1px solid var(--line); vertical-align: top; }
+.stage { overflow: auto; max-width: 100%; }
+.small { font-size: 11px; color: var(--dim); }
+.warnline { color: var(--warn); }
+kbd { background: #333a48; border-radius: 4px; padding: 0 5px; font-size: 11px; }
+</style>
+</head>
+<body>
+<header>
+  <h1 id="title">GBA Node Visualizer</h1>
+  <span class="meta" id="gen"></span>
+  <span id="status"></span>
+  <span class="meta" id="counts"></span>
+  <span class="hint">Read-only — ask the AI to change anything.</span>
+</header>
+<div id="banner"></div>
+<main>
+  <aside id="left">
+    <div class="sec">
+      <h2>1 · Nodes</h2>
+      <input id="search" placeholder="Search name, id, type, tag…" autocomplete="off">
+      <div class="chips" id="kindchips"></div>
+      <div class="chips" id="typechips" style="margin-top:4px"></div>
+    </div>
+    <div class="sec" id="list"></div>
+    <div class="sec" style="border-bottom:none"><h2>2 · Tree</h2></div>
+    <div id="tree"></div>
+  </aside>
+  <section id="center"><div class="empty">Pick a node on the left.</div></section>
+  <aside id="right"><div class="empty">Properties appear here.</div></aside>
+</main>
+<script src="data.js"></script>
+<script>
+"use strict";
+// ======================================================================================
+// Data
+// ======================================================================================
+const D = window.GAME_DATA;
+const $ = (s, el) => (el || document).querySelector(s);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+function h(tag, attrs, ...kids) {
+  const el = document.createElement(tag);
+  for (const [k, v] of Object.entries(attrs || {})) {
+    if (k === "class") el.className = v;
+    else if (k === "html") el.innerHTML = v;
+    else if (k.startsWith("on")) el.addEventListener(k.slice(2), v);
+    else if (v !== undefined && v !== null && v !== false) el.setAttribute(k, v);
+  }
+  for (const kid of kids.flat(Infinity)) if (kid !== null && kid !== undefined && kid !== false) el.append(kid.nodeType ? kid : document.createTextNode(kid));
+  return el;
+}
+
+if (!D) {
+  document.body.innerHTML = '<div class="empty" style="margin-top:20vh">No data yet.<br><br><b>Run view.bat</b> (it writes visualizer/data.js and opens this page).</div>';
+  throw new Error("data.js missing");
+}
+
+const NODES = D.nodes || {};
+const INDEX = D.index || [];
+const IDX = {};
+INDEX.forEach(e => { IDX[e.id] = e; });
+const CAT = (D.catalog || {});
+const BEHAVIORS = CAT.behaviors || {};
+const ACTIONS = CAT.actions || {};
+const ENGINE = D.engine || {};
+const DERIVED = D.derived || { dialogs: {}, menus: {} };
+const VARS = ((D.game || {}).variables || []);
+const ACTOR_TYPES = ["player", "enemy", "npc", "prop", "platform", "pickup", "trigger"];
+
+const ICONS = {
+  intro: "🎬", title: "🏷️", level: "🗺️", inventory: "🎒", cutscene: "🎞️", game_over: "💀", credits: "📜",
+  palette: "🎨", sprite: "👾", tileset: "🧱", tilemap: "🗾", font: "🔤", icon: "🖼️", sfx: "🔊", music: "🎵",
+  animation: "🎞", particle: "✨", body: "🧍", player: "🕹️", enemy: "👹", npc: "🧙", prop: "🌳", platform: "🛗",
+  pickup: "🪙", trigger: "⚑", hud: "📊", menu: "📋", dialog: "💬"
+};
+const typeOf = id => (IDX[id] || {}).type;
+const kindOf = id => (IDX[id] || {}).kind;
+const iconOf = id => kindOf(id) === "scene" ? (ICONS[typeOf(id)] || "🎬") : (typeOf(id) === "menu" ? "📋" : ICONS[typeOf(id)] || "•");
+const nameOf = id => (NODES[id] && NODES[id].name) || id;
+
+// "Used by": every node that mentions this id anywhere in its JSON.
+const USED_BY = {};
+(function computeUsedBy() {
+  for (const [id, n] of Object.entries(NODES)) {
+    const seen = new Set();
+    (function walk(v, key) {
+      if (typeof v === "string") { if (v !== id && IDX[v] && key !== "id") seen.add(v); }
+      else if (Array.isArray(v)) v.forEach(x => walk(x, key));
+      else if (v && typeof v === "object") for (const [k, x] of Object.entries(v)) walk(x, k);
+    })(n, "");
+    for (const t of seen) (USED_BY[t] = USED_BY[t] || []).push(id);
+  }
+})();
+
+// ======================================================================================
+// Pixels: palettes are quantized to 15-bit color exactly like the GBA.
+// ======================================================================================
+function q15(hex) {
+  if (typeof hex !== "string" || !/^#[0-9a-f]{6}$/i.test(hex)) return [255, 0, 255];
+  return [1, 3, 5].map(i => { const c5 = parseInt(hex.substr(i, 2), 16) >> 3; return (c5 << 3) | (c5 >> 2); });
+}
+function bgr555(hex) {
+  const v = [1, 3, 5].map(i => parseInt(hex.substr(i, 2), 16) >> 3);
+  return v[0] | (v[1] << 5) | (v[2] << 10);
+}
+const rgbCss = c => `rgb(${c[0]},${c[1]},${c[2]})`;
+function palColors(palId) {
+  const p = NODES[palId];
+  const cols = (p && Array.isArray(p.colors)) ? p.colors.map(q15) : [];
+  while (cols.length < 16) cols.push([255, 0, 255]);
+  return cols;
+}
+const PIX = ".123456789abcdef";
+const _pixCache = new Map();
+// Canvas (1x) of a pixel-string image. paper = palette index to paint transparent pixels with.
+function pixelsCanvas(rows, palId, paper) {
+  const key = palId + "|" + paper + "|" + (rows || []).join("/");
+  if (_pixCache.has(key)) return _pixCache.get(key);
+  rows = Array.isArray(rows) ? rows : [];
+  const hgt = rows.length, wid = Math.max(1, ...rows.map(r => (r || "").length));
+  const c = document.createElement("canvas");
+  c.width = wid; c.height = Math.max(1, hgt);
+  const ctx = c.getContext("2d");
+  const img = ctx.createImageData(c.width, c.height);
+  const cols = palColors(palId);
+  for (let y = 0; y < hgt; y++) for (let x = 0; x < (rows[y] || "").length; x++) {
+    let i = PIX.indexOf(rows[y][x]);
+    if (i <= 0) { if (paper === undefined || paper === null) continue; i = paper; }
+    const o = (y * c.width + x) * 4, col = cols[i] || [255, 0, 255];
+    img.data[o] = col[0]; img.data[o + 1] = col[1]; img.data[o + 2] = col[2]; img.data[o + 3] = 255;
+  }
+  ctx.putImageData(img, 0, 0);
+  _pixCache.set(key, c);
+  return c;
+}
+function frameCanvas(spriteId, frame) {
+  const s = NODES[spriteId];
+  if (!s || !s.frames || !s.frames[frame]) return null;
+  return pixelsCanvas(s.frames[frame], s.palette);
+}
+// Draw a (1x) canvas at x,y with flips; ctx already scaled by zoom if needed.
+function blit(ctx, src, x, y, flipX, flipY) {
+  if (!src) return;
+  ctx.save();
+  ctx.translate(x + (flipX ? src.width : 0), y + (flipY ? src.height : 0));
+  ctx.scale(flipX ? -1 : 1, flipY ? -1 : 1);
+  ctx.drawImage(src, 0, 0);
+  ctx.restore();
+}
+function zoomCanvas(w, hgt, zoom) {
+  const c = h("canvas", { width: w * zoom, height: hgt * zoom });
+  c.style.width = (w * zoom) + "px"; c.style.height = (hgt * zoom) + "px";
+  const ctx = c.getContext("2d");
+  ctx.imageSmoothingEnabled = false;
+  ctx.scale(zoom, zoom);
+  return [c, ctx];
+}
+function bigImage(src, zoom, grid) {
+  const [c, ctx] = zoomCanvas(src.width, src.height, zoom);
+  ctx.drawImage(src, 0, 0);
+  if (grid) drawGrid(ctx, src.width, src.height, 1, zoom, "rgba(255,255,255,.12)");
+  return c;
+}
+function drawGrid(ctx, w, hgt, step, zoom, color) {
+  ctx.save();
+  ctx.strokeStyle = color; ctx.lineWidth = 1 / zoom;
+  ctx.beginPath();
+  for (let x = 0; x <= w; x += step) { ctx.moveTo(x, 0); ctx.lineTo(x, hgt); }
+  for (let y = 0; y <= hgt; y += step) { ctx.moveTo(0, y); ctx.lineTo(w, y); }
+  ctx.stroke(); ctx.restore();
+}
+
+// ======================================================================================
+// Animation timing (same rules as src/engine/anim.c: 1 tick = 1/60 s).
+// ======================================================================================
+function animAt(animId, tick) {
+  const a = NODES[animId];
+  if (!a || !Array.isArray(a.frames) || !a.frames.length) return null;
+  const total = a.frames.reduce((s, f) => s + Math.max(1, f.ticks | 0), 0);
+  let t = a.loop === false ? Math.min(tick, total - 1) : tick % total;
+  for (let i = 0; i < a.frames.length; i++) {
+    const d = Math.max(1, a.frames[i].ticks | 0);
+    if (t < d) return { index: i, frame: a.frames[i], sprite: a.sprite };
+    t -= d;
+  }
+  return { index: a.frames.length - 1, frame: a.frames[a.frames.length - 1], sprite: a.sprite };
+}
+function bodyAnim(bodyId, slot) {
+  const b = NODES[bodyId];
+  if (!b || !b.animations) return null;
+  const fallback = { run: "walk", walk: "run", fall: "jump", die: "hurt" };
+  return b.animations[slot] || b.animations[fallback[slot]] || b.animations[b.default_animation] || null;
+}
+// Draw an actor body like sprites.c: the origin mirrors with the art when flipped.
+function drawBody(ctx, bodyId, slot, wx, wy, tick, facingLeft) {
+  const b = NODES[bodyId];
+  const an = bodyAnim(bodyId, slot);
+  const st = an && animAt(an, tick);
+  if (!b || !st) return null;
+  const spr = NODES[st.sprite];
+  if (!spr) return null;
+  const fx = !!st.frame.flip_x !== !!facingLeft, fy = !!st.frame.flip_y;
+  const o = b.origin || [0, 0];
+  const ox = fx ? spr.width - o[0] : o[0], oy = fy ? spr.height - o[1] : o[1];
+  blit(ctx, frameCanvas(st.sprite, st.frame.frame), wx - ox, wy - oy, fx, fy);
+  return { x: wx - ox, y: wy - oy, w: spr.width, h: spr.height };
+}
+
+// Global clock: one shared 60 Hz tick for every live preview. Space = play / pause.
+const clock = { tick: 0, playing: true, last: performance.now(), acc: 0, views: [] };
+function tickLoop(now) {
+  const dt = now - clock.last; clock.last = now;
+  if (clock.playing) {
+    clock.acc += dt;
+    const n = Math.floor(clock.acc / (1000 / 60));
+    if (n > 0) { clock.acc -= n * 1000 / 60; clock.tick += Math.min(n, 10); clock.views.forEach(v => v(clock.tick, n)); }
+  }
+  requestAnimationFrame(tickLoop);
+}
+requestAnimationFrame(tickLoop);
+function live(fn) { clock.views.push(fn); fn(clock.tick, 0); }
+function playButtons(extra) {
+  const b = h("button", { onclick: () => { clock.playing = !clock.playing; b.textContent = clock.playing ? "⏸ Pause" : "▶ Play"; } }, clock.playing ? "⏸ Pause" : "▶ Play");
+  const s = h("button", { onclick: () => { clock.playing = false; b.textContent = "▶ Play"; clock.tick++; clock.views.forEach(v => v(clock.tick, 1)); } }, "⏭ Step");
+  return h("span", { class: "toolbar", style: "margin:0" }, b, s, extra || null);
+}
+
+// ======================================================================================
+// Text, boxes and UI screens (same layout as src/engine/ui.c and tools/common.py)
+// ======================================================================================
+function glyphRows(fontId, ch) {
+  const f = NODES[fontId];
+  if (!f || !f.glyphs) return null;
+  return f.glyphs[ch] || f.glyphs[ch.toUpperCase()] || null;
+}
+function drawText(ctx, fontId, text, tx, ty, paper) {
+  const f = NODES[fontId];
+  if (!f) return;
+  let x = tx, y = ty;
+  for (const ch of String(text)) {
+    if (ch === "\n") { y++; x = tx; continue; }
+    const rows = glyphRows(fontId, ch);
+    if (rows) ctx.drawImage(pixelsCanvas(rows, f.palette, paper), x * 8, y * 8);
+    else if (paper !== undefined && paper !== null) { ctx.fillStyle = rgbCss(palColors(f.palette)[paper]); ctx.fillRect(x * 8, y * 8, 8, 8); }
+    x++;
+  }
+}
+function frameTile(t, paper, border) {
+  const left = t % 3 === 0, right = t % 3 === 2, top = Math.floor(t / 3) === 0, bottom = Math.floor(t / 3) === 2;
+  const rows = [];
+  for (let y = 0; y < 8; y++) {
+    let r = "";
+    for (let x = 0; x < 8; x++) {
+      const edge = (left && x < 2) || (right && x > 5) || (top && y < 2) || (bottom && y > 5);
+      const cut = (left || right) && (top || bottom) && x === (left ? 0 : 7) && y === (top ? 0 : 7);
+      r += cut ? "." : PIX[edge ? border : paper];
+    }
+    rows.push(r);
+  }
+  return rows;
+}
+function drawBox(ctx, fontId, box) {
+  const f = NODES[fontId];
+  if (!f || !box) return;
+  const bx = box.x >> 3, by = box.y >> 3, bw = box.w >> 3, bh = box.h >> 3;
+  const paper = box.paper === undefined ? 1 : box.paper, border = box.border === undefined ? 2 : box.border;
+  for (let j = 0; j < bh; j++) for (let i = 0; i < bw; i++) {
+    const row = j === 0 ? 0 : j === bh - 1 ? 2 : 1, col = i === 0 ? 0 : i === bw - 1 ? 2 : 1;
+    ctx.drawImage(pixelsCanvas(frameTile(row * 3 + col, paper, border), f.palette), (bx + i) * 8, (by + j) * 8);
+  }
+}
+function drawIcon(ctx, iconId, tx, ty, paper, paperPal) {
+  const ic = NODES[iconId];
+  if (!ic) return;
+  const usePaper = paper !== undefined && paper !== null && ic.palette === paperPal;
+  ctx.drawImage(pixelsCanvas(ic.pixels, ic.palette, usePaper ? paper : undefined), tx * 8, ty * 8);
+}
+function varInitial(name) { const v = VARS.find(v => v.name === name); return v ? (v.initial === true ? 1 : v.initial === false ? 0 : v.initial) : 0; }
+function drawHud(ctx, hudId, values) {
+  const hd = NODES[hudId];
+  if (!hd || !Array.isArray(hd.elements)) return;
+  const get = n => (values && n in values) ? values[n] : varInitial(n);
+  for (const e of hd.elements) {
+    const x = e.x >> 3, y = e.y >> 3;
+    if (e.kind === "text") drawText(ctx, hd.font, String(e.text || "").replace(/\{(\w+)\}/g, (m, v) => String(get(v))), x, y);
+    else if (e.kind === "icon") drawIcon(ctx, e.icon, x, y);
+    else if (e.kind === "icon_repeat") {
+      const ic = NODES[e.icon]; const size = ic ? ic.pixels.length / 8 : 1;
+      const sp = (e.spacing || size * 8) >> 3, v = get(e.var);
+      for (let k = 0; k < (e.max || 0); k++) {
+        if (k < v) drawIcon(ctx, e.icon, x + k * sp, y);
+        else if (e.empty_icon) drawIcon(ctx, e.empty_icon, x + k * sp, y);
+      }
+    } else if (e.kind === "bar") {
+      const f = NODES[hd.font], cols = palColors(f && f.palette);
+      const v = Math.max(0, Math.min(e.max, get(e.var))), px = Math.floor(v * e.length * 8 / e.max);
+      if (e.back) { ctx.fillStyle = rgbCss(cols[e.back]); ctx.fillRect(x * 8, y * 8 + 1, e.length * 8, 6); }
+      ctx.fillStyle = rgbCss(cols[e.color]); ctx.fillRect(x * 8, y * 8 + 1, px, 6);
+    }
+  }
+}
+function drawMenu(ctx, menuId, cursor) {
+  const m = NODES[menuId], lay = DERIVED.menus[menuId];
+  if (!m || !lay) return;
+  const paper = m.box ? (m.box.paper === undefined ? 1 : m.box.paper) : undefined;
+  if (m.box) drawBox(ctx, m.font, m.box);
+  if (m.title) drawText(ctx, m.font, m.title, lay.title_x, lay.title_y, paper);
+  const f = NODES[m.font];
+  const cw = NODES[m.cursor] ? NODES[m.cursor].pixels.length / 8 : 1;
+  (m.options || []).forEach((o, i) => {
+    const [x, y] = lay.options[i] || [0, 0];
+    drawText(ctx, m.font, o.label, x, y, paper);
+    if (i === cursor) drawIcon(ctx, m.cursor, x - cw, y, paper, f && f.palette);
+  });
+}
+function drawDialog(ctx, dlgId, lineIdx, chars, choosing, choice) {
+  const d = NODES[dlgId], lay = DERIVED.dialogs[dlgId];
+  if (!d || !lay || !d.box) return;
+  const paper = d.box.paper === undefined ? 1 : d.box.paper;
+  const f = NODES[d.font];
+  drawBox(ctx, d.font, d.box);
+  if (choosing) {
+    (d.choices || []).forEach((c, i) => {
+      const [x, y] = lay.choices[i];
+      drawText(ctx, d.font, i === choice ? ">" : " ", x - 1, y, paper);
+      drawText(ctx, d.font, c.label, x, y, paper);
+    });
+    return;
+  }
+  const ln = d.lines[lineIdx], L = lay.lines[lineIdx];
+  if (!ln || !L) return;
+  if (ln.speaker) drawText(ctx, d.font, ln.speaker, L.speaker_x, L.speaker_y, paper);
+  if (ln.portrait) drawIcon(ctx, ln.portrait, L.portrait_x, L.portrait_y, paper, f && f.palette);
+  let text = L.wrapped.join("\n");
+  if (chars !== undefined) text = text.slice(0, chars);
+  drawText(ctx, d.font, text, L.text_x, L.text_y, paper);
+}
+function screenCanvas(zoom) {
+  const [c, ctx] = zoomCanvas(240, 160, zoom);
+  return [c, ctx];
+}
+
+// ======================================================================================
+// Audio: a small Web Audio synth approximating the GBA's 4 PSG channels.
+// ======================================================================================
+const audio = { ctx: null, master: null, volume: 0.5, stops: [] };
+function actx() {
+  if (!audio.ctx) {
+    audio.ctx = new (window.AudioContext || window.webkitAudioContext)();
+    audio.master = audio.ctx.createGain();
+    audio.master.gain.value = audio.volume * 0.25;
+    audio.master.connect(audio.ctx.destination);
+  }
+  if (audio.ctx.state === "suspended") audio.ctx.resume();
+  return audio.ctx;
+}
+const NOTE_IDX = { C: 0, "C#": 1, D: 2, "D#": 3, E: 4, F: 5, "F#": 6, G: 7, "G#": 8, A: 9, "A#": 10, B: 11 };
+function noteFreq(tok) {
+  const m = /^([A-G]#?)(\d)$/.exec(tok || "");
+  if (!m) return null;
+  const n = NOTE_IDX[m[1]] + 12 * (parseInt(m[2]) + 1);
+  return 440 * Math.pow(2, (n - 69) / 12);
+}
+const _waves = {};
+function pulseWave(duty) {
+  const k = "p" + duty;
+  if (_waves[k]) return _waves[k];
+  const D = [0.125, 0.25, 0.5, 0.75][duty] || 0.5, N = 64;
+  const re = new Float32Array(N), im = new Float32Array(N);
+  for (let n = 1; n < N; n++) { re[n] = Math.sin(2 * Math.PI * n * D) / (n * Math.PI); im[n] = (1 - Math.cos(2 * Math.PI * n * D)) / (n * Math.PI); }
+  return (_waves[k] = actx().createPeriodicWave(re, im));
+}
+function tableWave(hex) {
+  const k = "w" + hex;
+  if (_waves[k]) return _waves[k];
+  const s = [];
+  for (let i = 0; i < 32; i++) s.push(parseInt((hex || "0123456789abcdeffedcba9876543210")[i] || "0", 16) / 7.5 - 1);
+  const N = 16, re = new Float32Array(N + 1), im = new Float32Array(N + 1);
+  for (let n = 1; n <= N; n++) for (let t = 0; t < 32; t++) {
+    re[n] += s[t] * Math.cos(2 * Math.PI * n * t / 32) / 16;
+    im[n] += s[t] * Math.sin(2 * Math.PI * n * t / 32) / 16;
+  }
+  return (_waves[k] = actx().createPeriodicWave(re, im));
+}
+const NOISE_REG = [0xD1, 0xC1, 0xB1, 0xA1, 0x91, 0x81, 0x71, 0x61, 0x51, 0x41, 0x31, 0x21, 0x11, 0x01, 0x00, 0x08];
+function noiseBuffer(pitch) {
+  const k = "n" + pitch;
+  if (_waves[k]) return _waves[k];
+  const ctx = actx(), reg = NOISE_REG[pitch & 15];
+  const r = reg & 7, s = reg >> 4, short = !!(reg & 8);
+  const freq = 524288 / (r === 0 ? 0.5 : r) / Math.pow(2, s + 1);
+  const len = ctx.sampleRate, buf = ctx.createBuffer(1, len, ctx.sampleRate), d = buf.getChannelData(0);
+  let lfsr = 0x7FFF, acc = 0, out = 1;
+  const step = freq / ctx.sampleRate;
+  for (let i = 0; i < len; i++) {
+    acc += step;
+    while (acc >= 1) {
+      acc -= 1;
+      const bit = (lfsr ^ (lfsr >> 1)) & 1;
+      lfsr = (lfsr >> 1) | (bit << 14);
+      if (short) lfsr = (lfsr & ~0x40) | (bit << 6);
+      out = (lfsr & 1) ? -1 : 1;
+    }
+    d[i] = out;
+  }
+  return (_waves[k] = buf);
+}
+// Start one voice at time t. ch: square1/square2/wave/noise. Returns {stop(t)}.
+function voice(ch, value, vol, opts, t) {
+  const ctx = actx(), g = ctx.createGain();
+  let src;
+  if (ch === "noise") {
+    src = ctx.createBufferSource(); src.buffer = noiseBuffer(value); src.loop = true;
+  } else {
+    src = ctx.createOscillator();
+    src.setPeriodicWave(ch === "wave" ? tableWave(opts.wave) : pulseWave(opts.duty === undefined ? 2 : opts.duty));
+    src.frequency.value = value;
+  }
+  const level = ch === "wave" ? [0, 0.25, 0.5, 0.75, 1][Math.max(0, Math.min(4, vol))] * 0.6 : vol / 15;
+  g.gain.setValueAtTime(level, t);
+  if (opts.decay) {             // GB envelope: one volume step every decay/64 s
+    let v = vol;
+    for (let k = 1; v > 0 && k < 16; k++) { v--; g.gain.setValueAtTime(v / 15, t + k * opts.decay / 64); }
+  }
+  src.connect(g); g.connect(audio.master);
+  src.start(t);
+  const vo = { stop(at) { try { g.gain.setValueAtTime(0, at); src.stop(at + 0.01); } catch (e) { /* already stopped */ } } };
+  audio.stops.push(vo);
+  return vo;
+}
+function stopAllAudio() {
+  audio.stops.forEach(v => v.stop(audio.ctx ? audio.ctx.currentTime : 0));
+  audio.stops = [];
+  if (audio.timer) { clearInterval(audio.timer); audio.timer = null; }
+  audio.onRow = null;
+}
+function playSfx(id) {
+  const s = NODES[id];
+  if (!s || !Array.isArray(s.steps)) return;
+  const ctx = actx();
+  let t = ctx.currentTime + 0.03;
+  for (const st of s.steps) {
+    const dur = (st.ticks || 1) / 60;
+    const vol = st.volume === undefined ? (s.channel === "wave" ? 4 : 12) : st.volume;
+    if (s.channel === "noise") voice("noise", st.pitch | 0, vol, {}, t).stop(t + dur);
+    else if (st.note !== "..") { const f = noteFreq(st.note); if (f) voice(s.channel, f, vol, { duty: s.duty }, t).stop(t + dur); }
+    t += dur;
+  }
+}
+function musicRows(m) {
+  const ch = ["square1", "square2", "wave", "noise"], rows = [];
+  for (const pname of (m.order || [])) {
+    const pat = (m.patterns || {})[pname] || {};
+    const first = Object.values(pat)[0];
+    const len = typeof first === "string" ? first.split(/\s+/).filter(t => t && t !== "|").length : 0;
+    const toks = {};
+    ch.forEach(c => { toks[c] = typeof pat[c] === "string" ? pat[c].split(/\s+/).filter(t => t && t !== "|") : null; });
+    for (let i = 0; i < len; i++) rows.push({ pattern: pname, row: i, cells: ch.map(c => toks[c] ? toks[c][i] : null) });
+  }
+  return rows;
+}
+// Plays like audio.c: one row every 3600 / (bpm * rows_per_beat) ticks.
+function playMusic(id, loop, onRow) {
+  stopAllAudio();
+  const m = NODES[id];
+  if (!m) return;
+  const ctx = actx(), rows = musicRows(m), ch = ["square1", "square2", "wave", "noise"];
+  if (!rows.length) return;
+  const rowDur = 60 / ((m.bpm || 120) * (m.rows_per_beat || 4));
+  const cur = [null, null, null, null];
+  let next = ctx.currentTime + 0.05, r = 0;
+  const shouldLoop = loop === undefined ? m.loop !== false : loop;
+  audio.onRow = onRow;
+  const startTime = next;
+  audio.timer = setInterval(() => {
+    while (next < ctx.currentTime + 0.12) {
+      if (r >= rows.length) {
+        if (!shouldLoop) { cur.forEach(v => v && v.stop(next)); clearInterval(audio.timer); audio.timer = null; return; }
+        r = 0;
+      }
+      rows[r].cells.forEach((tok, i) => {
+        if (tok === null || tok === "--" || tok === undefined) return;
+        const ins = (m.instruments || {})[ch[i]];
+        if (cur[i]) { cur[i].stop(next); cur[i] = null; }
+        if (tok === ".." || !ins) return;
+        if (ch[i] === "noise") cur[i] = voice("noise", parseInt(tok.slice(1), 16), ins.volume === undefined ? 10 : ins.volume, { decay: ins.decay }, next);
+        else { const f = noteFreq(tok); if (f) cur[i] = voice(ch[i], f, ins.volume === undefined ? (ch[i] === "wave" ? 4 : 10) : ins.volume, ins, next); }
+      });
+      const rr = r, when = next;
+      setTimeout(() => { if (audio.onRow) audio.onRow(rr); }, Math.max(0, (when - ctx.currentTime) * 1000));
+      r++; next += rowDur;
+    }
+  }, 25);
+  return startTime;
+}
+
+// ======================================================================================
+// Plain-language rendering of actions, behaviors and values
+// ======================================================================================
+function nodeLink(id) {
+  if (!IDX[id]) return h("span", { class: "warnline" }, String(id), " (missing)");
+  return h("a", { onclick: () => select(id), title: id }, iconOf(id) + " " + nameOf(id));
+}
+function actionList(list) {
+  if (!Array.isArray(list) || !list.length) return h("span", { class: "small" }, "(nothing)");
+  return h("ul", { class: "acts" }, list.map(actionItem));
+}
+function actionItem(a) {
+  if (!a || typeof a !== "object") return h("li", {}, String(a));
+  const spec = ACTIONS[a.do];
+  if (!spec) return h("li", { class: "warnline" }, "Unknown action: " + a.do);
+  const li = h("li");
+  const params = spec.params || {};
+  const sentence = spec.sentence || a.do;
+  const parts = sentence.split(/(\{\w+\})/);
+  for (const p of parts) {
+    const m = /^\{(\w+)\}$/.exec(p);
+    if (!m) { li.append(p); continue; }
+    const key = m[1], pdef = params[key] || {};
+    const v = key in a ? a[key] : pdef.default;
+    li.append(valueNode(pdef.type || "", v));
+  }
+  if (a.do === "if_var") {
+    li.append(h("div", {}, "then:", actionList(a.then)), h("div", {}, "otherwise:", actionList(a.else)));
+  }
+  return li;
+}
+function valueNode(type, v) {
+  if (type.startsWith("node:") || (typeof v === "string" && IDX[v])) return v ? nodeLink(v) : h("span", { class: "small" }, "(none)");
+  if (type === "actions") return actionList(v);
+  if (type === "var") return h("b", {}, v || "(none)");
+  if (type === "points") return h("span", { class: "mono" }, (v || []).map(p => `(${p[0]}, ${p[1]})`).join(" → "));
+  if (typeof v === "boolean") return h("b", {}, v ? "yes" : "no");
+  if (typeof v === "string" && /^#[0-9a-f]{6}$/i.test(v)) return h("span", {}, h("span", { class: "sw", style: "background:" + rgbCss(q15(v)) }), v);
+  if (v === undefined) return h("span", { class: "small" }, "—");
+  return h("b", {}, typeof v === "object" ? JSON.stringify(v) : String(v));
+}
+function behaviorCard(entry, overrides) {
+  const name = entry.behavior, spec = BEHAVIORS[name] || {};
+  const card = h("div", { class: "bhv" }, h("div", { class: "bn" }, name), h("div", { class: "bd" }, spec.description || "Unknown behavior"));
+  const kv = h("div", { class: "kv" });
+  const given = entry.params || {}, ov = (overrides || {})[name] || {};
+  for (const [p, pdef] of Object.entries(spec.params || {})) {
+    let v, badge;
+    if (p in ov) { v = ov[p]; badge = h("span", { class: "badge over", title: "Changed for this one instance" }, "instance"); }
+    else if (p in given) { v = given[p]; badge = h("span", { class: "badge set", title: "Set on the object" }, "set"); }
+    else { v = pdef.default; badge = h("span", { class: "badge default", title: "Catalog default" }, "default"); }
+    kv.append(h("div", { class: "k", title: pdef.description || "" }, p), h("div", { class: "v" }, valueNode(pdef.type || "", v), " ", badge));
+  }
+  if (!kv.childNodes.length) kv.append(h("div", { class: "k" }, "(no params)"), h("div"));
+  card.append(kv);
+  return card;
+}
+function genericValue(k, v) {
+  if (Array.isArray(v) && v.length && v.every(x => typeof x === "string") && /^[.0-9a-f]+$/i.test(v[0] || "") && v.length >= 4)
+    return h("span", { class: "small" }, `pixel art ${v[0].length}×${v.length} (see preview)`);
+  if (/^(on_|actions$|then$|else$)/.test(k) && Array.isArray(v)) return actionList(v);
+  if (typeof v === "string") return valueNode("", v);
+  if (Array.isArray(v)) {
+    if (v.every(x => typeof x !== "object")) return h("span", { class: "mono" }, v.map(x => typeof x === "string" && IDX[x] ? "" : JSON.stringify(x)).join(", "), v.filter(x => IDX[x]).map(x => [nodeLink(x), " "]));
+    return h("div", {}, v.map((x, i) => h("div", { style: "margin:2px 0 4px 0" }, h("span", { class: "small" }, "#" + i + " "), genericValue(k, x))));
+  }
+  if (v && typeof v === "object") {
+    const kv = h("div", { class: "kv" });
+    for (const [kk, vv] of Object.entries(v)) kv.append(h("div", { class: "k" }, kk), h("div", { class: "v" }, genericValue(kk, vv)));
+    return kv;
+  }
+  return valueNode("", v);
+}
+
+// ======================================================================================
+// Right sidebar: properties
+// ======================================================================================
+const SKIP_PROPS = new Set(["id", "kind", "type", "name", "notes", "children", "code", "tags"]);
+function renderProps(id) {
+  const n = NODES[id], e = IDX[id] || {}, right = $("#right");
+  right.innerHTML = "";
+  if (!n) { right.append(h("div", { class: "empty" }, "This node's file could not be loaded.")); return; }
+  right.append(
+    h("div", { class: "pname" }, iconOf(id), " ", n.name || id),
+    h("div", { class: "pid" }, h("code", {}, id), h("button", { onclick: ev => { copy(id); ev.target.textContent = "Copied!"; setTimeout(() => ev.target.textContent = "Copy id", 900); } }, "Copy id")),
+    h("div", { class: "kv", style: "margin-top:6px" },
+      h("div", { class: "k" }, "kind / type"), h("div", { class: "v" }, `${e.kind} / ${e.type}`),
+      h("div", { class: "k" }, "file"), h("div", { class: "v mono" }, "nodes/" + (e.path || "?")),
+      e.parent ? h("div", { class: "k" }, "owned by") : null, e.parent ? h("div", { class: "v" }, nodeLink(e.parent)) : null,
+      n.tags ? h("div", { class: "k" }, "tags") : null, n.tags ? h("div", { class: "v" }, n.tags.map(t => h("span", { class: "badge" }, t))) : null),
+    h("div", { class: "notes" }, n.notes || "(no notes)"));
+  if (n.code) right.append(h("div", { class: "prop-sec" }, h("h4", {}, "Custom code"), h("div", { class: "mono" }, n.code),
+    h("div", { class: "small" }, "Hooks: " + id + "_on_start / " + id + "_on_update (see the notes above for what it does).")));
+
+  const props = h("div", { class: "prop-sec" }, h("h4", {}, "Properties"));
+  const kv = h("div", { class: "kv" });
+  for (const [k, v] of Object.entries(n)) {
+    if (SKIP_PROPS.has(k)) continue;
+    if (k === "logic") continue;
+    if (k === "instances") { kv.append(h("div", { class: "k" }, "instances"), h("div", { class: "v" }, `${(v || []).length} placed (list in the middle)`)); continue; }
+    kv.append(h("div", { class: "k" }, k), h("div", { class: "v" }, genericValue(k, v)));
+  }
+  props.append(kv);
+  right.append(props);
+  if (Array.isArray(n.logic)) {
+    const sec = h("div", { class: "prop-sec" }, h("h4", {}, "Logic (behaviors, run every tick in this order)"));
+    if (!n.logic.length) sec.append(h("div", { class: "small" }, "No behaviors: it just sits there."));
+    n.logic.forEach(en => sec.append(behaviorCard(en)));
+    right.append(sec);
+  }
+  const kids = n.children || [];
+  right.append(h("div", { class: "prop-sec" }, h("h4", {}, "Children (owned parts)"),
+    kids.length ? h("div", {}, kids.map(k => h("div", {}, nodeLink(k)))) : h("div", { class: "small" }, "none")));
+  const used = USED_BY[id] || [];
+  right.append(h("div", { class: "prop-sec" }, h("h4", {}, "Used by"),
+    used.length ? h("div", {}, used.map(k => h("div", {}, nodeLink(k)))) : h("div", { class: "small" }, id === (D.game || {}).start_scene ? "the game (start scene)" : "nothing")));
+  right.append(h("details", { class: "prop-sec" }, h("summary", {}, "Raw JSON"), h("pre", { class: "raw" }, JSON.stringify(n, null, 2))));
+}
+function copy(text) {
+  if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).catch(() => fallbackCopy(text));
+  else fallbackCopy(text);
+}
+function fallbackCopy(text) {
+  const t = h("textarea", {}, text); document.body.append(t); t.select();
+  try { document.execCommand("copy"); } catch (e) { /* ignore */ }
+  t.remove();
+}
+
+// ======================================================================================
+// Main area previews: one function per node type
+// ======================================================================================
+function card(title, ...kids) { return h("div", { class: "card" }, title ? h("h3", {}, title) : null, ...kids); }
+function zoomSelect(def, onchange) {
+  const s = h("select", { onchange: () => onchange(parseInt(s.value)) }, [1, 2, 3, 4, 6, 8, 12, 16].map(z => h("option", { value: z, selected: z === def ? "selected" : null }, z + "×")));
+  return h("label", {}, "Zoom ", s);
+}
+function toggle(label, state, key, onchange) {
+  const b = h("button", { class: state[key] ? "on" : "", onclick: () => { state[key] = !state[key]; b.className = state[key] ? "on" : ""; onchange(); } }, label);
+  return b;
+}
+
+const PREVIEW = {};
+
+PREVIEW.palette = (id, n) => card("Colors (as the GBA shows them: 15-bit)",
+  h("div", { class: "swatches" }, (n.colors || []).map((c, i) => h("div", { class: "swatch" },
+    h("div", { class: "c", style: i === 0 ? "background:repeating-conic-gradient(#555 0% 25%,#333 0% 50%) 50%/12px 12px" : "background:" + rgbCss(q15(c)) }),
+    h("div", { class: "t" }, h("b", {}, "#" + i + " "), i === 0 ? "transparent" : c, h("br"), "15-bit 0x" + bgr555(c).toString(16).toUpperCase().padStart(4, "0"))))));
+
+function framesView(entries, palId, defZoom) {
+  const st = { zoom: defZoom, grid: false };
+  const box = h("div", { class: "frames" });
+  const draw = () => {
+    box.innerHTML = "";
+    for (const [name, rows] of entries) box.append(h("div", { class: "frame" }, bigImage(pixelsCanvas(rows, palId), st.zoom, st.grid), h("div", { class: "cap" }, name)));
+  };
+  draw();
+  return [h("div", { class: "toolbar" }, zoomSelect(st.zoom, z => { st.zoom = z; draw(); }), toggle("Pixel grid", st, "grid", draw)), box];
+}
+PREVIEW.sprite = (id, n) => card(`Frames — ${n.width}×${n.height}, palette `, ...framesView(Object.entries(n.frames || {}), n.palette, n.width > 32 ? 4 : 8));
+PREVIEW.icon = (id, n) => card(`Icon — ${(n.pixels || []).length}×${(n.pixels || []).length}`, ...framesView([[id, n.pixels || []]], n.palette, 12));
+PREVIEW.font = (id, n) => {
+  const [c, ctx] = screenCanvas(2);
+  ctx.fillStyle = rgbCss(palColors(n.palette)[3] || [40, 72, 144]); ctx.fillRect(0, 0, 240, 160);
+  drawText(ctx, id, "THE QUICK BROWN FOX\nJUMPS OVER THE LAZY DOG\n0123456789 .,!?:-'/+=%", 1, 1);
+  return [card("Sample text (on a 240×160 screen)", c), card("Glyphs", ...framesView(Object.entries(n.glyphs || {}).map(([k, v]) => [k === " " ? "space" : k, v]), n.palette, 6))];
+};
+PREVIEW.tileset = (id, n) => {
+  const st = { zoom: 6, grid: false };
+  const box = h("div", { class: "frames" });
+  const draw = () => {
+    box.innerHTML = "";
+    for (const [ch, t] of Object.entries(n.tiles || {})) {
+      const flags = ["solid", "one_way", "hazard", "ladder"].filter(f => t[f]);
+      box.append(h("div", { class: "frame" }, bigImage(pixelsCanvas(t.pixels, n.palette), st.zoom, st.grid),
+        h("div", { class: "cap" }, h("code", {}, "'" + ch + "'"), " ", flags.length ? flags.map(f => h("span", { class: "badge " + f }, f.replace("_", "-"))) : h("span", { class: "badge" }, "scenery"))));
+    }
+  };
+  draw();
+  return card("Tiles — the character is what you type in a tilemap row", h("div", { class: "toolbar" }, zoomSelect(st.zoom, z => { st.zoom = z; draw(); }), toggle("Pixel grid", st, "grid", draw)), box);
+};
+
+const _mapCache = new Map();
+function mapCanvas(mapId) {
+  if (_mapCache.has(mapId)) return _mapCache.get(mapId);
+  const m = NODES[mapId], ts = m && NODES[m.tileset];
+  const rows = (m && m.rows) || [];
+  const w = Math.max(1, ...rows.map(r => r.length)) * 8, hh = Math.max(1, rows.length * 8);
+  const c = h("canvas", { width: w, height: hh }), ctx = c.getContext("2d");
+  if (ts) rows.forEach((r, y) => [...r].forEach((ch, x) => {
+    const t = ts.tiles && ts.tiles[ch];
+    if (t) ctx.drawImage(pixelsCanvas(t.pixels, ts.palette), x * 8, y * 8);
+  }));
+  _mapCache.set(mapId, c);
+  return c;
+}
+function collisionOverlay(ctx, mapId, ox, oy) {
+  const m = NODES[mapId], ts = m && NODES[m.tileset];
+  if (!ts) return;
+  (m.rows || []).forEach((r, y) => [...r].forEach((ch, x) => {
+    const t = ts.tiles && ts.tiles[ch];
+    if (!t) return;
+    const px = ox + x * 8, py = oy + y * 8;
+    if (t.solid) { ctx.fillStyle = "rgba(255,60,60,.35)"; ctx.fillRect(px, py, 8, 8); }
+    if (t.one_way) { ctx.fillStyle = "rgba(90,170,255,.9)"; ctx.fillRect(px, py, 8, 2); }
+    if (t.hazard) { ctx.fillStyle = "rgba(255,170,30,.45)"; ctx.fillRect(px, py, 8, 8); }
+    if (t.ladder) { ctx.fillStyle = "rgba(60,220,110,.35)"; ctx.fillRect(px, py, 8, 8); }
+  }));
+}
+PREVIEW.tilemap = (id, n) => {
+  const st = { zoom: 2, coll: true, grid: false };
+  const stage = h("div", { class: "stage" });
+  const src = mapCanvas(id);
+  const draw = () => {
+    const [c, ctx] = zoomCanvas(src.width, src.height, st.zoom);
+    ctx.drawImage(src, 0, 0);
+    if (st.coll) collisionOverlay(ctx, id, 0, 0);
+    if (st.grid) drawGrid(ctx, src.width, src.height, 8, st.zoom, "rgba(255,255,255,.15)");
+    stage.innerHTML = ""; stage.append(c);
+  };
+  draw();
+  return card(`Map — ${src.width / 8}×${src.height / 8} tiles (${src.width}×${src.height} px), layer ${n.layer}, parallax ${n.parallax === undefined ? 1 : n.parallax}${n.repeat_x ? ", repeats sideways" : ""}`,
+    h("div", { class: "toolbar" }, zoomSelect(st.zoom, z => { st.zoom = z; draw(); }), toggle("Collision overlay", st, "coll", draw), toggle("Tile grid", st, "grid", draw),
+      h("span", { class: "small" }, h("span", { class: "badge solid" }, "solid"), h("span", { class: "badge one_way" }, "one-way"), h("span", { class: "badge hazard" }, "hazard"), h("span", { class: "badge ladder" }, "ladder"))),
+    stage);
+};
+
+PREVIEW.animation = (id, n) => {
+  const spr = NODES[n.sprite] || { width: 16, height: 16 };
+  const z = spr.width > 32 ? 4 : 8;
+  const [c, ctx] = zoomCanvas(spr.width, spr.height, z);
+  const strip = h("div", { class: "frames" });
+  const cells = (n.frames || []).map((f, i) => {
+    const cell = h("div", { class: "frame" }, bigImage(frameCanvas(n.sprite, f.frame) || h("canvas"), 3), h("div", { class: "cap" }, `${i}: ${f.frame} · ${f.ticks}t${f.flip_x ? " ↔" : ""}${f.flip_y ? " ↕" : ""}`));
+    strip.append(cell);
+    return cell;
+  });
+  const info = h("div", { class: "small" });
+  const total = (n.frames || []).reduce((s, f) => s + (f.ticks | 0), 0);
+  live(tick => {
+    if (!c.isConnected) return;
+    const st = animAt(id, tick);
+    ctx.clearRect(0, 0, spr.width, spr.height);
+    if (!st) return;
+    blit(ctx, frameCanvas(st.sprite, st.frame.frame), 0, 0, st.frame.flip_x, st.frame.flip_y);
+    cells.forEach((cl, i) => cl.classList.toggle("cur", i === st.index));
+    info.textContent = `frame ${st.index} · tick ${n.loop === false ? Math.min(tick, total - 1) : tick % total} / ${total} · ${n.loop === false ? "plays once" : "loops"}`;
+  });
+  const evs = (n.events || []).map(ev => h("li", {}, `When frame ${ev.at} starts: `, actionList(ev.action ? [ev.action] : ev.actions)));
+  return [card("Playback (real speed)", h("div", { class: "toolbar" }, playButtons()), h("div", { class: "stage" }, c), info),
+    card("Frame strip", strip), card("Events", evs.length ? h("ul", {}, evs) : h("div", { class: "small" }, "No events."))];
+};
+
+// Particle simulation: same math as particles.c (angles in degrees, 90 = up).
+PREVIEW.particle = (id, n) => {
+  const W = 160, H = 120, z = 3;
+  const [c, ctx] = zoomCanvas(W, H, z);
+  let parts = [], timer = 0;
+  const rnd = (a, b) => a + Math.random() * (b - a);
+  const emit = () => {
+    const ang = rnd((n.angle || [0, 0])[0], (n.angle || [0, 0])[1]) * Math.PI / 180, sp = rnd((n.speed || [0, 0])[0], (n.speed || [0, 0])[1]);
+    parts.push({ x: W / 2, y: H / 2, vx: Math.cos(ang) * sp, vy: -Math.sin(ang) * sp, life: n.lifetime || 30, age: 0 });
+  };
+  const burst = () => { const k = n.mode === "burst" ? (n.count || 1) : 1; for (let i = 0; i < k; i++) emit(); };
+  const restart = () => { parts = []; timer = 0; };
+  live((tick, steps) => {
+    if (!c.isConnected) return;
+    for (let s = 0; s < steps; s++) {
+      if (timer <= 0) { burst(); timer = n.mode === "stream" ? (n.rate || 1) : (n.lifetime || 30) + 20; }
+      timer--;
+      parts.forEach(p => { p.vy += n.gravity || 0; p.x += p.vx; p.y += p.vy; p.age++; });
+      parts = parts.filter(p => p.age < p.life);
+    }
+    ctx.fillStyle = "#1a1d24"; ctx.fillRect(0, 0, W, H);
+    ctx.strokeStyle = "#444"; ctx.lineWidth = 1 / z; ctx.beginPath(); ctx.moveTo(W / 2 - 4, H / 2); ctx.lineTo(W / 2 + 4, H / 2); ctx.moveTo(W / 2, H / 2 - 4); ctx.lineTo(W / 2, H / 2 + 4); ctx.stroke();
+    for (const p of parts) {
+      const st = animAt(n.animation, p.age);
+      if (!st) continue;
+      const spr = NODES[st.sprite];
+      blit(ctx, frameCanvas(st.sprite, st.frame.frame), Math.floor(p.x) - spr.width / 2, Math.floor(p.y) - spr.height / 2, st.frame.flip_x, st.frame.flip_y);
+    }
+  });
+  return card(`Live emitter — ${n.mode}, ${n.mode === "burst" ? (n.count || 1) + " per burst" : "one every " + n.rate + " ticks"}, lives ${n.lifetime} ticks`,
+    h("div", { class: "toolbar" }, playButtons(h("button", { onclick: restart }, "↺ Restart"))), h("div", { class: "stage" }, c),
+    h("div", { class: "small" }, "The cross marks the emit point. Angle 0 = right, 90 = up."));
+};
+
+function bodyStage(bodyId, slotGetter, opts) {
+  const b = NODES[bodyId] || {};
+  let maxW = 16, maxH = 16;
+  Object.values(b.animations || {}).forEach(a => { const s = NODES[(NODES[a] || {}).sprite]; if (s) { maxW = Math.max(maxW, s.width); maxH = Math.max(maxH, s.height); } });
+  const pad = 12, W = maxW * 2 + pad * 2, H = maxH + pad * 2, z = maxW > 32 ? 3 : 5;
+  const [c, ctx] = zoomCanvas(W, H, z);
+  const o = b.origin || [0, 0];
+  const wx = Math.floor(W / 2), wy = pad + o[1];
+  live(tick => {
+    if (!c.isConnected) return;
+    ctx.fillStyle = "#1a1d24"; ctx.fillRect(0, 0, W, H);
+    drawBody(ctx, bodyId, slotGetter(), wx, wy, tick, opts.facingLeft && opts.facingLeft());
+    if (!opts.state || opts.state.hitbox) {
+      const hb = b.hitbox || {}; ctx.strokeStyle = "#ff4d6d"; ctx.lineWidth = 1 / z;
+      ctx.strokeRect(wx + (hb.x | 0) + 0.5 / z, wy + (hb.y | 0) + 0.5 / z, (hb.w | 0) - 1 / z, (hb.h | 0) - 1 / z);
+    }
+    if (!opts.state || opts.state.origin) {
+      ctx.fillStyle = "#ffe14d"; ctx.fillRect(wx - 0.5, wy - 0.5, 1, 1);
+      ctx.strokeStyle = "#ffe14d"; ctx.lineWidth = 1 / z; ctx.beginPath(); ctx.moveTo(wx - 3, wy); ctx.lineTo(wx + 3, wy); ctx.moveTo(wx, wy - 3); ctx.lineTo(wx, wy + 3); ctx.stroke();
+    }
+  });
+  return c;
+}
+PREVIEW.body = (id, n) => {
+  const slots = Object.keys(n.animations || {});
+  let cur = n.default_animation || slots[0];
+  const st = { hitbox: true, origin: true, left: false };
+  const tabs = h("div", { class: "toolbar" });
+  const redrawTabs = () => {
+    tabs.innerHTML = "";
+    slots.forEach(s => tabs.append(h("button", { class: s === cur ? "on" : "", onclick: () => { cur = s; redrawTabs(); } }, s + (s === n.default_animation ? " (default)" : ""))));
+  };
+  redrawTabs();
+  const stage = bodyStage(id, () => cur, { state: st, facingLeft: () => st.left });
+  const ph = n.physics || {};
+  return [card("Animation slots", tabs, h("div", { class: "toolbar" }, playButtons(), toggle("Hitbox", st, "hitbox", () => {}), toggle("Origin", st, "origin", () => {}), toggle("Face left", st, "left", () => {})),
+    h("div", { class: "stage" }, stage), h("div", { class: "small" }, "Red box = hitbox (used for collisions). Yellow cross = origin (the point placed at the instance's x, y).")),
+  card("Physics", h("div", { class: "kv" },
+    h("div", { class: "k" }, "falls (gravity)"), h("div", {}, ph.gravity ? "yes" : "no"),
+    h("div", { class: "k" }, "solid to others"), h("div", {}, ph.solid ? "yes — others can't walk through it" : "no"),
+    h("div", { class: "k" }, "collides with"), h("div", {}, (ph.collides_with || []).join(", ") || "nothing"),
+    h("div", { class: "k" }, "hitbox"), h("div", { class: "mono" }, JSON.stringify(n.hitbox)),
+    h("div", { class: "k" }, "origin"), h("div", { class: "mono" }, JSON.stringify(n.origin))))];
+};
+
+function pathPreview(points, bodyId) {
+  const pts = points || [];
+  const xs = pts.map(p => p[0]), ys = pts.map(p => p[1]);
+  const minx = Math.min(0, ...xs) - 24, maxx = Math.max(0, ...xs) + 24, miny = Math.min(0, ...ys) - 24, maxy = Math.max(0, ...ys) + 24;
+  const W = maxx - minx, H = maxy - miny, z = Math.max(1, Math.min(4, Math.floor(480 / W)));
+  const [c, ctx] = zoomCanvas(W, H, z);
+  ctx.fillStyle = "#1a1d24"; ctx.fillRect(0, 0, W, H);
+  ctx.strokeStyle = "#ffcf5c"; ctx.lineWidth = 1 / z; ctx.setLineDash([2, 2]);
+  ctx.beginPath(); pts.forEach((p, i) => i ? ctx.lineTo(p[0] - minx, p[1] - miny) : ctx.moveTo(p[0] - minx, p[1] - miny)); ctx.stroke();
+  ctx.setLineDash([]);
+  pts.forEach((p, i) => { ctx.fillStyle = i ? "#ffcf5c" : "#5fd38d"; ctx.fillRect(p[0] - minx - 1, p[1] - miny - 1, 3, 3); });
+  if (bodyId) drawBody(ctx, bodyId, "idle", -minx, -miny, 0, false);
+  return c;
+}
+function actorPreview(id, n) {
+  const out = [];
+  const t = typeOf(id);
+  if (t === "trigger") {
+    const z = n.zone || { w: 16, h: 16 }, sc = Math.max(1, Math.min(6, Math.floor(240 / Math.max(z.w, z.h))));
+    const [c, ctx] = zoomCanvas(z.w + 16, z.h + 16, sc);
+    ctx.fillStyle = "#1a1d24"; ctx.fillRect(0, 0, z.w + 16, z.h + 16);
+    ctx.fillStyle = "rgba(255,207,92,.25)"; ctx.fillRect(8, 8, z.w, z.h);
+    ctx.strokeStyle = "#ffcf5c"; ctx.lineWidth = 1 / sc; ctx.strokeRect(8, 8, z.w, z.h);
+    out.push(card(`Invisible zone — ${z.w}×${z.h} px (top-left corner is the instance x, y)`, c));
+  } else if (n.body) {
+    let slot = (NODES[n.body] || {}).default_animation || "idle";
+    const st = { hitbox: true, origin: true };
+    const b = NODES[n.body] || {};
+    const tabs = h("div", { class: "toolbar" });
+    const redraw = () => { tabs.innerHTML = ""; Object.keys(b.animations || {}).forEach(s => tabs.append(h("button", { class: s === slot ? "on" : "", onclick: () => { slot = s; redraw(); } }, s))); };
+    redraw();
+    out.push(card("Body ", h("div", { class: "toolbar" }, "Body: ", nodeLink(n.body)), tabs, h("div", { class: "toolbar" }, playButtons(), toggle("Hitbox", st, "hitbox", () => {}), toggle("Origin", st, "origin", () => {})),
+      h("div", { class: "stage" }, bodyStage(n.body, () => slot, { state: st }))));
+  }
+  const logic = n.logic || [];
+  out.push(card("Logic — what it does (behaviors run every tick, top to bottom)", logic.length ? logic.map(e => behaviorCard(e)) : h("div", { class: "small" }, "No behaviors: it is decoration.")));
+  const fp = logic.find(e => e.behavior === "follow_path");
+  if (fp) {
+    const pts = (fp.params || {}).points || (BEHAVIORS.follow_path.params.points || {}).default;
+    out.push(card("Path (follow_path) — green = start", h("div", { class: "stage" }, pathPreview(pts, n.body))));
+  }
+  const snd = n.sounds || {};
+  if (Object.keys(snd).length) out.push(card("Sounds", h("div", { class: "kv" }, Object.entries(snd).map(([ev, s]) => [h("div", { class: "k" }, ev), h("div", {}, h("button", { onclick: () => playSfx(s) }, "▶"), " ", nodeLink(s))]))));
+  return out;
+}
+ACTOR_TYPES.forEach(t => { PREVIEW[t] = actorPreview; });
+
+PREVIEW.hud = (id, n) => {
+  const [c, ctx] = screenCanvas(3);
+  ctx.fillStyle = "#3a4458"; ctx.fillRect(0, 0, 240, 160);
+  drawHud(ctx, id);
+  return card("On a 240×160 screen — variables at their starting values (" + VARS.map(v => v.name + " = " + v.initial).join(", ") + ")", c);
+};
+PREVIEW.menu = (id, n) => {
+  let cur = 0;
+  const [c, ctx] = screenCanvas(3);
+  const draw = () => { ctx.fillStyle = "#3a4458"; ctx.fillRect(0, 0, 240, 160); drawMenu(ctx, id, cur); };
+  draw();
+  const opts = h("div");
+  (n.options || []).forEach((o, i) => opts.append(h("div", { class: "bhv" }, h("div", { class: "bn" }, "Option " + (i + 1) + ": " + o.label), actionList(o.actions))));
+  return [card("On a 240×160 screen", h("div", { class: "toolbar" },
+    h("button", { onclick: () => { cur = (cur + (n.options || [1]).length - 1) % (n.options || [1]).length; draw(); } }, "▲ Up"),
+    h("button", { onclick: () => { cur = (cur + 1) % (n.options || [1]).length; draw(); } }, "▼ Down"),
+    h("span", { class: "small" }, "Up/Down move the cursor; A picks. The menu stays on screen (locked) until its actions close it or change scene.")), c),
+  card("What each option does", opts),
+  n.on_cancel ? card("When B is pressed", actionList(n.on_cancel)) : null];
+};
+PREVIEW.dialog = (id, n) => {
+  let line = 0, choosing = false, choice = 0, typedFrom = clock.tick;
+  const [c, ctx] = screenCanvas(3);
+  const lay = DERIVED.dialogs[id];
+  const tpc = n.ticks_per_char === undefined ? 1 : n.ticks_per_char;
+  live(tick => {
+    if (!c.isConnected) return;
+    ctx.fillStyle = "#3a4458"; ctx.fillRect(0, 0, 240, 160);
+    const chars = tpc ? Math.floor((tick - typedFrom) / tpc) : undefined;
+    drawDialog(ctx, id, line, chars, choosing, choice);
+  });
+  const nChoices = (n.choices || []).length;
+  const label = h("span", { class: "small" });
+  const upd = () => { label.textContent = choosing ? `choices (${choice + 1}/${nChoices})` : `line ${line + 1} / ${(n.lines || []).length}`; typedFrom = clock.tick; };
+  upd();
+  const prev = h("button", { onclick: () => { if (choosing) choosing = false; else line = Math.max(0, line - 1); upd(); } }, "◀ Prev");
+  const next = h("button", { onclick: () => { if (line + 1 < (n.lines || []).length) line++; else if (nChoices) choosing = true; upd(); } }, "Next ▶");
+  const ch = h("button", { onclick: () => { if (choosing) { choice = (choice + 1) % nChoices; upd(); } } }, "▼ Next choice");
+  const parts = [card("On a 240×160 screen (text types out like on the GBA)", h("div", { class: "toolbar" }, prev, next, nChoices ? ch : null, label), c)];
+  if (lay) parts.push(card("Lines as the GBA wraps them", (n.lines || []).map((ln, i) => h("div", { class: "bhv" }, h("div", { class: "bn" }, (ln.speaker || "(no speaker)") + (ln.portrait ? " 🖼" : "")), h("pre", { class: "mono", style: "margin:2px 0" }, lay.lines[i].wrapped.join("\n"))))));
+  if (nChoices) parts.push(card("Choices", n.choices.map(cc => h("div", { class: "bhv" }, h("div", { class: "bn" }, cc.label), actionList(cc.actions)))));
+  parts.push(card("When the dialog ends", actionList(n.on_end)));
+  return parts;
+};
+
+PREVIEW.sfx = (id, n) => {
+  const rows = (n.steps || []).map((s, i) => h("tr", {}, h("td", {}, i), h("td", {}, n.channel === "noise" ? "noise " + s.pitch : s.note), h("td", {}, s.ticks + " t"), h("td", {}, s.volume === undefined ? "—" : s.volume)));
+  const total = (n.steps || []).reduce((a, s) => a + (s.ticks | 0), 0);
+  return [card(`Sound — channel ${n.channel}${n.channel && n.channel.startsWith("square") ? ", duty " + ["12.5%", "25%", "50%", "75%"][n.duty === undefined ? 2 : n.duty] : ""}, ${total} ticks (${(total / 60).toFixed(2)} s), priority ${n.priority || 0}`,
+    h("div", { class: "toolbar" }, h("button", { onclick: () => playSfx(id) }, "▶ Play"), h("button", { onclick: stopAllAudio }, "■ Stop"), volumeControl()),
+    h("table", { class: "grid steps" }, h("tr", {}, h("th", {}, "#"), h("th", {}, "note"), h("th", {}, "length"), h("th", {}, "volume")), rows))];
+};
+function volumeControl() {
+  const r = h("input", { type: "range", min: 0, max: 100, value: Math.round(audio.volume * 100), oninput: () => { audio.volume = r.value / 100; if (audio.master) audio.master.gain.value = audio.volume * 0.25; } });
+  return h("label", {}, "Volume ", r);
+}
+PREVIEW.music = (id, n) => {
+  const rows = musicRows(n), chs = ["square1", "square2", "wave", "noise"];
+  const tb = h("table", { class: "grid" });
+  tb.append(h("tr", {}, h("th", {}, "row"), h("th", {}, "pattern"), chs.map(c => h("th", {}, c + ((n.instruments || {})[c] ? "" : " (off)")))));
+  const trs = rows.map((r, i) => {
+    const tr = h("tr", {}, h("td", {}, i), h("td", {}, r.row === 0 ? r.pattern : ""), r.cells.map(cell => h("td", { class: cell === "--" ? "hold" : cell === ".." ? "rest" : "" }, cell === null ? "" : cell)));
+    tb.append(tr);
+    return tr;
+  });
+  const wrap = h("div", { class: "tracker" }, tb);
+  let last = null;
+  const onRow = r => {
+    if (!wrap.isConnected) return;
+    if (last) last.classList.remove("cur");
+    last = trs[r]; if (last) { last.classList.add("cur"); const top = last.offsetTop - wrap.clientHeight / 2; wrap.scrollTop = Math.max(0, top); }
+  };
+  let loop = n.loop !== false;
+  const lb = h("button", { class: loop ? "on" : "", onclick: () => { loop = !loop; lb.className = loop ? "on" : ""; } }, "🔁 Loop");
+  const secs = rows.length * 60 / ((n.bpm || 120) * (n.rows_per_beat || 4));
+  return [card(`Song — ${n.bpm} bpm, ${n.rows_per_beat} rows per beat, ${rows.length} rows (${secs.toFixed(1)} s), order: ${(n.order || []).join(" ")}`,
+    h("div", { class: "toolbar" }, h("button", { onclick: () => playMusic(id, loop, onRow) }, "▶ Play"), h("button", { onclick: stopAllAudio }, "■ Stop"), lb, volumeControl()),
+    h("div", { class: "small", style: "margin-bottom:6px" }, "-- = keep holding the note, .. = silence. The highlighted row is playing."), wrap),
+  card("Instruments", h("div", { class: "kv" }, Object.entries(n.instruments || {}).map(([c, ins]) => [h("div", { class: "k" }, c), h("div", { class: "mono" }, JSON.stringify(ins))])))];
+};
+
+// ---- scenes ------------------------------------------------------------------------
+function sceneLayout(sc) {
+  const insts = (sc.instances || []).map((inst, i) => ({ ...inst, index: i, node: NODES[inst.object], type: typeOf(inst.object) }));
+  const maps = insts.filter(i => i.type === "tilemap" && i.node);
+  const coll = maps.find(m => m.node.layer === 1);
+  let W = 240, H = 160;
+  if (coll) { W = Math.max(...coll.node.rows.map(r => r.length)) * 8; H = coll.node.rows.length * 8; }
+  else maps.forEach(m => { W = Math.max(W, Math.max(...m.node.rows.map(r => r.length)) * 8); H = Math.max(H, m.node.rows.length * 8); });
+  // Camera start, like camera.c (snap to the followed instance, clamp to the map).
+  const cam = sc.camera || {};
+  let cx = cam.x || 0, cy = cam.y || 0;
+  const f = insts.find(i => i.id === cam.follow) || insts.find(i => i.type && ACTOR_TYPES.includes(i.type) && i.node && (i.node.logic || []).some(l => l.behavior === "camera_target"));
+  if (f) { cx = (f.x || 0) - 120; cy = (f.y || 0) - 88; }
+  if (cam.bounds !== "none") { cx = Math.max(0, Math.min(cx, W - 240)); cy = Math.max(0, Math.min(cy, H - 160)); }
+  return { insts, maps, W, H, cx, cy };
+}
+function drawScene(ctx, sc, L, tick, ov, layersOnScreen) {
+  ctx.fillStyle = rgbCss(q15(sc.backdrop || "#000000")); ctx.fillRect(0, 0, L.W, L.H);
+  [...L.maps].sort((a, b) => (b.node.layer || 1) - (a.node.layer || 1)).forEach(m => {
+    const src = mapCanvas(m.object), par = m.node.parallax === undefined ? 1 : m.node.parallax;
+    // Parallax layers are drawn where they appear when the camera is at its start position.
+    const offx = Math.floor(L.cx - L.cx * par), offy = Math.floor(L.cy - L.cy * par);
+    if (m.node.repeat_x) for (let x = offx - src.width * Math.ceil((offx + 1) / src.width); x < L.W; x += src.width) ctx.drawImage(src, x, offy);
+    else ctx.drawImage(src, offx, offy);
+    if (ov.coll && m.node.layer === 1) collisionOverlay(ctx, m.object, 0, 0);
+  });
+  if (ov.grid) drawGrid(ctx, L.W, L.H, 8, ov.zoom, "rgba(255,255,255,.12)");
+  const hits = [];
+  const actors = L.insts.filter(i => i.type && ACTOR_TYPES.includes(i.type) && i.node);
+  const order = [...actors.filter(i => i.type !== "player"), ...actors.filter(i => i.type === "player")];
+  for (const i of order) {
+    const x = i.x || 0, y = i.y || 0;
+    if (i.type === "trigger") {
+      const z = i.node.zone || { w: 8, h: 8 };
+      if (ov.zones) { ctx.fillStyle = "rgba(255,207,92,.22)"; ctx.fillRect(x, y, z.w, z.h); ctx.strokeStyle = "#ffcf5c"; ctx.lineWidth = 1 / ov.zoom; ctx.strokeRect(x, y, z.w, z.h); }
+      hits.push({ inst: i, x, y, w: z.w, h: z.h });
+      continue;
+    }
+    const r = drawBody(ctx, i.node.body, (NODES[i.node.body] || {}).default_animation || "idle", x, y, tick, false);
+    if (r) hits.push({ inst: i, ...r });
+    const b = NODES[i.node.body] || {};
+    if (ov.hitbox && b.hitbox) { ctx.strokeStyle = "#ff4d6d"; ctx.lineWidth = 1 / ov.zoom; ctx.strokeRect(x + b.hitbox.x, y + b.hitbox.y, b.hitbox.w, b.hitbox.h); }
+    if (ov.origin) { ctx.fillStyle = "#ffe14d"; ctx.fillRect(x - 1, y - 1, 2, 2); }
+    if (ov.paths) {
+      const fp = (i.node.logic || []).find(e => e.behavior === "follow_path");
+      if (fp) {
+        const pts = ((i.overrides || {}).follow_path || {}).points || (fp.params || {}).points || [];
+        ctx.strokeStyle = "#ffcf5c"; ctx.setLineDash([2, 2]); ctx.lineWidth = 1 / ov.zoom; ctx.beginPath();
+        pts.forEach((p, k) => k ? ctx.lineTo(x + p[0], y + p[1]) : ctx.moveTo(x + p[0], y + p[1])); ctx.stroke(); ctx.setLineDash([]);
+      }
+    }
+  }
+  if (ov.labels) {
+    ctx.font = `${Math.max(4, 9 / ov.zoom * 1.4)}px sans-serif`; ctx.fillStyle = "#fff"; ctx.strokeStyle = "#000"; ctx.lineWidth = 2 / ov.zoom;
+    for (const ht of hits) { ctx.strokeText(ht.inst.id, ht.x, ht.y - 1); ctx.fillText(ht.inst.id, ht.x, ht.y - 1); }
+  }
+  // UI on top, drawn into the screen frame at the camera start.
+  ctx.save(); ctx.translate(L.cx, L.cy);
+  for (const i of L.insts) {
+    if (i.type === "hud") drawHud(ctx, i.object);
+    if (i.type === "menu") drawMenu(ctx, i.object, 0);
+    if (i.type === "dialog") drawDialog(ctx, i.object, 0);
+  }
+  ctx.restore();
+  if (ov.frame) { ctx.strokeStyle = "#6cb4ff"; ctx.lineWidth = 2 / ov.zoom; ctx.strokeRect(L.cx, L.cy, 240, 160); }
+  for (const i of L.insts) if (i.type === "particle" && i.node) {
+    const st = animAt(i.node.animation, tick);
+    if (st) { const s = NODES[st.sprite]; blit(ctx, frameCanvas(st.sprite, st.frame.frame), (i.x || 0) - s.width / 2, (i.y || 0) - s.height / 2); hits.push({ inst: i, x: (i.x || 0) - s.width / 2, y: (i.y || 0) - s.height / 2, w: s.width, h: s.height }); }
+  }
+  return hits;
+}
+function PREVIEW_scene(id, sc) {
+  const L = sceneLayout(sc);
+  const ov = { zoom: L.W > 400 ? 2 : 3, grid: false, hitbox: false, origin: false, labels: false, paths: true, zones: true, frame: true, coll: false };
+  const stage = h("div", { class: "stage" });
+  let canvas, ctx, hits = [];
+  const build = () => {
+    [canvas, ctx] = zoomCanvas(L.W, L.H, ov.zoom);
+    canvas.style.cursor = "pointer";
+    canvas.addEventListener("click", ev => {
+      const r = canvas.getBoundingClientRect();
+      const x = (ev.clientX - r.left) / ov.zoom, y = (ev.clientY - r.top) / ov.zoom;
+      for (let k = hits.length - 1; k >= 0; k--) { const t = hits[k]; if (x >= t.x && x < t.x + t.w && y >= t.y && y < t.y + t.h) { select(t.inst.object); return; } }
+    });
+    stage.innerHTML = ""; stage.append(canvas);
+  };
+  build();
+  live(tick => { if (canvas.isConnected) hits = drawScene(ctx, sc, L, tick, ov); });
+  const tb = h("div", { class: "toolbar" }, playButtons(), zoomSelect(ov.zoom, z => { ov.zoom = z; build(); }),
+    ...[["Tile grid", "grid"], ["Collision", "coll"], ["Hitboxes", "hitbox"], ["Origins", "origin"], ["Labels", "labels"], ["Paths", "paths"], ["Trigger zones", "zones"], ["Screen frame", "frame"]].map(([l, k]) => toggle(l, ov, k, () => {})));
+  const table = h("table", { class: "inst-table" }, h("tr", {}, h("th", {}, "instance"), h("th", {}, "object"), h("th", {}, "x, y"), h("th", {}, "per-instance changes")));
+  for (const i of L.insts) table.append(h("tr", {}, h("td", { class: "mono" }, i.id), h("td", {}, nodeLink(i.object)), h("td", { class: "mono" }, i.x === undefined ? "—" : `${i.x}, ${i.y}`),
+    h("td", {}, i.overrides ? Object.entries(i.overrides).map(([b, ps]) => h("div", {}, h("span", { class: "badge over" }, b), " ", Object.entries(ps).map(([k, v]) => k + " = " + JSON.stringify(v)).join(", "))) : "")));
+  const cam = sc.camera || {};
+  return [card(`Scene — ${L.W}×${L.H} px world. Click anything to open it.`, tb, stage,
+    h("div", { class: "small" }, "Blue frame = what the 240×160 screen shows when the scene starts" + (cam.follow ? ` (following '${cam.follow}')` : "") + ". HUD/menus are drawn inside it.")),
+  card("When the scene starts", h("div", { class: "kv" }, h("div", { class: "k" }, "music"), h("div", {}, sc.music ? [h("button", { onclick: () => playMusic(sc.music) }, "▶"), " ", h("button", { onclick: stopAllAudio }, "■"), " ", nodeLink(sc.music)] : "silence"),
+    h("div", { class: "k" }, "actions"), h("div", {}, actionList(sc.on_start)))),
+  card(`Instances (${L.insts.length}) — placed in this order`, table)];
+}
+
+// ======================================================================================
+// Left sidebar: list + tree
+// ======================================================================================
+const ui = { sel: null, search: "", kind: "all", type: null, open: new Set(["#scenes", "#objects"]) };
+function filtered() {
+  const q = ui.search.toLowerCase();
+  return INDEX.filter(e => {
+    if (ui.kind !== "all" && e.kind !== ui.kind) return false;
+    if (ui.type && e.type !== ui.type) return false;
+    if (!q) return true;
+    const n = NODES[e.id] || {};
+    return [e.id, e.type, n.name, (n.tags || []).join(" ")].join(" ").toLowerCase().includes(q);
+  });
+}
+function renderChips() {
+  const kc = $("#kindchips"); kc.innerHTML = "";
+  [["all", "All"], ["scene", "Scenes"], ["object", "Objects"]].forEach(([k, l]) => kc.append(h("button", { class: "chip" + (ui.kind === k ? " on" : ""), onclick: () => { ui.kind = k; ui.type = null; renderChips(); renderList(); } }, l)));
+  const tc = $("#typechips"); tc.innerHTML = "";
+  const types = [...new Set(INDEX.filter(e => ui.kind === "all" || e.kind === ui.kind).map(e => e.type))];
+  types.forEach(t => tc.append(h("button", { class: "chip" + (ui.type === t ? " on" : ""), onclick: () => { ui.type = ui.type === t ? null : t; renderChips(); renderList(); } }, (ICONS[t] || "") + " " + t)));
+}
+function renderList() {
+  const list = $("#list"); list.innerHTML = "";
+  const items = filtered();
+  if (!items.length) list.append(h("div", { class: "small" }, "No nodes match."));
+  for (const e of items) list.append(h("div", { class: "row" + (e.id === ui.sel ? " sel" : ""), "data-id": e.id, onclick: () => select(e.id) },
+    h("span", { class: "ic" }, iconOf(e.id)), h("span", { class: "nm" }, nameOf(e.id)), h("span", { class: "id" }, e.id)));
+}
+function treeItem(key, label, kids, onclick, selected) {
+  const open = ui.open.has(key);
+  const wrap = h("div");
+  const lab = h("div", { class: "tlabel" + (selected ? " sel" : "") },
+    h("span", { class: "tog", onclick: ev => { ev.stopPropagation(); if (open) ui.open.delete(key); else ui.open.add(key); renderTree(); } }, kids.length ? (open ? "▾" : "▸") : ""),
+    label);
+  lab.addEventListener("click", () => { if (onclick) onclick(); else { if (open) ui.open.delete(key); else ui.open.add(key); renderTree(); } });
+  wrap.append(lab);
+  if (open && kids.length) wrap.append(h("div", { class: "tnode" }, kids.map(k => k())));
+  return wrap;
+}
+function objectTree(id, path) {
+  const kids = ((NODES[id] || {}).children || []).filter(k => IDX[k]);
+  const key = path + "/" + id;
+  return treeItem(key, [h("span", {}, iconOf(id)), " ", nameOf(id), h("span", { class: "sub" }, " " + id)], kids.map(k => () => objectTree(k, key)), () => select(id), ui.sel === id);
+}
+function renderTree() {
+  const tree = $("#tree"); tree.innerHTML = "";
+  const scenes = INDEX.filter(e => e.kind === "scene");
+  const roots = INDEX.filter(e => e.kind === "object" && !e.parent);
+  tree.append(treeItem("#scenes", [h("b", {}, "Scenes"), h("span", { class: "sub" }, " " + scenes.length)], scenes.map(s => () => {
+    const insts = ((NODES[s.id] || {}).instances || []);
+    return treeItem("s/" + s.id, [h("span", {}, iconOf(s.id)), " ", nameOf(s.id), h("span", { class: "sub" }, " " + s.id)],
+      insts.map(i => () => h("div", { class: "tlabel" + (ui.sel === i.object ? " sel" : ""), onclick: () => select(i.object) }, h("span", { class: "tog" }), h("span", { class: "mono" }, i.id), h("span", { class: "sub" }, " → "), iconOf(i.object), " ", nameOf(i.object))),
+      () => select(s.id), ui.sel === s.id);
+  })));
+  tree.append(treeItem("#objects", [h("b", {}, "Objects"), h("span", { class: "sub" }, " " + roots.length + " roots")], roots.map(r => () => objectTree(r.id, "o"))));
+}
+function expandTo(id) {
+  // Open the object chain from its root, and every scene that places it.
+  const chain = [];
+  for (let cur = id; cur && IDX[cur]; cur = IDX[cur].parent) chain.unshift(cur);
+  let key = "o";
+  chain.forEach(c => { key = key + "/" + c; ui.open.add(key); });
+  INDEX.filter(e => e.kind === "scene").forEach(s => { if (((NODES[s.id] || {}).instances || []).some(i => i.object === id)) ui.open.add("s/" + s.id); });
+}
+
+// ======================================================================================
+// Selection
+// ======================================================================================
+function select(id, fromHash) {
+  if (!IDX[id]) return;
+  ui.sel = id;
+  stopAllAudio();
+  clock.views = [];
+  if (!fromHash && location.hash.slice(1) !== id) history.replaceState(null, "", "#" + id);
+  expandTo(id);
+  renderList(); renderTree(); renderProps(id);
+  const center = $("#center"); center.innerHTML = "";
+  const n = NODES[id], e = IDX[id];
+  if (!n) { center.append(h("div", { class: "empty" }, "This node's file is missing or invalid; see the red banner.")); return; }
+  try {
+    const fn = e.kind === "scene" ? PREVIEW_scene : PREVIEW[e.type];
+    const out = fn ? fn(id, n) : card("No preview for this type yet.");
+    [].concat(out).filter(Boolean).forEach(x => center.append(x));
+  } catch (err) {
+    center.append(card("Preview error", h("div", { class: "warnline" }, "Could not draw this node: " + err.message + ". Ask the AI to check it.")));
+    console.error(err);
+  }
+  const row = document.querySelector(`#list .row[data-id="${id}"]`);
+  if (row) row.scrollIntoView({ block: "nearest" });
+}
+
+// ======================================================================================
+// Header, banner, keyboard, boot
+// ======================================================================================
+function renderHeader() {
+  const g = D.game || {};
+  $("#title").textContent = (g.title || "Game") + " — node visualizer";
+  document.title = (g.title || "Game") + " · visualizer";
+  $("#gen").textContent = "data from " + (D.generated_at || "?");
+  const v = D.validation || { ok: true, errors: [], warnings: [] };
+  const st = $("#status");
+  st.innerHTML = "";
+  const banner = $("#banner");
+  if (v.ok) st.append(h("span", { class: "pill ok" }, "✔ valid" + (v.warnings.length ? ` · ${v.warnings.length} warnings` : "")));
+  else st.append(h("span", { class: "pill bad", onclick: () => banner.classList.toggle("show") }, `✖ ${v.errors.length} error(s)`));
+  if (!v.ok || v.warnings.length) {
+    banner.innerHTML = "";
+    if (!v.ok) banner.append(h("b", {}, "Validation errors — the ROM will not build until the AI fixes these:"), h("ul", {}, v.errors.map(e => h("li", {}, e))));
+    if (v.warnings.length) banner.append(h("div", { class: "w" }, h("b", {}, "Warnings:"), h("ul", {}, v.warnings.map(e => h("li", {}, e)))));
+    if (!v.ok) banner.classList.add("show");
+    if (v.ok) st.firstChild.style.cursor = "pointer", st.firstChild.onclick = () => banner.classList.toggle("show");
+  }
+  const scenes = INDEX.filter(e => e.kind === "scene").length;
+  $("#counts").textContent = `${INDEX.length} nodes · ${scenes} scenes · ${INDEX.length - scenes} objects`;
+}
+$("#search").addEventListener("input", ev => { ui.search = ev.target.value; renderList(); });
+document.addEventListener("keydown", ev => {
+  if (ev.target.tagName === "INPUT" || ev.target.tagName === "SELECT") return;
+  if (ev.key === "ArrowDown" || ev.key === "ArrowUp") {
+    const items = filtered(); if (!items.length) return;
+    let i = items.findIndex(e => e.id === ui.sel);
+    i = ev.key === "ArrowDown" ? Math.min(items.length - 1, i + 1) : Math.max(0, i - 1);
+    select(items[i].id); ev.preventDefault();
+  } else if (ev.key === " ") {
+    clock.playing = !clock.playing;
+    document.querySelectorAll("button").forEach(b => { if (b.textContent === "⏸ Pause" || b.textContent === "▶ Play") b.textContent = clock.playing ? "⏸ Pause" : "▶ Play"; });
+    ev.preventDefault();
+  }
+});
+window.addEventListener("hashchange", () => { const id = decodeURIComponent(location.hash.slice(1)); if (id && id !== ui.sel) select(id, true); });
+renderHeader(); renderChips(); renderList(); renderTree();
+const start = decodeURIComponent(location.hash.slice(1)) || (D.game || {}).start_scene || (INDEX[0] || {}).id;
+if (start && IDX[start]) select(start, true);
+</script>
+</body>
+</html>

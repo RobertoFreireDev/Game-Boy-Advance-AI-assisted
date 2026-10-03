@@ -1,0 +1,21 @@
+{
+  "id": "trg_exit",
+  "kind": "object",
+  "type": "trigger",
+  "name": "Level exit",
+  "notes": "Invisible box at the goal flag. When the hero walks in: chime, fade to black, go to the credits.",
+  "zone": {"w": 32, "h": 48},
+  "logic": [
+             {
+               "behavior": "trigger_zone",
+               "params": {
+                           "once": true,
+                           "on_enter": [
+                                         {"do": "play_sfx", "sfx": "sfx_confirm"},
+                                         {"do": "fade_out", "ticks": 40},
+                                         {"do": "goto_scene", "scene": "scn_credits"}
+                                       ]
+                         }
+             }
+           ]
+}

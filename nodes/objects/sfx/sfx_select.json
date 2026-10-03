@@ -1,0 +1,10 @@
+{
+  "id": "sfx_select",
+  "kind": "object",
+  "type": "sfx",
+  "name": "Menu move",
+  "notes": "Tiny tick when the menu cursor moves.",
+  "channel": "square2",
+  "duty": 2,
+  "steps": [{"note": "A5", "ticks": 3, "volume": 9}]
+}

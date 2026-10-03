@@ -1,0 +1,20 @@
+{
+  "id": "pal_world",
+  "kind": "object",
+  "type": "palette",
+  "name": "World tiles",
+  "notes": "Colors of the ground tiles: grass greens, dirt browns, stone grays, wood. The tree sprite shares it.",
+  "colors": [
+              "#000000",
+              "#182818",
+              "#68c840",
+              "#389028",
+              "#c88850",
+              "#905828",
+              "#a8a8b0",
+              "#686878",
+              "#f8f8f8",
+              "#d0a058",
+              "#806030"
+            ]
+}

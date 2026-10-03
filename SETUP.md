@@ -191,7 +191,31 @@ middle of a black screen. Quote the ROM path: the repo path contains spaces and 
 
 `python tools/build.py` must end with `dist/<rom_name>.gba` and zero warnings, and
 `python tools/run.py` must open it in mGBA. That is the real "toolchain OK" signal for
-everyday work.
+everyday work. (Passed on 2026-10-02: `✔ Built dist/hero_quest.gba (39 KB)`, a clean build of
+32 files takes about 2 s.)
+
+### 3.5 Seeing the game run (AI self-check)
+
+The AI can't watch the screen, but it can look at screenshots:
+
+- **Screenshot the emulator**: start `mGBA.exe -3 "<rom>"`, wait for the window, then grab its
+  client area with PowerShell (`System.Drawing.Graphics.CopyFromScreen` at the window's
+  `ClientToScreen` position) and read the PNG. Keep the throwaway script in the scratchpad.
+- **Don't inject key presses** (`keybd_event`/`SendKeys`) for long sequences: if mGBA loses
+  focus, the keys go to whatever window is in front, on the human's desktop (it opened the
+  Windows quick-settings panel once). Timing is also unreliable because mGBA's start-up time
+  varies.
+- **Test without input instead**: copy `nodes/ catalog/ src/ tools/` to a scratchpad folder,
+  change the copy (e.g. `game.start_scene` = the level, move the player next to the thing to
+  test), build the copy with its own `tools/build.py` and screenshot it. The real repo stays
+  untouched.
+- mGBA 0.10.5 has **no `--script` command-line option** (Lua scripting is GUI-only). For memory
+  inspection use its GDB stub: `mGBA.exe -g <rom>` plus `C:\devkitPro\devkitARM\bin\arm-none-eabi-gdb.exe`
+  (`target remote :2345`; symbols come from `build/<rom_name>.elf`).
+- **Visualizer**: headless Edge renders it without opening a window:
+  `msedge.exe --headless=new --window-size=1600,1000 --virtual-time-budget=1500 --screenshot=<png> "file:///…/visualizer.html#<node_id>"`
+  (URL-encode the path: `Á` = `%C3%81`, space = `%20`). `--dump-dom` shows rendered errors.
+  Node.js (`node --check`) can syntax-check the page's script after extracting it.
 
 ---
 
@@ -205,7 +229,9 @@ everyday work.
 | `error adding trust anchors from file: /usr/ssl/certs/ca-bundle.crt` | pacman run outside a login shell, so hooks skipped | `bash --login -c "update-ca-trust"`, and always run pacman via `bash --login -c` |
 | `pacman -Syu` stops asking to close MSYS2 | Core packages updated first | Run `-Syu` again |
 | `tonc.h: No such file` / `cannot find -ltonc` | gcc called without a Makefile | Pass `-I C:\devkitPro\libtonc\include -L C:\devkitPro\libtonc\lib` |
-| Paths with spaces or accents break commands | Repo lives in `…\Área de Trabalho\…` | Always quote paths; Python `subprocess` with list args (no `shell=True`) |
+| Paths with spaces or accents break commands | Repo lives in `…\Área de Trabalho\…` | Always quote paths; Python `subprocess` with list args (no `shell=True`). `tools/build.py` runs gcc from the repo root with relative paths, so the accent never reaches gcc |
+| `.bat` shows `âœ”` instead of `✔` | Console code page is not UTF-8 | The `.bat` files run `chcp 65001` first; Python reconfigures stdout to UTF-8 |
+| Bash heredocs with long multi-line text fail (`unexpected EOF while looking for matching '`) | Quoting in the AI's shell wrapper | Write the script to a scratchpad file and run it instead |
 | `pacman` prompts in Portuguese | System locale is pt-BR | Harmless; the `--noconfirm` answers are the same |
 
 ---

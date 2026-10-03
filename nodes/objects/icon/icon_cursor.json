@@ -1,0 +1,9 @@
+{
+  "id": "icon_cursor",
+  "kind": "object",
+  "type": "icon",
+  "name": "Menu cursor",
+  "notes": "White arrow that points at the selected menu option.",
+  "palette": "pal_ui",
+  "pixels": ["1.......", "121.....", "1221....", "12221...", "1221....", "121.....", "1.......", "........"]
+}

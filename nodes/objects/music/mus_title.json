@@ -1,0 +1,31 @@
+{
+  "id": "mus_title",
+  "kind": "object",
+  "type": "music",
+  "name": "Title theme",
+  "notes": "Calm, friendly loop for the title and credits. Melody on square1, soft chords on square2, bass on wave, light drums.",
+  "bpm": 112,
+  "rows_per_beat": 2,
+  "loop": true,
+  "instruments": {
+                   "square1": {"duty": 2, "volume": 10, "decay": 3},
+                   "square2": {"duty": 1, "volume": 6, "decay": 4},
+                   "wave": {"wave": "0123456789abcdeffedcba9876543210", "volume": 2},
+                   "noise": {"volume": 6, "decay": 1}
+                 },
+  "patterns": {
+                "A": {
+                       "square1": "E5 -- G5 -- C6 -- G5 -- | A5 -- G5 -- E5 -- D5 --",
+                       "square2": "C5 -- -- -- E5 -- -- -- | F5 -- -- -- G5 -- -- --",
+                       "wave": "C3 -- G3 -- C3 -- G3 -- | F3 -- C4 -- G3 -- B2 --",
+                       "noise": "X2 .. X9 .. X2 .. X9 .. | X2 .. X9 .. X2 X2 X9 .."
+                     },
+                "B": {
+                       "square1": "F5 -- A5 -- C6 -- A5 -- | G5 -- -- -- -- -- .. ..",
+                       "square2": "A4 -- -- -- C5 -- -- -- | B4 -- -- -- D5 -- -- --",
+                       "wave": "F3 -- C4 -- F3 -- C4 -- | G3 -- D4 -- G3 -- B3 --",
+                       "noise": "X2 .. X9 .. X2 .. X9 .. | X2 .. X9 .. X2 X2 X9 .."
+                     }
+              },
+  "order": ["A", "B", "A", "B"]
+}
