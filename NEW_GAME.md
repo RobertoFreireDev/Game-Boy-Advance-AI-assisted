@@ -20,7 +20,7 @@ The repo is ~8.6k lines of engine/tools plus ~150 node files. Don't read everyth
 | `nodes/nodes.json` | Current game settings, variables, the full node index. |
 | `catalog/behaviors.json` | Every behavior and its params — **the real menu of what actors can do**. |
 | `catalog/actions.json` | Every action and its params. |
-| `CHANGELOG.md` (top 2 entries) | What the last game built, which nodes were kept as generic, engine features added for it. |
+| `git log --oneline -10` (+ `git show --stat` of the last game commit) | What the last game built, which nodes were kept as generic, engine features added for it. |
 | `src/engine/config.h` | Pool limits (actors, particles, sprite sheets, icons…). |
 
 ### Tier 2 — the nodes and behaviors close to the requested genre
@@ -47,7 +47,7 @@ The repo is ~8.6k lines of engine/tools plus ~150 node files. Don't read everyth
 
 ## 2. Genre → building blocks that already exist
 
-Three games have been built so far (see `CHANGELOG.md`): **Hero Quest** (side platformer),
+Three games have been built so far (see `git log`): **Hero Quest** (side platformer),
 **Sun Shrine** (top-down Zelda-like), **Night Swarm** (survivors-like, current). Their engine
 features stayed, so all three genres are covered without new code:
 
@@ -104,7 +104,8 @@ engine architecture (CLAUDE.md rule 8).
    A new action = `catalog/actions.json` + `codegen.py Gen.action` + `src/engine/actions.c`.
    A new field/type = the four mirrors (CLAUDE.md, validate, codegen, visualizer).
 7. `python tools/build.py` (zero warnings), then **play-test** (§5).
-8. CHANGELOG entry, update `CLAUDE.md` for any new behavior/action/field, commit, report.
+8. Update `CLAUDE.md` for any new behavior/action/field, commit (the message lists the nodes and
+   engine changes), report.
 
 ---
 
@@ -155,7 +156,7 @@ redo them:
   `spawn_wave` spawns at most 3 monsters per frame.
 
 If a new game pushes past this (more actors, bullets, particles), measure with the harness
-(§5) before optimizing, and record the result in `CHANGELOG.md` and here.
+(§5) before optimizing, and record the result in the commit message and here.
 
 ---
 

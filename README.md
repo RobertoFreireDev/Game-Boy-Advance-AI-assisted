@@ -15,4 +15,3 @@ their own. With mGBA's default keys: arrows = D-pad, **X** = A (pick a menu opti
 
 How it all works — the node format, the engine and the rules the AI follows — is in
 [`CLAUDE.md`](CLAUDE.md). Installing the tools is in [`SETUP.md`](SETUP.md).
-What changed and when is in [`CHANGELOG.md`](CHANGELOG.md).

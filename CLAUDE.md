@@ -107,7 +107,6 @@ Build details (owned by `tools/build.py`, no Makefile, no MSYS shell, so it work
 ├── CLAUDE.md                ← this file (AI-maintained)
 ├── SETUP.md                 ← install + verify the toolchain (AI-maintained)
 ├── NEW_GAME.md              ← playbook for creating/replacing a game + testing (AI-maintained)
-├── CHANGELOG.md             ← one entry per human request, plain language
 ├── .gitignore               ← generated/, build/, dist/, visualizer/data.js
 ├── build.bat                ← human: build the ROM
 ├── run.bat                  ← human: play the ROM in mGBA
@@ -703,13 +702,12 @@ The AI runs the Python scripts directly; the `.bat` files exist for the human.
 5. Run `python tools/validate.py` and fix everything.
 6. Run `python tools/build.py` and fix every error and warning.
 7. Make sure `visualizer/data.js` is regenerated.
-8. Add a `CHANGELOG.md` entry: date, the request in one line, node ids changed.
-9. If git is set up, commit with a clear message so "undo the last change" is easy.
-10. Report to the human in plain language: what you made/changed (name + id), what to click
+8. If git is set up, commit with a clear message so "undo the last change" is easy.
+9. Report to the human in plain language: what you made/changed (name + id), what to click
     in the visualizer, what to try in the game (controls), anything you couldn't do and why.
     No code or JSON in the report unless asked.
 
-**Done means:** validation passes, the ROM builds, `data.js` is fresh, changelog updated, report sent.
+**Done means:** validation passes, the ROM builds, `data.js` is fresh, report sent.
 
 ---
 
