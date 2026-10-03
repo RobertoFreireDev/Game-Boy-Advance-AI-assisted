@@ -2,6 +2,15 @@
 
 One entry per request, newest first. Written for humans: what changed and which nodes.
 
+## 2026-10-03 — New-game playbook for the AI
+
+**Request:** write down what the AI learned while making Night Swarm, so the next new game starts
+faster and is tested the right way.
+
+**Added:** `NEW_GAME.md` — which files the AI reads first (and which it can skip), which existing
+behaviors fit each kind of game, the step-by-step workflow, and how to play-test the ROM with
+Python and the emulator's debugger (never Lua). `CLAUDE.md` now points to it. No nodes changed.
+
 ## 2026-10-03 — Replace Sun Shrine with a survivors-like, "Night Swarm"
 
 **Request:** "remove all the logic related to current game and create a new game" — a survivors-like

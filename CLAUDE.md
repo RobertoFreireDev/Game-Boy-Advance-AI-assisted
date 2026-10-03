@@ -7,6 +7,10 @@ in a read-only visualizer, and clicks `build.bat` / `run.bat`.
 Read this whole file before every task. It is the contract for the node format, the
 engine structure, the tools, and the visualizer.
 
+**Creating a new game or replacing the current one?** Also read [`NEW_GAME.md`](NEW_GAME.md):
+what context to load (and what to skip), which existing behaviors fit each genre, the workflow,
+and how to play-test the ROM headlessly (Python + mGBA's GDB stub, never Lua).
+
 ---
 
 ## 1. Golden rules
@@ -102,6 +106,7 @@ Build details (owned by `tools/build.py`, no Makefile, no MSYS shell, so it work
 .
 ├── CLAUDE.md                ← this file (AI-maintained)
 ├── SETUP.md                 ← install + verify the toolchain (AI-maintained)
+├── NEW_GAME.md              ← playbook for creating/replacing a game + testing (AI-maintained)
 ├── CHANGELOG.md             ← one entry per human request, plain language
 ├── .gitignore               ← generated/, build/, dist/, visualizer/data.js
 ├── build.bat                ← human: build the ROM
@@ -690,6 +695,7 @@ The AI runs the Python scripts directly; the `.bat` files exist for the human.
 ## 12. How the AI handles every request
 
 1. Read `nodes/nodes.json` and the nodes involved. Read code only when needed.
+   For a new game (or a new genre), follow [`NEW_GAME.md`](NEW_GAME.md) for what to load and in what order.
 2. If the request is ambiguous in a way that changes the result, ask **one** short question.
    Otherwise choose sensibly and say what you chose.
 3. Make the change: nodes first; catalog / behaviors / engine code only if needed.
