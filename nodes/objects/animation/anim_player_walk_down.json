@@ -3,7 +3,7 @@
   "kind": "object",
   "type": "animation",
   "name": "Player walking (down)",
-  "notes": "Walking toward the bottom of the screen; the mirrored step makes the other foot step.",
+  "notes": "Walking toward the bottom of the screen. The second step is its own drawing (not a mirror), so the light and shading stay on the same side.",
   "sprite": "spr_player",
   "loop": true,
   "frames": [
@@ -16,9 +16,8 @@
       "ticks": 8
     },
     {
-      "frame": "down_1",
-      "ticks": 8,
-      "flip_x": true
+      "frame": "down_2",
+      "ticks": 8
     },
     {
       "frame": "down_0",
