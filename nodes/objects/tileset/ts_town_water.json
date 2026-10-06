@@ -3,7 +3,7 @@
   "kind": "object",
   "type": "tileset",
   "name": "Water, tree and bridge tiles",
-  "notes": "The collision layer's tiles: river, pond and ocean water with sandy foam or a shaded dirt bank (solid), the forest wall (solid), town trees (only the 2 trunk-base tiles are solid; the rest is an 'over' tile, so you walk behind the leaves), bridge rails (solid) and planks, dock planks, and an invisible solid tile that blocks the buildings drawn on layer 2. Animated tiles: the river's ripples and foam flow downstream, the pond's ripples ('~' and '`', copies of the river water) drift in the breeze, the ocean's ripples roll toward the beach, waves wash up the sand ('}' is the walkable surf strip above the shore tile 't') and pull back, and in gusts of wind the town trees lean and the forest leaves rustle.",
+  "notes": "The collision layer's tiles: river, pond and ocean water with sandy foam or a shaded dirt bank (solid), the forest wall (solid), town trees (only the 2 trunk-base tiles are solid; the rest is an 'over' tile, so you walk behind the leaves), bridge rails (solid) and planks, dock planks, and an invisible solid tile that blocks the buildings drawn on layer 2. Animated tiles: the river's ripples and foam flow downstream, the pond's ripples ('~' and '`', copies of the river water) drift in the breeze, the ocean's ripples roll toward the beach, at the river mouth ('u' and 'w' are the banks meeting the beach, '\"' is the sea just past the mouth) the river's ripples keep flowing out into the sea, waves wash up the sand ('}' is the walkable surf strip above the shore tile 't') and pull back, and in gusts of wind the town trees lean and the forest leaves rustle.",
   "palette": "pal_water",
   "tiles": {
     "!": {
@@ -4420,40 +4420,27 @@
     },
     "u": {
       "pixels": [
-        "5544ffff",
-        "554fffff",
-        "444fffff",
-        "4fffffff",
-        "ffffffff",
-        "3f3f3f3f",
-        "f3f3f3f3",
-        "3f3f3f3f"
-      ],
-      "solid": true
-    },
-    "v": {
-      "pixels": [
-        "ffffffff",
-        "ffffffff",
-        "f444ffff",
-        "ffffffff",
-        "ffffffff",
-        "3f3f344f",
-        "f3f3f3f3",
-        "3f3f3f3f"
+        "544f3333",
+        "554f3333",
+        "44f33333",
+        "fff33333",
+        "ff333333",
+        "3f333333",
+        "f3333333",
+        "33333333"
       ],
       "solid": true
     },
     "w": {
       "pixels": [
-        "ffff4455",
-        "fffff545",
-        "fffff454",
-        "fffffff4",
-        "ffffffff",
-        "3f3f3f3f",
-        "f3f3f3f3",
-        "3f3f3f3f"
+        "3333f445",
+        "3333f455",
+        "33333f44",
+        "33333fff",
+        "333333ff",
+        "333333f3",
+        "3333333f",
+        "33333333"
       ],
       "solid": true
     },
@@ -5325,6 +5312,115 @@
             "........"
           ],
           "ticks": 20
+        }
+      ]
+    },
+    "\"": {
+      "pixels": [
+        "33333333",
+        "33333333",
+        "34443333",
+        "33333333",
+        "33333333",
+        "33333443",
+        "33333333",
+        "33333333"
+      ],
+      "solid": true,
+      "frames": [
+        {
+          "ticks": 6
+        },
+        {
+          "pixels": [
+            "33333333",
+            "33333333",
+            "33333333",
+            "34443333",
+            "33333333",
+            "33333333",
+            "33333443",
+            "33333333"
+          ],
+          "ticks": 6
+        },
+        {
+          "pixels": [
+            "33333333",
+            "33333333",
+            "33333333",
+            "33333333",
+            "34443333",
+            "33333333",
+            "33333333",
+            "33333443"
+          ],
+          "ticks": 6
+        },
+        {
+          "pixels": [
+            "33333443",
+            "33333333",
+            "33333333",
+            "33333333",
+            "33333333",
+            "34443333",
+            "33333333",
+            "33333333"
+          ],
+          "ticks": 6
+        },
+        {
+          "pixels": [
+            "33333333",
+            "33333443",
+            "33333333",
+            "33333333",
+            "33333333",
+            "33333333",
+            "34443333",
+            "33333333"
+          ],
+          "ticks": 6
+        },
+        {
+          "pixels": [
+            "33333333",
+            "33333333",
+            "33333443",
+            "33333333",
+            "33333333",
+            "33333333",
+            "33333333",
+            "34443333"
+          ],
+          "ticks": 6
+        },
+        {
+          "pixels": [
+            "34443333",
+            "33333333",
+            "33333333",
+            "33333443",
+            "33333333",
+            "33333333",
+            "33333333",
+            "33333333"
+          ],
+          "ticks": 6
+        },
+        {
+          "pixels": [
+            "33333333",
+            "34443333",
+            "33333333",
+            "33333333",
+            "33333443",
+            "33333333",
+            "33333333",
+            "33333333"
+          ],
+          "ticks": 6
         }
       ]
     }
