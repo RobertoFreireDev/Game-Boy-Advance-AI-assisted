@@ -37,13 +37,34 @@ header .hint { margin-left: auto; color: var(--accent2); font-weight: 600; }
 #banner.show { display: block; }
 #banner li { color: #ffb3b3; }
 #banner .w li { color: #f3d29a; }
-main { flex: 1; display: grid; grid-template-columns: 300px 1fr 360px; min-height: 0; }
+main { flex: 1; display: grid; grid-template-columns: var(--lw, 300px) 1fr var(--rw, 360px); min-height: 0; }
+main.lc { --lw: 30px; }
+main.rc { --rw: 30px; }
 aside, #center { overflow: auto; min-height: 0; }
-aside { background: var(--panel); }
-#left { border-right: 1px solid var(--line); display: flex; flex-direction: column; }
-#right { border-left: 1px solid var(--line); padding: 12px 14px; }
-.sec { padding: 10px 12px; border-bottom: 1px solid var(--line); }
-.sec h2 { font-size: 11px; text-transform: uppercase; letter-spacing: 1.2px; color: var(--dim); margin: 0 0 8px; }
+aside { background: var(--panel); display: flex; flex-direction: column; }
+#left { border-right: 1px solid var(--line); }
+#right { border-left: 1px solid var(--line); }
+#props { padding: 12px 14px; overflow: auto; flex: 1; min-height: 0; }
+/* Sidebar head: title + collapse button. A collapsed sidebar shrinks to a thin rail. */
+.side-head { display: flex; align-items: center; gap: 6px; padding: 5px 8px; border-bottom: 1px solid var(--line); flex: none; }
+.side-head .st { font-size: 11px; text-transform: uppercase; letter-spacing: 1.2px; color: var(--dim); font-weight: 700; flex: 1; }
+.side-btn { padding: 0 7px; line-height: 20px; color: var(--dim); }
+#right .side-head { flex-direction: row-reverse; }
+aside.collapsed { overflow: hidden; cursor: pointer; }
+aside.collapsed > :not(.side-head) { display: none; }
+aside.collapsed .side-head { flex-direction: column; border-bottom: none; padding: 6px 0; height: 100%; }
+aside.collapsed .side-head .st { writing-mode: vertical-rl; flex: none; }
+aside.collapsed:hover { background: var(--panel2); }
+.sec { padding: 10px 12px; border-bottom: 1px solid var(--line); flex: none; }
+.sec h2 { font-size: 11px; text-transform: uppercase; letter-spacing: 1.2px; color: var(--dim); margin: 0 0 8px; cursor: pointer; user-select: none; display: flex; align-items: center; gap: 4px; }
+.sec h2:hover { color: var(--text); }
+.sec h2::before { content: "▾"; width: 12px; }
+.sec.collapsed h2 { margin: 0; }
+.sec.collapsed h2::before { content: "▸"; }
+.sec.collapsed > :not(h2) { display: none; }
+.sec.grow:not(.collapsed) { flex: 1; min-height: 0; display: flex; flex-direction: column; border-bottom: none; }
+#left:has(#sec-tree.collapsed) #sec-nodes:not(.collapsed) { flex: 1; min-height: 0; display: flex; flex-direction: column; }
+#left:has(#sec-tree.collapsed) #list { max-height: none; flex: 1; }
 #search { width: 100%; margin-bottom: 8px; }
 .chips { display: flex; flex-wrap: wrap; gap: 4px; }
 .chip { font-size: 11px; padding: 1px 7px; border-radius: 99px; border: 1px solid var(--line); background: transparent; color: var(--dim); }
@@ -128,18 +149,24 @@ kbd { background: #333a48; border-radius: 4px; padding: 0 5px; font-size: 11px; 
 <div id="banner"></div>
 <main>
   <aside id="left">
-    <div class="sec">
-      <h2>1 · Nodes</h2>
+    <div class="side-head"><span class="st">Browse</span><button class="side-btn" title="Collapse / expand this panel">◀</button></div>
+    <div class="sec" id="sec-nodes">
+      <h2 title="Collapse / expand">1 · Nodes</h2>
       <input id="search" placeholder="Search name, id, type, tag…" autocomplete="off">
       <div class="chips" id="kindchips"></div>
       <div class="chips" id="typechips" style="margin-top:4px"></div>
+      <div id="list" style="margin-top:8px"></div>
     </div>
-    <div class="sec" id="list"></div>
-    <div class="sec" style="border-bottom:none"><h2>2 · Tree</h2></div>
-    <div id="tree"></div>
+    <div class="sec grow" id="sec-tree">
+      <h2 title="Collapse / expand">2 · Tree</h2>
+      <div id="tree"></div>
+    </div>
   </aside>
   <section id="center"><div class="empty">Pick a node on the left.</div></section>
-  <aside id="right"><div class="empty">Properties appear here.</div></aside>
+  <aside id="right">
+    <div class="side-head"><span class="st">Properties</span><button class="side-btn" title="Collapse / expand this panel">▶</button></div>
+    <div id="props"><div class="empty">Properties appear here.</div></div>
+  </aside>
 </main>
 <script src="data.js"></script>
 <script>
@@ -730,7 +757,7 @@ function genericValue(k, v) {
 // ======================================================================================
 const SKIP_PROPS = new Set(["id", "kind", "type", "name", "notes", "children", "code", "tags"]);
 function renderProps(id) {
-  const n = NODES[id], e = IDX[id] || {}, right = $("#right");
+  const n = NODES[id], e = IDX[id] || {}, right = $("#props");
   right.innerHTML = "";
   if (!n) { right.append(h("div", { class: "empty" }, "This node's file could not be loaded.")); return; }
   right.append(
@@ -1382,6 +1409,27 @@ function renderHeader() {
   $("#counts").textContent = `${INDEX.length} nodes · ${scenes} scenes · ${INDEX.length - scenes} objects`;
 }
 $("#search").addEventListener("input", ev => { ui.search = ev.target.value; renderList(); });
+// Collapsible sidebars and sections (view-only; remembered in this browser).
+function loadFolds() { try { return JSON.parse(localStorage.getItem("gba_vis_folds") || "{}"); } catch (e) { return {}; } }
+function saveFolds(f) { try { localStorage.setItem("gba_vis_folds", JSON.stringify(f)); } catch (e) { /* storage blocked: fine */ } }
+const folds = loadFolds();
+function setSide(side, closed) {
+  const aside = $("#" + side), btn = aside.querySelector(".side-btn");
+  aside.classList.toggle("collapsed", closed);
+  $("main").classList.toggle(side === "left" ? "lc" : "rc", closed);
+  btn.textContent = (side === "left") === closed ? "▶" : "◀";
+  folds[side] = closed; saveFolds(folds);
+}
+["left", "right"].forEach(side => {
+  const aside = $("#" + side);
+  aside.querySelector(".side-btn").addEventListener("click", ev => { ev.stopPropagation(); setSide(side, !aside.classList.contains("collapsed")); });
+  aside.addEventListener("click", () => { if (aside.classList.contains("collapsed")) setSide(side, false); });
+  setSide(side, !!folds[side]);
+});
+document.querySelectorAll("#left .sec").forEach(sec => {
+  sec.querySelector("h2").addEventListener("click", () => { const c = sec.classList.toggle("collapsed"); folds[sec.id] = c; saveFolds(folds); });
+  sec.classList.toggle("collapsed", !!folds[sec.id]);
+});
 document.addEventListener("keydown", ev => {
   if (ev.target.tagName === "INPUT" || ev.target.tagName === "SELECT") return;
   if (ev.key === "ArrowDown" || ev.key === "ArrowUp") {
