@@ -1,0 +1,26 @@
+{
+  "id": "sfx_door",
+  "kind": "object",
+  "type": "sfx",
+  "name": "Door",
+  "notes": "A wooden door opening.",
+  "priority": 1,
+  "steps": [
+    {
+      "pitch": 13,
+      "ticks": 2,
+      "volume": 8
+    },
+    {
+      "pitch": 10,
+      "ticks": 4,
+      "volume": 6
+    },
+    {
+      "pitch": 14,
+      "ticks": 6,
+      "volume": 4
+    }
+  ],
+  "channel": "noise"
+}

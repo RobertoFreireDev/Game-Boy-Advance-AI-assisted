@@ -1,0 +1,184 @@
+{
+  "id": "scn_museum",
+  "kind": "scene",
+  "type": "level",
+  "name": "Museum",
+  "notes": "Prof. Odessa's museum. Talk to her at the desk (A) to donate; your exhibits fill the tanks, terrariums and pedestals.",
+  "backdrop": "#000000",
+  "music": "mus_indoor",
+  "camera": {
+    "x": 0,
+    "y": 0,
+    "bounds": "map"
+  },
+  "instances": [
+    {
+      "id": "map",
+      "object": "map_museum"
+    },
+    {
+      "id": "clock",
+      "object": "prop_clock",
+      "x": 0,
+      "y": 0,
+      "overrides": {
+        "day_clock": {
+          "on_hour": []
+        }
+      }
+    },
+    {
+      "id": "you",
+      "object": "plr_you",
+      "x": 120,
+      "y": 140
+    },
+    {
+      "id": "odessa",
+      "object": "npc_odessa",
+      "x": 120,
+      "y": 104
+    },
+    {
+      "id": "ex_crucian",
+      "object": "prop_ex_fish_crucian",
+      "x": 32,
+      "y": 48
+    },
+    {
+      "id": "ex_bass",
+      "object": "prop_ex_fish_bass",
+      "x": 32,
+      "y": 72
+    },
+    {
+      "id": "ex_dace",
+      "object": "prop_ex_fish_dace",
+      "x": 32,
+      "y": 96
+    },
+    {
+      "id": "ex_carp",
+      "object": "prop_ex_fish_carp",
+      "x": 32,
+      "y": 120
+    },
+    {
+      "id": "ex_koi",
+      "object": "prop_ex_fish_koi",
+      "x": 56,
+      "y": 48
+    },
+    {
+      "id": "ex_seabass",
+      "object": "prop_ex_fish_seabass",
+      "x": 56,
+      "y": 72
+    },
+    {
+      "id": "ex_snapper",
+      "object": "prop_ex_fish_snapper",
+      "x": 56,
+      "y": 96
+    },
+    {
+      "id": "ex_white",
+      "object": "prop_ex_bug_white",
+      "x": 184,
+      "y": 52
+    },
+    {
+      "id": "ex_bee",
+      "object": "prop_ex_bug_bee",
+      "x": 208,
+      "y": 52
+    },
+    {
+      "id": "ex_ladybug",
+      "object": "prop_ex_bug_ladybug",
+      "x": 184,
+      "y": 76
+    },
+    {
+      "id": "ex_firefly",
+      "object": "prop_ex_bug_firefly",
+      "x": 208,
+      "y": 76
+    },
+    {
+      "id": "ex_cricket",
+      "object": "prop_ex_bug_cricket",
+      "x": 184,
+      "y": 100
+    },
+    {
+      "id": "ex_crab",
+      "object": "prop_ex_bug_crab",
+      "x": 208,
+      "y": 100
+    },
+    {
+      "id": "ex_ammonite",
+      "object": "prop_ex_fos_ammonite",
+      "x": 88,
+      "y": 73
+    },
+    {
+      "id": "ex_trilobite",
+      "object": "prop_ex_fos_trilobite",
+      "x": 112,
+      "y": 73
+    },
+    {
+      "id": "ex_tooth",
+      "object": "prop_ex_fos_tooth",
+      "x": 136,
+      "y": 73
+    },
+    {
+      "id": "ex_amber",
+      "object": "prop_ex_fos_amber",
+      "x": 160,
+      "y": 73
+    },
+    {
+      "id": "exit",
+      "object": "trg_door",
+      "x": 112,
+      "y": 146,
+      "overrides": {
+        "trigger_zone": {
+          "on_enter": [
+            {
+              "do": "set_var",
+              "var": "entry",
+              "value": 3
+            },
+            {
+              "do": "play_sfx",
+              "sfx": "sfx_door"
+            },
+            {
+              "do": "fade_out",
+              "ticks": 12
+            },
+            {
+              "do": "goto_scene",
+              "scene": "scn_town"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "hud",
+      "object": "hud_main"
+    }
+  ],
+  "on_start": [
+    {
+      "do": "fade_in",
+      "ticks": 16
+    }
+  ]
+}

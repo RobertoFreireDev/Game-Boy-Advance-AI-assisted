@@ -1,0 +1,22 @@
+{
+  "id": "sfx_talk",
+  "kind": "object",
+  "type": "sfx",
+  "name": "Talk",
+  "notes": "A friendly blip when you start talking to someone.",
+  "priority": 1,
+  "steps": [
+    {
+      "note": "A5",
+      "ticks": 2,
+      "volume": 6
+    },
+    {
+      "note": "D6",
+      "ticks": 3,
+      "volume": 6
+    }
+  ],
+  "channel": "square2",
+  "duty": 1
+}

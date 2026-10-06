@@ -1,0 +1,21 @@
+{
+  "id": "prop_fur_rug",
+  "kind": "object",
+  "type": "prop",
+  "name": "Moss Rug",
+  "notes": "Stands in your house once you own it (fur_rug).",
+  "body": "body_fur_rug",
+  "logic": [
+    {
+      "behavior": "exists_when",
+      "params": {
+        "var": "fur_rug",
+        "min": 1,
+        "max": 1
+      }
+    }
+  ],
+  "children": [
+    "body_fur_rug"
+  ]
+}

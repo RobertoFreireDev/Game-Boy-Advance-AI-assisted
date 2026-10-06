@@ -1,0 +1,21 @@
+{
+  "id": "prop_ex_fish_koi",
+  "kind": "object",
+  "type": "prop",
+  "name": "Koi exhibit",
+  "notes": "Appears in the museum once you donated a Koi (variable don_fish_koi).",
+  "body": "body_ex_fish_koi",
+  "logic": [
+    {
+      "behavior": "exists_when",
+      "params": {
+        "var": "don_fish_koi",
+        "min": 1,
+        "max": 1
+      }
+    }
+  ],
+  "children": [
+    "body_ex_fish_koi"
+  ]
+}

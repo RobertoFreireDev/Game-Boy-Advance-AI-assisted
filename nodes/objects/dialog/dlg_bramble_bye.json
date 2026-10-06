@@ -1,0 +1,24 @@
+{
+  "id": "dlg_bramble_bye",
+  "kind": "object",
+  "type": "dialog",
+  "name": "Bramble: bye",
+  "notes": "Bramble says goodbye.",
+  "font": "font_default",
+  "box": {
+    "x": 8,
+    "y": 88,
+    "w": 224,
+    "h": 64,
+    "paper": 3,
+    "border": 2
+  },
+  "ticks_per_char": 1,
+  "lines": [
+    {
+      "speaker": "BRAMBLE",
+      "portrait": "icon_face_bramble",
+      "text": "COME BACK ANY TIME! I'M OPEN FROM 8 IN THE MORNING TILL 10 AT NIGHT."
+    }
+  ]
+}

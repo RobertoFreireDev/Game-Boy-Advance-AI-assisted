@@ -1,0 +1,29 @@
+{
+  "id": "body_fruit",
+  "kind": "object",
+  "type": "body",
+  "name": "Apples on the tree body",
+  "notes": "Three red apples among the leaves.",
+  "origin": [
+    8,
+    8
+  ],
+  "hitbox": {
+    "x": -6,
+    "y": -6,
+    "w": 12,
+    "h": 12
+  },
+  "physics": {
+    "gravity": false,
+    "solid": false,
+    "collides_with": []
+  },
+  "animations": {
+    "idle": "anim_fruit"
+  },
+  "default_animation": "idle",
+  "children": [
+    "anim_fruit"
+  ]
+}

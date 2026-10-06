@@ -1,0 +1,21 @@
+{
+  "id": "prop_ex_fos_trilobite",
+  "kind": "object",
+  "type": "prop",
+  "name": "Trilobite exhibit",
+  "notes": "Appears in the museum once you donated a Trilobite (variable don_fos_trilobite).",
+  "body": "body_ex_fos_trilobite",
+  "logic": [
+    {
+      "behavior": "exists_when",
+      "params": {
+        "var": "don_fos_trilobite",
+        "min": 1,
+        "max": 1
+      }
+    }
+  ],
+  "children": [
+    "body_ex_fos_trilobite"
+  ]
+}

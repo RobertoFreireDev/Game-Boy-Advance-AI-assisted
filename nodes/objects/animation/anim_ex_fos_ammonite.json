@@ -1,0 +1,16 @@
+{
+  "id": "anim_ex_fos_ammonite",
+  "kind": "object",
+  "type": "animation",
+  "name": "Ammonite exhibit",
+  "notes": "The Ammonite on its museum pedestal.",
+  "sprite": "spr_fossils",
+  "loop": true,
+  "frames": [
+    {
+      "frame": "ammonite",
+      "ticks": 60
+    }
+  ],
+  "events": []
+}

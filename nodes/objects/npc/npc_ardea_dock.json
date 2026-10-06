@@ -1,0 +1,35 @@
+{
+  "id": "npc_ardea_dock",
+  "kind": "object",
+  "type": "npc",
+  "name": "Mayor Ardea (on the dock)",
+  "notes": "Waits on the dock when you arrive. Talk to her (A) for the welcome and your first tools; then she goes back to the Town Hall (she only exists while intro = 0).",
+  "body": "body_ardea",
+  "logic": [
+    {
+      "behavior": "exists_when",
+      "params": {
+        "var": "intro",
+        "min": 0,
+        "max": 0,
+        "live": true
+      }
+    },
+    {
+      "behavior": "interact",
+      "params": {
+        "range": 6,
+        "face_player": true,
+        "on_press": [
+          {
+            "do": "show_dialog",
+            "dialog": "dlg_intro"
+          }
+        ]
+      }
+    }
+  ],
+  "sounds": {
+    "talk": "sfx_talk"
+  }
+}

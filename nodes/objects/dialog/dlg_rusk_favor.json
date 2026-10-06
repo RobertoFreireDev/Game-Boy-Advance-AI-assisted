@@ -1,0 +1,24 @@
+{
+  "id": "dlg_rusk_favor",
+  "kind": "object",
+  "type": "dialog",
+  "name": "Rusk: favor",
+  "notes": "Rusk's favor line.",
+  "font": "font_default",
+  "box": {
+    "x": 8,
+    "y": 88,
+    "w": 224,
+    "h": 64,
+    "paper": 3,
+    "border": 2
+  },
+  "ticks_per_char": 1,
+  "lines": [
+    {
+      "speaker": "RUSK",
+      "portrait": "icon_face_rusk",
+      "text": "LISTEN, KID. BRING ME A BLACK BASS FROM THE RIVER. I WANT TO SEE IF YOU'VE GOT WHAT IT TAKES."
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "id": "dlg_got_rod",
+  "kind": "object",
+  "type": "dialog",
+  "name": "Bought the rod",
+  "notes": "After buying the fishing rod.",
+  "font": "font_default",
+  "box": {
+    "x": 8,
+    "y": 88,
+    "w": 224,
+    "h": 64,
+    "paper": 3,
+    "border": 2
+  },
+  "ticks_per_char": 1,
+  "lines": [
+    {
+      "speaker": "BRAMBLE",
+      "portrait": "icon_face_bramble",
+      "text": "ONE FISHING ROD! HOLD IT (L / R), FACE A FISH SHADOW IN THE WATER AND PRESS A."
+    },
+    {
+      "speaker": "BRAMBLE",
+      "portrait": "icon_face_bramble",
+      "text": "WAIT FOR THE NIBBLES... AND PULL WITH A WHEN IT BITES WITH A SPLASH!"
+    }
+  ]
+}

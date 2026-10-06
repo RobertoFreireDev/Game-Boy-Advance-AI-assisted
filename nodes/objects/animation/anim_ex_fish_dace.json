@@ -1,0 +1,16 @@
+{
+  "id": "anim_ex_fish_dace",
+  "kind": "object",
+  "type": "animation",
+  "name": "Dace exhibit",
+  "notes": "The Dace swimming in its museum tank.",
+  "sprite": "spr_fish",
+  "loop": true,
+  "frames": [
+    {
+      "frame": "dace",
+      "ticks": 60
+    }
+  ],
+  "events": []
+}

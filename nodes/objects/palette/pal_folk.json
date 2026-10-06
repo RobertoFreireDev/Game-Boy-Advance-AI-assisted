@@ -1,0 +1,25 @@
+{
+  "id": "pal_folk",
+  "kind": "object",
+  "type": "palette",
+  "name": "Folk colors",
+  "notes": "Shared by every character sprite: outline (1), white (2), cream (3), tan (4), browns (5-7), pink (8), skin (9), red (10), blue (11), yellow (12), green (13) and greys (14-15).",
+  "colors": [
+    "#000000",
+    "#2a1e1a",
+    "#f8f4ec",
+    "#e8d8b8",
+    "#c8a878",
+    "#a8703c",
+    "#7a4a28",
+    "#4a2c1c",
+    "#f0a8a0",
+    "#f4c8a0",
+    "#d04838",
+    "#3c6cc8",
+    "#f0c040",
+    "#58a048",
+    "#8c94a4",
+    "#545c70"
+  ]
+}

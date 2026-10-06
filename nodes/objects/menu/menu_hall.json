@@ -1,0 +1,289 @@
+{
+  "id": "menu_hall",
+  "kind": "object",
+  "type": "menu",
+  "name": "Town Hall counter",
+  "notes": "Mayor Ardea's menu. The title shows what you still owe. PAY 1,000 pays part of the loan (and shows the menu again), PAY ALL clears it if your wallet is big enough, TALK gives advice (and a reward once you met all 3 neighbors).",
+  "font": "font_default",
+  "title": "LOAN: {loan} PIPS",
+  "cursor": "icon_cursor",
+  "box": {
+    "x": 56,
+    "y": 16,
+    "w": 136,
+    "h": 96,
+    "paper": 3,
+    "border": 2
+  },
+  "layout": {
+    "x": 88,
+    "y": 48,
+    "spacing": 16,
+    "title_y": 24
+  },
+  "options": [
+    {
+      "label": "PAY 1,000",
+      "actions": [
+        {
+          "do": "if_var",
+          "var": "loan",
+          "op": "==",
+          "value": 0,
+          "then": [
+            {
+              "do": "show_dialog",
+              "dialog": "dlg_no_loan"
+            }
+          ],
+          "else": [
+            {
+              "do": "if_var",
+              "var": "pips",
+              "op": ">=",
+              "value": 1000,
+              "then": [
+                {
+                  "do": "if_var",
+                  "var": "loan",
+                  "op": ">=",
+                  "value": 1000,
+                  "then": [
+                    {
+                      "do": "add_var",
+                      "var": "loan",
+                      "value": -1000
+                    },
+                    {
+                      "do": "add_var",
+                      "var": "pips",
+                      "value": -1000
+                    }
+                  ],
+                  "else": [
+                    {
+                      "do": "add_var",
+                      "var": "pips",
+                      "from": "loan",
+                      "times": -1
+                    },
+                    {
+                      "do": "set_var",
+                      "var": "loan",
+                      "value": 0
+                    }
+                  ]
+                },
+                {
+                  "do": "play_sfx",
+                  "sfx": "sfx_coin"
+                },
+                {
+                  "do": "if_var",
+                  "var": "loan",
+                  "op": "==",
+                  "value": 0,
+                  "then": [
+                    {
+                      "do": "show_dialog",
+                      "dialog": "dlg_loan_paid"
+                    }
+                  ],
+                  "else": [
+                    {
+                      "do": "open_menu",
+                      "menu": "menu_hall"
+                    }
+                  ]
+                }
+              ],
+              "else": [
+                {
+                  "do": "play_sfx",
+                  "sfx": "sfx_nope"
+                },
+                {
+                  "do": "show_dialog",
+                  "dialog": "dlg_need_pips"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "label": "PAY ALL",
+      "actions": [
+        {
+          "do": "if_var",
+          "var": "loan",
+          "op": "==",
+          "value": 0,
+          "then": [
+            {
+              "do": "show_dialog",
+              "dialog": "dlg_no_loan"
+            }
+          ],
+          "else": [
+            {
+              "do": "set_var",
+              "var": "sale",
+              "from": "pips"
+            },
+            {
+              "do": "add_var",
+              "var": "sale",
+              "from": "loan",
+              "times": -1
+            },
+            {
+              "do": "if_var",
+              "var": "sale",
+              "op": ">=",
+              "value": 0,
+              "then": [
+                {
+                  "do": "add_var",
+                  "var": "pips",
+                  "from": "loan",
+                  "times": -1
+                },
+                {
+                  "do": "set_var",
+                  "var": "loan",
+                  "value": 0
+                },
+                {
+                  "do": "play_sfx",
+                  "sfx": "sfx_coin"
+                },
+                {
+                  "do": "show_dialog",
+                  "dialog": "dlg_loan_paid"
+                }
+              ],
+              "else": [
+                {
+                  "do": "play_sfx",
+                  "sfx": "sfx_nope"
+                },
+                {
+                  "do": "show_dialog",
+                  "dialog": "dlg_need_pips"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "label": "TALK",
+      "actions": [
+        {
+          "do": "show_dialog",
+          "dialog": "dlg_ardea_tip1"
+        },
+        {
+          "do": "if_chance",
+          "percent": 75,
+          "then": [
+            {
+              "do": "show_dialog",
+              "dialog": "dlg_ardea_tip2"
+            }
+          ]
+        },
+        {
+          "do": "if_chance",
+          "percent": 66,
+          "then": [
+            {
+              "do": "show_dialog",
+              "dialog": "dlg_ardea_tip3"
+            }
+          ]
+        },
+        {
+          "do": "if_chance",
+          "percent": 50,
+          "then": [
+            {
+              "do": "show_dialog",
+              "dialog": "dlg_ardea_tip4"
+            }
+          ]
+        },
+        {
+          "do": "if_var",
+          "var": "met_reward",
+          "op": "==",
+          "value": 0,
+          "then": [
+            {
+              "do": "if_var",
+              "var": "fr_pembrook",
+              "op": ">=",
+              "value": 1,
+              "then": [
+                {
+                  "do": "if_var",
+                  "var": "fr_rusk",
+                  "op": ">=",
+                  "value": 1,
+                  "then": [
+                    {
+                      "do": "if_var",
+                      "var": "fr_tilly",
+                      "op": ">=",
+                      "value": 1,
+                      "then": [
+                        {
+                          "do": "set_var",
+                          "var": "met_reward",
+                          "value": 1
+                        },
+                        {
+                          "do": "add_var",
+                          "var": "pips",
+                          "value": 1000
+                        },
+                        {
+                          "do": "play_sfx",
+                          "sfx": "sfx_coin"
+                        },
+                        {
+                          "do": "show_dialog",
+                          "dialog": "dlg_neighbor_reward"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "label": "BYE",
+      "actions": [
+        {
+          "do": "close_menu"
+        }
+      ]
+    }
+  ],
+  "on_cancel": [
+    {
+      "do": "close_menu"
+    }
+  ],
+  "sounds": {
+    "move": "sfx_select",
+    "select": "sfx_confirm"
+  }
+}

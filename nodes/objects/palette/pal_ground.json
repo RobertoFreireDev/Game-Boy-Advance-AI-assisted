@@ -1,0 +1,25 @@
+{
+  "id": "pal_ground",
+  "kind": "object",
+  "type": "palette",
+  "name": "Town ground colors",
+  "notes": "Colors of the town's ground layer: grass greens (1 darkest .. 4 lightest), dirt path browns (5-7), beach sand (8-10), plaza stones (11-12) and the flower colors (13 pink, 14 yellow, 15 white).",
+  "colors": [
+    "#000000",
+    "#2c4a24",
+    "#4c8c34",
+    "#68a840",
+    "#88c858",
+    "#a07848",
+    "#c8a068",
+    "#dcb880",
+    "#e8d8a0",
+    "#f4ecc0",
+    "#c8b078",
+    "#8890a0",
+    "#b0b8c0",
+    "#f070a0",
+    "#f8e060",
+    "#f8f8f8"
+  ]
+}

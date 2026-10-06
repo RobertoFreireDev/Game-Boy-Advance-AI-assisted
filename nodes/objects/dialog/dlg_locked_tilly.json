@@ -1,0 +1,22 @@
+{
+  "id": "dlg_locked_tilly",
+  "kind": "object",
+  "type": "dialog",
+  "name": "Tilly's door",
+  "notes": "A sign in town.",
+  "font": "font_default",
+  "box": {
+    "x": 8,
+    "y": 88,
+    "w": 224,
+    "h": 64,
+    "paper": 3,
+    "border": 2
+  },
+  "ticks_per_char": 1,
+  "lines": [
+    {
+      "text": "TILLY'S HOUSE. THE DOOR IS LOCKED... MAYBE SHE IS OUT FOR A WALK."
+    }
+  ]
+}

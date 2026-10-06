@@ -1,0 +1,35 @@
+{
+  "id": "item_shell",
+  "kind": "object",
+  "type": "pickup",
+  "name": "Seashell",
+  "notes": "A seashell on the beach. Walk over it to pick it up (shells + 1, Bramble pays 60). New ones wash up some mornings.",
+  "body": "body_shell",
+  "logic": [
+    {
+      "behavior": "exists_when",
+      "params": {
+        "var": "shell_1",
+        "min": 0,
+        "max": 0
+      }
+    },
+    {
+      "behavior": "collectible",
+      "params": {
+        "var": "shells",
+        "amount": 1,
+        "on_collect": [
+          {
+            "do": "set_var",
+            "var": "shell_1",
+            "value": 1
+          }
+        ]
+      }
+    }
+  ],
+  "sounds": {
+    "collect": "sfx_pickup"
+  }
+}

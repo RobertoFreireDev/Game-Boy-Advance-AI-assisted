@@ -1,0 +1,29 @@
+{
+  "id": "anim_tilly_walk_down",
+  "kind": "object",
+  "type": "animation",
+  "name": "Tilly walking (down)",
+  "notes": "Walking toward the bottom of the screen; the mirrored step makes the other foot step.",
+  "sprite": "spr_tilly",
+  "loop": true,
+  "frames": [
+    {
+      "frame": "down_1",
+      "ticks": 8
+    },
+    {
+      "frame": "down_0",
+      "ticks": 8
+    },
+    {
+      "frame": "down_1",
+      "ticks": 8,
+      "flip_x": true
+    },
+    {
+      "frame": "down_0",
+      "ticks": 8
+    }
+  ],
+  "events": []
+}

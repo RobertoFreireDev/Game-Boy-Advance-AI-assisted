@@ -1,0 +1,30 @@
+{
+  "id": "dlg_bramble_hello",
+  "kind": "object",
+  "type": "dialog",
+  "name": "Bramble: welcome",
+  "notes": "Bramble's greeting before his menu.",
+  "font": "font_default",
+  "box": {
+    "x": 8,
+    "y": 88,
+    "w": 224,
+    "h": 64,
+    "paper": 3,
+    "border": 2
+  },
+  "ticks_per_char": 1,
+  "lines": [
+    {
+      "speaker": "BRAMBLE",
+      "portrait": "icon_face_bramble",
+      "text": "WELCOME, WELCOME! WHAT CAN OLD BRAMBLE DO FOR YOU?"
+    }
+  ],
+  "on_end": [
+    {
+      "do": "open_menu",
+      "menu": "menu_shop"
+    }
+  ]
+}

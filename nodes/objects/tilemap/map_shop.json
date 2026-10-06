@@ -1,0 +1,32 @@
+{
+  "id": "map_shop",
+  "kind": "object",
+  "type": "tilemap",
+  "name": "Bramble's shop",
+  "notes": "Bramble's shop: shelves of goods, plants and the counter Bramble stands behind. Talk to him across the counter. The mat at the bottom leads outside.",
+  "tileset": "ts_interior",
+  "layer": 1,
+  "parallax": 1,
+  "rows": [
+    "..............................",
+    "..............................",
+    "..............................",
+    ".......################.......",
+    ".......IhjhjWnmWWWhjhjJ.......",
+    ".......IWWWWWklWWWWWWWJ.......",
+    ".......IwwwwwwwwwwwwwwJ.......",
+    ".......IOFFFFFFFFFFFFOJ.......",
+    ".......IQFFFFFFFFFFFFQJ.......",
+    ".......IFFFF[==]FFFFFFJ.......",
+    ".......IFFFF{--}FFFFFFJ.......",
+    ".......IFFFFFFFFFFFFFFJ.......",
+    ".......IFFFFFFFFFFFFFFJ.......",
+    ".......IFFFFFFFFFFFFFFJ.......",
+    ".......IFFFFFFFFFFFFFFJ.......",
+    ".......KHHHHHHMMHHHHHHL.......",
+    "..............................",
+    "..............................",
+    "..............................",
+    ".............................."
+  ]
+}

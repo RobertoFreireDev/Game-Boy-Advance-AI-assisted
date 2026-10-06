@@ -1,0 +1,29 @@
+{
+  "id": "body_ex_fish_dace",
+  "kind": "object",
+  "type": "body",
+  "name": "Dace exhibit",
+  "notes": "The Dace swimming in its museum tank.",
+  "origin": [
+    8,
+    8
+  ],
+  "hitbox": {
+    "x": -6,
+    "y": -4,
+    "w": 12,
+    "h": 8
+  },
+  "physics": {
+    "gravity": false,
+    "solid": false,
+    "collides_with": []
+  },
+  "animations": {
+    "idle": "anim_ex_fish_dace"
+  },
+  "default_animation": "idle",
+  "children": [
+    "anim_ex_fish_dace"
+  ]
+}

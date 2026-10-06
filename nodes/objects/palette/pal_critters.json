@@ -1,0 +1,25 @@
+{
+  "id": "pal_critters",
+  "kind": "object",
+  "type": "palette",
+  "name": "Critter and item colors",
+  "notes": "Bugs, fish, fossils, fruit, shells and furniture: outline (1), white (2), yellow (3), orange (4), red (5), pink (6), greens (7-8), blues (9-10, also the fish shadows), tan (11), browns (12-13), grey (14), purple (15).",
+  "colors": [
+    "#000000",
+    "#2a1e1a",
+    "#f8f8f0",
+    "#f8d848",
+    "#f08830",
+    "#d83c30",
+    "#f0a0b8",
+    "#88d058",
+    "#3c8c3c",
+    "#88c8f0",
+    "#24508c",
+    "#d8b880",
+    "#8c5a30",
+    "#4a3020",
+    "#a0a0a8",
+    "#8858c8"
+  ]
+}

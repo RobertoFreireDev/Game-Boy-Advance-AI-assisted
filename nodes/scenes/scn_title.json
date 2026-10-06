@@ -1,0 +1,60 @@
+{
+  "id": "scn_title",
+  "kind": "scene",
+  "type": "title",
+  "name": "Title screen",
+  "notes": "The town around the pond, with butterflies, under the MOSSBROOK menu.",
+  "backdrop": "#68a840",
+  "music": "mus_title",
+  "camera": {
+    "x": 40,
+    "y": 190,
+    "bounds": "map"
+  },
+  "instances": [
+    {
+      "id": "map",
+      "object": "map_town"
+    },
+    {
+      "id": "buildings",
+      "object": "map_town_buildings"
+    },
+    {
+      "id": "ground",
+      "object": "map_town_ground"
+    },
+    {
+      "id": "white_1",
+      "object": "enm_white",
+      "x": 150,
+      "y": 230
+    },
+    {
+      "id": "white_2",
+      "object": "enm_white",
+      "x": 200,
+      "y": 330
+    },
+    {
+      "id": "bee_1",
+      "object": "enm_bee",
+      "x": 240,
+      "y": 250
+    },
+    {
+      "id": "hud",
+      "object": "hud_title"
+    },
+    {
+      "id": "menu",
+      "object": "menu_title"
+    }
+  ],
+  "on_start": [
+    {
+      "do": "fade_in",
+      "ticks": 30
+    }
+  ]
+}

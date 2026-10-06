@@ -1,0 +1,20 @@
+{
+  "id": "anim_shadow_dip",
+  "kind": "object",
+  "type": "animation",
+  "name": "Bobber dipping",
+  "notes": "A nibble: the bobber dips. Don't press yet!",
+  "sprite": "spr_shadow",
+  "loop": false,
+  "frames": [
+    {
+      "frame": "dip",
+      "ticks": 6
+    },
+    {
+      "frame": "float",
+      "ticks": 6
+    }
+  ],
+  "events": []
+}

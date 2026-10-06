@@ -1,0 +1,21 @@
+{
+  "id": "prop_ex_fish_bass",
+  "kind": "object",
+  "type": "prop",
+  "name": "Black Bass exhibit",
+  "notes": "Appears in the museum once you donated a Black Bass (variable don_fish_bass).",
+  "body": "body_ex_fish_bass",
+  "logic": [
+    {
+      "behavior": "exists_when",
+      "params": {
+        "var": "don_fish_bass",
+        "min": 1,
+        "max": 1
+      }
+    }
+  ],
+  "children": [
+    "body_ex_fish_bass"
+  ]
+}

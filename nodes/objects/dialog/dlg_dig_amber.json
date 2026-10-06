@@ -1,0 +1,22 @@
+{
+  "id": "dlg_dig_amber",
+  "kind": "object",
+  "type": "dialog",
+  "name": "Dug up Amber",
+  "notes": "Shown when the shovel finds a Amber.",
+  "font": "font_default",
+  "box": {
+    "x": 8,
+    "y": 88,
+    "w": 224,
+    "h": 64,
+    "paper": 3,
+    "border": 2
+  },
+  "ticks_per_char": 1,
+  "lines": [
+    {
+      "text": "YOU DUG UP A FOSSIL... IT'S AN AMBER! GOLDEN TREE SAP WITH A TINY BUG INSIDE!"
+    }
+  ]
+}

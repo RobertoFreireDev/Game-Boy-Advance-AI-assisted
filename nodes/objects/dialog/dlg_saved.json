@@ -1,0 +1,28 @@
+{
+  "id": "dlg_saved",
+  "kind": "object",
+  "type": "dialog",
+  "name": "Saved",
+  "notes": "Confirms the save.",
+  "font": "font_default",
+  "box": {
+    "x": 8,
+    "y": 88,
+    "w": 224,
+    "h": 64,
+    "paper": 3,
+    "border": 2
+  },
+  "ticks_per_char": 1,
+  "lines": [
+    {
+      "text": "YOUR GAME WAS SAVED."
+    }
+  ],
+  "on_end": [
+    {
+      "do": "open_menu",
+      "menu": "menu_pause"
+    }
+  ]
+}

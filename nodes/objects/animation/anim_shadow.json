@@ -1,0 +1,16 @@
+{
+  "id": "anim_shadow",
+  "kind": "object",
+  "type": "animation",
+  "name": "Shadow resting",
+  "notes": "A fish under the water and the fishing states (see fish_bite). It moves freely in the water; only its spawn area keeps it there.",
+  "sprite": "spr_shadow",
+  "loop": true,
+  "frames": [
+    {
+      "frame": "swim_0",
+      "ticks": 30
+    }
+  ],
+  "events": []
+}

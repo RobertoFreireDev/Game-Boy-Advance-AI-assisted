@@ -1,0 +1,29 @@
+{
+  "id": "body_money",
+  "kind": "object",
+  "type": "body",
+  "name": "Pip bag body",
+  "notes": "A bag of Pips with a gold coin sign.",
+  "origin": [
+    8,
+    14
+  ],
+  "hitbox": {
+    "x": -6,
+    "y": -8,
+    "w": 12,
+    "h": 8
+  },
+  "physics": {
+    "gravity": false,
+    "solid": false,
+    "collides_with": []
+  },
+  "animations": {
+    "idle": "anim_money"
+  },
+  "default_animation": "idle",
+  "children": [
+    "anim_money"
+  ]
+}

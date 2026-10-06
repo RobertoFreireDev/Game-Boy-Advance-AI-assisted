@@ -1,0 +1,22 @@
+{
+  "id": "dlg_dig_ammonite",
+  "kind": "object",
+  "type": "dialog",
+  "name": "Dug up Ammonite",
+  "notes": "Shown when the shovel finds a Ammonite.",
+  "font": "font_default",
+  "box": {
+    "x": 8,
+    "y": 88,
+    "w": 224,
+    "h": 64,
+    "paper": 3,
+    "border": 2
+  },
+  "ticks_per_char": 1,
+  "lines": [
+    {
+      "text": "YOU DUG UP A FOSSIL... IT'S AN AMMONITE! A SPIRAL SHELL FROM AN ANCIENT SEA."
+    }
+  ]
+}

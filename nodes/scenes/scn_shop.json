@@ -1,0 +1,82 @@
+{
+  "id": "scn_shop",
+  "kind": "scene",
+  "type": "level",
+  "name": "Bramble's shop",
+  "notes": "Talk to Bramble across the counter (A) to sell, or buy the rod and furniture.",
+  "backdrop": "#000000",
+  "music": "mus_shop",
+  "camera": {
+    "x": 0,
+    "y": 0,
+    "bounds": "map"
+  },
+  "instances": [
+    {
+      "id": "map",
+      "object": "map_shop"
+    },
+    {
+      "id": "clock",
+      "object": "prop_clock",
+      "x": 0,
+      "y": 0,
+      "overrides": {
+        "day_clock": {
+          "on_hour": []
+        }
+      }
+    },
+    {
+      "id": "you",
+      "object": "plr_you",
+      "x": 120,
+      "y": 116
+    },
+    {
+      "id": "bramble",
+      "object": "npc_bramble",
+      "x": 112,
+      "y": 72
+    },
+    {
+      "id": "exit",
+      "object": "trg_door",
+      "x": 112,
+      "y": 122,
+      "overrides": {
+        "trigger_zone": {
+          "on_enter": [
+            {
+              "do": "set_var",
+              "var": "entry",
+              "value": 2
+            },
+            {
+              "do": "play_sfx",
+              "sfx": "sfx_door"
+            },
+            {
+              "do": "fade_out",
+              "ticks": 12
+            },
+            {
+              "do": "goto_scene",
+              "scene": "scn_town"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "hud",
+      "object": "hud_main"
+    }
+  ],
+  "on_start": [
+    {
+      "do": "fade_in",
+      "ticks": 16
+    }
+  ]
+}

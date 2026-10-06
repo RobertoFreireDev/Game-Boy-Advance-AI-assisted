@@ -1,0 +1,22 @@
+{
+  "id": "dlg_fish_escape",
+  "kind": "object",
+  "type": "dialog",
+  "name": "It got away",
+  "notes": "The fish bit but you pulled too late.",
+  "font": "font_default",
+  "box": {
+    "x": 8,
+    "y": 88,
+    "w": 224,
+    "h": 64,
+    "paper": 3,
+    "border": 2
+  },
+  "ticks_per_char": 1,
+  "lines": [
+    {
+      "text": "IT GOT AWAY... PRESS A RIGHT WHEN THE BOBBER SINKS WITH A SPLASH!"
+    }
+  ]
+}

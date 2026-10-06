@@ -1,0 +1,18 @@
+{
+  "id": "prop_ex_bug_white",
+  "kind": "object",
+  "type": "prop",
+  "name": "Cabbage White exhibit",
+  "notes": "Appears in the museum once you donated a Cabbage White (variable don_bug_white).",
+  "body": "body_bug_white",
+  "logic": [
+    {
+      "behavior": "exists_when",
+      "params": {
+        "var": "don_bug_white",
+        "min": 1,
+        "max": 1
+      }
+    }
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "id": "sfx_splash",
+  "kind": "object",
+  "type": "sfx",
+  "name": "Bite",
+  "notes": "Big splash: the fish bites! Press A now.",
+  "priority": 2,
+  "steps": [
+    {
+      "pitch": 3,
+      "ticks": 3,
+      "volume": 14
+    },
+    {
+      "pitch": 5,
+      "ticks": 4,
+      "volume": 11
+    },
+    {
+      "pitch": 7,
+      "ticks": 5,
+      "volume": 8
+    },
+    {
+      "pitch": 9,
+      "ticks": 6,
+      "volume": 4
+    }
+  ],
+  "channel": "noise"
+}

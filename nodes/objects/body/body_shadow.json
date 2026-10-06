@@ -1,0 +1,39 @@
+{
+  "id": "body_shadow",
+  "kind": "object",
+  "type": "body",
+  "name": "Fish shadow body",
+  "notes": "A fish under the water and the fishing states (see fish_bite). It moves freely in the water; only its spawn area keeps it there.",
+  "origin": [
+    8,
+    8
+  ],
+  "hitbox": {
+    "x": -7,
+    "y": -3,
+    "w": 14,
+    "h": 6
+  },
+  "physics": {
+    "gravity": false,
+    "solid": false,
+    "collides_with": []
+  },
+  "animations": {
+    "idle": "anim_shadow",
+    "walk": "anim_shadow_swim",
+    "jump": "anim_shadow_float",
+    "attack": "anim_shadow_dip",
+    "hurt": "anim_shadow_bite",
+    "die": "anim_shadow_splash"
+  },
+  "default_animation": "idle",
+  "children": [
+    "anim_shadow",
+    "anim_shadow_swim",
+    "anim_shadow_float",
+    "anim_shadow_dip",
+    "anim_shadow_bite",
+    "anim_shadow_splash"
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "id": "anim_bug_bee",
+  "kind": "object",
+  "type": "animation",
+  "name": "Honeybee body",
+  "notes": "How a Honeybee looks: 2-frame flutter. Shared by the bug in town and its museum terrarium. When caught it sparkles away.",
+  "sprite": "spr_bugs",
+  "loop": true,
+  "frames": [
+    {
+      "frame": "bee_0",
+      "ticks": 10
+    },
+    {
+      "frame": "bee_1",
+      "ticks": 10
+    }
+  ],
+  "events": []
+}

@@ -1,0 +1,29 @@
+{
+  "id": "body_fur_radio",
+  "kind": "object",
+  "type": "body",
+  "name": "Radio body",
+  "notes": "How the Radio looks in your house.",
+  "origin": [
+    8,
+    15
+  ],
+  "hitbox": {
+    "x": -6,
+    "y": -5,
+    "w": 12,
+    "h": 5
+  },
+  "physics": {
+    "gravity": false,
+    "solid": true,
+    "collides_with": []
+  },
+  "animations": {
+    "idle": "anim_fur_radio"
+  },
+  "default_animation": "idle",
+  "children": [
+    "anim_fur_radio"
+  ]
+}

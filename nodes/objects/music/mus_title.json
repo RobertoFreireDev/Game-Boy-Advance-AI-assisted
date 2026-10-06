@@ -1,0 +1,48 @@
+{
+  "id": "mus_title",
+  "kind": "object",
+  "type": "music",
+  "name": "Mossbrook title",
+  "notes": "Title screen song: a warm, hopeful tune in F major with a gentle march on the noise channel.",
+  "bpm": 96,
+  "rows_per_beat": 2,
+  "loop": true,
+  "instruments": {
+    "square1": {
+      "duty": 2,
+      "volume": 9,
+      "decay": 2
+    },
+    "square2": {
+      "duty": 1,
+      "volume": 5,
+      "decay": 3
+    },
+    "wave": {
+      "wave": "02468aceeca8642002468aceeca86420",
+      "volume": 3
+    },
+    "noise": {
+      "volume": 2,
+      "decay": 1
+    }
+  },
+  "patterns": {
+    "A": {
+      "square1": "C5 -- F5 -- A5 -- G5 -- | F5 -- -- -- C5 -- -- -- | D5 -- F5 -- A#5 -- A5 -- | G5 -- -- -- -- -- .. ..",
+      "square2": ".. A4 .. C5 .. A4 .. C5 | .. A4 .. C5 .. A4 .. C5 | .. A#4 .. D5 .. A#4 .. D5 | .. C5 .. E5 .. C5 .. ..",
+      "wave": "F2 -- C3 -- F2 -- C3 -- | F2 -- C3 -- F2 -- C3 -- | A#2 -- F3 -- A#2 -- F3 -- | C3 -- G3 -- C3 -- G3 --",
+      "noise": "X5 .. .. .. X3 .. .. .. | X5 .. .. .. X3 .. .. .. | X5 .. .. .. X3 .. .. .. | X5 .. .. .. X3 .. X3 .."
+    },
+    "B": {
+      "square1": "A5 -- G5 -- F5 -- E5 -- | D5 -- -- -- A#4 -- -- -- | C5 -- E5 -- G5 -- E5 -- | F5 -- -- -- -- -- .. ..",
+      "square2": ".. C5 .. E5 .. C5 .. E5 | .. A#4 .. D5 .. A#4 .. D5 | .. G4 .. C5 .. G4 .. C5 | .. A4 .. C5 .. A4 .. ..",
+      "wave": "F2 -- C3 -- E3 -- C3 -- | A#2 -- F3 -- A#2 -- F3 -- | C3 -- G3 -- C3 -- G3 -- | F2 -- C3 -- F2 -- -- --",
+      "noise": "X5 .. .. .. X3 .. .. .. | X5 .. .. .. X3 .. .. .. | X5 .. .. .. X3 .. .. .. | X5 .. .. .. X3 .. .. .."
+    }
+  },
+  "order": [
+    "A",
+    "B"
+  ]
+}

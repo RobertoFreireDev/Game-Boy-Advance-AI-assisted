@@ -1,0 +1,20 @@
+{
+  "id": "anim_bramble_idle",
+  "kind": "object",
+  "type": "animation",
+  "name": "Bramble standing",
+  "notes": "Faces the screen; the second frame shifts the feet so they seem to breathe.",
+  "sprite": "spr_bramble",
+  "loop": true,
+  "frames": [
+    {
+      "frame": "down_0",
+      "ticks": 90
+    },
+    {
+      "frame": "down_1",
+      "ticks": 12
+    }
+  ],
+  "events": []
+}

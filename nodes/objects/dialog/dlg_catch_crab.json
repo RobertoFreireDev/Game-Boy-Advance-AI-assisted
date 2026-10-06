@@ -1,0 +1,22 @@
+{
+  "id": "dlg_catch_crab",
+  "kind": "object",
+  "type": "dialog",
+  "name": "Caught a Shore Crab",
+  "notes": "Shown when your net catches a Shore Crab.",
+  "font": "font_default",
+  "box": {
+    "x": 8,
+    "y": 88,
+    "w": 224,
+    "h": 64,
+    "paper": 3,
+    "border": 2
+  },
+  "ticks_per_char": 1,
+  "lines": [
+    {
+      "text": "YOU CAUGHT A SHORE CRAB! IT PINCHES! IT WALKS SIDEWAYS ON THE NIGHT BEACH."
+    }
+  ]
+}

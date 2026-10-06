@@ -1,0 +1,22 @@
+{
+  "id": "dlg_catch_carp",
+  "kind": "object",
+  "type": "dialog",
+  "name": "Caught a Carp",
+  "notes": "Shown when you reel in a Carp.",
+  "font": "font_default",
+  "box": {
+    "x": 8,
+    "y": 88,
+    "w": 224,
+    "h": 64,
+    "paper": 3,
+    "border": 2
+  },
+  "ticks_per_char": 1,
+  "lines": [
+    {
+      "text": "YOU CAUGHT A CARP! SLOW, OLD AND VERY WISE-LOOKING."
+    }
+  ]
+}

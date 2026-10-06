@@ -1,0 +1,22 @@
+{
+  "id": "sfx_nope",
+  "kind": "object",
+  "type": "sfx",
+  "name": "Nope",
+  "notes": "A low buzz when something can't be done (not enough Pips, already owned).",
+  "priority": 1,
+  "steps": [
+    {
+      "note": "D4",
+      "ticks": 4,
+      "volume": 7
+    },
+    {
+      "note": "C#4",
+      "ticks": 8,
+      "volume": 6
+    }
+  ],
+  "channel": "square1",
+  "duty": 1
+}

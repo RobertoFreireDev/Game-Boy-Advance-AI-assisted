@@ -1,0 +1,53 @@
+{
+  "id": "dlg_odessa_thanks",
+  "kind": "object",
+  "type": "dialog",
+  "name": "Donations received",
+  "notes": "After a donation: {gave} new exhibits, {museum} in total.",
+  "font": "font_default",
+  "box": {
+    "x": 8,
+    "y": 88,
+    "w": 224,
+    "h": 64,
+    "paper": 3,
+    "border": 2
+  },
+  "ticks_per_char": 1,
+  "lines": [
+    {
+      "speaker": "ODESSA",
+      "portrait": "icon_face_odessa",
+      "text": "WONDERFUL! YOU BROUGHT {gave} NEW EXHIBITS. THE MUSEUM NOW HAS {museum} OF 17."
+    },
+    {
+      "speaker": "ODESSA",
+      "portrait": "icon_face_odessa",
+      "text": "LET ME PUT THEM ON DISPLAY RIGHT AWAY..."
+    }
+  ],
+  "on_end": [
+    {
+      "do": "if_var",
+      "var": "museum",
+      "op": "==",
+      "value": 17,
+      "then": [
+        {
+          "do": "show_dialog",
+          "dialog": "dlg_museum_complete"
+        }
+      ],
+      "else": [
+        {
+          "do": "fade_out",
+          "ticks": 12
+        },
+        {
+          "do": "goto_scene",
+          "scene": "scn_museum"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "id": "body_bug_cricket",
+  "kind": "object",
+  "type": "body",
+  "name": "Cricket body",
+  "notes": "How a Cricket looks: 2-frame flutter. Shared by the bug in town and its museum terrarium. When caught it sparkles away.",
+  "origin": [
+    8,
+    12
+  ],
+  "hitbox": {
+    "x": -5,
+    "y": -8,
+    "w": 10,
+    "h": 8
+  },
+  "physics": {
+    "gravity": false,
+    "solid": false,
+    "collides_with": [
+      "tiles"
+    ]
+  },
+  "animations": {
+    "idle": "anim_bug_cricket",
+    "die": "anim_poof"
+  },
+  "default_animation": "idle",
+  "children": [
+    "anim_bug_cricket"
+  ]
+}

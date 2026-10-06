@@ -1,0 +1,21 @@
+{
+  "id": "prop_fur_lamp",
+  "kind": "object",
+  "type": "prop",
+  "name": "Leaf Lamp",
+  "notes": "Stands in your house once you own it (fur_lamp).",
+  "body": "body_fur_lamp",
+  "logic": [
+    {
+      "behavior": "exists_when",
+      "params": {
+        "var": "fur_lamp",
+        "min": 1,
+        "max": 1
+      }
+    }
+  ],
+  "children": [
+    "body_fur_lamp"
+  ]
+}

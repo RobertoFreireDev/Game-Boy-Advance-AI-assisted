@@ -1,0 +1,26 @@
+{
+  "id": "icon_face_pembrook",
+  "kind": "object",
+  "type": "icon",
+  "name": "Pembrook portrait",
+  "notes": "16x16 head shown next to Pembrook's lines in dialogs. Background painted in the dialog box color (pal_faces 13).",
+  "palette": "pal_faces",
+  "pixels": [
+    "dddd11dddd11dddd",
+    "ddd1221111221ddd",
+    "dd122322223221dd",
+    "d12322222222321d",
+    "d12222322322221d",
+    "d12222222222221d",
+    "1144244444424411",
+    "1441444444444144",
+    "d11144444444111d",
+    "ddd144144414441d",
+    "ddd144144414441d",
+    "ddd14444444441dd",
+    "ddd18444ff44841d",
+    "dddd1444444411dd",
+    "ddddd11444411ddd",
+    "ddddddd1111ddddd"
+  ]
+}

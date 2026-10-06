@@ -1,0 +1,27 @@
+{
+  "id": "sfx_coin",
+  "kind": "object",
+  "type": "sfx",
+  "name": "Coins",
+  "notes": "The bright jingle of Pips: selling, finding money.",
+  "priority": 2,
+  "steps": [
+    {
+      "note": "B5",
+      "ticks": 3,
+      "volume": 10
+    },
+    {
+      "note": "E6",
+      "ticks": 8,
+      "volume": 10
+    },
+    {
+      "note": "E6",
+      "ticks": 4,
+      "volume": 5
+    }
+  ],
+  "channel": "square1",
+  "duty": 2
+}

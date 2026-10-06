@@ -1,0 +1,29 @@
+{
+  "id": "dlg_rusk_thanks",
+  "kind": "object",
+  "type": "dialog",
+  "name": "Rusk: favor done",
+  "notes": "Rusk thanks you for a black bass and gives a reward.",
+  "font": "font_default",
+  "box": {
+    "x": 8,
+    "y": 88,
+    "w": 224,
+    "h": 64,
+    "paper": 3,
+    "border": 2
+  },
+  "ticks_per_char": 1,
+  "lines": [
+    {
+      "speaker": "RUSK",
+      "portrait": "icon_face_rusk",
+      "text": "A FINE BASS. ...NOT BAD, KID. NOT BAD AT ALL."
+    },
+    {
+      "speaker": "RUSK",
+      "portrait": "icon_face_rusk",
+      "text": "HMPH. HERE'S 1,500 PIPS. DON'T SPEND IT ALL ON CANDY, KID."
+    }
+  ]
+}

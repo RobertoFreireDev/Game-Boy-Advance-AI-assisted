@@ -1,0 +1,128 @@
+{
+  "id": "scn_house",
+  "kind": "scene",
+  "type": "level",
+  "name": "Your house",
+  "notes": "Inside your little house: sleep in the bed (A) to save and start a new day. Furniture you own stands in its spot.",
+  "backdrop": "#000000",
+  "music": "mus_indoor",
+  "camera": {
+    "x": 0,
+    "y": 0,
+    "bounds": "map"
+  },
+  "instances": [
+    {
+      "id": "map",
+      "object": "map_house"
+    },
+    {
+      "id": "clock",
+      "object": "prop_clock",
+      "x": 0,
+      "y": 0,
+      "overrides": {
+        "day_clock": {
+          "on_hour": []
+        }
+      }
+    },
+    {
+      "id": "you",
+      "object": "plr_you",
+      "x": 120,
+      "y": 124
+    },
+    {
+      "id": "bed",
+      "object": "trg_sign",
+      "x": 72,
+      "y": 64,
+      "overrides": {
+        "interact": {
+          "on_press": [
+            {
+              "do": "show_dialog",
+              "dialog": "dlg_sleep"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "fur_lamp",
+      "object": "prop_fur_lamp",
+      "x": 96,
+      "y": 74
+    },
+    {
+      "id": "fur_radio",
+      "object": "prop_fur_radio",
+      "x": 156,
+      "y": 72
+    },
+    {
+      "id": "fur_table",
+      "object": "prop_fur_table",
+      "x": 120,
+      "y": 98
+    },
+    {
+      "id": "fur_bowl",
+      "object": "prop_fur_bowl",
+      "x": 152,
+      "y": 98
+    },
+    {
+      "id": "fur_plant",
+      "object": "prop_fur_plant",
+      "x": 80,
+      "y": 122
+    },
+    {
+      "id": "fur_rug",
+      "object": "prop_fur_rug",
+      "x": 120,
+      "y": 106
+    },
+    {
+      "id": "exit",
+      "object": "trg_door",
+      "x": 112,
+      "y": 130,
+      "overrides": {
+        "trigger_zone": {
+          "on_enter": [
+            {
+              "do": "set_var",
+              "var": "entry",
+              "value": 1
+            },
+            {
+              "do": "play_sfx",
+              "sfx": "sfx_door"
+            },
+            {
+              "do": "fade_out",
+              "ticks": 12
+            },
+            {
+              "do": "goto_scene",
+              "scene": "scn_town"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "hud",
+      "object": "hud_main"
+    }
+  ],
+  "on_start": [
+    {
+      "do": "fade_in",
+      "ticks": 16
+    }
+  ]
+}

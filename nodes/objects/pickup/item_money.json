@@ -1,0 +1,28 @@
+{
+  "id": "item_money",
+  "kind": "object",
+  "type": "pickup",
+  "name": "Bag of Pips",
+  "notes": "1,000 Pips from the lucky rock. Flies to you.",
+  "body": "body_money",
+  "logic": [
+    {
+      "behavior": "magnet",
+      "params": {
+        "range": 40,
+        "acceleration": 0.25,
+        "max_speed": 3
+      }
+    },
+    {
+      "behavior": "collectible",
+      "params": {
+        "var": "pips",
+        "amount": 1000
+      }
+    }
+  ],
+  "sounds": {
+    "collect": "sfx_coin"
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "id": "prop_ex_bug_crab",
+  "kind": "object",
+  "type": "prop",
+  "name": "Shore Crab exhibit",
+  "notes": "Appears in the museum once you donated a Shore Crab (variable don_bug_crab).",
+  "body": "body_bug_crab",
+  "logic": [
+    {
+      "behavior": "exists_when",
+      "params": {
+        "var": "don_bug_crab",
+        "min": 1,
+        "max": 1
+      }
+    }
+  ]
+}

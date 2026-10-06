@@ -1,0 +1,20 @@
+{
+  "id": "anim_pembrook_walk",
+  "kind": "object",
+  "type": "animation",
+  "name": "Pembrook walking (side)",
+  "notes": "Side view walk, 2 steps.",
+  "sprite": "spr_pembrook",
+  "loop": true,
+  "frames": [
+    {
+      "frame": "side_1",
+      "ticks": 8
+    },
+    {
+      "frame": "side_0",
+      "ticks": 8
+    }
+  ],
+  "events": []
+}

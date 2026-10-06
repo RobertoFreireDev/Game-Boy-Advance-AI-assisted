@@ -1,0 +1,16 @@
+{
+  "id": "anim_player_idle",
+  "kind": "object",
+  "type": "animation",
+  "name": "Player standing (side)",
+  "notes": "Side view, facing right (mirrored for left).",
+  "sprite": "spr_player",
+  "loop": true,
+  "frames": [
+    {
+      "frame": "side_0",
+      "ticks": 60
+    }
+  ],
+  "events": []
+}

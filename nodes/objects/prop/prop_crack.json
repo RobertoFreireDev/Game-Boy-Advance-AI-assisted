@@ -1,0 +1,126 @@
+{
+  "id": "prop_crack",
+  "kind": "object",
+  "type": "prop",
+  "name": "Fossil crack",
+  "notes": "A buried fossil. Each morning some of the 4 spots get a crack (fossil_1..4 = 0). Dig it with the shovel for a random fossil: ammonite, trilobite, shark tooth or amber (rarest).",
+  "body": "body_crack",
+  "logic": [
+    {
+      "behavior": "exists_when",
+      "params": {
+        "var": "fossil_1",
+        "min": 0,
+        "max": 0,
+        "live": true
+      }
+    },
+    {
+      "behavior": "interact",
+      "params": {
+        "range": 4,
+        "on_press": [
+          {
+            "do": "if_var",
+            "var": "tool",
+            "op": "==",
+            "value": 1,
+            "then": [
+              {
+                "do": "set_var",
+                "var": "fossil_1",
+                "value": 1
+              },
+              {
+                "do": "play_sfx",
+                "sfx": "sfx_dig"
+              },
+              {
+                "do": "if_chance",
+                "percent": 35,
+                "then": [
+                  {
+                    "do": "add_var",
+                    "var": "fos_ammonite",
+                    "value": 1
+                  },
+                  {
+                    "do": "play_sfx",
+                    "sfx": "sfx_catch"
+                  },
+                  {
+                    "do": "show_dialog",
+                    "dialog": "dlg_dig_ammonite"
+                  }
+                ],
+                "else": [
+                  {
+                    "do": "if_chance",
+                    "percent": 40,
+                    "then": [
+                      {
+                        "do": "add_var",
+                        "var": "fos_trilobite",
+                        "value": 1
+                      },
+                      {
+                        "do": "play_sfx",
+                        "sfx": "sfx_catch"
+                      },
+                      {
+                        "do": "show_dialog",
+                        "dialog": "dlg_dig_trilobite"
+                      }
+                    ],
+                    "else": [
+                      {
+                        "do": "if_chance",
+                        "percent": 55,
+                        "then": [
+                          {
+                            "do": "add_var",
+                            "var": "fos_tooth",
+                            "value": 1
+                          },
+                          {
+                            "do": "play_sfx",
+                            "sfx": "sfx_catch"
+                          },
+                          {
+                            "do": "show_dialog",
+                            "dialog": "dlg_dig_tooth"
+                          }
+                        ],
+                        "else": [
+                          {
+                            "do": "add_var",
+                            "var": "fos_amber",
+                            "value": 1
+                          },
+                          {
+                            "do": "play_sfx",
+                            "sfx": "sfx_catch"
+                          },
+                          {
+                            "do": "show_dialog",
+                            "dialog": "dlg_dig_amber"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ],
+            "else": [
+              {
+                "do": "show_dialog",
+                "dialog": "dlg_hint_shovel"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,52 @@
+{
+  "id": "enm_firefly",
+  "kind": "object",
+  "type": "enemy",
+  "name": "Firefly",
+  "notes": "A Firefly that comes out at night between 19:00 and 3:59. Swing the net (A, with the net in your hands) to catch it: it goes to your pockets (bug_firefly) and you see a message. Harmless.",
+  "body": "body_bug_firefly",
+  "logic": [
+    {
+      "behavior": "exists_when",
+      "params": {
+        "var": "hour",
+        "min": 19,
+        "max": 3
+      }
+    },
+    {
+      "behavior": "wander",
+      "params": {
+        "speed": 0.35,
+        "min_ticks": 20,
+        "max_ticks": 60,
+        "pause_ticks": 20,
+        "distance": 40
+      }
+    },
+    {
+      "behavior": "health",
+      "params": {
+        "max": 1,
+        "invincible_ticks": 0,
+        "knockback": 0,
+        "spikes": false,
+        "on_death": [
+          {
+            "do": "add_var",
+            "var": "bug_firefly",
+            "value": 1
+          },
+          {
+            "do": "play_sfx",
+            "sfx": "sfx_catch"
+          },
+          {
+            "do": "show_dialog",
+            "dialog": "dlg_catch_firefly"
+          }
+        ]
+      }
+    }
+  ]
+}

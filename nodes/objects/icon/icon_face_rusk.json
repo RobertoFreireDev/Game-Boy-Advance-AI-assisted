@@ -1,0 +1,26 @@
+{
+  "id": "icon_face_rusk",
+  "kind": "object",
+  "type": "icon",
+  "name": "Rusk portrait",
+  "notes": "16x16 head shown next to Rusk's lines in dialogs. Background painted in the dialog box color (pal_faces 13).",
+  "palette": "pal_faces",
+  "pixels": [
+    "dddddddddddddddd",
+    "dd111dddddd111dd",
+    "d15751dddd15751d",
+    "d15551111111551d",
+    "dd1155555555511d",
+    "dd1555555555551d",
+    "d155555555555551",
+    "d155555555555551",
+    "d15515555555151d",
+    "d15515555555151d",
+    "d15555444445551d",
+    "d185544fff44581d",
+    "dd155444f444551d",
+    "ddd11555555511dd",
+    "ddddd1111111dddd",
+    "dddddddddddddddd"
+  ]
+}

@@ -1,0 +1,52 @@
+{
+  "id": "enm_cricket",
+  "kind": "object",
+  "type": "enemy",
+  "name": "Cricket",
+  "notes": "A Cricket that comes out at night between 17:00 and 5:59. Swing the net (A, with the net in your hands) to catch it: it goes to your pockets (bug_cricket) and you see a message. Harmless.",
+  "body": "body_bug_cricket",
+  "logic": [
+    {
+      "behavior": "exists_when",
+      "params": {
+        "var": "hour",
+        "min": 17,
+        "max": 5
+      }
+    },
+    {
+      "behavior": "wander",
+      "params": {
+        "speed": 0.5,
+        "min_ticks": 6,
+        "max_ticks": 14,
+        "pause_ticks": 80,
+        "distance": 32
+      }
+    },
+    {
+      "behavior": "health",
+      "params": {
+        "max": 1,
+        "invincible_ticks": 0,
+        "knockback": 0,
+        "spikes": false,
+        "on_death": [
+          {
+            "do": "add_var",
+            "var": "bug_cricket",
+            "value": 1
+          },
+          {
+            "do": "play_sfx",
+            "sfx": "sfx_catch"
+          },
+          {
+            "do": "show_dialog",
+            "dialog": "dlg_catch_cricket"
+          }
+        ]
+      }
+    }
+  ]
+}

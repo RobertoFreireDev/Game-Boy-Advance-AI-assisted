@@ -1,0 +1,16 @@
+{
+  "id": "anim_ex_fos_trilobite",
+  "kind": "object",
+  "type": "animation",
+  "name": "Trilobite exhibit",
+  "notes": "The Trilobite on its museum pedestal.",
+  "sprite": "spr_fossils",
+  "loop": true,
+  "frames": [
+    {
+      "frame": "trilobite",
+      "ticks": 60
+    }
+  ],
+  "events": []
+}

@@ -1,0 +1,37 @@
+{
+  "id": "dlg_howto",
+  "kind": "object",
+  "type": "dialog",
+  "name": "How to play",
+  "notes": "The controls and what there is to do.",
+  "font": "font_default",
+  "box": {
+    "x": 8,
+    "y": 8,
+    "w": 224,
+    "h": 144,
+    "paper": 3,
+    "border": 2
+  },
+  "ticks_per_char": 0,
+  "lines": [
+    {
+      "speaker": "HOW TO PLAY",
+      "text": "D-PAD WALKS, HOLD B TO RUN. A TALKS, PICKS UP AND USES THE TOOL IN YOUR HANDS. L / R CHANGE THE TOOL: HANDS, SHOVEL, NET, ROD. START OPENS THE MENU."
+    },
+    {
+      "speaker": "HOW TO PLAY",
+      "text": "HANDS SHAKE APPLE TREES. THE SHOVEL DIGS STAR CRACKS AND HITS ROCKS. THE NET CATCHES BUGS. THE ROD (BRAMBLE SELLS IT) CATCHES FISH: CAST AT A SHADOW, WAIT, PULL WHEN IT SPLASHES."
+    },
+    {
+      "speaker": "HOW TO PLAY",
+      "text": "SELL TO BRAMBLE, DONATE TO PROF. ODESSA AND PAY YOUR LOAN TO MAYOR ARDEA. SLEEP IN YOUR BED TO SAVE AND START A NEW DAY."
+    }
+  ],
+  "on_end": [
+    {
+      "do": "open_menu",
+      "menu": "menu_pause"
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "id": "map_house2",
+  "kind": "object",
+  "type": "tilemap",
+  "name": "Your bigger house",
+  "notes": "Your house after the Town Hall expansion: a much bigger room with two windows, two plants and the same bed (top left). Bought furniture appears in its spots.",
+  "tileset": "ts_interior",
+  "layer": 1,
+  "parallax": 1,
+  "rows": [
+    "..............................",
+    "...########################...",
+    "...IWWWWWWnmWWWWWWnmWWWWWWJ...",
+    "...IWWWWWWklWWWWWWklWWWWWWJ...",
+    "...I12wwwwwwwwwwwwwwwwwwwOJ...",
+    "...I34FFFFFFFFFFFFFFFFFFFQJ...",
+    "...I56FFFFFFFFFFFFFFFFFFFFJ...",
+    "...IFFFFFFFFFFFFFFFFFFFFFFJ...",
+    "...IFFFFFFFFFFFFFFFFFFFFFFJ...",
+    "...IFFFFFFFFFFFFFFFFFFFFFFJ...",
+    "...IFFFFFFFFFFFFFFFFFFFFFFJ...",
+    "...IFFFFFFFFFFFFFFFFFFFFFFJ...",
+    "...IFFFFFFFFFFFFFFFFFFFFFFJ...",
+    "...IFFFFFFFFFFFFFFFFFFFFFFJ...",
+    "...IFFFFFFFFFFFFFFFFFFFFFFJ...",
+    "...IFFFFFFFFFFFFFFFFFFFFFFJ...",
+    "...IFFFFFFFFFFFFFFFFFFFFFFJ...",
+    "...IFFFFFFFFFFFFFFFFFFFFFFJ...",
+    "...KHHHHHHHHHHMMHHHHHHHHHHL...",
+    ".............................."
+  ]
+}

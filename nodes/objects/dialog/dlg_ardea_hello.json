@@ -1,0 +1,30 @@
+{
+  "id": "dlg_ardea_hello",
+  "kind": "object",
+  "type": "dialog",
+  "name": "Ardea at the Town Hall",
+  "notes": "Greeting before the counter menu.",
+  "font": "font_default",
+  "box": {
+    "x": 8,
+    "y": 88,
+    "w": 224,
+    "h": 64,
+    "paper": 3,
+    "border": 2
+  },
+  "ticks_per_char": 1,
+  "lines": [
+    {
+      "speaker": "ARDEA",
+      "portrait": "icon_face_ardea",
+      "text": "HELLO! HOW CAN THE TOWN HALL HELP YOU TODAY?"
+    }
+  ],
+  "on_end": [
+    {
+      "do": "open_menu",
+      "menu": "menu_hall"
+    }
+  ]
+}

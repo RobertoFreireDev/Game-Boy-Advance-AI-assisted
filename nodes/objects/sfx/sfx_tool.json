@@ -1,0 +1,22 @@
+{
+  "id": "sfx_tool",
+  "kind": "object",
+  "type": "sfx",
+  "name": "Switch tool",
+  "notes": "A soft click when L or R changes the tool in your hands.",
+  "priority": 1,
+  "steps": [
+    {
+      "note": "C6",
+      "ticks": 2,
+      "volume": 6
+    },
+    {
+      "note": "G6",
+      "ticks": 2,
+      "volume": 5
+    }
+  ],
+  "channel": "square2",
+  "duty": 0
+}

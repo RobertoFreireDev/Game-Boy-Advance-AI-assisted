@@ -1,0 +1,26 @@
+{
+  "id": "icon_face_bramble",
+  "kind": "object",
+  "type": "icon",
+  "name": "Bramble portrait",
+  "notes": "16x16 head shown next to Bramble's lines in dialogs. Background painted in the dialog box color (pal_faces 13).",
+  "palette": "pal_faces",
+  "pixels": [
+    "ddd11dddddd11ddd",
+    "dd1ff1dddd1ff1dd",
+    "dd1ff1111111ff1d",
+    "ddd1ff2222ff11dd",
+    "dd1fff2222ffff1d",
+    "d1ffff2222fffff1",
+    "d1eeff2222ffee1d",
+    "d1eeff2222ffee1d",
+    "d1ee1f2222f1ee1d",
+    "d1ee1f2222f1ee1d",
+    "d1eeee2222eeee1d",
+    "dd1eee2222eee1dd",
+    "ddd1ee2ff2ee1ddd",
+    "dddd11122111dddd",
+    "dddddd1111dddddd",
+    "dddddddddddddddd"
+  ]
+}

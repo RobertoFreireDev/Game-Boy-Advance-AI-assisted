@@ -1,0 +1,16 @@
+{
+  "id": "hud_title",
+  "kind": "object",
+  "type": "hud",
+  "name": "Title text",
+  "notes": "The line under the logo on the title screen.",
+  "font": "font_default",
+  "elements": [
+    {
+      "kind": "text",
+      "x": 48,
+      "y": 24,
+      "text": "A COZY VILLAGE LIFE"
+    }
+  ]
+}

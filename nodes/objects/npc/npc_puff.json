@@ -1,0 +1,37 @@
+{
+  "id": "npc_puff",
+  "kind": "object",
+  "type": "npc",
+  "name": "Captain Puff",
+  "notes": "The ferry captain who brought you here. Stands on the dock on your first day only.",
+  "body": "body_puff",
+  "logic": [
+    {
+      "behavior": "exists_when",
+      "params": {
+        "var": "intro",
+        "min": 0,
+        "max": 0
+      }
+    },
+    {
+      "behavior": "interact",
+      "params": {
+        "range": 6,
+        "face_player": true,
+        "on_press": [
+          {
+            "do": "show_dialog",
+            "dialog": "dlg_puff"
+          }
+        ]
+      }
+    }
+  ],
+  "sounds": {
+    "talk": "sfx_talk"
+  },
+  "children": [
+    "body_puff"
+  ]
+}

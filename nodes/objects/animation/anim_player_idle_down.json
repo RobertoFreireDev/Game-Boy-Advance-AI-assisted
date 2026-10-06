@@ -1,0 +1,16 @@
+{
+  "id": "anim_player_idle_down",
+  "kind": "object",
+  "type": "animation",
+  "name": "Player standing (down)",
+  "notes": "Facing the screen, standing still.",
+  "sprite": "spr_player",
+  "loop": true,
+  "frames": [
+    {
+      "frame": "down_0",
+      "ticks": 60
+    }
+  ],
+  "events": []
+}

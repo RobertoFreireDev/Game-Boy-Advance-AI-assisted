@@ -1,0 +1,42 @@
+{
+  "id": "mus_night",
+  "kind": "object",
+  "type": "music",
+  "name": "Mossbrook at night",
+  "notes": "Plays from 8 at night to 5 in the morning: a slow, quiet lullaby in A minor. A soft melody, long held chords, a round wave bass and no drums, so the crickets can be imagined.",
+  "bpm": 76,
+  "rows_per_beat": 2,
+  "loop": true,
+  "instruments": {
+    "square1": {
+      "duty": 1,
+      "volume": 6,
+      "decay": 4
+    },
+    "square2": {
+      "duty": 2,
+      "volume": 3,
+      "decay": 6
+    },
+    "wave": {
+      "wave": "89abcdeeffeedcba9876543211001234",
+      "volume": 2
+    }
+  },
+  "patterns": {
+    "A": {
+      "square1": "A4 -- C5 -- E5 -- -- -- | D5 -- C5 -- B4 -- -- -- | C5 -- E5 -- A5 -- -- -- | G5 -- E5 -- -- -- .. ..",
+      "square2": "E4 -- -- -- -- -- -- -- | F4 -- -- -- -- -- -- -- | E4 -- -- -- -- -- -- -- | D4 -- -- -- -- -- -- --",
+      "wave": "A2 -- -- -- E3 -- -- -- | D3 -- -- -- A3 -- -- -- | A2 -- -- -- E3 -- -- -- | G2 -- -- -- D3 -- -- --"
+    },
+    "B": {
+      "square1": "F5 -- E5 -- D5 -- -- -- | C5 -- D5 -- E5 -- -- -- | D5 -- C5 -- B4 -- G4 -- | A4 -- -- -- -- -- .. ..",
+      "square2": "C4 -- -- -- -- -- -- -- | E4 -- -- -- -- -- -- -- | D4 -- -- -- -- -- -- -- | C4 -- -- -- -- -- -- --",
+      "wave": "F2 -- -- -- C3 -- -- -- | C3 -- -- -- G3 -- -- -- | G2 -- -- -- D3 -- -- -- | A2 -- -- -- E3 -- -- --"
+    }
+  },
+  "order": [
+    "A",
+    "B"
+  ]
+}

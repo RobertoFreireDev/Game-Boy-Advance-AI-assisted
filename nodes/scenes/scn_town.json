@@ -1,0 +1,1646 @@
+{
+  "id": "scn_town",
+  "kind": "scene",
+  "type": "level",
+  "name": "Mossbrook",
+  "notes": "The town, 768x640 pixels: the museum, Bramble's shop and the Town Hall in the north and middle, your red house on the west, 3 neighbors' homes, a pond, a river with 2 bridges, the beach and the dock where you arrive. Time passes (see the clock): by day butterflies, bees and ladybugs, at night fireflies, crickets and crabs. You appear at the door you came out of (entry).",
+  "backdrop": "#68a840",
+  "camera": {
+    "bounds": "map"
+  },
+  "instances": [
+    {
+      "id": "map",
+      "object": "map_town"
+    },
+    {
+      "id": "buildings",
+      "object": "map_town_buildings"
+    },
+    {
+      "id": "ground",
+      "object": "map_town_ground"
+    },
+    {
+      "id": "clock",
+      "object": "prop_clock"
+    },
+    {
+      "id": "you_0",
+      "object": "plr_you",
+      "x": 632,
+      "y": 612,
+      "overrides": {
+        "exists_when": {
+          "min": 0,
+          "max": 0
+        }
+      }
+    },
+    {
+      "id": "you_1",
+      "object": "plr_you",
+      "x": 160,
+      "y": 416,
+      "overrides": {
+        "exists_when": {
+          "min": 1,
+          "max": 1
+        }
+      }
+    },
+    {
+      "id": "you_2",
+      "object": "plr_you",
+      "x": 288,
+      "y": 128,
+      "overrides": {
+        "exists_when": {
+          "min": 2,
+          "max": 2
+        }
+      }
+    },
+    {
+      "id": "you_3",
+      "object": "plr_you",
+      "x": 144,
+      "y": 144,
+      "overrides": {
+        "exists_when": {
+          "min": 3,
+          "max": 3
+        }
+      }
+    },
+    {
+      "id": "you_4",
+      "object": "plr_you",
+      "x": 368,
+      "y": 272,
+      "overrides": {
+        "exists_when": {
+          "min": 4,
+          "max": 4
+        }
+      }
+    },
+    {
+      "id": "ardea",
+      "object": "npc_ardea_dock",
+      "x": 632,
+      "y": 552
+    },
+    {
+      "id": "puff",
+      "object": "npc_puff",
+      "x": 618,
+      "y": 600
+    },
+    {
+      "id": "boat",
+      "object": "prop_boat",
+      "x": 690,
+      "y": 616
+    },
+    {
+      "id": "door_house",
+      "object": "trg_door",
+      "x": 152,
+      "y": 396,
+      "overrides": {
+        "trigger_zone": {
+          "on_enter": [
+            {
+              "do": "play_sfx",
+              "sfx": "sfx_door"
+            },
+            {
+              "do": "if_var",
+              "var": "house_level",
+              "op": ">=",
+              "value": 2,
+              "then": [
+                {
+                  "do": "fade_out",
+                  "ticks": 12
+                },
+                {
+                  "do": "goto_scene",
+                  "scene": "scn_house2"
+                }
+              ],
+              "else": [
+                {
+                  "do": "fade_out",
+                  "ticks": 12
+                },
+                {
+                  "do": "goto_scene",
+                  "scene": "scn_house"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "door_shop",
+      "object": "trg_door",
+      "x": 280,
+      "y": 108,
+      "overrides": {
+        "trigger_zone": {
+          "on_enter": [
+            {
+              "do": "if_var",
+              "var": "hour",
+              "op": "<",
+              "value": 8,
+              "then": [
+                {
+                  "do": "show_dialog",
+                  "dialog": "dlg_closed_shop"
+                }
+              ],
+              "else": [
+                {
+                  "do": "if_var",
+                  "var": "hour",
+                  "op": ">=",
+                  "value": 22,
+                  "then": [
+                    {
+                      "do": "show_dialog",
+                      "dialog": "dlg_closed_shop"
+                    }
+                  ],
+                  "else": [
+                    {
+                      "do": "play_sfx",
+                      "sfx": "sfx_door"
+                    },
+                    {
+                      "do": "fade_out",
+                      "ticks": 12
+                    },
+                    {
+                      "do": "goto_scene",
+                      "scene": "scn_shop"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "door_museum",
+      "object": "trg_door",
+      "x": 136,
+      "y": 124,
+      "overrides": {
+        "trigger_zone": {
+          "on_enter": [
+            {
+              "do": "if_var",
+              "var": "hour",
+              "op": "<",
+              "value": 7,
+              "then": [
+                {
+                  "do": "show_dialog",
+                  "dialog": "dlg_closed_museum"
+                }
+              ],
+              "else": [
+                {
+                  "do": "play_sfx",
+                  "sfx": "sfx_door"
+                },
+                {
+                  "do": "fade_out",
+                  "ticks": 12
+                },
+                {
+                  "do": "goto_scene",
+                  "scene": "scn_museum"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "door_hall",
+      "object": "trg_door",
+      "x": 360,
+      "y": 252,
+      "overrides": {
+        "trigger_zone": {
+          "on_enter": [
+            {
+              "do": "play_sfx",
+              "sfx": "sfx_door"
+            },
+            {
+              "do": "fade_out",
+              "ticks": 12
+            },
+            {
+              "do": "goto_scene",
+              "scene": "scn_hall"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "door_pembrook",
+      "object": "trg_sign",
+      "x": 616,
+      "y": 138,
+      "overrides": {
+        "interact": {
+          "on_press": [
+            {
+              "do": "show_dialog",
+              "dialog": "dlg_locked_pembrook"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "pembrook",
+      "object": "npc_pembrook",
+      "x": 624,
+      "y": 174
+    },
+    {
+      "id": "door_rusk",
+      "object": "trg_sign",
+      "x": 648,
+      "y": 362,
+      "overrides": {
+        "interact": {
+          "on_press": [
+            {
+              "do": "show_dialog",
+              "dialog": "dlg_locked_rusk"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "rusk",
+      "object": "npc_rusk",
+      "x": 656,
+      "y": 398
+    },
+    {
+      "id": "door_tilly",
+      "object": "trg_sign",
+      "x": 248,
+      "y": 490,
+      "overrides": {
+        "interact": {
+          "on_press": [
+            {
+              "do": "show_dialog",
+              "dialog": "dlg_locked_tilly"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "tilly",
+      "object": "npc_tilly",
+      "x": 256,
+      "y": 526
+    },
+    {
+      "id": "board",
+      "object": "trg_sign",
+      "x": 296,
+      "y": 272,
+      "overrides": {
+        "interact": {
+          "on_press": [
+            {
+              "do": "show_dialog",
+              "dialog": "dlg_board"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "apples_1",
+      "object": "prop_fruit",
+      "x": 64,
+      "y": 331,
+      "overrides": {
+        "exists_when": {
+          "var": "tree_1"
+        }
+      }
+    },
+    {
+      "id": "tree_1",
+      "object": "trg_tree",
+      "x": 56,
+      "y": 340,
+      "overrides": {
+        "interact": {
+          "on_press": [
+            {
+              "do": "if_var",
+              "var": "tool",
+              "op": "==",
+              "value": 0,
+              "then": [
+                {
+                  "do": "play_sfx",
+                  "sfx": "sfx_shake"
+                },
+                {
+                  "do": "shake_camera",
+                  "ticks": 8,
+                  "strength": 1
+                },
+                {
+                  "do": "if_var",
+                  "var": "tree_1",
+                  "op": "==",
+                  "value": 0,
+                  "then": [
+                    {
+                      "do": "set_var",
+                      "var": "tree_1",
+                      "value": 3
+                    },
+                    {
+                      "do": "spawn",
+                      "object": "item_apple",
+                      "x": 0,
+                      "y": 20
+                    },
+                    {
+                      "do": "spawn",
+                      "object": "item_apple",
+                      "x": 10,
+                      "y": 24
+                    },
+                    {
+                      "do": "spawn",
+                      "object": "item_apple",
+                      "x": 18,
+                      "y": 20
+                    }
+                  ]
+                }
+              ],
+              "else": [
+                {
+                  "do": "show_dialog",
+                  "dialog": "dlg_hint_hands"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "apples_2",
+      "object": "prop_fruit",
+      "x": 64,
+      "y": 379,
+      "overrides": {
+        "exists_when": {
+          "var": "tree_2"
+        }
+      }
+    },
+    {
+      "id": "tree_2",
+      "object": "trg_tree",
+      "x": 56,
+      "y": 388,
+      "overrides": {
+        "interact": {
+          "on_press": [
+            {
+              "do": "if_var",
+              "var": "tool",
+              "op": "==",
+              "value": 0,
+              "then": [
+                {
+                  "do": "play_sfx",
+                  "sfx": "sfx_shake"
+                },
+                {
+                  "do": "shake_camera",
+                  "ticks": 8,
+                  "strength": 1
+                },
+                {
+                  "do": "if_var",
+                  "var": "tree_2",
+                  "op": "==",
+                  "value": 0,
+                  "then": [
+                    {
+                      "do": "set_var",
+                      "var": "tree_2",
+                      "value": 3
+                    },
+                    {
+                      "do": "spawn",
+                      "object": "item_apple",
+                      "x": 0,
+                      "y": 20
+                    },
+                    {
+                      "do": "spawn",
+                      "object": "item_apple",
+                      "x": 10,
+                      "y": 24
+                    },
+                    {
+                      "do": "spawn",
+                      "object": "item_apple",
+                      "x": 18,
+                      "y": 20
+                    }
+                  ]
+                }
+              ],
+              "else": [
+                {
+                  "do": "show_dialog",
+                  "dialog": "dlg_hint_hands"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "apples_3",
+      "object": "prop_fruit",
+      "x": 64,
+      "y": 427,
+      "overrides": {
+        "exists_when": {
+          "var": "tree_3"
+        }
+      }
+    },
+    {
+      "id": "tree_3",
+      "object": "trg_tree",
+      "x": 56,
+      "y": 436,
+      "overrides": {
+        "interact": {
+          "on_press": [
+            {
+              "do": "if_var",
+              "var": "tool",
+              "op": "==",
+              "value": 0,
+              "then": [
+                {
+                  "do": "play_sfx",
+                  "sfx": "sfx_shake"
+                },
+                {
+                  "do": "shake_camera",
+                  "ticks": 8,
+                  "strength": 1
+                },
+                {
+                  "do": "if_var",
+                  "var": "tree_3",
+                  "op": "==",
+                  "value": 0,
+                  "then": [
+                    {
+                      "do": "set_var",
+                      "var": "tree_3",
+                      "value": 3
+                    },
+                    {
+                      "do": "spawn",
+                      "object": "item_apple",
+                      "x": 0,
+                      "y": 20
+                    },
+                    {
+                      "do": "spawn",
+                      "object": "item_apple",
+                      "x": 10,
+                      "y": 24
+                    },
+                    {
+                      "do": "spawn",
+                      "object": "item_apple",
+                      "x": 18,
+                      "y": 20
+                    }
+                  ]
+                }
+              ],
+              "else": [
+                {
+                  "do": "show_dialog",
+                  "dialog": "dlg_hint_hands"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "apples_4",
+      "object": "prop_fruit",
+      "x": 112,
+      "y": 443,
+      "overrides": {
+        "exists_when": {
+          "var": "tree_4"
+        }
+      }
+    },
+    {
+      "id": "tree_4",
+      "object": "trg_tree",
+      "x": 104,
+      "y": 452,
+      "overrides": {
+        "interact": {
+          "on_press": [
+            {
+              "do": "if_var",
+              "var": "tool",
+              "op": "==",
+              "value": 0,
+              "then": [
+                {
+                  "do": "play_sfx",
+                  "sfx": "sfx_shake"
+                },
+                {
+                  "do": "shake_camera",
+                  "ticks": 8,
+                  "strength": 1
+                },
+                {
+                  "do": "if_var",
+                  "var": "tree_4",
+                  "op": "==",
+                  "value": 0,
+                  "then": [
+                    {
+                      "do": "set_var",
+                      "var": "tree_4",
+                      "value": 3
+                    },
+                    {
+                      "do": "spawn",
+                      "object": "item_apple",
+                      "x": 0,
+                      "y": 20
+                    },
+                    {
+                      "do": "spawn",
+                      "object": "item_apple",
+                      "x": 10,
+                      "y": 24
+                    },
+                    {
+                      "do": "spawn",
+                      "object": "item_apple",
+                      "x": 18,
+                      "y": 20
+                    }
+                  ]
+                }
+              ],
+              "else": [
+                {
+                  "do": "show_dialog",
+                  "dialog": "dlg_hint_hands"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "apples_5",
+      "object": "prop_fruit",
+      "x": 224,
+      "y": 347,
+      "overrides": {
+        "exists_when": {
+          "var": "tree_5"
+        }
+      }
+    },
+    {
+      "id": "tree_5",
+      "object": "trg_tree",
+      "x": 216,
+      "y": 356,
+      "overrides": {
+        "interact": {
+          "on_press": [
+            {
+              "do": "if_var",
+              "var": "tool",
+              "op": "==",
+              "value": 0,
+              "then": [
+                {
+                  "do": "play_sfx",
+                  "sfx": "sfx_shake"
+                },
+                {
+                  "do": "shake_camera",
+                  "ticks": 8,
+                  "strength": 1
+                },
+                {
+                  "do": "if_var",
+                  "var": "tree_5",
+                  "op": "==",
+                  "value": 0,
+                  "then": [
+                    {
+                      "do": "set_var",
+                      "var": "tree_5",
+                      "value": 3
+                    },
+                    {
+                      "do": "spawn",
+                      "object": "item_apple",
+                      "x": 0,
+                      "y": 20
+                    },
+                    {
+                      "do": "spawn",
+                      "object": "item_apple",
+                      "x": 10,
+                      "y": 24
+                    },
+                    {
+                      "do": "spawn",
+                      "object": "item_apple",
+                      "x": 18,
+                      "y": 20
+                    }
+                  ]
+                }
+              ],
+              "else": [
+                {
+                  "do": "show_dialog",
+                  "dialog": "dlg_hint_hands"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "rock_1",
+      "object": "prop_rock",
+      "x": 440,
+      "y": 94,
+      "overrides": {
+        "interact": {
+          "on_press": [
+            {
+              "do": "if_var",
+              "var": "tool",
+              "op": "==",
+              "value": 1,
+              "then": [
+                {
+                  "do": "play_sfx",
+                  "sfx": "sfx_rock"
+                },
+                {
+                  "do": "shake_camera",
+                  "ticks": 6,
+                  "strength": 1
+                },
+                {
+                  "do": "if_var",
+                  "var": "lucky_found",
+                  "op": "==",
+                  "value": 0,
+                  "then": [
+                    {
+                      "do": "if_var",
+                      "var": "lucky_rock",
+                      "op": "==",
+                      "value": 1,
+                      "then": [
+                        {
+                          "do": "set_var",
+                          "var": "lucky_found",
+                          "value": 1
+                        },
+                        {
+                          "do": "spawn",
+                          "object": "item_money",
+                          "x": 0,
+                          "y": 14
+                        },
+                        {
+                          "do": "show_dialog",
+                          "dialog": "dlg_lucky"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "rock_2",
+      "object": "prop_rock",
+      "x": 696,
+      "y": 254,
+      "overrides": {
+        "interact": {
+          "on_press": [
+            {
+              "do": "if_var",
+              "var": "tool",
+              "op": "==",
+              "value": 1,
+              "then": [
+                {
+                  "do": "play_sfx",
+                  "sfx": "sfx_rock"
+                },
+                {
+                  "do": "shake_camera",
+                  "ticks": 6,
+                  "strength": 1
+                },
+                {
+                  "do": "if_var",
+                  "var": "lucky_found",
+                  "op": "==",
+                  "value": 0,
+                  "then": [
+                    {
+                      "do": "if_var",
+                      "var": "lucky_rock",
+                      "op": "==",
+                      "value": 2,
+                      "then": [
+                        {
+                          "do": "set_var",
+                          "var": "lucky_found",
+                          "value": 1
+                        },
+                        {
+                          "do": "spawn",
+                          "object": "item_money",
+                          "x": 0,
+                          "y": 14
+                        },
+                        {
+                          "do": "show_dialog",
+                          "dialog": "dlg_lucky"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "rock_3",
+      "object": "prop_rock",
+      "x": 216,
+      "y": 238,
+      "overrides": {
+        "interact": {
+          "on_press": [
+            {
+              "do": "if_var",
+              "var": "tool",
+              "op": "==",
+              "value": 1,
+              "then": [
+                {
+                  "do": "play_sfx",
+                  "sfx": "sfx_rock"
+                },
+                {
+                  "do": "shake_camera",
+                  "ticks": 6,
+                  "strength": 1
+                },
+                {
+                  "do": "if_var",
+                  "var": "lucky_found",
+                  "op": "==",
+                  "value": 0,
+                  "then": [
+                    {
+                      "do": "if_var",
+                      "var": "lucky_rock",
+                      "op": "==",
+                      "value": 3,
+                      "then": [
+                        {
+                          "do": "set_var",
+                          "var": "lucky_found",
+                          "value": 1
+                        },
+                        {
+                          "do": "spawn",
+                          "object": "item_money",
+                          "x": 0,
+                          "y": 14
+                        },
+                        {
+                          "do": "show_dialog",
+                          "dialog": "dlg_lucky"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "crack_1",
+      "object": "prop_crack",
+      "x": 88,
+      "y": 184,
+      "overrides": {
+        "exists_when": {
+          "var": "fossil_1"
+        },
+        "interact": {
+          "on_press": [
+            {
+              "do": "if_var",
+              "var": "tool",
+              "op": "==",
+              "value": 1,
+              "then": [
+                {
+                  "do": "set_var",
+                  "var": "fossil_1",
+                  "value": 1
+                },
+                {
+                  "do": "play_sfx",
+                  "sfx": "sfx_dig"
+                },
+                {
+                  "do": "if_chance",
+                  "percent": 35,
+                  "then": [
+                    {
+                      "do": "add_var",
+                      "var": "fos_ammonite",
+                      "value": 1
+                    },
+                    {
+                      "do": "play_sfx",
+                      "sfx": "sfx_catch"
+                    },
+                    {
+                      "do": "show_dialog",
+                      "dialog": "dlg_dig_ammonite"
+                    }
+                  ],
+                  "else": [
+                    {
+                      "do": "if_chance",
+                      "percent": 40,
+                      "then": [
+                        {
+                          "do": "add_var",
+                          "var": "fos_trilobite",
+                          "value": 1
+                        },
+                        {
+                          "do": "play_sfx",
+                          "sfx": "sfx_catch"
+                        },
+                        {
+                          "do": "show_dialog",
+                          "dialog": "dlg_dig_trilobite"
+                        }
+                      ],
+                      "else": [
+                        {
+                          "do": "if_chance",
+                          "percent": 55,
+                          "then": [
+                            {
+                              "do": "add_var",
+                              "var": "fos_tooth",
+                              "value": 1
+                            },
+                            {
+                              "do": "play_sfx",
+                              "sfx": "sfx_catch"
+                            },
+                            {
+                              "do": "show_dialog",
+                              "dialog": "dlg_dig_tooth"
+                            }
+                          ],
+                          "else": [
+                            {
+                              "do": "add_var",
+                              "var": "fos_amber",
+                              "value": 1
+                            },
+                            {
+                              "do": "play_sfx",
+                              "sfx": "sfx_catch"
+                            },
+                            {
+                              "do": "show_dialog",
+                              "dialog": "dlg_dig_amber"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ],
+              "else": [
+                {
+                  "do": "show_dialog",
+                  "dialog": "dlg_hint_shovel"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "crack_2",
+      "object": "prop_crack",
+      "x": 440,
+      "y": 248,
+      "overrides": {
+        "exists_when": {
+          "var": "fossil_2"
+        },
+        "interact": {
+          "on_press": [
+            {
+              "do": "if_var",
+              "var": "tool",
+              "op": "==",
+              "value": 1,
+              "then": [
+                {
+                  "do": "set_var",
+                  "var": "fossil_2",
+                  "value": 1
+                },
+                {
+                  "do": "play_sfx",
+                  "sfx": "sfx_dig"
+                },
+                {
+                  "do": "if_chance",
+                  "percent": 35,
+                  "then": [
+                    {
+                      "do": "add_var",
+                      "var": "fos_ammonite",
+                      "value": 1
+                    },
+                    {
+                      "do": "play_sfx",
+                      "sfx": "sfx_catch"
+                    },
+                    {
+                      "do": "show_dialog",
+                      "dialog": "dlg_dig_ammonite"
+                    }
+                  ],
+                  "else": [
+                    {
+                      "do": "if_chance",
+                      "percent": 40,
+                      "then": [
+                        {
+                          "do": "add_var",
+                          "var": "fos_trilobite",
+                          "value": 1
+                        },
+                        {
+                          "do": "play_sfx",
+                          "sfx": "sfx_catch"
+                        },
+                        {
+                          "do": "show_dialog",
+                          "dialog": "dlg_dig_trilobite"
+                        }
+                      ],
+                      "else": [
+                        {
+                          "do": "if_chance",
+                          "percent": 55,
+                          "then": [
+                            {
+                              "do": "add_var",
+                              "var": "fos_tooth",
+                              "value": 1
+                            },
+                            {
+                              "do": "play_sfx",
+                              "sfx": "sfx_catch"
+                            },
+                            {
+                              "do": "show_dialog",
+                              "dialog": "dlg_dig_tooth"
+                            }
+                          ],
+                          "else": [
+                            {
+                              "do": "add_var",
+                              "var": "fos_amber",
+                              "value": 1
+                            },
+                            {
+                              "do": "play_sfx",
+                              "sfx": "sfx_catch"
+                            },
+                            {
+                              "do": "show_dialog",
+                              "dialog": "dlg_dig_amber"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ],
+              "else": [
+                {
+                  "do": "show_dialog",
+                  "dialog": "dlg_hint_shovel"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "crack_3",
+      "object": "prop_crack",
+      "x": 664,
+      "y": 456,
+      "overrides": {
+        "exists_when": {
+          "var": "fossil_3"
+        },
+        "interact": {
+          "on_press": [
+            {
+              "do": "if_var",
+              "var": "tool",
+              "op": "==",
+              "value": 1,
+              "then": [
+                {
+                  "do": "set_var",
+                  "var": "fossil_3",
+                  "value": 1
+                },
+                {
+                  "do": "play_sfx",
+                  "sfx": "sfx_dig"
+                },
+                {
+                  "do": "if_chance",
+                  "percent": 35,
+                  "then": [
+                    {
+                      "do": "add_var",
+                      "var": "fos_ammonite",
+                      "value": 1
+                    },
+                    {
+                      "do": "play_sfx",
+                      "sfx": "sfx_catch"
+                    },
+                    {
+                      "do": "show_dialog",
+                      "dialog": "dlg_dig_ammonite"
+                    }
+                  ],
+                  "else": [
+                    {
+                      "do": "if_chance",
+                      "percent": 40,
+                      "then": [
+                        {
+                          "do": "add_var",
+                          "var": "fos_trilobite",
+                          "value": 1
+                        },
+                        {
+                          "do": "play_sfx",
+                          "sfx": "sfx_catch"
+                        },
+                        {
+                          "do": "show_dialog",
+                          "dialog": "dlg_dig_trilobite"
+                        }
+                      ],
+                      "else": [
+                        {
+                          "do": "if_chance",
+                          "percent": 55,
+                          "then": [
+                            {
+                              "do": "add_var",
+                              "var": "fos_tooth",
+                              "value": 1
+                            },
+                            {
+                              "do": "play_sfx",
+                              "sfx": "sfx_catch"
+                            },
+                            {
+                              "do": "show_dialog",
+                              "dialog": "dlg_dig_tooth"
+                            }
+                          ],
+                          "else": [
+                            {
+                              "do": "add_var",
+                              "var": "fos_amber",
+                              "value": 1
+                            },
+                            {
+                              "do": "play_sfx",
+                              "sfx": "sfx_catch"
+                            },
+                            {
+                              "do": "show_dialog",
+                              "dialog": "dlg_dig_amber"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ],
+              "else": [
+                {
+                  "do": "show_dialog",
+                  "dialog": "dlg_hint_shovel"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "crack_4",
+      "object": "prop_crack",
+      "x": 136,
+      "y": 328,
+      "overrides": {
+        "exists_when": {
+          "var": "fossil_4"
+        },
+        "interact": {
+          "on_press": [
+            {
+              "do": "if_var",
+              "var": "tool",
+              "op": "==",
+              "value": 1,
+              "then": [
+                {
+                  "do": "set_var",
+                  "var": "fossil_4",
+                  "value": 1
+                },
+                {
+                  "do": "play_sfx",
+                  "sfx": "sfx_dig"
+                },
+                {
+                  "do": "if_chance",
+                  "percent": 35,
+                  "then": [
+                    {
+                      "do": "add_var",
+                      "var": "fos_ammonite",
+                      "value": 1
+                    },
+                    {
+                      "do": "play_sfx",
+                      "sfx": "sfx_catch"
+                    },
+                    {
+                      "do": "show_dialog",
+                      "dialog": "dlg_dig_ammonite"
+                    }
+                  ],
+                  "else": [
+                    {
+                      "do": "if_chance",
+                      "percent": 40,
+                      "then": [
+                        {
+                          "do": "add_var",
+                          "var": "fos_trilobite",
+                          "value": 1
+                        },
+                        {
+                          "do": "play_sfx",
+                          "sfx": "sfx_catch"
+                        },
+                        {
+                          "do": "show_dialog",
+                          "dialog": "dlg_dig_trilobite"
+                        }
+                      ],
+                      "else": [
+                        {
+                          "do": "if_chance",
+                          "percent": 55,
+                          "then": [
+                            {
+                              "do": "add_var",
+                              "var": "fos_tooth",
+                              "value": 1
+                            },
+                            {
+                              "do": "play_sfx",
+                              "sfx": "sfx_catch"
+                            },
+                            {
+                              "do": "show_dialog",
+                              "dialog": "dlg_dig_tooth"
+                            }
+                          ],
+                          "else": [
+                            {
+                              "do": "add_var",
+                              "var": "fos_amber",
+                              "value": 1
+                            },
+                            {
+                              "do": "play_sfx",
+                              "sfx": "sfx_catch"
+                            },
+                            {
+                              "do": "show_dialog",
+                              "dialog": "dlg_dig_amber"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ],
+              "else": [
+                {
+                  "do": "show_dialog",
+                  "dialog": "dlg_hint_shovel"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "shell_1",
+      "object": "item_shell",
+      "x": 88,
+      "y": 528,
+      "overrides": {
+        "exists_when": {
+          "var": "shell_1"
+        },
+        "collectible": {
+          "on_collect": [
+            {
+              "do": "set_var",
+              "var": "shell_1",
+              "value": 1
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "shell_2",
+      "object": "item_shell",
+      "x": 248,
+      "y": 528,
+      "overrides": {
+        "exists_when": {
+          "var": "shell_2"
+        },
+        "collectible": {
+          "on_collect": [
+            {
+              "do": "set_var",
+              "var": "shell_2",
+              "value": 1
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "shell_3",
+      "object": "item_shell",
+      "x": 424,
+      "y": 528,
+      "overrides": {
+        "exists_when": {
+          "var": "shell_3"
+        },
+        "collectible": {
+          "on_collect": [
+            {
+              "do": "set_var",
+              "var": "shell_3",
+              "value": 1
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "shell_4",
+      "object": "item_shell",
+      "x": 696,
+      "y": 528,
+      "overrides": {
+        "exists_when": {
+          "var": "shell_4"
+        },
+        "collectible": {
+          "on_collect": [
+            {
+              "do": "set_var",
+              "var": "shell_4",
+              "value": 1
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "river_fish_1",
+      "object": "prop_fish_river",
+      "x": 480,
+      "y": 48
+    },
+    {
+      "id": "river_fish_2",
+      "object": "prop_fish_river",
+      "x": 480,
+      "y": 208
+    },
+    {
+      "id": "river_fish_3",
+      "object": "prop_fish_river",
+      "x": 544,
+      "y": 320
+    },
+    {
+      "id": "pond_fish_1",
+      "object": "prop_fish_pond",
+      "x": 96,
+      "y": 262
+    },
+    {
+      "id": "pond_fish_2",
+      "object": "prop_fish_pond",
+      "x": 114,
+      "y": 272
+    },
+    {
+      "id": "sea_fish_1",
+      "object": "prop_fish_sea",
+      "x": 160,
+      "y": 600
+    },
+    {
+      "id": "sea_fish_2",
+      "object": "prop_fish_sea",
+      "x": 400,
+      "y": 596
+    },
+    {
+      "id": "sea_fish_3",
+      "object": "prop_fish_sea",
+      "x": 700,
+      "y": 586
+    },
+    {
+      "id": "white_1",
+      "object": "enm_white",
+      "x": 632,
+      "y": 72
+    },
+    {
+      "id": "white_2",
+      "object": "enm_white",
+      "x": 520,
+      "y": 192
+    },
+    {
+      "id": "white_3",
+      "object": "enm_white",
+      "x": 184,
+      "y": 232
+    },
+    {
+      "id": "white_4",
+      "object": "enm_white",
+      "x": 520,
+      "y": 72
+    },
+    {
+      "id": "bee_1",
+      "object": "enm_bee",
+      "x": 688,
+      "y": 272
+    },
+    {
+      "id": "bee_2",
+      "object": "enm_bee",
+      "x": 296,
+      "y": 352
+    },
+    {
+      "id": "bee_3",
+      "object": "enm_bee",
+      "x": 72,
+      "y": 312
+    },
+    {
+      "id": "ladybug_1",
+      "object": "enm_ladybug",
+      "x": 240,
+      "y": 392
+    },
+    {
+      "id": "ladybug_2",
+      "object": "enm_ladybug",
+      "x": 240,
+      "y": 192
+    },
+    {
+      "id": "ladybug_3",
+      "object": "enm_ladybug",
+      "x": 520,
+      "y": 112
+    },
+    {
+      "id": "cricket_1",
+      "object": "enm_cricket",
+      "x": 408,
+      "y": 72
+    },
+    {
+      "id": "cricket_2",
+      "object": "enm_cricket",
+      "x": 352,
+      "y": 72
+    },
+    {
+      "id": "cricket_3",
+      "object": "enm_cricket",
+      "x": 72,
+      "y": 192
+    },
+    {
+      "id": "firefly_1",
+      "object": "enm_firefly",
+      "x": 110,
+      "y": 300
+    },
+    {
+      "id": "firefly_2",
+      "object": "enm_firefly",
+      "x": 520,
+      "y": 120
+    },
+    {
+      "id": "firefly_3",
+      "object": "enm_firefly",
+      "x": 520,
+      "y": 230
+    },
+    {
+      "id": "firefly_4",
+      "object": "enm_firefly",
+      "x": 600,
+      "y": 380
+    },
+    {
+      "id": "firefly_5",
+      "object": "enm_firefly",
+      "x": 140,
+      "y": 236
+    },
+    {
+      "id": "crab_1",
+      "object": "enm_crab",
+      "x": 120,
+      "y": 540
+    },
+    {
+      "id": "crab_2",
+      "object": "enm_crab",
+      "x": 330,
+      "y": 540
+    },
+    {
+      "id": "crab_3",
+      "object": "enm_crab",
+      "x": 590,
+      "y": 540
+    },
+    {
+      "id": "hud",
+      "object": "hud_main"
+    }
+  ],
+  "on_start": [
+    {
+      "do": "fade_in",
+      "ticks": 16
+    },
+    {
+      "do": "if_var",
+      "var": "intro",
+      "op": "==",
+      "value": 0,
+      "then": [
+        {
+          "do": "wait",
+          "ticks": 30
+        },
+        {
+          "do": "show_dialog",
+          "dialog": "dlg_arrival"
+        }
+      ]
+    }
+  ]
+}

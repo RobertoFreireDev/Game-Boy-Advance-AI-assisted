@@ -1,0 +1,28 @@
+{
+  "id": "item_apple",
+  "kind": "object",
+  "type": "pickup",
+  "name": "Apple",
+  "notes": "Falls from a shaken apple tree, then flies to you when you come close. Each one adds 1 to apples (Bramble pays 100).",
+  "body": "body_apple",
+  "logic": [
+    {
+      "behavior": "magnet",
+      "params": {
+        "range": 28,
+        "acceleration": 0.2,
+        "max_speed": 3
+      }
+    },
+    {
+      "behavior": "collectible",
+      "params": {
+        "var": "apples",
+        "amount": 1
+      }
+    }
+  ],
+  "sounds": {
+    "collect": "sfx_pickup"
+  }
+}

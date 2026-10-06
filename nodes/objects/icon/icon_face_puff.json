@@ -1,0 +1,26 @@
+{
+  "id": "icon_face_puff",
+  "kind": "object",
+  "type": "icon",
+  "name": "Captain Puff portrait",
+  "notes": "16x16 head shown next to Captain Puff's lines in dialogs. Background painted in the dialog box color (pal_faces 13).",
+  "palette": "pal_faces",
+  "pixels": [
+    "dddddddddddddddd",
+    "ddddd111111ddddd",
+    "ddd11ffffff11ddd",
+    "dd1ffffffffff1dd",
+    "dd1ff222222ff1dd",
+    "d1ff22222222ff1d",
+    "d1f2212222122f1d",
+    "d1f2212222122f1d",
+    "d1f222aaaa222f1d",
+    "d1f22aaaaaa22f1d",
+    "dd1f22acca22f1dd",
+    "dd1ff22aa22ff1dd",
+    "ddd1ff2222ff1ddd",
+    "dddd111ff111dddd",
+    "dddddd1111dddddd",
+    "dddddddddddddddd"
+  ]
+}

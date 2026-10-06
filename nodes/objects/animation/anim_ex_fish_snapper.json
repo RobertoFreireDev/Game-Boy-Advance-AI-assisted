@@ -1,0 +1,16 @@
+{
+  "id": "anim_ex_fish_snapper",
+  "kind": "object",
+  "type": "animation",
+  "name": "Red Snapper exhibit",
+  "notes": "The Red Snapper swimming in its museum tank.",
+  "sprite": "spr_fish",
+  "loop": true,
+  "frames": [
+    {
+      "frame": "snapper",
+      "ticks": 60
+    }
+  ],
+  "events": []
+}

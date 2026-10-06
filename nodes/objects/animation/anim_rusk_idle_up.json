@@ -1,0 +1,16 @@
+{
+  "id": "anim_rusk_idle_up",
+  "kind": "object",
+  "type": "animation",
+  "name": "Rusk standing (up)",
+  "notes": "Seen from behind.",
+  "sprite": "spr_rusk",
+  "loop": true,
+  "frames": [
+    {
+      "frame": "up_0",
+      "ticks": 60
+    }
+  ],
+  "events": []
+}

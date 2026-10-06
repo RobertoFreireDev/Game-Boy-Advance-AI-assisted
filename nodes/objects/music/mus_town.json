@@ -1,0 +1,50 @@
+{
+  "id": "mus_town",
+  "kind": "object",
+  "type": "music",
+  "name": "Mossbrook by day",
+  "notes": "The town theme from 7 in the morning to 8 at night: a light, bouncy melody in C major on square 1, soft off-beat chords on square 2, a walking bass on the wave channel and a gentle shaker on noise.",
+  "bpm": 112,
+  "rows_per_beat": 2,
+  "loop": true,
+  "instruments": {
+    "square1": {
+      "duty": 2,
+      "volume": 9,
+      "decay": 2
+    },
+    "square2": {
+      "duty": 1,
+      "volume": 5,
+      "decay": 3
+    },
+    "wave": {
+      "wave": "02468aceeca8642002468aceeca86420",
+      "volume": 3
+    },
+    "noise": {
+      "volume": 3,
+      "decay": 1
+    }
+  },
+  "patterns": {
+    "A": {
+      "square1": "E5 -- G5 -- C6 -- G5 -- | A5 -- G5 -- E5 -- D5 -- | E5 -- G5 -- C6 -- E6 -- | D6 -- -- -- -- -- .. ..",
+      "square2": ".. E4 .. G4 .. E4 .. G4 | .. F4 .. A4 .. F4 .. G4 | .. E4 .. G4 .. E4 .. G4 | .. F4 .. B4 .. G4 .. ..",
+      "wave": "C3 -- G3 -- C3 -- G3 -- | F3 -- C4 -- F3 -- G3 -- | C3 -- G3 -- C3 -- G3 -- | G3 -- D3 -- G3 -- B2 --",
+      "noise": "X6 .. X3 .. X6 .. X3 .. | X6 .. X3 .. X6 .. X3 .. | X6 .. X3 .. X6 .. X3 .. | X6 .. X3 .. X6 X6 X3 .."
+    },
+    "B": {
+      "square1": "F5 -- A5 -- C6 -- A5 -- | G5 -- E5 -- C5 -- E5 -- | D5 -- F5 -- A5 -- G5 -- | C5 -- -- -- -- -- .. ..",
+      "square2": ".. A4 .. C5 .. A4 .. C5 | .. G4 .. C5 .. G4 .. C5 | .. F4 .. A4 .. G4 .. B4 | .. E4 .. G4 .. C5 .. ..",
+      "wave": "F3 -- C4 -- F3 -- C4 -- | C3 -- G3 -- C3 -- G3 -- | D3 -- A3 -- G3 -- D3 -- | C3 -- G3 -- C3 -- -- --",
+      "noise": "X6 .. X3 .. X6 .. X3 .. | X6 .. X3 .. X6 .. X3 .. | X6 .. X3 .. X6 .. X3 .. | X6 .. X3 .. X6 .. .. .."
+    }
+  },
+  "order": [
+    "A",
+    "B",
+    "A",
+    "B"
+  ]
+}

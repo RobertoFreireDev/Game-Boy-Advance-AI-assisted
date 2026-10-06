@@ -1,0 +1,20 @@
+{
+  "id": "anim_bug_white",
+  "kind": "object",
+  "type": "animation",
+  "name": "Cabbage White body",
+  "notes": "How a Cabbage White looks: 2-frame flutter. Shared by the bug in town and its museum terrarium. When caught it sparkles away.",
+  "sprite": "spr_bugs",
+  "loop": true,
+  "frames": [
+    {
+      "frame": "white_0",
+      "ticks": 10
+    },
+    {
+      "frame": "white_1",
+      "ticks": 10
+    }
+  ],
+  "events": []
+}

@@ -1,0 +1,16 @@
+{
+  "id": "anim_fruit",
+  "kind": "object",
+  "type": "animation",
+  "name": "Apples on the tree body",
+  "notes": "Three red apples among the leaves.",
+  "sprite": "spr_items",
+  "loop": true,
+  "frames": [
+    {
+      "frame": "fruit_tree",
+      "ticks": 60
+    }
+  ],
+  "events": []
+}

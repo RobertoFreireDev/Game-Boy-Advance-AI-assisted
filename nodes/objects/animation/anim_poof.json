@@ -1,0 +1,28 @@
+{
+  "id": "anim_poof",
+  "kind": "object",
+  "type": "animation",
+  "name": "Caught sparkle",
+  "notes": "A quick sparkle where a bug was caught.",
+  "sprite": "spr_items",
+  "loop": false,
+  "frames": [
+    {
+      "frame": "sparkle",
+      "ticks": 6
+    },
+    {
+      "frame": "blank",
+      "ticks": 6
+    },
+    {
+      "frame": "sparkle",
+      "ticks": 6
+    },
+    {
+      "frame": "blank",
+      "ticks": 12
+    }
+  ],
+  "events": []
+}

@@ -1,0 +1,42 @@
+{
+  "id": "body_tilly",
+  "kind": "object",
+  "type": "body",
+  "name": "Tilly body",
+  "notes": "How Tilly looks. Not solid: you can brush past. The feet hitbox is what you face to talk.",
+  "origin": [
+    8,
+    31
+  ],
+  "hitbox": {
+    "x": -6,
+    "y": -7,
+    "w": 12,
+    "h": 7
+  },
+  "physics": {
+    "gravity": false,
+    "solid": false,
+    "collides_with": [
+      "tiles"
+    ]
+  },
+  "animations": {
+    "idle_down": "anim_tilly_idle_down",
+    "walk_down": "anim_tilly_walk_down",
+    "idle_up": "anim_tilly_idle_up",
+    "walk_up": "anim_tilly_walk_up",
+    "idle": "anim_tilly_idle",
+    "walk": "anim_tilly_walk"
+  },
+  "default_animation": "idle_down",
+  "children": [
+    "spr_tilly",
+    "anim_tilly_idle_down",
+    "anim_tilly_walk_down",
+    "anim_tilly_idle_up",
+    "anim_tilly_walk_up",
+    "anim_tilly_idle",
+    "anim_tilly_walk"
+  ]
+}

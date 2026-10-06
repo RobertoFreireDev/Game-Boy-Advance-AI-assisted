@@ -1,0 +1,29 @@
+{
+  "id": "body_ex_fos_ammonite",
+  "kind": "object",
+  "type": "body",
+  "name": "Ammonite exhibit",
+  "notes": "The Ammonite on its museum pedestal.",
+  "origin": [
+    8,
+    15
+  ],
+  "hitbox": {
+    "x": -6,
+    "y": -8,
+    "w": 12,
+    "h": 8
+  },
+  "physics": {
+    "gravity": false,
+    "solid": false,
+    "collides_with": []
+  },
+  "animations": {
+    "idle": "anim_ex_fos_ammonite"
+  },
+  "default_animation": "idle",
+  "children": [
+    "anim_ex_fos_ammonite"
+  ]
+}

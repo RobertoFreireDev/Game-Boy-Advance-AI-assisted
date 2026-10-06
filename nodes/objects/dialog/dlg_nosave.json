@@ -1,0 +1,28 @@
+{
+  "id": "dlg_nosave",
+  "kind": "object",
+  "type": "dialog",
+  "name": "No save yet",
+  "notes": "CONTINUE when nothing was saved.",
+  "font": "font_default",
+  "box": {
+    "x": 8,
+    "y": 88,
+    "w": 224,
+    "h": 64,
+    "paper": 3,
+    "border": 2
+  },
+  "ticks_per_char": 1,
+  "lines": [
+    {
+      "text": "THERE IS NO SAVED GAME YET. CHOOSE NEW GAME!"
+    }
+  ],
+  "on_end": [
+    {
+      "do": "open_menu",
+      "menu": "menu_title"
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "id": "dlg_pembrook_thanks",
+  "kind": "object",
+  "type": "dialog",
+  "name": "Pembrook: favor done",
+  "notes": "Pembrook thanks you for an apple and gives a reward.",
+  "font": "font_default",
+  "box": {
+    "x": 8,
+    "y": 88,
+    "w": 224,
+    "h": 64,
+    "paper": 3,
+    "border": 2
+  },
+  "ticks_per_char": 1,
+  "lines": [
+    {
+      "speaker": "PEMBROOK",
+      "portrait": "icon_face_pembrook",
+      "text": "AN APPLE! THANK YOU, DEAR. THE PIE WILL BE LOVELY."
+    },
+    {
+      "speaker": "PEMBROOK",
+      "portrait": "icon_face_pembrook",
+      "text": "HERE, TAKE MY FERN PLANT FOR YOUR HOUSE. IT LOVES SUNNY WINDOWS."
+    }
+  ]
+}

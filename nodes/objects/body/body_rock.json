@@ -1,0 +1,29 @@
+{
+  "id": "body_rock",
+  "kind": "object",
+  "type": "body",
+  "name": "Rock body",
+  "notes": "A big grey rock. Solid.",
+  "origin": [
+    8,
+    14
+  ],
+  "hitbox": {
+    "x": -7,
+    "y": -8,
+    "w": 14,
+    "h": 8
+  },
+  "physics": {
+    "gravity": false,
+    "solid": true,
+    "collides_with": []
+  },
+  "animations": {
+    "idle": "anim_rock"
+  },
+  "default_animation": "idle",
+  "children": [
+    "anim_rock"
+  ]
+}

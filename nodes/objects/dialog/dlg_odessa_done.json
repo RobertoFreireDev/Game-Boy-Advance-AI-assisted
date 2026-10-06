@@ -1,0 +1,24 @@
+{
+  "id": "dlg_odessa_done",
+  "kind": "object",
+  "type": "dialog",
+  "name": "Odessa: museum full",
+  "notes": "After the museum is complete.",
+  "font": "font_default",
+  "box": {
+    "x": 8,
+    "y": 88,
+    "w": 224,
+    "h": 64,
+    "paper": 3,
+    "border": 2
+  },
+  "ticks_per_char": 1,
+  "lines": [
+    {
+      "speaker": "ODESSA",
+      "portrait": "icon_face_odessa",
+      "text": "VISITORS COME FROM FAR AWAY TO SEE OUR COLLECTION, THANKS TO YOU!"
+    }
+  ]
+}

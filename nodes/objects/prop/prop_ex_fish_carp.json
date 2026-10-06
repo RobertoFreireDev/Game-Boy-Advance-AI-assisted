@@ -1,0 +1,21 @@
+{
+  "id": "prop_ex_fish_carp",
+  "kind": "object",
+  "type": "prop",
+  "name": "Carp exhibit",
+  "notes": "Appears in the museum once you donated a Carp (variable don_fish_carp).",
+  "body": "body_ex_fish_carp",
+  "logic": [
+    {
+      "behavior": "exists_when",
+      "params": {
+        "var": "don_fish_carp",
+        "min": 1,
+        "max": 1
+      }
+    }
+  ],
+  "children": [
+    "body_ex_fish_carp"
+  ]
+}

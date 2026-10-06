@@ -1,0 +1,22 @@
+{
+  "id": "dlg_catch_snapper",
+  "kind": "object",
+  "type": "dialog",
+  "name": "Caught a Red Snapper",
+  "notes": "Shown when you reel in a Red Snapper.",
+  "font": "font_default",
+  "box": {
+    "x": 8,
+    "y": 88,
+    "w": 224,
+    "h": 64,
+    "paper": 3,
+    "border": 2
+  },
+  "ticks_per_char": 1,
+  "lines": [
+    {
+      "text": "YOU CAUGHT A RED SNAPPER! A RED BEAUTY! BRAMBLE WILL PAY WELL."
+    }
+  ]
+}

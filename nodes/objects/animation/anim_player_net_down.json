@@ -1,0 +1,20 @@
+{
+  "id": "anim_player_net_down",
+  "kind": "object",
+  "type": "animation",
+  "name": "Net swing (down)",
+  "notes": "Net raised over the head, then slapped down in front.",
+  "sprite": "spr_player",
+  "loop": false,
+  "frames": [
+    {
+      "frame": "net_down_0",
+      "ticks": 5
+    },
+    {
+      "frame": "net_down_1",
+      "ticks": 9
+    }
+  ],
+  "events": []
+}

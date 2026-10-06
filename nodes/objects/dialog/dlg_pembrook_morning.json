@@ -1,0 +1,24 @@
+{
+  "id": "dlg_pembrook_morning",
+  "kind": "object",
+  "type": "dialog",
+  "name": "Pembrook: morning",
+  "notes": "Pembrook's morning line.",
+  "font": "font_default",
+  "box": {
+    "x": 8,
+    "y": 88,
+    "w": 224,
+    "h": 64,
+    "paper": 3,
+    "border": 2
+  },
+  "ticks_per_char": 1,
+  "lines": [
+    {
+      "speaker": "PEMBROOK",
+      "portrait": "icon_face_pembrook",
+      "text": "GOOD MORNING, DEAR. DID YOU EAT BREAKFAST? YOU LOOK LIKE YOU SKIPPED IT AGAIN. WOOLLY!"
+    }
+  ]
+}

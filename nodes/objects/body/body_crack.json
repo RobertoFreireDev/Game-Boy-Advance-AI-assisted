@@ -1,0 +1,29 @@
+{
+  "id": "body_crack",
+  "kind": "object",
+  "type": "body",
+  "name": "Fossil crack body",
+  "notes": "A star-shaped crack in the ground: something is buried here.",
+  "origin": [
+    8,
+    8
+  ],
+  "hitbox": {
+    "x": -6,
+    "y": -6,
+    "w": 12,
+    "h": 12
+  },
+  "physics": {
+    "gravity": false,
+    "solid": false,
+    "collides_with": []
+  },
+  "animations": {
+    "idle": "anim_crack"
+  },
+  "default_animation": "idle",
+  "children": [
+    "anim_crack"
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "id": "dlg_closed_museum",
+  "kind": "object",
+  "type": "dialog",
+  "name": "Museum closed",
+  "notes": "The museum door before 7:00.",
+  "font": "font_default",
+  "box": {
+    "x": 8,
+    "y": 88,
+    "w": 224,
+    "h": 64,
+    "paper": 3,
+    "border": 2
+  },
+  "ticks_per_char": 1,
+  "lines": [
+    {
+      "text": "THE MUSEUM OPENS AT 7 IN THE MORNING. PROF. ODESSA IS STILL ASLEEP."
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "id": "dlg_tilly_thanks",
+  "kind": "object",
+  "type": "dialog",
+  "name": "Tilly: favor done",
+  "notes": "Tilly thanks you for a ladybug and gives a reward.",
+  "font": "font_default",
+  "box": {
+    "x": 8,
+    "y": 88,
+    "w": 224,
+    "h": 64,
+    "paper": 3,
+    "border": 2
+  },
+  "ticks_per_char": 1,
+  "lines": [
+    {
+      "speaker": "TILLY",
+      "portrait": "icon_face_tilly",
+      "text": "A LADYBUG! EEE, SHE'S PERFECT! THANK YOU SO MUCH!"
+    },
+    {
+      "speaker": "TILLY",
+      "portrait": "icon_face_tilly",
+      "text": "TAKE MY MOSS RUG! IT'S SO SOFT, IT WILL LOOK SO CUTE IN YOUR HOUSE, HOP-HOP!"
+    }
+  ]
+}

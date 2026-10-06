@@ -1,0 +1,38 @@
+{
+  "id": "dlg_no_loan",
+  "kind": "object",
+  "type": "dialog",
+  "name": "Nothing to pay",
+  "notes": "Ardea when you owe nothing.",
+  "font": "font_default",
+  "box": {
+    "x": 8,
+    "y": 88,
+    "w": 224,
+    "h": 64,
+    "paper": 3,
+    "border": 2
+  },
+  "ticks_per_char": 1,
+  "lines": [
+    {
+      "speaker": "ARDEA",
+      "portrait": "icon_face_ardea",
+      "text": "YOU DON'T OWE A SINGLE PIP. ENJOY YOUR HOME!"
+    }
+  ],
+  "on_end": [
+    {
+      "do": "if_var",
+      "var": "house_level",
+      "op": "==",
+      "value": 1,
+      "then": [
+        {
+          "do": "show_dialog",
+          "dialog": "dlg_offer_expand"
+        }
+      ]
+    }
+  ]
+}

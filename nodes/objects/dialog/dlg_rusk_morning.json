@@ -1,0 +1,24 @@
+{
+  "id": "dlg_rusk_morning",
+  "kind": "object",
+  "type": "dialog",
+  "name": "Rusk: morning",
+  "notes": "Rusk's morning line.",
+  "font": "font_default",
+  "box": {
+    "x": 8,
+    "y": 88,
+    "w": 224,
+    "h": 64,
+    "paper": 3,
+    "border": 2
+  },
+  "ticks_per_char": 1,
+  "lines": [
+    {
+      "speaker": "RUSK",
+      "portrait": "icon_face_rusk",
+      "text": "HMPH. MORNING ALREADY? DON'T GET CHEERY WITH ME BEFORE NOON, KID. HRMPH."
+    }
+  ]
+}

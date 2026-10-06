@@ -1,0 +1,104 @@
+{
+  "id": "menu_tools",
+  "kind": "object",
+  "type": "menu",
+  "name": "Tool counter",
+  "notes": "Tools for sale. The fishing rod costs 500 Pips.",
+  "font": "font_default",
+  "title": "TOOLS",
+  "cursor": "icon_cursor",
+  "box": {
+    "x": 48,
+    "y": 16,
+    "w": 152,
+    "h": 64,
+    "paper": 3,
+    "border": 2
+  },
+  "layout": {
+    "x": 80,
+    "y": 40,
+    "spacing": 16,
+    "title_y": 24
+  },
+  "options": [
+    {
+      "label": "FISHING ROD  500",
+      "actions": [
+        {
+          "do": "if_var",
+          "var": "has_rod",
+          "op": "==",
+          "value": 1,
+          "then": [
+            {
+              "do": "play_sfx",
+              "sfx": "sfx_nope"
+            },
+            {
+              "do": "show_dialog",
+              "dialog": "dlg_have_it"
+            }
+          ],
+          "else": [
+            {
+              "do": "if_var",
+              "var": "pips",
+              "op": ">=",
+              "value": 500,
+              "then": [
+                {
+                  "do": "add_var",
+                  "var": "pips",
+                  "value": -500
+                },
+                {
+                  "do": "set_var",
+                  "var": "has_rod",
+                  "value": 1
+                },
+                {
+                  "do": "play_sfx",
+                  "sfx": "sfx_coin"
+                },
+                {
+                  "do": "show_dialog",
+                  "dialog": "dlg_got_rod"
+                }
+              ],
+              "else": [
+                {
+                  "do": "play_sfx",
+                  "sfx": "sfx_nope"
+                },
+                {
+                  "do": "show_dialog",
+                  "dialog": "dlg_broke"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "label": "BACK",
+      "actions": [
+        {
+          "do": "open_menu",
+          "menu": "menu_shop"
+        }
+      ]
+    }
+  ],
+  "on_cancel": [
+    {
+      "do": "open_menu",
+      "menu": "menu_shop"
+    }
+  ],
+  "sounds": {
+    "move": "sfx_select",
+    "select": "sfx_confirm"
+  }
+}

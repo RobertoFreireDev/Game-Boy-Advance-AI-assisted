@@ -1,0 +1,20 @@
+{
+  "id": "anim_rusk_walk",
+  "kind": "object",
+  "type": "animation",
+  "name": "Rusk walking (side)",
+  "notes": "Side view walk, 2 steps.",
+  "sprite": "spr_rusk",
+  "loop": true,
+  "frames": [
+    {
+      "frame": "side_1",
+      "ticks": 8
+    },
+    {
+      "frame": "side_0",
+      "ticks": 8
+    }
+  ],
+  "events": []
+}

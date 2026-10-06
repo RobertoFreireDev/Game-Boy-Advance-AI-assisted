@@ -1,0 +1,29 @@
+{
+  "id": "body_fur_lamp",
+  "kind": "object",
+  "type": "body",
+  "name": "Leaf Lamp body",
+  "notes": "How the Leaf Lamp looks in your house.",
+  "origin": [
+    8,
+    15
+  ],
+  "hitbox": {
+    "x": -6,
+    "y": -5,
+    "w": 12,
+    "h": 5
+  },
+  "physics": {
+    "gravity": false,
+    "solid": true,
+    "collides_with": []
+  },
+  "animations": {
+    "idle": "anim_fur_lamp"
+  },
+  "default_animation": "idle",
+  "children": [
+    "anim_fur_lamp"
+  ]
+}

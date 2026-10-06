@@ -1,0 +1,29 @@
+{
+  "id": "dlg_odessa_hello",
+  "kind": "object",
+  "type": "dialog",
+  "name": "Odessa: nothing new",
+  "notes": "When you have nothing new to donate.",
+  "font": "font_default",
+  "box": {
+    "x": 8,
+    "y": 88,
+    "w": 224,
+    "h": 64,
+    "paper": 3,
+    "border": 2
+  },
+  "ticks_per_char": 1,
+  "lines": [
+    {
+      "speaker": "ODESSA",
+      "portrait": "icon_face_odessa",
+      "text": "WELCOME TO THE MUSEUM! BRING ME ANY FISH, BUG OR FOSSIL WE DON'T HAVE YET."
+    },
+    {
+      "speaker": "ODESSA",
+      "portrait": "icon_face_odessa",
+      "text": "WE HAVE {museum} OF 17 EXHIBITS SO FAR. LOOK AROUND!"
+    }
+  ]
+}

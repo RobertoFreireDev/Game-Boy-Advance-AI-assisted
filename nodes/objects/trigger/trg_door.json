@@ -1,0 +1,19 @@
+{
+  "id": "trg_door",
+  "kind": "object",
+  "type": "trigger",
+  "name": "Door",
+  "notes": "Walk into a building's door to go inside (the destination is set per door).",
+  "zone": {
+    "w": 16,
+    "h": 6
+  },
+  "logic": [
+    {
+      "behavior": "trigger_zone",
+      "params": {
+        "on_enter": []
+      }
+    }
+  ]
+}

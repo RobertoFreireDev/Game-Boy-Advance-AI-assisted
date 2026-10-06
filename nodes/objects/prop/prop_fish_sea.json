@@ -1,0 +1,80 @@
+{
+  "id": "prop_fish_sea",
+  "kind": "object",
+  "type": "prop",
+  "name": "Ocean fish",
+  "notes": "A fish in the ocean: a sea bass, or with some luck a red snapper. Face it from the shore with the rod in your hands and press A to cast. Wait for the nibbles, then press A when it bites (you have 18 ticks).",
+  "body": "body_shadow",
+  "logic": [
+    {
+      "behavior": "wander",
+      "params": {
+        "speed": 0.3,
+        "min_ticks": 30,
+        "max_ticks": 90,
+        "pause_ticks": 60,
+        "distance": 14
+      }
+    },
+    {
+      "behavior": "fish_bite",
+      "params": {
+        "var": "rod_on",
+        "window": 18,
+        "on_catch": [
+          {
+            "do": "if_chance",
+            "percent": 18,
+            "then": [
+              {
+                "do": "add_var",
+                "var": "fish_snapper",
+                "value": 1
+              },
+              {
+                "do": "play_sfx",
+                "sfx": "sfx_catch"
+              },
+              {
+                "do": "show_dialog",
+                "dialog": "dlg_catch_snapper"
+              }
+            ],
+            "else": [
+              {
+                "do": "add_var",
+                "var": "fish_seabass",
+                "value": 1
+              },
+              {
+                "do": "play_sfx",
+                "sfx": "sfx_catch"
+              },
+              {
+                "do": "show_dialog",
+                "dialog": "dlg_catch_seabass"
+              }
+            ]
+          }
+        ],
+        "on_escape": [
+          {
+            "do": "show_dialog",
+            "dialog": "dlg_fish_escape"
+          }
+        ],
+        "on_spook": [
+          {
+            "do": "show_dialog",
+            "dialog": "dlg_fish_spook"
+          }
+        ]
+      }
+    }
+  ],
+  "sounds": {
+    "jump": "sfx_cast",
+    "attack": "sfx_plip",
+    "hurt": "sfx_splash"
+  }
+}

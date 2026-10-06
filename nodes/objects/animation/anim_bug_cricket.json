@@ -1,0 +1,20 @@
+{
+  "id": "anim_bug_cricket",
+  "kind": "object",
+  "type": "animation",
+  "name": "Cricket body",
+  "notes": "How a Cricket looks: 2-frame flutter. Shared by the bug in town and its museum terrarium. When caught it sparkles away.",
+  "sprite": "spr_bugs",
+  "loop": true,
+  "frames": [
+    {
+      "frame": "cricket_0",
+      "ticks": 10
+    },
+    {
+      "frame": "cricket_1",
+      "ticks": 10
+    }
+  ],
+  "events": []
+}

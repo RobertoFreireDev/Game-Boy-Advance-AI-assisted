@@ -1,0 +1,20 @@
+{
+  "id": "anim_shadow_swim",
+  "kind": "object",
+  "type": "animation",
+  "name": "Shadow swimming",
+  "notes": "The fish shadow wiggling along.",
+  "sprite": "spr_shadow",
+  "loop": true,
+  "frames": [
+    {
+      "frame": "swim_0",
+      "ticks": 12
+    },
+    {
+      "frame": "swim_1",
+      "ticks": 12
+    }
+  ],
+  "events": []
+}

@@ -1,0 +1,53 @@
+{
+  "id": "body_player",
+  "kind": "object",
+  "type": "body",
+  "name": "You body",
+  "notes": "How you look and collide. The hitbox is only the feet (10x6), so you can walk close to trees and walls and your head may overlap things above, like in classic top-down games.",
+  "origin": [
+    8,
+    31
+  ],
+  "hitbox": {
+    "x": -5,
+    "y": -6,
+    "w": 10,
+    "h": 6
+  },
+  "physics": {
+    "gravity": false,
+    "solid": false,
+    "collides_with": [
+      "tiles",
+      "prop",
+      "pickup",
+      "trigger"
+    ]
+  },
+  "animations": {
+    "idle_down": "anim_player_idle_down",
+    "walk_down": "anim_player_walk_down",
+    "idle_up": "anim_player_idle_up",
+    "walk_up": "anim_player_walk_up",
+    "idle": "anim_player_idle",
+    "walk": "anim_player_walk",
+    "run": "anim_player_run",
+    "attack": "anim_player_net",
+    "attack_down": "anim_player_net_down",
+    "attack_up": "anim_player_net_up"
+  },
+  "default_animation": "idle_down",
+  "children": [
+    "spr_player",
+    "anim_player_idle_down",
+    "anim_player_walk_down",
+    "anim_player_idle_up",
+    "anim_player_walk_up",
+    "anim_player_idle",
+    "anim_player_walk",
+    "anim_player_run",
+    "anim_player_net",
+    "anim_player_net_down",
+    "anim_player_net_up"
+  ]
+}

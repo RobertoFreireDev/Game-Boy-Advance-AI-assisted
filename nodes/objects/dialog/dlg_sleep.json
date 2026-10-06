@@ -1,0 +1,56 @@
+{
+  "id": "dlg_sleep",
+  "kind": "object",
+  "type": "dialog",
+  "name": "Go to bed?",
+  "notes": "Your bed: sleep until 6 in the morning; the game is saved.",
+  "font": "font_default",
+  "box": {
+    "x": 8,
+    "y": 88,
+    "w": 224,
+    "h": 64,
+    "paper": 3,
+    "border": 2
+  },
+  "ticks_per_char": 1,
+  "lines": [
+    {
+      "text": "YOUR COZY BED. SLEEP UNTIL MORNING? THE GAME WILL BE SAVED."
+    }
+  ],
+  "choices": [
+    {
+      "label": "SLEEP",
+      "actions": [
+        {
+          "do": "set_var",
+          "var": "hour",
+          "value": 5
+        },
+        {
+          "do": "set_var",
+          "var": "minute",
+          "value": 59
+        },
+        {
+          "do": "set_var",
+          "var": "entry",
+          "value": 1
+        },
+        {
+          "do": "fade_out",
+          "ticks": 30
+        },
+        {
+          "do": "goto_scene",
+          "scene": "scn_morning"
+        }
+      ]
+    },
+    {
+      "label": "NOT YET",
+      "actions": []
+    }
+  ]
+}

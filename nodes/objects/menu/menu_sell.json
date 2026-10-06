@@ -1,0 +1,402 @@
+{
+  "id": "menu_sell",
+  "kind": "object",
+  "type": "menu",
+  "name": "Sell menu",
+  "notes": "Sell everything of one kind at once at Bramble's prices. Donate to the museum first if you want to keep one! Fish 120-3,500, bugs 100-600, fossils 800-1,500, apples 100, shells 60.",
+  "font": "font_default",
+  "title": "SELL ALL...",
+  "cursor": "icon_cursor",
+  "box": {
+    "x": 40,
+    "y": 16,
+    "w": 176,
+    "h": 112,
+    "paper": 3,
+    "border": 2
+  },
+  "layout": {
+    "x": 72,
+    "y": 40,
+    "spacing": 16,
+    "title_y": 24
+  },
+  "options": [
+    {
+      "label": "FISH",
+      "actions": [
+        {
+          "do": "set_var",
+          "var": "sale",
+          "value": 0
+        },
+        {
+          "do": "add_var",
+          "var": "sale",
+          "from": "fish_crucian",
+          "times": 120
+        },
+        {
+          "do": "set_var",
+          "var": "fish_crucian",
+          "value": 0
+        },
+        {
+          "do": "add_var",
+          "var": "sale",
+          "from": "fish_bass",
+          "times": 350
+        },
+        {
+          "do": "set_var",
+          "var": "fish_bass",
+          "value": 0
+        },
+        {
+          "do": "add_var",
+          "var": "sale",
+          "from": "fish_dace",
+          "times": 220
+        },
+        {
+          "do": "set_var",
+          "var": "fish_dace",
+          "value": 0
+        },
+        {
+          "do": "add_var",
+          "var": "sale",
+          "from": "fish_carp",
+          "times": 280
+        },
+        {
+          "do": "set_var",
+          "var": "fish_carp",
+          "value": 0
+        },
+        {
+          "do": "add_var",
+          "var": "sale",
+          "from": "fish_koi",
+          "times": 3500
+        },
+        {
+          "do": "set_var",
+          "var": "fish_koi",
+          "value": 0
+        },
+        {
+          "do": "add_var",
+          "var": "sale",
+          "from": "fish_seabass",
+          "times": 400
+        },
+        {
+          "do": "set_var",
+          "var": "fish_seabass",
+          "value": 0
+        },
+        {
+          "do": "add_var",
+          "var": "sale",
+          "from": "fish_snapper",
+          "times": 3000
+        },
+        {
+          "do": "set_var",
+          "var": "fish_snapper",
+          "value": 0
+        },
+        {
+          "do": "if_var",
+          "var": "sale",
+          "op": ">",
+          "value": 0,
+          "then": [
+            {
+              "do": "add_var",
+              "var": "pips",
+              "from": "sale"
+            },
+            {
+              "do": "play_sfx",
+              "sfx": "sfx_coin"
+            },
+            {
+              "do": "show_dialog",
+              "dialog": "dlg_sold"
+            }
+          ],
+          "else": [
+            {
+              "do": "show_dialog",
+              "dialog": "dlg_nothing"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "label": "BUGS",
+      "actions": [
+        {
+          "do": "set_var",
+          "var": "sale",
+          "value": 0
+        },
+        {
+          "do": "add_var",
+          "var": "sale",
+          "from": "bug_white",
+          "times": 100
+        },
+        {
+          "do": "set_var",
+          "var": "bug_white",
+          "value": 0
+        },
+        {
+          "do": "add_var",
+          "var": "sale",
+          "from": "bug_bee",
+          "times": 180
+        },
+        {
+          "do": "set_var",
+          "var": "bug_bee",
+          "value": 0
+        },
+        {
+          "do": "add_var",
+          "var": "sale",
+          "from": "bug_ladybug",
+          "times": 200
+        },
+        {
+          "do": "set_var",
+          "var": "bug_ladybug",
+          "value": 0
+        },
+        {
+          "do": "add_var",
+          "var": "sale",
+          "from": "bug_firefly",
+          "times": 300
+        },
+        {
+          "do": "set_var",
+          "var": "bug_firefly",
+          "value": 0
+        },
+        {
+          "do": "add_var",
+          "var": "sale",
+          "from": "bug_cricket",
+          "times": 130
+        },
+        {
+          "do": "set_var",
+          "var": "bug_cricket",
+          "value": 0
+        },
+        {
+          "do": "add_var",
+          "var": "sale",
+          "from": "bug_crab",
+          "times": 600
+        },
+        {
+          "do": "set_var",
+          "var": "bug_crab",
+          "value": 0
+        },
+        {
+          "do": "if_var",
+          "var": "sale",
+          "op": ">",
+          "value": 0,
+          "then": [
+            {
+              "do": "add_var",
+              "var": "pips",
+              "from": "sale"
+            },
+            {
+              "do": "play_sfx",
+              "sfx": "sfx_coin"
+            },
+            {
+              "do": "show_dialog",
+              "dialog": "dlg_sold"
+            }
+          ],
+          "else": [
+            {
+              "do": "show_dialog",
+              "dialog": "dlg_nothing"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "label": "FOSSILS",
+      "actions": [
+        {
+          "do": "set_var",
+          "var": "sale",
+          "value": 0
+        },
+        {
+          "do": "add_var",
+          "var": "sale",
+          "from": "fos_ammonite",
+          "times": 800
+        },
+        {
+          "do": "set_var",
+          "var": "fos_ammonite",
+          "value": 0
+        },
+        {
+          "do": "add_var",
+          "var": "sale",
+          "from": "fos_trilobite",
+          "times": 900
+        },
+        {
+          "do": "set_var",
+          "var": "fos_trilobite",
+          "value": 0
+        },
+        {
+          "do": "add_var",
+          "var": "sale",
+          "from": "fos_tooth",
+          "times": 1000
+        },
+        {
+          "do": "set_var",
+          "var": "fos_tooth",
+          "value": 0
+        },
+        {
+          "do": "add_var",
+          "var": "sale",
+          "from": "fos_amber",
+          "times": 1500
+        },
+        {
+          "do": "set_var",
+          "var": "fos_amber",
+          "value": 0
+        },
+        {
+          "do": "if_var",
+          "var": "sale",
+          "op": ">",
+          "value": 0,
+          "then": [
+            {
+              "do": "add_var",
+              "var": "pips",
+              "from": "sale"
+            },
+            {
+              "do": "play_sfx",
+              "sfx": "sfx_coin"
+            },
+            {
+              "do": "show_dialog",
+              "dialog": "dlg_sold"
+            }
+          ],
+          "else": [
+            {
+              "do": "show_dialog",
+              "dialog": "dlg_nothing"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "label": "APPLES + SHELLS",
+      "actions": [
+        {
+          "do": "set_var",
+          "var": "sale",
+          "value": 0
+        },
+        {
+          "do": "add_var",
+          "var": "sale",
+          "from": "apples",
+          "times": 100
+        },
+        {
+          "do": "set_var",
+          "var": "apples",
+          "value": 0
+        },
+        {
+          "do": "add_var",
+          "var": "sale",
+          "from": "shells",
+          "times": 60
+        },
+        {
+          "do": "set_var",
+          "var": "shells",
+          "value": 0
+        },
+        {
+          "do": "if_var",
+          "var": "sale",
+          "op": ">",
+          "value": 0,
+          "then": [
+            {
+              "do": "add_var",
+              "var": "pips",
+              "from": "sale"
+            },
+            {
+              "do": "play_sfx",
+              "sfx": "sfx_coin"
+            },
+            {
+              "do": "show_dialog",
+              "dialog": "dlg_sold"
+            }
+          ],
+          "else": [
+            {
+              "do": "show_dialog",
+              "dialog": "dlg_nothing"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "label": "BACK",
+      "actions": [
+        {
+          "do": "open_menu",
+          "menu": "menu_shop"
+        }
+      ]
+    }
+  ],
+  "on_cancel": [
+    {
+      "do": "open_menu",
+      "menu": "menu_shop"
+    }
+  ],
+  "sounds": {
+    "move": "sfx_select",
+    "select": "sfx_confirm"
+  }
+}

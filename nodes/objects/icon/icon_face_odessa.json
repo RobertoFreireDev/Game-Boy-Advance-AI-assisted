@@ -1,0 +1,26 @@
+{
+  "id": "icon_face_odessa",
+  "kind": "object",
+  "type": "icon",
+  "name": "Prof. Odessa portrait",
+  "notes": "16x16 head shown next to Prof. Odessa's lines in dialogs. Background painted in the dialog box color (pal_faces 13).",
+  "palette": "pal_faces",
+  "pixels": [
+    "d16761dddd16761d",
+    "dd1661111111661d",
+    "ddd11666666611dd",
+    "ddd16666666661dd",
+    "dd1666666666661d",
+    "dd1666666666661d",
+    "dd1661666661661d",
+    "dd1661666661661d",
+    "dd1666666666661d",
+    "ddd16664444661dd",
+    "ddd16644444461dd",
+    "dddd1644ff4461dd",
+    "dddd164444441ddd",
+    "ddddd14444441ddd",
+    "dddddd111111dddd",
+    "dddddddddddddddd"
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "id": "sfx_plip",
+  "kind": "object",
+  "type": "sfx",
+  "name": "Nibble",
+  "notes": "A tiny plip: the fish is nibbling the bait.",
+  "priority": 1,
+  "steps": [
+    {
+      "note": "E6",
+      "ticks": 2,
+      "volume": 7
+    },
+    {
+      "note": "C6",
+      "ticks": 2,
+      "volume": 4
+    }
+  ],
+  "channel": "square2",
+  "duty": 0
+}

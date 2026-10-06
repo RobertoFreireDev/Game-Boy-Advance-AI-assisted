@@ -1,0 +1,30 @@
+{
+  "id": "dlg_sold",
+  "kind": "object",
+  "type": "dialog",
+  "name": "Sold!",
+  "notes": "Bramble pays you; {sale} shows the total.",
+  "font": "font_default",
+  "box": {
+    "x": 8,
+    "y": 88,
+    "w": 224,
+    "h": 64,
+    "paper": 3,
+    "border": 2
+  },
+  "ticks_per_char": 1,
+  "lines": [
+    {
+      "speaker": "BRAMBLE",
+      "portrait": "icon_face_bramble",
+      "text": "THAT COMES TO {sale} PIPS. PLEASURE DOING BUSINESS!"
+    }
+  ],
+  "on_end": [
+    {
+      "do": "open_menu",
+      "menu": "menu_sell"
+    }
+  ]
+}

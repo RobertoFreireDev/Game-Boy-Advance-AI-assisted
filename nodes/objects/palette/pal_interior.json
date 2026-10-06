@@ -1,0 +1,25 @@
+{
+  "id": "pal_interior",
+  "kind": "object",
+  "type": "palette",
+  "name": "Interior colors",
+  "notes": "Colors of every room: outline (1), cream (2), wallpaper creams (3-4), wood browns (5-7), green wallpaper (8-9), red (10, the bed and door mats), blue (11) and light blue (12) for water and glass, yellow (13) and stone greys (14-15).",
+  "colors": [
+    "#000000",
+    "#2a1e1a",
+    "#f8f0e0",
+    "#e8d0a8",
+    "#c8a878",
+    "#b07c48",
+    "#7a4a28",
+    "#4a2c1c",
+    "#a8c8a0",
+    "#78a070",
+    "#d04838",
+    "#3c6cc8",
+    "#88c8f0",
+    "#f0c040",
+    "#b8b8c0",
+    "#787c88"
+  ]
+}

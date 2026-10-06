@@ -1,0 +1,48 @@
+{
+  "id": "dlg_museum_complete",
+  "kind": "object",
+  "type": "dialog",
+  "name": "Museum complete!",
+  "notes": "When the 17th exhibit arrives: 10,000 Pips reward.",
+  "font": "font_default",
+  "box": {
+    "x": 8,
+    "y": 88,
+    "w": 224,
+    "h": 64,
+    "paper": 3,
+    "border": 2
+  },
+  "ticks_per_char": 1,
+  "lines": [
+    {
+      "speaker": "ODESSA",
+      "portrait": "icon_face_odessa",
+      "text": "ALL 17 EXHIBITS! THE MUSEUM IS COMPLETE! YOU ARE A TRUE NATURALIST."
+    },
+    {
+      "speaker": "ODESSA",
+      "portrait": "icon_face_odessa",
+      "text": "PLEASE ACCEPT 10,000 PIPS FROM THE MUSEUM, WITH MY DEEPEST THANKS!"
+    }
+  ],
+  "on_end": [
+    {
+      "do": "add_var",
+      "var": "pips",
+      "value": 10000
+    },
+    {
+      "do": "play_sfx",
+      "sfx": "sfx_coin"
+    },
+    {
+      "do": "fade_out",
+      "ticks": 12
+    },
+    {
+      "do": "goto_scene",
+      "scene": "scn_museum"
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "id": "anim_rock",
+  "kind": "object",
+  "type": "animation",
+  "name": "Rock body",
+  "notes": "A big grey rock. Solid.",
+  "sprite": "spr_items",
+  "loop": true,
+  "frames": [
+    {
+      "frame": "rock",
+      "ticks": 60
+    }
+  ],
+  "events": []
+}

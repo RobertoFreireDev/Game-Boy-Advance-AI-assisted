@@ -1,0 +1,16 @@
+{
+  "id": "anim_money",
+  "kind": "object",
+  "type": "animation",
+  "name": "Pip bag body",
+  "notes": "A bag of Pips with a gold coin sign.",
+  "sprite": "spr_items",
+  "loop": true,
+  "frames": [
+    {
+      "frame": "money",
+      "ticks": 60
+    }
+  ],
+  "events": []
+}

@@ -1,0 +1,16 @@
+{
+  "id": "anim_ex_fish_seabass",
+  "kind": "object",
+  "type": "animation",
+  "name": "Sea Bass exhibit",
+  "notes": "The Sea Bass swimming in its museum tank.",
+  "sprite": "spr_fish",
+  "loop": true,
+  "frames": [
+    {
+      "frame": "seabass",
+      "ticks": 60
+    }
+  ],
+  "events": []
+}

@@ -1,0 +1,29 @@
+{
+  "id": "body_apple",
+  "kind": "object",
+  "type": "body",
+  "name": "Apple body",
+  "notes": "A shiny red apple on the ground.",
+  "origin": [
+    8,
+    13
+  ],
+  "hitbox": {
+    "x": -4,
+    "y": -7,
+    "w": 8,
+    "h": 7
+  },
+  "physics": {
+    "gravity": false,
+    "solid": false,
+    "collides_with": []
+  },
+  "animations": {
+    "idle": "anim_apple"
+  },
+  "default_animation": "idle",
+  "children": [
+    "anim_apple"
+  ]
+}

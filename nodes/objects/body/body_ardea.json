@@ -1,0 +1,30 @@
+{
+  "id": "body_ardea",
+  "kind": "object",
+  "type": "body",
+  "name": "Mayor Ardea body",
+  "notes": "How Mayor Ardea looks. Not solid: you can brush past. The feet hitbox is what you face to talk.",
+  "origin": [
+    8,
+    31
+  ],
+  "hitbox": {
+    "x": -6,
+    "y": -7,
+    "w": 12,
+    "h": 7
+  },
+  "physics": {
+    "gravity": false,
+    "solid": false,
+    "collides_with": []
+  },
+  "animations": {
+    "idle": "anim_ardea_idle"
+  },
+  "default_animation": "idle",
+  "children": [
+    "spr_ardea",
+    "anim_ardea_idle"
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "id": "map_hall",
+  "kind": "object",
+  "type": "tilemap",
+  "name": "Town Hall",
+  "notes": "The Town Hall: Mayor Ardea's counter, two notice boards and a clock. Pay off your loan and get advice here. The mat at the bottom leads outside.",
+  "tileset": "ts_interior",
+  "layer": 1,
+  "parallax": 1,
+  "rows": [
+    "..............................",
+    "..............................",
+    "..............................",
+    ".......################.......",
+    ".......IVZUVVVCVVVZUVVJ.......",
+    ".......IVVVVVVVVVVVVVVJ.......",
+    ".......IvvvvvvvvvvvvvvJ.......",
+    ".......IYYYYYYYYYYYYYYJ.......",
+    ".......IYYYYYYYYYYYYYYJ.......",
+    ".......IYYYY[==]YYYYYYJ.......",
+    ".......IYYYY{--}YYYYYYJ.......",
+    ".......IYYYYYYYYYYYYYYJ.......",
+    ".......IYYYYYYYYYYYYYYJ.......",
+    ".......IYYYYYYYYYYYYYYJ.......",
+    ".......IYYYYYYYYYYYYYYJ.......",
+    ".......KHHHHHHMMHHHHHHL.......",
+    "..............................",
+    "..............................",
+    "..............................",
+    ".............................."
+  ]
+}

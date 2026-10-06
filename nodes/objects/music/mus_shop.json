@@ -1,0 +1,48 @@
+{
+  "id": "mus_shop",
+  "kind": "object",
+  "type": "music",
+  "name": "Bramble's shop",
+  "notes": "A cheeky, swinging little shop tune in G major: plucky melody, staccato chords and a bouncing bass.",
+  "bpm": 132,
+  "rows_per_beat": 2,
+  "loop": true,
+  "instruments": {
+    "square1": {
+      "duty": 1,
+      "volume": 8,
+      "decay": 1
+    },
+    "square2": {
+      "duty": 2,
+      "volume": 4,
+      "decay": 1
+    },
+    "wave": {
+      "wave": "02468aceeca8642002468aceeca86420",
+      "volume": 3
+    },
+    "noise": {
+      "volume": 3,
+      "decay": 1
+    }
+  },
+  "patterns": {
+    "A": {
+      "square1": "G5 .. B5 .. D6 .. B5 .. | C6 .. A5 .. F#5 .. A5 .. | G5 .. B5 .. D6 .. G6 .. | F#6 -- E6 -- D6 -- .. ..",
+      "square2": ".. D5 .. D5 .. D5 .. D5 | .. C5 .. C5 .. C5 .. C5 | .. D5 .. D5 .. D5 .. D5 | .. C5 .. A4 .. F#4 .. ..",
+      "wave": "G2 .. D3 .. G2 .. D3 .. | A2 .. D3 .. A2 .. D3 .. | G2 .. D3 .. G2 .. D3 .. | D3 .. A2 .. D3 .. F#2 ..",
+      "noise": "X7 .. X3 .. X7 .. X3 .. | X7 .. X3 .. X7 .. X3 .. | X7 .. X3 .. X7 .. X3 .. | X7 .. X3 .. X7 X7 X3 .."
+    },
+    "B": {
+      "square1": "E6 .. D6 .. C6 .. B5 .. | A5 .. B5 .. C6 .. A5 .. | B5 .. A5 .. G5 .. F#5 .. | G5 -- -- -- -- -- .. ..",
+      "square2": ".. G5 .. G5 .. E5 .. E5 | .. E5 .. E5 .. F#5 .. F#5 | .. D5 .. D5 .. C5 .. C5 | .. B4 .. D5 .. B4 .. ..",
+      "wave": "C3 .. G3 .. C3 .. G3 .. | A2 .. E3 .. D3 .. A2 .. | G2 .. D3 .. D3 .. A2 .. | G2 .. D3 .. G2 .. .. ..",
+      "noise": "X7 .. X3 .. X7 .. X3 .. | X7 .. X3 .. X7 .. X3 .. | X7 .. X3 .. X7 .. X3 .. | X7 .. X3 .. X7 .. .. .."
+    }
+  },
+  "order": [
+    "A",
+    "B"
+  ]
+}

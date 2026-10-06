@@ -1,0 +1,20 @@
+{
+  "id": "anim_bug_crab",
+  "kind": "object",
+  "type": "animation",
+  "name": "Shore Crab body",
+  "notes": "How a Shore Crab looks: 2-frame flutter. Shared by the bug in town and its museum terrarium. When caught it sparkles away.",
+  "sprite": "spr_bugs",
+  "loop": true,
+  "frames": [
+    {
+      "frame": "crab_0",
+      "ticks": 10
+    },
+    {
+      "frame": "crab_1",
+      "ticks": 10
+    }
+  ],
+  "events": []
+}

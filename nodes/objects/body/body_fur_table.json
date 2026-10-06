@@ -1,0 +1,29 @@
+{
+  "id": "body_fur_table",
+  "kind": "object",
+  "type": "body",
+  "name": "Pine Table body",
+  "notes": "How the Pine Table looks in your house.",
+  "origin": [
+    8,
+    15
+  ],
+  "hitbox": {
+    "x": -6,
+    "y": -5,
+    "w": 12,
+    "h": 5
+  },
+  "physics": {
+    "gravity": false,
+    "solid": true,
+    "collides_with": []
+  },
+  "animations": {
+    "idle": "anim_fur_table"
+  },
+  "default_animation": "idle",
+  "children": [
+    "anim_fur_table"
+  ]
+}

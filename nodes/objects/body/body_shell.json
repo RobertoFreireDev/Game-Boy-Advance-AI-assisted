@@ -1,0 +1,29 @@
+{
+  "id": "body_shell",
+  "kind": "object",
+  "type": "body",
+  "name": "Seashell body",
+  "notes": "A cream seashell half in the sand.",
+  "origin": [
+    8,
+    13
+  ],
+  "hitbox": {
+    "x": -5,
+    "y": -7,
+    "w": 10,
+    "h": 7
+  },
+  "physics": {
+    "gravity": false,
+    "solid": false,
+    "collides_with": []
+  },
+  "animations": {
+    "idle": "anim_shell"
+  },
+  "default_animation": "idle",
+  "children": [
+    "anim_shell"
+  ]
+}

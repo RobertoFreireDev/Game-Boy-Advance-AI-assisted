@@ -1,0 +1,93 @@
+{
+  "id": "menu_title",
+  "kind": "object",
+  "type": "menu",
+  "name": "Title menu",
+  "notes": "CONTINUE loads the save and wakes you in your house; NEW GAME starts on the ferry dock with fresh variables; HOW TO PLAY shows the controls.",
+  "font": "font_default",
+  "title": "MOSSBROOK",
+  "cursor": "icon_cursor",
+  "box": {
+    "x": 56,
+    "y": 72,
+    "w": 128,
+    "h": 80,
+    "paper": 3,
+    "border": 2
+  },
+  "layout": {
+    "x": 80,
+    "y": 96,
+    "spacing": 16,
+    "title_y": 80
+  },
+  "options": [
+    {
+      "label": "CONTINUE",
+      "actions": [
+        {
+          "do": "reset_vars"
+        },
+        {
+          "do": "load_game"
+        },
+        {
+          "do": "if_var",
+          "var": "saved",
+          "op": "==",
+          "value": 1,
+          "then": [
+            {
+              "do": "set_var",
+              "var": "entry",
+              "value": 1
+            },
+            {
+              "do": "fade_out",
+              "ticks": 20
+            },
+            {
+              "do": "goto_scene",
+              "scene": "scn_house"
+            }
+          ],
+          "else": [
+            {
+              "do": "show_dialog",
+              "dialog": "dlg_nosave"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "label": "NEW GAME",
+      "actions": [
+        {
+          "do": "reset_vars"
+        },
+        {
+          "do": "fade_out",
+          "ticks": 30
+        },
+        {
+          "do": "goto_scene",
+          "scene": "scn_town"
+        }
+      ]
+    },
+    {
+      "label": "HOW TO PLAY",
+      "actions": [
+        {
+          "do": "show_dialog",
+          "dialog": "dlg_howto_title"
+        }
+      ]
+    }
+  ],
+  "sounds": {
+    "move": "sfx_select",
+    "select": "sfx_confirm"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "id": "anim_pembrook_idle_up",
+  "kind": "object",
+  "type": "animation",
+  "name": "Pembrook standing (up)",
+  "notes": "Seen from behind.",
+  "sprite": "spr_pembrook",
+  "loop": true,
+  "frames": [
+    {
+      "frame": "up_0",
+      "ticks": 60
+    }
+  ],
+  "events": []
+}

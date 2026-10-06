@@ -1,0 +1,16 @@
+{
+  "id": "anim_fur_bowl",
+  "kind": "object",
+  "type": "animation",
+  "name": "Fish Bowl body",
+  "notes": "How the Fish Bowl looks in your house.",
+  "sprite": "spr_furniture",
+  "loop": true,
+  "frames": [
+    {
+      "frame": "bowl",
+      "ticks": 60
+    }
+  ],
+  "events": []
+}

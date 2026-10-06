@@ -1,0 +1,20 @@
+{
+  "id": "anim_shadow_bite",
+  "kind": "object",
+  "type": "animation",
+  "name": "Bite!",
+  "notes": "The bobber is pulled under with a splash: press A now!",
+  "sprite": "spr_shadow",
+  "loop": true,
+  "frames": [
+    {
+      "frame": "bite",
+      "ticks": 4
+    },
+    {
+      "frame": "dip",
+      "ticks": 4
+    }
+  ],
+  "events": []
+}

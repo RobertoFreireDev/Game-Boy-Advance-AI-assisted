@@ -1,0 +1,20 @@
+{
+  "id": "trg_sign",
+  "kind": "object",
+  "type": "trigger",
+  "name": "Sign or notice",
+  "notes": "Invisible spot in front of a sign, a locked door or the bulletin board: A shows its message (set per place in the scene).",
+  "zone": {
+    "w": 16,
+    "h": 8
+  },
+  "logic": [
+    {
+      "behavior": "interact",
+      "params": {
+        "range": 4,
+        "on_press": []
+      }
+    }
+  ]
+}

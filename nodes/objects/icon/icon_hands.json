@@ -1,0 +1,26 @@
+{
+  "id": "icon_hands",
+  "kind": "object",
+  "type": "icon",
+  "name": "Hands icon",
+  "notes": "HUD icon: the tool in your hands.",
+  "palette": "pal_ui",
+  "pixels": [
+    "................",
+    ".....11.11......",
+    "....1cc1cc1.11..",
+    "....1cc1cc11cc1.",
+    ".11.1cc1cc1cc1..",
+    "1cc11cc1cc1cc1..",
+    "1ccc1cc1cc1cc1..",
+    ".1cc1cccccccc1..",
+    ".1ccccccccccc1..",
+    "..1cccccccccc1..",
+    "..1ccccccccc1...",
+    "...1cccccccc1...",
+    "....1ccccccc1...",
+    ".....1ccccc1....",
+    "......11111.....",
+    "................"
+  ]
+}

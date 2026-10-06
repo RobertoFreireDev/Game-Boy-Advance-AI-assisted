@@ -1,0 +1,21 @@
+{
+  "id": "prop_ex_fos_amber",
+  "kind": "object",
+  "type": "prop",
+  "name": "Amber exhibit",
+  "notes": "Appears in the museum once you donated a Amber (variable don_fos_amber).",
+  "body": "body_ex_fos_amber",
+  "logic": [
+    {
+      "behavior": "exists_when",
+      "params": {
+        "var": "don_fos_amber",
+        "min": 1,
+        "max": 1
+      }
+    }
+  ],
+  "children": [
+    "body_ex_fos_amber"
+  ]
+}

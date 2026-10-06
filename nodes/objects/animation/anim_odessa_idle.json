@@ -1,0 +1,20 @@
+{
+  "id": "anim_odessa_idle",
+  "kind": "object",
+  "type": "animation",
+  "name": "Prof. Odessa standing",
+  "notes": "Faces the screen; the second frame shifts the feet so they seem to breathe.",
+  "sprite": "spr_odessa",
+  "loop": true,
+  "frames": [
+    {
+      "frame": "down_0",
+      "ticks": 90
+    },
+    {
+      "frame": "down_1",
+      "ticks": 12
+    }
+  ],
+  "events": []
+}

@@ -1,0 +1,18 @@
+{
+  "id": "prop_ex_bug_ladybug",
+  "kind": "object",
+  "type": "prop",
+  "name": "Ladybug exhibit",
+  "notes": "Appears in the museum once you donated a Ladybug (variable don_bug_ladybug).",
+  "body": "body_bug_ladybug",
+  "logic": [
+    {
+      "behavior": "exists_when",
+      "params": {
+        "var": "don_bug_ladybug",
+        "min": 1,
+        "max": 1
+      }
+    }
+  ]
+}

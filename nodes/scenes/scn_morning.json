@@ -1,0 +1,64 @@
+{
+  "id": "scn_morning",
+  "kind": "scene",
+  "type": "cutscene",
+  "name": "A new day",
+  "notes": "Shown after sleeping: the clock passes 6:00 (a new day starts: fossils, apples, shells and the lucky rock change), the game is saved and you wake up in your house.",
+  "backdrop": "#182040",
+  "camera": {
+    "x": 0,
+    "y": 0,
+    "bounds": "none"
+  },
+  "instances": [
+    {
+      "id": "clock",
+      "object": "prop_clock",
+      "x": 0,
+      "y": 0,
+      "overrides": {
+        "day_clock": {
+          "on_hour": []
+        }
+      }
+    },
+    {
+      "id": "hud",
+      "object": "hud_morning"
+    }
+  ],
+  "on_start": [
+    {
+      "do": "fade_in",
+      "ticks": 20
+    },
+    {
+      "do": "wait",
+      "ticks": 100
+    },
+    {
+      "do": "play_sfx",
+      "sfx": "sfx_catch"
+    },
+    {
+      "do": "set_var",
+      "var": "saved",
+      "value": 1
+    },
+    {
+      "do": "save_game"
+    },
+    {
+      "do": "wait",
+      "ticks": 40
+    },
+    {
+      "do": "fade_out",
+      "ticks": 20
+    },
+    {
+      "do": "goto_scene",
+      "scene": "scn_house"
+    }
+  ]
+}

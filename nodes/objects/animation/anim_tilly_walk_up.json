@@ -1,0 +1,29 @@
+{
+  "id": "anim_tilly_walk_up",
+  "kind": "object",
+  "type": "animation",
+  "name": "Tilly walking (up)",
+  "notes": "Walking away from the camera.",
+  "sprite": "spr_tilly",
+  "loop": true,
+  "frames": [
+    {
+      "frame": "up_1",
+      "ticks": 8
+    },
+    {
+      "frame": "up_0",
+      "ticks": 8
+    },
+    {
+      "frame": "up_1",
+      "ticks": 8,
+      "flip_x": true
+    },
+    {
+      "frame": "up_0",
+      "ticks": 8
+    }
+  ],
+  "events": []
+}

@@ -1,0 +1,260 @@
+{
+  "id": "plr_you",
+  "kind": "object",
+  "type": "player",
+  "name": "You",
+  "notes": "The new villager you control. D-pad walks (8 ways), hold B to run. A uses what is in front of you (talk, shake, dig, read) or else the tool in your hands: the net swings at bugs. L / R cycle the tools (after the mayor gives them), START opens the pause menu. Several copies are placed in town, one per door: only the one matching 'entry' appears.",
+  "body": "body_player",
+  "logic": [
+    {
+      "behavior": "exists_when",
+      "params": {
+        "var": "entry",
+        "min": 0,
+        "max": 99
+      }
+    },
+    {
+      "behavior": "topdown_controller",
+      "params": {
+        "speed": 1.0,
+        "eight_way": true,
+        "run_button": "B",
+        "run_speed": 2.0
+      }
+    },
+    {
+      "behavior": "interactor",
+      "params": {
+        "button": "A",
+        "reach": 12,
+        "width": 12
+      }
+    },
+    {
+      "behavior": "sword_attack",
+      "params": {
+        "button": "A",
+        "damage": 1,
+        "reach": 14,
+        "width": 16,
+        "ticks": 14,
+        "cooldown": 6,
+        "hits": "enemy",
+        "var": "net_on"
+      }
+    },
+    {
+      "behavior": "button_actions",
+      "params": {
+        "button": "R",
+        "on_press": [
+          {
+            "do": "if_var",
+            "var": "intro",
+            "op": ">=",
+            "value": 1,
+            "then": [
+              {
+                "do": "add_var",
+                "var": "tool",
+                "value": 1
+              },
+              {
+                "do": "if_var",
+                "var": "tool",
+                "op": "==",
+                "value": 3,
+                "then": [
+                  {
+                    "do": "if_var",
+                    "var": "has_rod",
+                    "op": "==",
+                    "value": 0,
+                    "then": [
+                      {
+                        "do": "set_var",
+                        "var": "tool",
+                        "value": 4
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "do": "if_var",
+                "var": "tool",
+                "op": ">=",
+                "value": 4,
+                "then": [
+                  {
+                    "do": "set_var",
+                    "var": "tool",
+                    "value": 0
+                  }
+                ]
+              },
+              {
+                "do": "set_var",
+                "var": "net_on",
+                "value": 0
+              },
+              {
+                "do": "set_var",
+                "var": "rod_on",
+                "value": 0
+              },
+              {
+                "do": "if_var",
+                "var": "tool",
+                "op": "==",
+                "value": 2,
+                "then": [
+                  {
+                    "do": "set_var",
+                    "var": "net_on",
+                    "value": 1
+                  }
+                ]
+              },
+              {
+                "do": "if_var",
+                "var": "tool",
+                "op": "==",
+                "value": 3,
+                "then": [
+                  {
+                    "do": "set_var",
+                    "var": "rod_on",
+                    "value": 1
+                  }
+                ]
+              },
+              {
+                "do": "play_sfx",
+                "sfx": "sfx_tool"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "behavior": "button_actions",
+      "params": {
+        "button": "L",
+        "on_press": [
+          {
+            "do": "if_var",
+            "var": "intro",
+            "op": ">=",
+            "value": 1,
+            "then": [
+              {
+                "do": "add_var",
+                "var": "tool",
+                "value": -1
+              },
+              {
+                "do": "if_var",
+                "var": "tool",
+                "op": "<",
+                "value": 0,
+                "then": [
+                  {
+                    "do": "set_var",
+                    "var": "tool",
+                    "value": 3
+                  }
+                ]
+              },
+              {
+                "do": "if_var",
+                "var": "tool",
+                "op": "==",
+                "value": 3,
+                "then": [
+                  {
+                    "do": "if_var",
+                    "var": "has_rod",
+                    "op": "==",
+                    "value": 0,
+                    "then": [
+                      {
+                        "do": "set_var",
+                        "var": "tool",
+                        "value": 2
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "do": "set_var",
+                "var": "net_on",
+                "value": 0
+              },
+              {
+                "do": "set_var",
+                "var": "rod_on",
+                "value": 0
+              },
+              {
+                "do": "if_var",
+                "var": "tool",
+                "op": "==",
+                "value": 2,
+                "then": [
+                  {
+                    "do": "set_var",
+                    "var": "net_on",
+                    "value": 1
+                  }
+                ]
+              },
+              {
+                "do": "if_var",
+                "var": "tool",
+                "op": "==",
+                "value": 3,
+                "then": [
+                  {
+                    "do": "set_var",
+                    "var": "rod_on",
+                    "value": 1
+                  }
+                ]
+              },
+              {
+                "do": "play_sfx",
+                "sfx": "sfx_tool"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "behavior": "button_actions",
+      "params": {
+        "button": "START",
+        "on_press": [
+          {
+            "do": "open_menu",
+            "menu": "menu_pause"
+          }
+        ]
+      }
+    },
+    {
+      "behavior": "camera_target",
+      "params": {}
+    }
+  ],
+  "sounds": {
+    "attack": "sfx_swish"
+  },
+  "children": [
+    "body_player"
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "id": "map_museum",
+  "kind": "object",
+  "type": "tilemap",
+  "name": "Museum",
+  "notes": "The museum: 7 fish tanks on the left, 6 bug terrariums on the right and 4 fossil pedestals in the middle. Each one fills with its animal or fossil once you donate it. Prof. Odessa's desk is at the bottom.",
+  "tileset": "ts_interior",
+  "layer": 1,
+  "parallax": 1,
+  "rows": [
+    "..............................",
+    ".############################.",
+    ".IVVVVVVVVVVVVCVVVVVVVVVVVVVJ.",
+    ".IVVVVVVVVVVVVVVVVVVVVVVVVVVJ.",
+    ".IvvvvvvvvvvvvvvvvvvvvvvvvvvJ.",
+    ".IS78S78SSSSSSSSSSSSSSqrSqrSJ.",
+    ".IS90S90SSSSSSSSSSSSSSstSstSJ.",
+    ".ISSSSSSSSSSSSSSSSSSSSSSSSSSJ.",
+    ".IS78S78SSxzSxzSxzSxzSqrSqrSJ.",
+    ".IS90S90SSXySXySXySXySstSstSJ.",
+    ".ISSSSSSSSSSSSSSSSSSSSSSSSSSJ.",
+    ".IS78S78SSSSSSSSSSSSSSqrSqrSJ.",
+    ".IS90S90SSSSSSSSSSSSSSstSstSJ.",
+    ".ISSSSSSSSSSS[==]SSSSSSSSSSSJ.",
+    ".IS78SSSSSSSS{--}SSSSSSSSSSSJ.",
+    ".IS90SSSSSSSSSSSSSSSSSSSSSSSJ.",
+    ".ISSSSSSSSSSSSSSSSSSSSSSSSSSJ.",
+    ".ISSSSSSSSSSSSSSSSSSSSSSSSSSJ.",
+    ".KHHHHHHHHHHHHMMHHHHHHHHHHHHL.",
+    ".............................."
+  ]
+}

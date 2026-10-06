@@ -1,0 +1,42 @@
+{
+  "id": "sfx_cast",
+  "kind": "object",
+  "type": "sfx",
+  "name": "Cast",
+  "notes": "The line whistles out and the bobber lands with a plop.",
+  "priority": 1,
+  "steps": [
+    {
+      "note": "C6",
+      "ticks": 2,
+      "volume": 8
+    },
+    {
+      "note": "A5",
+      "ticks": 2,
+      "volume": 7
+    },
+    {
+      "note": "F5",
+      "ticks": 2,
+      "volume": 6
+    },
+    {
+      "note": "D5",
+      "ticks": 2,
+      "volume": 5
+    },
+    {
+      "note": "..",
+      "ticks": 4,
+      "volume": 0
+    },
+    {
+      "note": "G4",
+      "ticks": 3,
+      "volume": 9
+    }
+  ],
+  "channel": "square1",
+  "duty": 1
+}

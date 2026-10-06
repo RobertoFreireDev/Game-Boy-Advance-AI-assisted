@@ -1,0 +1,16 @@
+{
+  "id": "anim_tilly_idle_up",
+  "kind": "object",
+  "type": "animation",
+  "name": "Tilly standing (up)",
+  "notes": "Seen from behind.",
+  "sprite": "spr_tilly",
+  "loop": true,
+  "frames": [
+    {
+      "frame": "up_0",
+      "ticks": 60
+    }
+  ],
+  "events": []
+}

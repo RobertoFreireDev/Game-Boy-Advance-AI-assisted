@@ -1,23 +1,2832 @@
 {
   "format": 1,
   "game": {
-    "title": "NEW GAME",
-    "game_code": "ANGE",
-    "rom_name": "new_game",
-    "start_scene": "scn_start",
-    "save": false,
+    "title": "MOSSBROOK",
+    "game_code": "AMSE",
+    "rom_name": "mossbrook",
+    "start_scene": "scn_title",
+    "save": true,
+    "y_sort": true,
     "gravity": 0.25,
     "max_fall_speed": 4,
-    "variables": []
+    "variables": [
+      {
+        "name": "pips",
+        "type": "int",
+        "initial": 1000,
+        "notes": "Money in your wallet (Pips)."
+      },
+      {
+        "name": "loan",
+        "type": "int",
+        "initial": 10000,
+        "notes": "Pips you still owe Mayor Ardea for your house. Starts with the 10,000 welcome loan."
+      },
+      {
+        "name": "house_level",
+        "type": "int",
+        "initial": 1,
+        "notes": "1 = the starting house, 2 = expanded (bigger room). Raised by the expansion loan."
+      },
+      {
+        "name": "day",
+        "type": "int",
+        "initial": 1,
+        "notes": "Days since you moved in (day 1 = arrival). Goes up at 6 in the morning."
+      },
+      {
+        "name": "hour",
+        "type": "int",
+        "initial": 9,
+        "notes": "Clock hour, 0-23. The game starts at 9 in the morning; one game hour lasts one real minute."
+      },
+      {
+        "name": "minute",
+        "type": "int",
+        "initial": 0,
+        "notes": "Clock minutes, 0-59."
+      },
+      {
+        "name": "tool",
+        "type": "int",
+        "initial": 0,
+        "notes": "Tool in your hands: 0 hands, 1 shovel, 2 net, 3 fishing rod. L / R change it."
+      },
+      {
+        "name": "net_on",
+        "type": "flag",
+        "initial": false,
+        "notes": "1 while the net is in your hands (lets A swing it)."
+      },
+      {
+        "name": "rod_on",
+        "type": "flag",
+        "initial": false,
+        "notes": "1 while the fishing rod is in your hands (lets A cast it)."
+      },
+      {
+        "name": "has_rod",
+        "type": "flag",
+        "initial": false,
+        "notes": "You bought the fishing rod at Bramble's."
+      },
+      {
+        "name": "intro",
+        "type": "int",
+        "initial": 0,
+        "notes": "0 = just arrived (talk to Mayor Ardea on the dock), 1 = you have your tools."
+      },
+      {
+        "name": "entry",
+        "type": "int",
+        "initial": 0,
+        "notes": "Which door you come out of in town: 0 dock, 1 your house, 2 shop, 3 museum, 4 Town Hall."
+      },
+      {
+        "name": "saved",
+        "type": "flag",
+        "initial": false,
+        "notes": "1 once the game has been saved (CONTINUE on the title checks it)."
+      },
+      {
+        "name": "sale",
+        "type": "int",
+        "initial": 0,
+        "notes": "Scratch: Pips earned by the last sale (shown in Bramble's dialog)."
+      },
+      {
+        "name": "gave",
+        "type": "int",
+        "initial": 0,
+        "notes": "Scratch: exhibits donated in the last talk with Prof. Odessa."
+      },
+      {
+        "name": "museum",
+        "type": "int",
+        "initial": 0,
+        "notes": "How many of the 17 exhibits the museum has."
+      },
+      {
+        "name": "apples",
+        "type": "int",
+        "initial": 0,
+        "notes": "Apples in your pockets."
+      },
+      {
+        "name": "shells",
+        "type": "int",
+        "initial": 0,
+        "notes": "Seashells in your pockets."
+      },
+      {
+        "name": "fish_crucian",
+        "type": "int",
+        "initial": 0,
+        "notes": "Crucian Carp in your pockets (sells for 120)."
+      },
+      {
+        "name": "fish_bass",
+        "type": "int",
+        "initial": 0,
+        "notes": "Black Bass in your pockets (sells for 350)."
+      },
+      {
+        "name": "fish_dace",
+        "type": "int",
+        "initial": 0,
+        "notes": "Dace in your pockets (sells for 220)."
+      },
+      {
+        "name": "fish_carp",
+        "type": "int",
+        "initial": 0,
+        "notes": "Carp in your pockets (sells for 280)."
+      },
+      {
+        "name": "fish_koi",
+        "type": "int",
+        "initial": 0,
+        "notes": "Koi in your pockets (sells for 3500)."
+      },
+      {
+        "name": "fish_seabass",
+        "type": "int",
+        "initial": 0,
+        "notes": "Sea Bass in your pockets (sells for 400)."
+      },
+      {
+        "name": "fish_snapper",
+        "type": "int",
+        "initial": 0,
+        "notes": "Red Snapper in your pockets (sells for 3000)."
+      },
+      {
+        "name": "bug_white",
+        "type": "int",
+        "initial": 0,
+        "notes": "Cabbage White in your pockets (sells for 100)."
+      },
+      {
+        "name": "bug_bee",
+        "type": "int",
+        "initial": 0,
+        "notes": "Honeybee in your pockets (sells for 180)."
+      },
+      {
+        "name": "bug_ladybug",
+        "type": "int",
+        "initial": 0,
+        "notes": "Ladybug in your pockets (sells for 200)."
+      },
+      {
+        "name": "bug_firefly",
+        "type": "int",
+        "initial": 0,
+        "notes": "Firefly in your pockets (sells for 300)."
+      },
+      {
+        "name": "bug_cricket",
+        "type": "int",
+        "initial": 0,
+        "notes": "Cricket in your pockets (sells for 130)."
+      },
+      {
+        "name": "bug_crab",
+        "type": "int",
+        "initial": 0,
+        "notes": "Shore Crab in your pockets (sells for 600)."
+      },
+      {
+        "name": "fos_ammonite",
+        "type": "int",
+        "initial": 0,
+        "notes": "Ammonite fossils in your pockets (sells for 800)."
+      },
+      {
+        "name": "fos_trilobite",
+        "type": "int",
+        "initial": 0,
+        "notes": "Trilobite fossils in your pockets (sells for 900)."
+      },
+      {
+        "name": "fos_tooth",
+        "type": "int",
+        "initial": 0,
+        "notes": "Shark Tooth fossils in your pockets (sells for 1000)."
+      },
+      {
+        "name": "fos_amber",
+        "type": "int",
+        "initial": 0,
+        "notes": "Amber fossils in your pockets (sells for 1500)."
+      },
+      {
+        "name": "don_fish_crucian",
+        "type": "int",
+        "initial": 0,
+        "notes": "1 once you donated a crucian to the museum."
+      },
+      {
+        "name": "don_fish_bass",
+        "type": "int",
+        "initial": 0,
+        "notes": "1 once you donated a bass to the museum."
+      },
+      {
+        "name": "don_fish_dace",
+        "type": "int",
+        "initial": 0,
+        "notes": "1 once you donated a dace to the museum."
+      },
+      {
+        "name": "don_fish_carp",
+        "type": "int",
+        "initial": 0,
+        "notes": "1 once you donated a carp to the museum."
+      },
+      {
+        "name": "don_fish_koi",
+        "type": "int",
+        "initial": 0,
+        "notes": "1 once you donated a koi to the museum."
+      },
+      {
+        "name": "don_fish_seabass",
+        "type": "int",
+        "initial": 0,
+        "notes": "1 once you donated a seabass to the museum."
+      },
+      {
+        "name": "don_fish_snapper",
+        "type": "int",
+        "initial": 0,
+        "notes": "1 once you donated a snapper to the museum."
+      },
+      {
+        "name": "don_bug_white",
+        "type": "int",
+        "initial": 0,
+        "notes": "1 once you donated a white to the museum."
+      },
+      {
+        "name": "don_bug_bee",
+        "type": "int",
+        "initial": 0,
+        "notes": "1 once you donated a bee to the museum."
+      },
+      {
+        "name": "don_bug_ladybug",
+        "type": "int",
+        "initial": 0,
+        "notes": "1 once you donated a ladybug to the museum."
+      },
+      {
+        "name": "don_bug_firefly",
+        "type": "int",
+        "initial": 0,
+        "notes": "1 once you donated a firefly to the museum."
+      },
+      {
+        "name": "don_bug_cricket",
+        "type": "int",
+        "initial": 0,
+        "notes": "1 once you donated a cricket to the museum."
+      },
+      {
+        "name": "don_bug_crab",
+        "type": "int",
+        "initial": 0,
+        "notes": "1 once you donated a crab to the museum."
+      },
+      {
+        "name": "don_fos_ammonite",
+        "type": "int",
+        "initial": 0,
+        "notes": "1 once you donated a ammonite to the museum."
+      },
+      {
+        "name": "don_fos_trilobite",
+        "type": "int",
+        "initial": 0,
+        "notes": "1 once you donated a trilobite to the museum."
+      },
+      {
+        "name": "don_fos_tooth",
+        "type": "int",
+        "initial": 0,
+        "notes": "1 once you donated a tooth to the museum."
+      },
+      {
+        "name": "don_fos_amber",
+        "type": "int",
+        "initial": 0,
+        "notes": "1 once you donated a amber to the museum."
+      },
+      {
+        "name": "fossil_1",
+        "type": "int",
+        "initial": 0,
+        "notes": "Fossil spot 1: 0 = a crack is there today, 1 = dug up or nothing today."
+      },
+      {
+        "name": "fossil_2",
+        "type": "int",
+        "initial": 0,
+        "notes": "Fossil spot 2: 0 = a crack is there today, 1 = dug up or nothing today."
+      },
+      {
+        "name": "fossil_3",
+        "type": "int",
+        "initial": 0,
+        "notes": "Fossil spot 3: 0 = a crack is there today, 1 = dug up or nothing today."
+      },
+      {
+        "name": "fossil_4",
+        "type": "int",
+        "initial": 0,
+        "notes": "Fossil spot 4: 0 = a crack is there today, 1 = dug up or nothing today."
+      },
+      {
+        "name": "tree_1",
+        "type": "int",
+        "initial": 0,
+        "notes": "Apple tree 1: days until its apples grow back (0 = ripe)."
+      },
+      {
+        "name": "tree_2",
+        "type": "int",
+        "initial": 0,
+        "notes": "Apple tree 2: days until its apples grow back (0 = ripe)."
+      },
+      {
+        "name": "tree_3",
+        "type": "int",
+        "initial": 0,
+        "notes": "Apple tree 3: days until its apples grow back (0 = ripe)."
+      },
+      {
+        "name": "tree_4",
+        "type": "int",
+        "initial": 0,
+        "notes": "Apple tree 4: days until its apples grow back (0 = ripe)."
+      },
+      {
+        "name": "tree_5",
+        "type": "int",
+        "initial": 0,
+        "notes": "Apple tree 5: days until its apples grow back (0 = ripe)."
+      },
+      {
+        "name": "shell_1",
+        "type": "int",
+        "initial": 0,
+        "notes": "Beach spot 1: 0 = a seashell lies there today, 1 = picked up or none."
+      },
+      {
+        "name": "shell_2",
+        "type": "int",
+        "initial": 0,
+        "notes": "Beach spot 2: 0 = a seashell lies there today, 1 = picked up or none."
+      },
+      {
+        "name": "shell_3",
+        "type": "int",
+        "initial": 0,
+        "notes": "Beach spot 3: 0 = a seashell lies there today, 1 = picked up or none."
+      },
+      {
+        "name": "shell_4",
+        "type": "int",
+        "initial": 0,
+        "notes": "Beach spot 4: 0 = a seashell lies there today, 1 = picked up or none."
+      },
+      {
+        "name": "lucky_rock",
+        "type": "int",
+        "initial": 2,
+        "notes": "Which of the 3 rocks hides 1,000 Pips today (1-3). Changes every morning."
+      },
+      {
+        "name": "lucky_found",
+        "type": "flag",
+        "initial": false,
+        "notes": "1 once today's lucky rock gave its Pips."
+      },
+      {
+        "name": "fr_pembrook",
+        "type": "int",
+        "initial": 0,
+        "notes": "Friendship with Pembrook (talking once a day adds 2, a favor adds 6)."
+      },
+      {
+        "name": "talk_pembrook",
+        "type": "flag",
+        "initial": false,
+        "notes": "1 after talking to Pembrook today (reset every morning)."
+      },
+      {
+        "name": "favor_pembrook",
+        "type": "int",
+        "initial": 0,
+        "notes": "Pembrook's favor: 0 not asked yet, 1 asked, 2 done."
+      },
+      {
+        "name": "fr_rusk",
+        "type": "int",
+        "initial": 0,
+        "notes": "Friendship with Rusk (talking once a day adds 2, a favor adds 6)."
+      },
+      {
+        "name": "talk_rusk",
+        "type": "flag",
+        "initial": false,
+        "notes": "1 after talking to Rusk today (reset every morning)."
+      },
+      {
+        "name": "favor_rusk",
+        "type": "int",
+        "initial": 0,
+        "notes": "Rusk's favor: 0 not asked yet, 1 asked, 2 done."
+      },
+      {
+        "name": "fr_tilly",
+        "type": "int",
+        "initial": 0,
+        "notes": "Friendship with Tilly (talking once a day adds 2, a favor adds 6)."
+      },
+      {
+        "name": "talk_tilly",
+        "type": "flag",
+        "initial": false,
+        "notes": "1 after talking to Tilly today (reset every morning)."
+      },
+      {
+        "name": "favor_tilly",
+        "type": "int",
+        "initial": 0,
+        "notes": "Tilly's favor: 0 not asked yet, 1 asked, 2 done."
+      },
+      {
+        "name": "met_reward",
+        "type": "flag",
+        "initial": false,
+        "notes": "1 once Mayor Ardea gave the reward for meeting all 3 neighbors."
+      },
+      {
+        "name": "fur_lamp",
+        "type": "flag",
+        "initial": false,
+        "notes": "1 once the Leaf Lamp is in your house (bought for 1200 or a gift)."
+      },
+      {
+        "name": "fur_radio",
+        "type": "flag",
+        "initial": false,
+        "notes": "1 once the Radio is in your house (bought for 2000 or a gift)."
+      },
+      {
+        "name": "fur_table",
+        "type": "flag",
+        "initial": false,
+        "notes": "1 once the Pine Table is in your house (bought for 1500 or a gift)."
+      },
+      {
+        "name": "fur_bowl",
+        "type": "flag",
+        "initial": false,
+        "notes": "1 once the Fish Bowl is in your house (bought for 900 or a gift)."
+      },
+      {
+        "name": "fur_plant",
+        "type": "flag",
+        "initial": false,
+        "notes": "1 once the Fern Plant is in your house (bought for 600 or a gift)."
+      },
+      {
+        "name": "fur_rug",
+        "type": "flag",
+        "initial": false,
+        "notes": "1 once the Moss Rug is in your house (bought for 1000 or a gift)."
+      }
+    ]
   },
   "nodes": [
-    {"id": "scn_start", "kind": "scene", "type": "title", "path": "scenes/scn_start.json", "parent": null},
-    {"id": "pal_ui", "kind": "object", "type": "palette", "path": "objects/palette/pal_ui.json", "parent": null},
-    {"id": "font_default", "kind": "object", "type": "font", "path": "objects/font/font_default.json", "parent": null},
-    {"id": "icon_cursor", "kind": "object", "type": "icon", "path": "objects/icon/icon_cursor.json", "parent": null},
-    {"id": "icon_heart", "kind": "object", "type": "icon", "path": "objects/icon/icon_heart.json", "parent": null},
-    {"id": "sfx_select", "kind": "object", "type": "sfx", "path": "objects/sfx/sfx_select.json", "parent": null},
-    {"id": "sfx_confirm", "kind": "object", "type": "sfx", "path": "objects/sfx/sfx_confirm.json", "parent": null},
-    {"id": "hud_start", "kind": "object", "type": "hud", "path": "objects/hud/hud_start.json", "parent": null}
+    {
+      "id": "scn_town",
+      "kind": "scene",
+      "type": "level",
+      "path": "scenes/scn_town.json",
+      "parent": null
+    },
+    {
+      "id": "scn_house",
+      "kind": "scene",
+      "type": "level",
+      "path": "scenes/scn_house.json",
+      "parent": null
+    },
+    {
+      "id": "scn_house2",
+      "kind": "scene",
+      "type": "level",
+      "path": "scenes/scn_house2.json",
+      "parent": null
+    },
+    {
+      "id": "scn_shop",
+      "kind": "scene",
+      "type": "level",
+      "path": "scenes/scn_shop.json",
+      "parent": null
+    },
+    {
+      "id": "scn_museum",
+      "kind": "scene",
+      "type": "level",
+      "path": "scenes/scn_museum.json",
+      "parent": null
+    },
+    {
+      "id": "scn_hall",
+      "kind": "scene",
+      "type": "level",
+      "path": "scenes/scn_hall.json",
+      "parent": null
+    },
+    {
+      "id": "scn_morning",
+      "kind": "scene",
+      "type": "cutscene",
+      "path": "scenes/scn_morning.json",
+      "parent": null
+    },
+    {
+      "id": "scn_title",
+      "kind": "scene",
+      "type": "title",
+      "path": "scenes/scn_title.json",
+      "parent": null
+    },
+    {
+      "id": "pal_folk",
+      "kind": "object",
+      "type": "palette",
+      "path": "objects/palette/pal_folk.json",
+      "parent": null
+    },
+    {
+      "id": "pal_faces",
+      "kind": "object",
+      "type": "palette",
+      "path": "objects/palette/pal_faces.json",
+      "parent": null
+    },
+    {
+      "id": "pal_critters",
+      "kind": "object",
+      "type": "palette",
+      "path": "objects/palette/pal_critters.json",
+      "parent": null
+    },
+    {
+      "id": "spr_player",
+      "kind": "object",
+      "type": "sprite",
+      "path": "objects/sprite/spr_player.json",
+      "parent": "body_player"
+    },
+    {
+      "id": "anim_player_idle_down",
+      "kind": "object",
+      "type": "animation",
+      "path": "objects/animation/anim_player_idle_down.json",
+      "parent": "body_player"
+    },
+    {
+      "id": "anim_player_walk_down",
+      "kind": "object",
+      "type": "animation",
+      "path": "objects/animation/anim_player_walk_down.json",
+      "parent": "body_player"
+    },
+    {
+      "id": "anim_player_idle_up",
+      "kind": "object",
+      "type": "animation",
+      "path": "objects/animation/anim_player_idle_up.json",
+      "parent": "body_player"
+    },
+    {
+      "id": "anim_player_walk_up",
+      "kind": "object",
+      "type": "animation",
+      "path": "objects/animation/anim_player_walk_up.json",
+      "parent": "body_player"
+    },
+    {
+      "id": "anim_player_idle",
+      "kind": "object",
+      "type": "animation",
+      "path": "objects/animation/anim_player_idle.json",
+      "parent": "body_player"
+    },
+    {
+      "id": "anim_player_walk",
+      "kind": "object",
+      "type": "animation",
+      "path": "objects/animation/anim_player_walk.json",
+      "parent": "body_player"
+    },
+    {
+      "id": "anim_player_run",
+      "kind": "object",
+      "type": "animation",
+      "path": "objects/animation/anim_player_run.json",
+      "parent": "body_player"
+    },
+    {
+      "id": "anim_player_net",
+      "kind": "object",
+      "type": "animation",
+      "path": "objects/animation/anim_player_net.json",
+      "parent": "body_player"
+    },
+    {
+      "id": "anim_player_net_down",
+      "kind": "object",
+      "type": "animation",
+      "path": "objects/animation/anim_player_net_down.json",
+      "parent": "body_player"
+    },
+    {
+      "id": "anim_player_net_up",
+      "kind": "object",
+      "type": "animation",
+      "path": "objects/animation/anim_player_net_up.json",
+      "parent": "body_player"
+    },
+    {
+      "id": "body_player",
+      "kind": "object",
+      "type": "body",
+      "path": "objects/body/body_player.json",
+      "parent": "plr_you"
+    },
+    {
+      "id": "spr_pembrook",
+      "kind": "object",
+      "type": "sprite",
+      "path": "objects/sprite/spr_pembrook.json",
+      "parent": "body_pembrook"
+    },
+    {
+      "id": "anim_pembrook_idle_down",
+      "kind": "object",
+      "type": "animation",
+      "path": "objects/animation/anim_pembrook_idle_down.json",
+      "parent": "body_pembrook"
+    },
+    {
+      "id": "anim_pembrook_walk_down",
+      "kind": "object",
+      "type": "animation",
+      "path": "objects/animation/anim_pembrook_walk_down.json",
+      "parent": "body_pembrook"
+    },
+    {
+      "id": "anim_pembrook_idle_up",
+      "kind": "object",
+      "type": "animation",
+      "path": "objects/animation/anim_pembrook_idle_up.json",
+      "parent": "body_pembrook"
+    },
+    {
+      "id": "anim_pembrook_walk_up",
+      "kind": "object",
+      "type": "animation",
+      "path": "objects/animation/anim_pembrook_walk_up.json",
+      "parent": "body_pembrook"
+    },
+    {
+      "id": "anim_pembrook_idle",
+      "kind": "object",
+      "type": "animation",
+      "path": "objects/animation/anim_pembrook_idle.json",
+      "parent": "body_pembrook"
+    },
+    {
+      "id": "anim_pembrook_walk",
+      "kind": "object",
+      "type": "animation",
+      "path": "objects/animation/anim_pembrook_walk.json",
+      "parent": "body_pembrook"
+    },
+    {
+      "id": "body_pembrook",
+      "kind": "object",
+      "type": "body",
+      "path": "objects/body/body_pembrook.json",
+      "parent": "npc_pembrook"
+    },
+    {
+      "id": "spr_rusk",
+      "kind": "object",
+      "type": "sprite",
+      "path": "objects/sprite/spr_rusk.json",
+      "parent": "body_rusk"
+    },
+    {
+      "id": "anim_rusk_idle_down",
+      "kind": "object",
+      "type": "animation",
+      "path": "objects/animation/anim_rusk_idle_down.json",
+      "parent": "body_rusk"
+    },
+    {
+      "id": "anim_rusk_walk_down",
+      "kind": "object",
+      "type": "animation",
+      "path": "objects/animation/anim_rusk_walk_down.json",
+      "parent": "body_rusk"
+    },
+    {
+      "id": "anim_rusk_idle_up",
+      "kind": "object",
+      "type": "animation",
+      "path": "objects/animation/anim_rusk_idle_up.json",
+      "parent": "body_rusk"
+    },
+    {
+      "id": "anim_rusk_walk_up",
+      "kind": "object",
+      "type": "animation",
+      "path": "objects/animation/anim_rusk_walk_up.json",
+      "parent": "body_rusk"
+    },
+    {
+      "id": "anim_rusk_idle",
+      "kind": "object",
+      "type": "animation",
+      "path": "objects/animation/anim_rusk_idle.json",
+      "parent": "body_rusk"
+    },
+    {
+      "id": "anim_rusk_walk",
+      "kind": "object",
+      "type": "animation",
+      "path": "objects/animation/anim_rusk_walk.json",
+      "parent": "body_rusk"
+    },
+    {
+      "id": "body_rusk",
+      "kind": "object",
+      "type": "body",
+      "path": "objects/body/body_rusk.json",
+      "parent": "npc_rusk"
+    },
+    {
+      "id": "spr_tilly",
+      "kind": "object",
+      "type": "sprite",
+      "path": "objects/sprite/spr_tilly.json",
+      "parent": "body_tilly"
+    },
+    {
+      "id": "anim_tilly_idle_down",
+      "kind": "object",
+      "type": "animation",
+      "path": "objects/animation/anim_tilly_idle_down.json",
+      "parent": "body_tilly"
+    },
+    {
+      "id": "anim_tilly_walk_down",
+      "kind": "object",
+      "type": "animation",
+      "path": "objects/animation/anim_tilly_walk_down.json",
+      "parent": "body_tilly"
+    },
+    {
+      "id": "anim_tilly_idle_up",
+      "kind": "object",
+      "type": "animation",
+      "path": "objects/animation/anim_tilly_idle_up.json",
+      "parent": "body_tilly"
+    },
+    {
+      "id": "anim_tilly_walk_up",
+      "kind": "object",
+      "type": "animation",
+      "path": "objects/animation/anim_tilly_walk_up.json",
+      "parent": "body_tilly"
+    },
+    {
+      "id": "anim_tilly_idle",
+      "kind": "object",
+      "type": "animation",
+      "path": "objects/animation/anim_tilly_idle.json",
+      "parent": "body_tilly"
+    },
+    {
+      "id": "anim_tilly_walk",
+      "kind": "object",
+      "type": "animation",
+      "path": "objects/animation/anim_tilly_walk.json",
+      "parent": "body_tilly"
+    },
+    {
+      "id": "body_tilly",
+      "kind": "object",
+      "type": "body",
+      "path": "objects/body/body_tilly.json",
+      "parent": "npc_tilly"
+    },
+    {
+      "id": "spr_ardea",
+      "kind": "object",
+      "type": "sprite",
+      "path": "objects/sprite/spr_ardea.json",
+      "parent": "body_ardea"
+    },
+    {
+      "id": "anim_ardea_idle",
+      "kind": "object",
+      "type": "animation",
+      "path": "objects/animation/anim_ardea_idle.json",
+      "parent": "body_ardea"
+    },
+    {
+      "id": "body_ardea",
+      "kind": "object",
+      "type": "body",
+      "path": "objects/body/body_ardea.json",
+      "parent": "npc_ardea"
+    },
+    {
+      "id": "spr_bramble",
+      "kind": "object",
+      "type": "sprite",
+      "path": "objects/sprite/spr_bramble.json",
+      "parent": "body_bramble"
+    },
+    {
+      "id": "anim_bramble_idle",
+      "kind": "object",
+      "type": "animation",
+      "path": "objects/animation/anim_bramble_idle.json",
+      "parent": "body_bramble"
+    },
+    {
+      "id": "body_bramble",
+      "kind": "object",
+      "type": "body",
+      "path": "objects/body/body_bramble.json",
+      "parent": "npc_bramble"
+    },
+    {
+      "id": "spr_odessa",
+      "kind": "object",
+      "type": "sprite",
+      "path": "objects/sprite/spr_odessa.json",
+      "parent": "body_odessa"
+    },
+    {
+      "id": "anim_odessa_idle",
+      "kind": "object",
+      "type": "animation",
+      "path": "objects/animation/anim_odessa_idle.json",
+      "parent": "body_odessa"
+    },
+    {
+      "id": "body_odessa",
+      "kind": "object",
+      "type": "body",
+      "path": "objects/body/body_odessa.json",
+      "parent": "npc_odessa"
+    },
+    {
+      "id": "spr_puff",
+      "kind": "object",
+      "type": "sprite",
+      "path": "objects/sprite/spr_puff.json",
+      "parent": "body_puff"
+    },
+    {
+      "id": "anim_puff_idle",
+      "kind": "object",
+      "type": "animation",
+      "path": "objects/animation/anim_puff_idle.json",
+      "parent": "body_puff"
+    },
+    {
+      "id": "body_puff",
+      "kind": "object",
+      "type": "body",
+      "path": "objects/body/body_puff.json",
+      "parent": "npc_puff"
+    },
+    {
+      "id": "spr_bugs",
+      "kind": "object",
+      "type": "sprite",
+      "path": "objects/sprite/spr_bugs.json",
+      "parent": null
+    },
+    {
+      "id": "spr_fish",
+      "kind": "object",
+      "type": "sprite",
+      "path": "objects/sprite/spr_fish.json",
+      "parent": null
+    },
+    {
+      "id": "spr_fossils",
+      "kind": "object",
+      "type": "sprite",
+      "path": "objects/sprite/spr_fossils.json",
+      "parent": null
+    },
+    {
+      "id": "spr_shadow",
+      "kind": "object",
+      "type": "sprite",
+      "path": "objects/sprite/spr_shadow.json",
+      "parent": null
+    },
+    {
+      "id": "spr_items",
+      "kind": "object",
+      "type": "sprite",
+      "path": "objects/sprite/spr_items.json",
+      "parent": null
+    },
+    {
+      "id": "spr_furniture",
+      "kind": "object",
+      "type": "sprite",
+      "path": "objects/sprite/spr_furniture.json",
+      "parent": null
+    },
+    {
+      "id": "spr_boat",
+      "kind": "object",
+      "type": "sprite",
+      "path": "objects/sprite/spr_boat.json",
+      "parent": null
+    },
+    {
+      "id": "anim_poof",
+      "kind": "object",
+      "type": "animation",
+      "path": "objects/animation/anim_poof.json",
+      "parent": null
+    },
+    {
+      "id": "icon_face_pembrook",
+      "kind": "object",
+      "type": "icon",
+      "path": "objects/icon/icon_face_pembrook.json",
+      "parent": null
+    },
+    {
+      "id": "icon_face_rusk",
+      "kind": "object",
+      "type": "icon",
+      "path": "objects/icon/icon_face_rusk.json",
+      "parent": null
+    },
+    {
+      "id": "icon_face_tilly",
+      "kind": "object",
+      "type": "icon",
+      "path": "objects/icon/icon_face_tilly.json",
+      "parent": null
+    },
+    {
+      "id": "icon_face_ardea",
+      "kind": "object",
+      "type": "icon",
+      "path": "objects/icon/icon_face_ardea.json",
+      "parent": null
+    },
+    {
+      "id": "icon_face_bramble",
+      "kind": "object",
+      "type": "icon",
+      "path": "objects/icon/icon_face_bramble.json",
+      "parent": null
+    },
+    {
+      "id": "icon_face_odessa",
+      "kind": "object",
+      "type": "icon",
+      "path": "objects/icon/icon_face_odessa.json",
+      "parent": null
+    },
+    {
+      "id": "icon_face_puff",
+      "kind": "object",
+      "type": "icon",
+      "path": "objects/icon/icon_face_puff.json",
+      "parent": null
+    },
+    {
+      "id": "dlg_catch_crucian",
+      "kind": "object",
+      "type": "dialog",
+      "path": "objects/dialog/dlg_catch_crucian.json",
+      "parent": null
+    },
+    {
+      "id": "dlg_catch_bass",
+      "kind": "object",
+      "type": "dialog",
+      "path": "objects/dialog/dlg_catch_bass.json",
+      "parent": null
+    },
+    {
+      "id": "dlg_catch_dace",
+      "kind": "object",
+      "type": "dialog",
+      "path": "objects/dialog/dlg_catch_dace.json",
+      "parent": null
+    },
+    {
+      "id": "dlg_catch_carp",
+      "kind": "object",
+      "type": "dialog",
+      "path": "objects/dialog/dlg_catch_carp.json",
+      "parent": null
+    },
+    {
+      "id": "dlg_catch_koi",
+      "kind": "object",
+      "type": "dialog",
+      "path": "objects/dialog/dlg_catch_koi.json",
+      "parent": null
+    },
+    {
+      "id": "dlg_catch_seabass",
+      "kind": "object",
+      "type": "dialog",
+      "path": "objects/dialog/dlg_catch_seabass.json",
+      "parent": null
+    },
+    {
+      "id": "dlg_catch_snapper",
+      "kind": "object",
+      "type": "dialog",
+      "path": "objects/dialog/dlg_catch_snapper.json",
+      "parent": null
+    },
+    {
+      "id": "dlg_catch_white",
+      "kind": "object",
+      "type": "dialog",
+      "path": "objects/dialog/dlg_catch_white.json",
+      "parent": null
+    },
+    {
+      "id": "dlg_catch_bee",
+      "kind": "object",
+      "type": "dialog",
+      "path": "objects/dialog/dlg_catch_bee.json",
+      "parent": null
+    },
+    {
+      "id": "dlg_catch_ladybug",
+      "kind": "object",
+      "type": "dialog",
+      "path": "objects/dialog/dlg_catch_ladybug.json",
+      "parent": null
+    },
+    {
+      "id": "dlg_catch_firefly",
+      "kind": "object",
+      "type": "dialog",
+      "path": "objects/dialog/dlg_catch_firefly.json",
+      "parent": null
+    },
+    {
+      "id": "dlg_catch_cricket",
+      "kind": "object",
+      "type": "dialog",
+      "path": "objects/dialog/dlg_catch_cricket.json",
+      "parent": null
+    },
+    {
+      "id": "dlg_catch_crab",
+      "kind": "object",
+      "type": "dialog",
+      "path": "objects/dialog/dlg_catch_crab.json",
+      "parent": null
+    },
+    {
+      "id": "dlg_dig_ammonite",
+      "kind": "object",
+      "type": "dialog",
+      "path": "objects/dialog/dlg_dig_ammonite.json",
+      "parent": null
+    },
+    {
+      "id": "dlg_dig_trilobite",
+      "kind": "object",
+      "type": "dialog",
+      "path": "objects/dialog/dlg_dig_trilobite.json",
+      "parent": null
+    },
+    {
+      "id": "dlg_dig_tooth",
+      "kind": "object",
+      "type": "dialog",
+      "path": "objects/dialog/dlg_dig_tooth.json",
+      "parent": null
+    },
+    {
+      "id": "dlg_dig_amber",
+      "kind": "object",
+      "type": "dialog",
+      "path": "objects/dialog/dlg_dig_amber.json",
+      "parent": null
+    },
+    {
+      "id": "anim_ex_fish_crucian",
+      "kind": "object",
+      "type": "animation",
+      "path": "objects/animation/anim_ex_fish_crucian.json",
+      "parent": "body_ex_fish_crucian"
+    },
+    {
+      "id": "body_ex_fish_crucian",
+      "kind": "object",
+      "type": "body",
+      "path": "objects/body/body_ex_fish_crucian.json",
+      "parent": "prop_ex_fish_crucian"
+    },
+    {
+      "id": "anim_ex_fish_bass",
+      "kind": "object",
+      "type": "animation",
+      "path": "objects/animation/anim_ex_fish_bass.json",
+      "parent": "body_ex_fish_bass"
+    },
+    {
+      "id": "body_ex_fish_bass",
+      "kind": "object",
+      "type": "body",
+      "path": "objects/body/body_ex_fish_bass.json",
+      "parent": "prop_ex_fish_bass"
+    },
+    {
+      "id": "anim_ex_fish_dace",
+      "kind": "object",
+      "type": "animation",
+      "path": "objects/animation/anim_ex_fish_dace.json",
+      "parent": "body_ex_fish_dace"
+    },
+    {
+      "id": "body_ex_fish_dace",
+      "kind": "object",
+      "type": "body",
+      "path": "objects/body/body_ex_fish_dace.json",
+      "parent": "prop_ex_fish_dace"
+    },
+    {
+      "id": "anim_ex_fish_carp",
+      "kind": "object",
+      "type": "animation",
+      "path": "objects/animation/anim_ex_fish_carp.json",
+      "parent": "body_ex_fish_carp"
+    },
+    {
+      "id": "body_ex_fish_carp",
+      "kind": "object",
+      "type": "body",
+      "path": "objects/body/body_ex_fish_carp.json",
+      "parent": "prop_ex_fish_carp"
+    },
+    {
+      "id": "anim_ex_fish_koi",
+      "kind": "object",
+      "type": "animation",
+      "path": "objects/animation/anim_ex_fish_koi.json",
+      "parent": "body_ex_fish_koi"
+    },
+    {
+      "id": "body_ex_fish_koi",
+      "kind": "object",
+      "type": "body",
+      "path": "objects/body/body_ex_fish_koi.json",
+      "parent": "prop_ex_fish_koi"
+    },
+    {
+      "id": "anim_ex_fish_seabass",
+      "kind": "object",
+      "type": "animation",
+      "path": "objects/animation/anim_ex_fish_seabass.json",
+      "parent": "body_ex_fish_seabass"
+    },
+    {
+      "id": "body_ex_fish_seabass",
+      "kind": "object",
+      "type": "body",
+      "path": "objects/body/body_ex_fish_seabass.json",
+      "parent": "prop_ex_fish_seabass"
+    },
+    {
+      "id": "anim_ex_fish_snapper",
+      "kind": "object",
+      "type": "animation",
+      "path": "objects/animation/anim_ex_fish_snapper.json",
+      "parent": "body_ex_fish_snapper"
+    },
+    {
+      "id": "body_ex_fish_snapper",
+      "kind": "object",
+      "type": "body",
+      "path": "objects/body/body_ex_fish_snapper.json",
+      "parent": "prop_ex_fish_snapper"
+    },
+    {
+      "id": "anim_bug_white",
+      "kind": "object",
+      "type": "animation",
+      "path": "objects/animation/anim_bug_white.json",
+      "parent": "body_bug_white"
+    },
+    {
+      "id": "body_bug_white",
+      "kind": "object",
+      "type": "body",
+      "path": "objects/body/body_bug_white.json",
+      "parent": null
+    },
+    {
+      "id": "anim_bug_bee",
+      "kind": "object",
+      "type": "animation",
+      "path": "objects/animation/anim_bug_bee.json",
+      "parent": "body_bug_bee"
+    },
+    {
+      "id": "body_bug_bee",
+      "kind": "object",
+      "type": "body",
+      "path": "objects/body/body_bug_bee.json",
+      "parent": null
+    },
+    {
+      "id": "anim_bug_ladybug",
+      "kind": "object",
+      "type": "animation",
+      "path": "objects/animation/anim_bug_ladybug.json",
+      "parent": "body_bug_ladybug"
+    },
+    {
+      "id": "body_bug_ladybug",
+      "kind": "object",
+      "type": "body",
+      "path": "objects/body/body_bug_ladybug.json",
+      "parent": null
+    },
+    {
+      "id": "anim_bug_firefly",
+      "kind": "object",
+      "type": "animation",
+      "path": "objects/animation/anim_bug_firefly.json",
+      "parent": "body_bug_firefly"
+    },
+    {
+      "id": "body_bug_firefly",
+      "kind": "object",
+      "type": "body",
+      "path": "objects/body/body_bug_firefly.json",
+      "parent": null
+    },
+    {
+      "id": "anim_bug_cricket",
+      "kind": "object",
+      "type": "animation",
+      "path": "objects/animation/anim_bug_cricket.json",
+      "parent": "body_bug_cricket"
+    },
+    {
+      "id": "body_bug_cricket",
+      "kind": "object",
+      "type": "body",
+      "path": "objects/body/body_bug_cricket.json",
+      "parent": null
+    },
+    {
+      "id": "anim_bug_crab",
+      "kind": "object",
+      "type": "animation",
+      "path": "objects/animation/anim_bug_crab.json",
+      "parent": "body_bug_crab"
+    },
+    {
+      "id": "body_bug_crab",
+      "kind": "object",
+      "type": "body",
+      "path": "objects/body/body_bug_crab.json",
+      "parent": null
+    },
+    {
+      "id": "anim_ex_fos_ammonite",
+      "kind": "object",
+      "type": "animation",
+      "path": "objects/animation/anim_ex_fos_ammonite.json",
+      "parent": "body_ex_fos_ammonite"
+    },
+    {
+      "id": "body_ex_fos_ammonite",
+      "kind": "object",
+      "type": "body",
+      "path": "objects/body/body_ex_fos_ammonite.json",
+      "parent": "prop_ex_fos_ammonite"
+    },
+    {
+      "id": "anim_ex_fos_trilobite",
+      "kind": "object",
+      "type": "animation",
+      "path": "objects/animation/anim_ex_fos_trilobite.json",
+      "parent": "body_ex_fos_trilobite"
+    },
+    {
+      "id": "body_ex_fos_trilobite",
+      "kind": "object",
+      "type": "body",
+      "path": "objects/body/body_ex_fos_trilobite.json",
+      "parent": "prop_ex_fos_trilobite"
+    },
+    {
+      "id": "anim_ex_fos_tooth",
+      "kind": "object",
+      "type": "animation",
+      "path": "objects/animation/anim_ex_fos_tooth.json",
+      "parent": "body_ex_fos_tooth"
+    },
+    {
+      "id": "body_ex_fos_tooth",
+      "kind": "object",
+      "type": "body",
+      "path": "objects/body/body_ex_fos_tooth.json",
+      "parent": "prop_ex_fos_tooth"
+    },
+    {
+      "id": "anim_ex_fos_amber",
+      "kind": "object",
+      "type": "animation",
+      "path": "objects/animation/anim_ex_fos_amber.json",
+      "parent": "body_ex_fos_amber"
+    },
+    {
+      "id": "body_ex_fos_amber",
+      "kind": "object",
+      "type": "body",
+      "path": "objects/body/body_ex_fos_amber.json",
+      "parent": "prop_ex_fos_amber"
+    },
+    {
+      "id": "prop_ex_fish_crucian",
+      "kind": "object",
+      "type": "prop",
+      "path": "objects/prop/prop_ex_fish_crucian.json",
+      "parent": null
+    },
+    {
+      "id": "prop_ex_fish_bass",
+      "kind": "object",
+      "type": "prop",
+      "path": "objects/prop/prop_ex_fish_bass.json",
+      "parent": null
+    },
+    {
+      "id": "prop_ex_fish_dace",
+      "kind": "object",
+      "type": "prop",
+      "path": "objects/prop/prop_ex_fish_dace.json",
+      "parent": null
+    },
+    {
+      "id": "prop_ex_fish_carp",
+      "kind": "object",
+      "type": "prop",
+      "path": "objects/prop/prop_ex_fish_carp.json",
+      "parent": null
+    },
+    {
+      "id": "prop_ex_fish_koi",
+      "kind": "object",
+      "type": "prop",
+      "path": "objects/prop/prop_ex_fish_koi.json",
+      "parent": null
+    },
+    {
+      "id": "prop_ex_fish_seabass",
+      "kind": "object",
+      "type": "prop",
+      "path": "objects/prop/prop_ex_fish_seabass.json",
+      "parent": null
+    },
+    {
+      "id": "prop_ex_fish_snapper",
+      "kind": "object",
+      "type": "prop",
+      "path": "objects/prop/prop_ex_fish_snapper.json",
+      "parent": null
+    },
+    {
+      "id": "prop_ex_bug_white",
+      "kind": "object",
+      "type": "prop",
+      "path": "objects/prop/prop_ex_bug_white.json",
+      "parent": null
+    },
+    {
+      "id": "prop_ex_bug_bee",
+      "kind": "object",
+      "type": "prop",
+      "path": "objects/prop/prop_ex_bug_bee.json",
+      "parent": null
+    },
+    {
+      "id": "prop_ex_bug_ladybug",
+      "kind": "object",
+      "type": "prop",
+      "path": "objects/prop/prop_ex_bug_ladybug.json",
+      "parent": null
+    },
+    {
+      "id": "prop_ex_bug_firefly",
+      "kind": "object",
+      "type": "prop",
+      "path": "objects/prop/prop_ex_bug_firefly.json",
+      "parent": null
+    },
+    {
+      "id": "prop_ex_bug_cricket",
+      "kind": "object",
+      "type": "prop",
+      "path": "objects/prop/prop_ex_bug_cricket.json",
+      "parent": null
+    },
+    {
+      "id": "prop_ex_bug_crab",
+      "kind": "object",
+      "type": "prop",
+      "path": "objects/prop/prop_ex_bug_crab.json",
+      "parent": null
+    },
+    {
+      "id": "prop_ex_fos_ammonite",
+      "kind": "object",
+      "type": "prop",
+      "path": "objects/prop/prop_ex_fos_ammonite.json",
+      "parent": null
+    },
+    {
+      "id": "prop_ex_fos_trilobite",
+      "kind": "object",
+      "type": "prop",
+      "path": "objects/prop/prop_ex_fos_trilobite.json",
+      "parent": null
+    },
+    {
+      "id": "prop_ex_fos_tooth",
+      "kind": "object",
+      "type": "prop",
+      "path": "objects/prop/prop_ex_fos_tooth.json",
+      "parent": null
+    },
+    {
+      "id": "prop_ex_fos_amber",
+      "kind": "object",
+      "type": "prop",
+      "path": "objects/prop/prop_ex_fos_amber.json",
+      "parent": null
+    },
+    {
+      "id": "enm_white",
+      "kind": "object",
+      "type": "enemy",
+      "path": "objects/enemy/enm_white.json",
+      "parent": null
+    },
+    {
+      "id": "enm_bee",
+      "kind": "object",
+      "type": "enemy",
+      "path": "objects/enemy/enm_bee.json",
+      "parent": null
+    },
+    {
+      "id": "enm_ladybug",
+      "kind": "object",
+      "type": "enemy",
+      "path": "objects/enemy/enm_ladybug.json",
+      "parent": null
+    },
+    {
+      "id": "enm_firefly",
+      "kind": "object",
+      "type": "enemy",
+      "path": "objects/enemy/enm_firefly.json",
+      "parent": null
+    },
+    {
+      "id": "enm_cricket",
+      "kind": "object",
+      "type": "enemy",
+      "path": "objects/enemy/enm_cricket.json",
+      "parent": null
+    },
+    {
+      "id": "enm_crab",
+      "kind": "object",
+      "type": "enemy",
+      "path": "objects/enemy/enm_crab.json",
+      "parent": null
+    },
+    {
+      "id": "anim_shadow",
+      "kind": "object",
+      "type": "animation",
+      "path": "objects/animation/anim_shadow.json",
+      "parent": "body_shadow"
+    },
+    {
+      "id": "anim_shadow_swim",
+      "kind": "object",
+      "type": "animation",
+      "path": "objects/animation/anim_shadow_swim.json",
+      "parent": "body_shadow"
+    },
+    {
+      "id": "anim_shadow_float",
+      "kind": "object",
+      "type": "animation",
+      "path": "objects/animation/anim_shadow_float.json",
+      "parent": "body_shadow"
+    },
+    {
+      "id": "anim_shadow_dip",
+      "kind": "object",
+      "type": "animation",
+      "path": "objects/animation/anim_shadow_dip.json",
+      "parent": "body_shadow"
+    },
+    {
+      "id": "anim_shadow_bite",
+      "kind": "object",
+      "type": "animation",
+      "path": "objects/animation/anim_shadow_bite.json",
+      "parent": "body_shadow"
+    },
+    {
+      "id": "anim_shadow_splash",
+      "kind": "object",
+      "type": "animation",
+      "path": "objects/animation/anim_shadow_splash.json",
+      "parent": "body_shadow"
+    },
+    {
+      "id": "body_shadow",
+      "kind": "object",
+      "type": "body",
+      "path": "objects/body/body_shadow.json",
+      "parent": null
+    },
+    {
+      "id": "dlg_fish_escape",
+      "kind": "object",
+      "type": "dialog",
+      "path": "objects/dialog/dlg_fish_escape.json",
+      "parent": null
+    },
+    {
+      "id": "dlg_fish_spook",
+      "kind": "object",
+      "type": "dialog",
+      "path": "objects/dialog/dlg_fish_spook.json",
+      "parent": null
+    },
+    {
+      "id": "prop_fish_river",
+      "kind": "object",
+      "type": "prop",
+      "path": "objects/prop/prop_fish_river.json",
+      "parent": null
+    },
+    {
+      "id": "prop_fish_pond",
+      "kind": "object",
+      "type": "prop",
+      "path": "objects/prop/prop_fish_pond.json",
+      "parent": null
+    },
+    {
+      "id": "prop_fish_sea",
+      "kind": "object",
+      "type": "prop",
+      "path": "objects/prop/prop_fish_sea.json",
+      "parent": null
+    },
+    {
+      "id": "anim_crack",
+      "kind": "object",
+      "type": "animation",
+      "path": "objects/animation/anim_crack.json",
+      "parent": "body_crack"
+    },
+    {
+      "id": "body_crack",
+      "kind": "object",
+      "type": "body",
+      "path": "objects/body/body_crack.json",
+      "parent": null
+    },
+    {
+      "id": "dlg_hint_shovel",
+      "kind": "object",
+      "type": "dialog",
+      "path": "objects/dialog/dlg_hint_shovel.json",
+      "parent": null
+    },
+    {
+      "id": "prop_crack",
+      "kind": "object",
+      "type": "prop",
+      "path": "objects/prop/prop_crack.json",
+      "parent": null
+    },
+    {
+      "id": "anim_rock",
+      "kind": "object",
+      "type": "animation",
+      "path": "objects/animation/anim_rock.json",
+      "parent": "body_rock"
+    },
+    {
+      "id": "body_rock",
+      "kind": "object",
+      "type": "body",
+      "path": "objects/body/body_rock.json",
+      "parent": null
+    },
+    {
+      "id": "dlg_lucky",
+      "kind": "object",
+      "type": "dialog",
+      "path": "objects/dialog/dlg_lucky.json",
+      "parent": null
+    },
+    {
+      "id": "prop_rock",
+      "kind": "object",
+      "type": "prop",
+      "path": "objects/prop/prop_rock.json",
+      "parent": null
+    },
+    {
+      "id": "anim_apple",
+      "kind": "object",
+      "type": "animation",
+      "path": "objects/animation/anim_apple.json",
+      "parent": "body_apple"
+    },
+    {
+      "id": "body_apple",
+      "kind": "object",
+      "type": "body",
+      "path": "objects/body/body_apple.json",
+      "parent": null
+    },
+    {
+      "id": "item_apple",
+      "kind": "object",
+      "type": "pickup",
+      "path": "objects/pickup/item_apple.json",
+      "parent": null
+    },
+    {
+      "id": "anim_shell",
+      "kind": "object",
+      "type": "animation",
+      "path": "objects/animation/anim_shell.json",
+      "parent": "body_shell"
+    },
+    {
+      "id": "body_shell",
+      "kind": "object",
+      "type": "body",
+      "path": "objects/body/body_shell.json",
+      "parent": null
+    },
+    {
+      "id": "item_shell",
+      "kind": "object",
+      "type": "pickup",
+      "path": "objects/pickup/item_shell.json",
+      "parent": null
+    },
+    {
+      "id": "anim_money",
+      "kind": "object",
+      "type": "animation",
+      "path": "objects/animation/anim_money.json",
+      "parent": "body_money"
+    },
+    {
+      "id": "body_money",
+      "kind": "object",
+      "type": "body",
+      "path": "objects/body/body_money.json",
+      "parent": null
+    },
+    {
+      "id": "item_money",
+      "kind": "object",
+      "type": "pickup",
+      "path": "objects/pickup/item_money.json",
+      "parent": null
+    },
+    {
+      "id": "anim_fruit",
+      "kind": "object",
+      "type": "animation",
+      "path": "objects/animation/anim_fruit.json",
+      "parent": "body_fruit"
+    },
+    {
+      "id": "body_fruit",
+      "kind": "object",
+      "type": "body",
+      "path": "objects/body/body_fruit.json",
+      "parent": null
+    },
+    {
+      "id": "prop_fruit",
+      "kind": "object",
+      "type": "prop",
+      "path": "objects/prop/prop_fruit.json",
+      "parent": null
+    },
+    {
+      "id": "dlg_hint_hands",
+      "kind": "object",
+      "type": "dialog",
+      "path": "objects/dialog/dlg_hint_hands.json",
+      "parent": null
+    },
+    {
+      "id": "trg_tree",
+      "kind": "object",
+      "type": "trigger",
+      "path": "objects/trigger/trg_tree.json",
+      "parent": null
+    },
+    {
+      "id": "trg_sign",
+      "kind": "object",
+      "type": "trigger",
+      "path": "objects/trigger/trg_sign.json",
+      "parent": null
+    },
+    {
+      "id": "dlg_pembrook_morning",
+      "kind": "object",
+      "type": "dialog",
+      "path": "objects/dialog/dlg_pembrook_morning.json",
+      "parent": null
+    },
+    {
+      "id": "dlg_pembrook_day",
+      "kind": "object",
+      "type": "dialog",
+      "path": "objects/dialog/dlg_pembrook_day.json",
+      "parent": null
+    },
+    {
+      "id": "dlg_pembrook_evening",
+      "kind": "object",
+      "type": "dialog",
+      "path": "objects/dialog/dlg_pembrook_evening.json",
+      "parent": null
+    },
+    {
+      "id": "dlg_pembrook_friend",
+      "kind": "object",
+      "type": "dialog",
+      "path": "objects/dialog/dlg_pembrook_friend.json",
+      "parent": null
+    },
+    {
+      "id": "dlg_pembrook_favor",
+      "kind": "object",
+      "type": "dialog",
+      "path": "objects/dialog/dlg_pembrook_favor.json",
+      "parent": null
+    },
+    {
+      "id": "dlg_pembrook_waiting",
+      "kind": "object",
+      "type": "dialog",
+      "path": "objects/dialog/dlg_pembrook_waiting.json",
+      "parent": null
+    },
+    {
+      "id": "dlg_pembrook_thanks",
+      "kind": "object",
+      "type": "dialog",
+      "path": "objects/dialog/dlg_pembrook_thanks.json",
+      "parent": null
+    },
+    {
+      "id": "npc_pembrook",
+      "kind": "object",
+      "type": "npc",
+      "path": "objects/npc/npc_pembrook.json",
+      "parent": null
+    },
+    {
+      "id": "dlg_rusk_morning",
+      "kind": "object",
+      "type": "dialog",
+      "path": "objects/dialog/dlg_rusk_morning.json",
+      "parent": null
+    },
+    {
+      "id": "dlg_rusk_day",
+      "kind": "object",
+      "type": "dialog",
+      "path": "objects/dialog/dlg_rusk_day.json",
+      "parent": null
+    },
+    {
+      "id": "dlg_rusk_evening",
+      "kind": "object",
+      "type": "dialog",
+      "path": "objects/dialog/dlg_rusk_evening.json",
+      "parent": null
+    },
+    {
+      "id": "dlg_rusk_friend",
+      "kind": "object",
+      "type": "dialog",
+      "path": "objects/dialog/dlg_rusk_friend.json",
+      "parent": null
+    },
+    {
+      "id": "dlg_rusk_favor",
+      "kind": "object",
+      "type": "dialog",
+      "path": "objects/dialog/dlg_rusk_favor.json",
+      "parent": null
+    },
+    {
+      "id": "dlg_rusk_waiting",
+      "kind": "object",
+      "type": "dialog",
+      "path": "objects/dialog/dlg_rusk_waiting.json",
+      "parent": null
+    },
+    {
+      "id": "dlg_rusk_thanks",
+      "kind": "object",
+      "type": "dialog",
+      "path": "objects/dialog/dlg_rusk_thanks.json",
+      "parent": null
+    },
+    {
+      "id": "npc_rusk",
+      "kind": "object",
+      "type": "npc",
+      "path": "objects/npc/npc_rusk.json",
+      "parent": null
+    },
+    {
+      "id": "dlg_tilly_morning",
+      "kind": "object",
+      "type": "dialog",
+      "path": "objects/dialog/dlg_tilly_morning.json",
+      "parent": null
+    },
+    {
+      "id": "dlg_tilly_day",
+      "kind": "object",
+      "type": "dialog",
+      "path": "objects/dialog/dlg_tilly_day.json",
+      "parent": null
+    },
+    {
+      "id": "dlg_tilly_evening",
+      "kind": "object",
+      "type": "dialog",
+      "path": "objects/dialog/dlg_tilly_evening.json",
+      "parent": null
+    },
+    {
+      "id": "dlg_tilly_friend",
+      "kind": "object",
+      "type": "dialog",
+      "path": "objects/dialog/dlg_tilly_friend.json",
+      "parent": null
+    },
+    {
+      "id": "dlg_tilly_favor",
+      "kind": "object",
+      "type": "dialog",
+      "path": "objects/dialog/dlg_tilly_favor.json",
+      "parent": null
+    },
+    {
+      "id": "dlg_tilly_waiting",
+      "kind": "object",
+      "type": "dialog",
+      "path": "objects/dialog/dlg_tilly_waiting.json",
+      "parent": null
+    },
+    {
+      "id": "dlg_tilly_thanks",
+      "kind": "object",
+      "type": "dialog",
+      "path": "objects/dialog/dlg_tilly_thanks.json",
+      "parent": null
+    },
+    {
+      "id": "npc_tilly",
+      "kind": "object",
+      "type": "npc",
+      "path": "objects/npc/npc_tilly.json",
+      "parent": null
+    },
+    {
+      "id": "dlg_intro",
+      "kind": "object",
+      "type": "dialog",
+      "path": "objects/dialog/dlg_intro.json",
+      "parent": null
+    },
+    {
+      "id": "npc_ardea_dock",
+      "kind": "object",
+      "type": "npc",
+      "path": "objects/npc/npc_ardea_dock.json",
+      "parent": null
+    },
+    {
+      "id": "dlg_puff",
+      "kind": "object",
+      "type": "dialog",
+      "path": "objects/dialog/dlg_puff.json",
+      "parent": null
+    },
+    {
+      "id": "npc_puff",
+      "kind": "object",
+      "type": "npc",
+      "path": "objects/npc/npc_puff.json",
+      "parent": null
+    },
+    {
+      "id": "anim_boat",
+      "kind": "object",
+      "type": "animation",
+      "path": "objects/animation/anim_boat.json",
+      "parent": "body_boat"
+    },
+    {
+      "id": "body_boat",
+      "kind": "object",
+      "type": "body",
+      "path": "objects/body/body_boat.json",
+      "parent": "prop_boat"
+    },
+    {
+      "id": "prop_boat",
+      "kind": "object",
+      "type": "prop",
+      "path": "objects/prop/prop_boat.json",
+      "parent": null
+    },
+    {
+      "id": "dlg_need_pips",
+      "kind": "object",
+      "type": "dialog",
+      "path": "objects/dialog/dlg_need_pips.json",
+      "parent": null
+    },
+    {
+      "id": "dlg_expand_done",
+      "kind": "object",
+      "type": "dialog",
+      "path": "objects/dialog/dlg_expand_done.json",
+      "parent": null
+    },
+    {
+      "id": "dlg_offer_expand",
+      "kind": "object",
+      "type": "dialog",
+      "path": "objects/dialog/dlg_offer_expand.json",
+      "parent": null
+    },
+    {
+      "id": "dlg_paid_all",
+      "kind": "object",
+      "type": "dialog",
+      "path": "objects/dialog/dlg_paid_all.json",
+      "parent": null
+    },
+    {
+      "id": "dlg_loan_paid",
+      "kind": "object",
+      "type": "dialog",
+      "path": "objects/dialog/dlg_loan_paid.json",
+      "parent": null
+    },
+    {
+      "id": "dlg_no_loan",
+      "kind": "object",
+      "type": "dialog",
+      "path": "objects/dialog/dlg_no_loan.json",
+      "parent": null
+    },
+    {
+      "id": "dlg_neighbor_reward",
+      "kind": "object",
+      "type": "dialog",
+      "path": "objects/dialog/dlg_neighbor_reward.json",
+      "parent": null
+    },
+    {
+      "id": "dlg_ardea_tip1",
+      "kind": "object",
+      "type": "dialog",
+      "path": "objects/dialog/dlg_ardea_tip1.json",
+      "parent": null
+    },
+    {
+      "id": "dlg_ardea_tip2",
+      "kind": "object",
+      "type": "dialog",
+      "path": "objects/dialog/dlg_ardea_tip2.json",
+      "parent": null
+    },
+    {
+      "id": "dlg_ardea_tip3",
+      "kind": "object",
+      "type": "dialog",
+      "path": "objects/dialog/dlg_ardea_tip3.json",
+      "parent": null
+    },
+    {
+      "id": "dlg_ardea_tip4",
+      "kind": "object",
+      "type": "dialog",
+      "path": "objects/dialog/dlg_ardea_tip4.json",
+      "parent": null
+    },
+    {
+      "id": "menu_hall",
+      "kind": "object",
+      "type": "menu",
+      "path": "objects/menu/menu_hall.json",
+      "parent": null
+    },
+    {
+      "id": "dlg_ardea_hello",
+      "kind": "object",
+      "type": "dialog",
+      "path": "objects/dialog/dlg_ardea_hello.json",
+      "parent": null
+    },
+    {
+      "id": "npc_ardea",
+      "kind": "object",
+      "type": "npc",
+      "path": "objects/npc/npc_ardea.json",
+      "parent": null
+    },
+    {
+      "id": "dlg_sold",
+      "kind": "object",
+      "type": "dialog",
+      "path": "objects/dialog/dlg_sold.json",
+      "parent": null
+    },
+    {
+      "id": "dlg_nothing",
+      "kind": "object",
+      "type": "dialog",
+      "path": "objects/dialog/dlg_nothing.json",
+      "parent": null
+    },
+    {
+      "id": "menu_sell",
+      "kind": "object",
+      "type": "menu",
+      "path": "objects/menu/menu_sell.json",
+      "parent": null
+    },
+    {
+      "id": "dlg_have_it",
+      "kind": "object",
+      "type": "dialog",
+      "path": "objects/dialog/dlg_have_it.json",
+      "parent": null
+    },
+    {
+      "id": "dlg_broke",
+      "kind": "object",
+      "type": "dialog",
+      "path": "objects/dialog/dlg_broke.json",
+      "parent": null
+    },
+    {
+      "id": "dlg_got_rod",
+      "kind": "object",
+      "type": "dialog",
+      "path": "objects/dialog/dlg_got_rod.json",
+      "parent": null
+    },
+    {
+      "id": "dlg_delivered",
+      "kind": "object",
+      "type": "dialog",
+      "path": "objects/dialog/dlg_delivered.json",
+      "parent": null
+    },
+    {
+      "id": "menu_tools",
+      "kind": "object",
+      "type": "menu",
+      "path": "objects/menu/menu_tools.json",
+      "parent": null
+    },
+    {
+      "id": "menu_furniture",
+      "kind": "object",
+      "type": "menu",
+      "path": "objects/menu/menu_furniture.json",
+      "parent": null
+    },
+    {
+      "id": "dlg_bramble_bye",
+      "kind": "object",
+      "type": "dialog",
+      "path": "objects/dialog/dlg_bramble_bye.json",
+      "parent": null
+    },
+    {
+      "id": "menu_shop",
+      "kind": "object",
+      "type": "menu",
+      "path": "objects/menu/menu_shop.json",
+      "parent": null
+    },
+    {
+      "id": "dlg_bramble_hello",
+      "kind": "object",
+      "type": "dialog",
+      "path": "objects/dialog/dlg_bramble_hello.json",
+      "parent": null
+    },
+    {
+      "id": "npc_bramble",
+      "kind": "object",
+      "type": "npc",
+      "path": "objects/npc/npc_bramble.json",
+      "parent": null
+    },
+    {
+      "id": "dlg_museum_complete",
+      "kind": "object",
+      "type": "dialog",
+      "path": "objects/dialog/dlg_museum_complete.json",
+      "parent": null
+    },
+    {
+      "id": "dlg_odessa_thanks",
+      "kind": "object",
+      "type": "dialog",
+      "path": "objects/dialog/dlg_odessa_thanks.json",
+      "parent": null
+    },
+    {
+      "id": "dlg_odessa_hello",
+      "kind": "object",
+      "type": "dialog",
+      "path": "objects/dialog/dlg_odessa_hello.json",
+      "parent": null
+    },
+    {
+      "id": "dlg_odessa_done",
+      "kind": "object",
+      "type": "dialog",
+      "path": "objects/dialog/dlg_odessa_done.json",
+      "parent": null
+    },
+    {
+      "id": "npc_odessa",
+      "kind": "object",
+      "type": "npc",
+      "path": "objects/npc/npc_odessa.json",
+      "parent": null
+    },
+    {
+      "id": "anim_fur_lamp",
+      "kind": "object",
+      "type": "animation",
+      "path": "objects/animation/anim_fur_lamp.json",
+      "parent": "body_fur_lamp"
+    },
+    {
+      "id": "body_fur_lamp",
+      "kind": "object",
+      "type": "body",
+      "path": "objects/body/body_fur_lamp.json",
+      "parent": "prop_fur_lamp"
+    },
+    {
+      "id": "prop_fur_lamp",
+      "kind": "object",
+      "type": "prop",
+      "path": "objects/prop/prop_fur_lamp.json",
+      "parent": null
+    },
+    {
+      "id": "anim_fur_radio",
+      "kind": "object",
+      "type": "animation",
+      "path": "objects/animation/anim_fur_radio.json",
+      "parent": "body_fur_radio"
+    },
+    {
+      "id": "body_fur_radio",
+      "kind": "object",
+      "type": "body",
+      "path": "objects/body/body_fur_radio.json",
+      "parent": "prop_fur_radio"
+    },
+    {
+      "id": "prop_fur_radio",
+      "kind": "object",
+      "type": "prop",
+      "path": "objects/prop/prop_fur_radio.json",
+      "parent": null
+    },
+    {
+      "id": "anim_fur_table",
+      "kind": "object",
+      "type": "animation",
+      "path": "objects/animation/anim_fur_table.json",
+      "parent": "body_fur_table"
+    },
+    {
+      "id": "body_fur_table",
+      "kind": "object",
+      "type": "body",
+      "path": "objects/body/body_fur_table.json",
+      "parent": "prop_fur_table"
+    },
+    {
+      "id": "prop_fur_table",
+      "kind": "object",
+      "type": "prop",
+      "path": "objects/prop/prop_fur_table.json",
+      "parent": null
+    },
+    {
+      "id": "anim_fur_bowl",
+      "kind": "object",
+      "type": "animation",
+      "path": "objects/animation/anim_fur_bowl.json",
+      "parent": "body_fur_bowl"
+    },
+    {
+      "id": "body_fur_bowl",
+      "kind": "object",
+      "type": "body",
+      "path": "objects/body/body_fur_bowl.json",
+      "parent": "prop_fur_bowl"
+    },
+    {
+      "id": "prop_fur_bowl",
+      "kind": "object",
+      "type": "prop",
+      "path": "objects/prop/prop_fur_bowl.json",
+      "parent": null
+    },
+    {
+      "id": "anim_fur_plant",
+      "kind": "object",
+      "type": "animation",
+      "path": "objects/animation/anim_fur_plant.json",
+      "parent": "body_fur_plant"
+    },
+    {
+      "id": "body_fur_plant",
+      "kind": "object",
+      "type": "body",
+      "path": "objects/body/body_fur_plant.json",
+      "parent": "prop_fur_plant"
+    },
+    {
+      "id": "prop_fur_plant",
+      "kind": "object",
+      "type": "prop",
+      "path": "objects/prop/prop_fur_plant.json",
+      "parent": null
+    },
+    {
+      "id": "anim_fur_rug",
+      "kind": "object",
+      "type": "animation",
+      "path": "objects/animation/anim_fur_rug.json",
+      "parent": "body_fur_rug"
+    },
+    {
+      "id": "body_fur_rug",
+      "kind": "object",
+      "type": "body",
+      "path": "objects/body/body_fur_rug.json",
+      "parent": "prop_fur_rug"
+    },
+    {
+      "id": "prop_fur_rug",
+      "kind": "object",
+      "type": "prop",
+      "path": "objects/prop/prop_fur_rug.json",
+      "parent": null
+    },
+    {
+      "id": "prop_clock",
+      "kind": "object",
+      "type": "prop",
+      "path": "objects/prop/prop_clock.json",
+      "parent": null
+    },
+    {
+      "id": "icon_hands",
+      "kind": "object",
+      "type": "icon",
+      "path": "objects/icon/icon_hands.json",
+      "parent": "hud_main"
+    },
+    {
+      "id": "icon_shovel",
+      "kind": "object",
+      "type": "icon",
+      "path": "objects/icon/icon_shovel.json",
+      "parent": "hud_main"
+    },
+    {
+      "id": "icon_net",
+      "kind": "object",
+      "type": "icon",
+      "path": "objects/icon/icon_net.json",
+      "parent": "hud_main"
+    },
+    {
+      "id": "icon_rod",
+      "kind": "object",
+      "type": "icon",
+      "path": "objects/icon/icon_rod.json",
+      "parent": "hud_main"
+    },
+    {
+      "id": "icon_pip",
+      "kind": "object",
+      "type": "icon",
+      "path": "objects/icon/icon_pip.json",
+      "parent": "hud_main"
+    },
+    {
+      "id": "hud_main",
+      "kind": "object",
+      "type": "hud",
+      "path": "objects/hud/hud_main.json",
+      "parent": null
+    },
+    {
+      "id": "dlg_items",
+      "kind": "object",
+      "type": "dialog",
+      "path": "objects/dialog/dlg_items.json",
+      "parent": null
+    },
+    {
+      "id": "dlg_howto",
+      "kind": "object",
+      "type": "dialog",
+      "path": "objects/dialog/dlg_howto.json",
+      "parent": null
+    },
+    {
+      "id": "dlg_saved",
+      "kind": "object",
+      "type": "dialog",
+      "path": "objects/dialog/dlg_saved.json",
+      "parent": null
+    },
+    {
+      "id": "menu_pause",
+      "kind": "object",
+      "type": "menu",
+      "path": "objects/menu/menu_pause.json",
+      "parent": null
+    },
+    {
+      "id": "plr_you",
+      "kind": "object",
+      "type": "player",
+      "path": "objects/player/plr_you.json",
+      "parent": null
+    },
+    {
+      "id": "dlg_closed_shop",
+      "kind": "object",
+      "type": "dialog",
+      "path": "objects/dialog/dlg_closed_shop.json",
+      "parent": null
+    },
+    {
+      "id": "dlg_closed_museum",
+      "kind": "object",
+      "type": "dialog",
+      "path": "objects/dialog/dlg_closed_museum.json",
+      "parent": null
+    },
+    {
+      "id": "trg_door",
+      "kind": "object",
+      "type": "trigger",
+      "path": "objects/trigger/trg_door.json",
+      "parent": null
+    },
+    {
+      "id": "dlg_sleep",
+      "kind": "object",
+      "type": "dialog",
+      "path": "objects/dialog/dlg_sleep.json",
+      "parent": null
+    },
+    {
+      "id": "dlg_howto_title",
+      "kind": "object",
+      "type": "dialog",
+      "path": "objects/dialog/dlg_howto_title.json",
+      "parent": null
+    },
+    {
+      "id": "pal_ground",
+      "kind": "object",
+      "type": "palette",
+      "path": "objects/palette/pal_ground.json",
+      "parent": null
+    },
+    {
+      "id": "pal_water",
+      "kind": "object",
+      "type": "palette",
+      "path": "objects/palette/pal_water.json",
+      "parent": null
+    },
+    {
+      "id": "pal_town",
+      "kind": "object",
+      "type": "palette",
+      "path": "objects/palette/pal_town.json",
+      "parent": null
+    },
+    {
+      "id": "ts_town_ground",
+      "kind": "object",
+      "type": "tileset",
+      "path": "objects/tileset/ts_town_ground.json",
+      "parent": "map_town_ground"
+    },
+    {
+      "id": "map_town_ground",
+      "kind": "object",
+      "type": "tilemap",
+      "path": "objects/tilemap/map_town_ground.json",
+      "parent": null
+    },
+    {
+      "id": "ts_town_buildings",
+      "kind": "object",
+      "type": "tileset",
+      "path": "objects/tileset/ts_town_buildings.json",
+      "parent": "map_town_buildings"
+    },
+    {
+      "id": "map_town_buildings",
+      "kind": "object",
+      "type": "tilemap",
+      "path": "objects/tilemap/map_town_buildings.json",
+      "parent": null
+    },
+    {
+      "id": "ts_town_water",
+      "kind": "object",
+      "type": "tileset",
+      "path": "objects/tileset/ts_town_water.json",
+      "parent": "map_town"
+    },
+    {
+      "id": "map_town",
+      "kind": "object",
+      "type": "tilemap",
+      "path": "objects/tilemap/map_town.json",
+      "parent": null
+    },
+    {
+      "id": "pal_interior",
+      "kind": "object",
+      "type": "palette",
+      "path": "objects/palette/pal_interior.json",
+      "parent": null
+    },
+    {
+      "id": "ts_interior",
+      "kind": "object",
+      "type": "tileset",
+      "path": "objects/tileset/ts_interior.json",
+      "parent": null
+    },
+    {
+      "id": "map_house",
+      "kind": "object",
+      "type": "tilemap",
+      "path": "objects/tilemap/map_house.json",
+      "parent": null
+    },
+    {
+      "id": "map_house2",
+      "kind": "object",
+      "type": "tilemap",
+      "path": "objects/tilemap/map_house2.json",
+      "parent": null
+    },
+    {
+      "id": "map_shop",
+      "kind": "object",
+      "type": "tilemap",
+      "path": "objects/tilemap/map_shop.json",
+      "parent": null
+    },
+    {
+      "id": "map_museum",
+      "kind": "object",
+      "type": "tilemap",
+      "path": "objects/tilemap/map_museum.json",
+      "parent": null
+    },
+    {
+      "id": "map_hall",
+      "kind": "object",
+      "type": "tilemap",
+      "path": "objects/tilemap/map_hall.json",
+      "parent": null
+    },
+    {
+      "id": "mus_town",
+      "kind": "object",
+      "type": "music",
+      "path": "objects/music/mus_town.json",
+      "parent": null
+    },
+    {
+      "id": "mus_night",
+      "kind": "object",
+      "type": "music",
+      "path": "objects/music/mus_night.json",
+      "parent": null
+    },
+    {
+      "id": "mus_title",
+      "kind": "object",
+      "type": "music",
+      "path": "objects/music/mus_title.json",
+      "parent": null
+    },
+    {
+      "id": "mus_shop",
+      "kind": "object",
+      "type": "music",
+      "path": "objects/music/mus_shop.json",
+      "parent": null
+    },
+    {
+      "id": "mus_indoor",
+      "kind": "object",
+      "type": "music",
+      "path": "objects/music/mus_indoor.json",
+      "parent": null
+    },
+    {
+      "id": "sfx_dig",
+      "kind": "object",
+      "type": "sfx",
+      "path": "objects/sfx/sfx_dig.json",
+      "parent": null
+    },
+    {
+      "id": "sfx_swish",
+      "kind": "object",
+      "type": "sfx",
+      "path": "objects/sfx/sfx_swish.json",
+      "parent": null
+    },
+    {
+      "id": "sfx_cast",
+      "kind": "object",
+      "type": "sfx",
+      "path": "objects/sfx/sfx_cast.json",
+      "parent": null
+    },
+    {
+      "id": "sfx_plip",
+      "kind": "object",
+      "type": "sfx",
+      "path": "objects/sfx/sfx_plip.json",
+      "parent": null
+    },
+    {
+      "id": "sfx_splash",
+      "kind": "object",
+      "type": "sfx",
+      "path": "objects/sfx/sfx_splash.json",
+      "parent": null
+    },
+    {
+      "id": "sfx_catch",
+      "kind": "object",
+      "type": "sfx",
+      "path": "objects/sfx/sfx_catch.json",
+      "parent": null
+    },
+    {
+      "id": "sfx_shake",
+      "kind": "object",
+      "type": "sfx",
+      "path": "objects/sfx/sfx_shake.json",
+      "parent": null
+    },
+    {
+      "id": "sfx_pickup",
+      "kind": "object",
+      "type": "sfx",
+      "path": "objects/sfx/sfx_pickup.json",
+      "parent": null
+    },
+    {
+      "id": "sfx_coin",
+      "kind": "object",
+      "type": "sfx",
+      "path": "objects/sfx/sfx_coin.json",
+      "parent": null
+    },
+    {
+      "id": "sfx_door",
+      "kind": "object",
+      "type": "sfx",
+      "path": "objects/sfx/sfx_door.json",
+      "parent": null
+    },
+    {
+      "id": "sfx_talk",
+      "kind": "object",
+      "type": "sfx",
+      "path": "objects/sfx/sfx_talk.json",
+      "parent": null
+    },
+    {
+      "id": "sfx_tool",
+      "kind": "object",
+      "type": "sfx",
+      "path": "objects/sfx/sfx_tool.json",
+      "parent": null
+    },
+    {
+      "id": "sfx_rock",
+      "kind": "object",
+      "type": "sfx",
+      "path": "objects/sfx/sfx_rock.json",
+      "parent": null
+    },
+    {
+      "id": "sfx_nope",
+      "kind": "object",
+      "type": "sfx",
+      "path": "objects/sfx/sfx_nope.json",
+      "parent": null
+    },
+    {
+      "id": "dlg_locked_pembrook",
+      "kind": "object",
+      "type": "dialog",
+      "path": "objects/dialog/dlg_locked_pembrook.json",
+      "parent": null
+    },
+    {
+      "id": "dlg_locked_rusk",
+      "kind": "object",
+      "type": "dialog",
+      "path": "objects/dialog/dlg_locked_rusk.json",
+      "parent": null
+    },
+    {
+      "id": "dlg_locked_tilly",
+      "kind": "object",
+      "type": "dialog",
+      "path": "objects/dialog/dlg_locked_tilly.json",
+      "parent": null
+    },
+    {
+      "id": "dlg_board",
+      "kind": "object",
+      "type": "dialog",
+      "path": "objects/dialog/dlg_board.json",
+      "parent": null
+    },
+    {
+      "id": "dlg_arrival",
+      "kind": "object",
+      "type": "dialog",
+      "path": "objects/dialog/dlg_arrival.json",
+      "parent": null
+    },
+    {
+      "id": "hud_morning",
+      "kind": "object",
+      "type": "hud",
+      "path": "objects/hud/hud_morning.json",
+      "parent": null
+    },
+    {
+      "id": "dlg_nosave",
+      "kind": "object",
+      "type": "dialog",
+      "path": "objects/dialog/dlg_nosave.json",
+      "parent": null
+    },
+    {
+      "id": "menu_title",
+      "kind": "object",
+      "type": "menu",
+      "path": "objects/menu/menu_title.json",
+      "parent": null
+    },
+    {
+      "id": "hud_title",
+      "kind": "object",
+      "type": "hud",
+      "path": "objects/hud/hud_title.json",
+      "parent": null
+    },
+    {
+      "id": "pal_ui",
+      "kind": "object",
+      "type": "palette",
+      "path": "objects/palette/pal_ui.json",
+      "parent": null
+    },
+    {
+      "id": "font_default",
+      "kind": "object",
+      "type": "font",
+      "path": "objects/font/font_default.json",
+      "parent": null
+    },
+    {
+      "id": "icon_cursor",
+      "kind": "object",
+      "type": "icon",
+      "path": "objects/icon/icon_cursor.json",
+      "parent": null
+    },
+    {
+      "id": "icon_heart",
+      "kind": "object",
+      "type": "icon",
+      "path": "objects/icon/icon_heart.json",
+      "parent": null
+    },
+    {
+      "id": "sfx_select",
+      "kind": "object",
+      "type": "sfx",
+      "path": "objects/sfx/sfx_select.json",
+      "parent": null
+    },
+    {
+      "id": "sfx_confirm",
+      "kind": "object",
+      "type": "sfx",
+      "path": "objects/sfx/sfx_confirm.json",
+      "parent": null
+    }
   ]
 }

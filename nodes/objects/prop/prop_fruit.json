@@ -1,0 +1,19 @@
+{
+  "id": "prop_fruit",
+  "kind": "object",
+  "type": "prop",
+  "name": "Apples on a tree",
+  "notes": "The ripe apples drawn on top of an apple tree. They vanish when the tree is shaken (tree_N above 0) and grow back 3 mornings later.",
+  "body": "body_fruit",
+  "logic": [
+    {
+      "behavior": "exists_when",
+      "params": {
+        "var": "tree_1",
+        "min": 0,
+        "max": 0,
+        "live": true
+      }
+    }
+  ]
+}

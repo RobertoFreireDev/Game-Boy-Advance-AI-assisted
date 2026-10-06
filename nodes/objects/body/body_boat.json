@@ -1,0 +1,29 @@
+{
+  "id": "body_boat",
+  "kind": "object",
+  "type": "body",
+  "name": "Ferry body",
+  "notes": "Captain Puff's ferry, moored by the dock.",
+  "origin": [
+    32,
+    28
+  ],
+  "hitbox": {
+    "x": -24,
+    "y": -6,
+    "w": 48,
+    "h": 6
+  },
+  "physics": {
+    "gravity": false,
+    "solid": false,
+    "collides_with": []
+  },
+  "animations": {
+    "idle": "anim_boat"
+  },
+  "default_animation": "idle",
+  "children": [
+    "anim_boat"
+  ]
+}

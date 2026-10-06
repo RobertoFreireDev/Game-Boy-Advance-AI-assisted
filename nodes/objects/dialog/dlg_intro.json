@@ -1,0 +1,50 @@
+{
+  "id": "dlg_intro",
+  "kind": "object",
+  "type": "dialog",
+  "name": "Mayor Ardea's welcome",
+  "notes": "Your first talk on the dock: the mayor explains the house loan and gives you the shovel and the net. When it ends, intro = 1 and the tools work.",
+  "font": "font_default",
+  "box": {
+    "x": 8,
+    "y": 88,
+    "w": 224,
+    "h": 64,
+    "paper": 3,
+    "border": 2
+  },
+  "ticks_per_char": 1,
+  "lines": [
+    {
+      "speaker": "ARDEA",
+      "portrait": "icon_face_ardea",
+      "text": "WELCOME TO MOSSBROOK! I'M ARDEA, THE MAYOR. YOUR NEW HOUSE IS READY, THE RED ROOF WEST OF THE PLAZA."
+    },
+    {
+      "speaker": "ARDEA",
+      "portrait": "icon_face_ardea",
+      "text": "IT COST 10,000 PIPS, SO I LENT YOU THE MONEY. PAY IT BACK AT THE TOWN HALL WHENEVER YOU LIKE. NO HURRY!"
+    },
+    {
+      "speaker": "ARDEA",
+      "portrait": "icon_face_ardea",
+      "text": "TAKE THIS SHOVEL AND THIS NET! L AND R SWITCH WHAT YOU HOLD, A USES IT. HOLD B TO RUN."
+    },
+    {
+      "speaker": "ARDEA",
+      "portrait": "icon_face_ardea",
+      "text": "DIG FOSSILS, CATCH BUGS, SHAKE APPLE TREES, SELL AT BRAMBLE'S AND SAY HI TO OUR 3 NEIGHBORS!"
+    }
+  ],
+  "on_end": [
+    {
+      "do": "set_var",
+      "var": "intro",
+      "value": 1
+    },
+    {
+      "do": "play_sfx",
+      "sfx": "sfx_catch"
+    }
+  ]
+}

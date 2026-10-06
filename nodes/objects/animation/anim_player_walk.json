@@ -1,0 +1,20 @@
+{
+  "id": "anim_player_walk",
+  "kind": "object",
+  "type": "animation",
+  "name": "Player walking (side)",
+  "notes": "Side view walk, 2 steps.",
+  "sprite": "spr_player",
+  "loop": true,
+  "frames": [
+    {
+      "frame": "side_1",
+      "ticks": 8
+    },
+    {
+      "frame": "side_0",
+      "ticks": 8
+    }
+  ],
+  "events": []
+}

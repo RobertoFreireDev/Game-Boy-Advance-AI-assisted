@@ -1,0 +1,222 @@
+{
+  "id": "npc_rusk",
+  "kind": "object",
+  "type": "npc",
+  "name": "Rusk",
+  "notes": "Rusk, a gruff brown bear in a red shirt and blue overalls. lives in Mossbrook. Awake from 9:00 to 2:59, wandering near home. Talk with A (once a day adds friendship). Lines change with the time of day and friendship; after 2 days of chatting Rusk asks for a black bass and gives a reward.",
+  "body": "body_rusk",
+  "logic": [
+    {
+      "behavior": "exists_when",
+      "params": {
+        "var": "hour",
+        "min": 9,
+        "max": 2
+      }
+    },
+    {
+      "behavior": "wander",
+      "params": {
+        "speed": 0.4,
+        "min_ticks": 30,
+        "max_ticks": 90,
+        "pause_ticks": 90,
+        "distance": 40
+      }
+    },
+    {
+      "behavior": "interact",
+      "params": {
+        "range": 4,
+        "face_player": true,
+        "on_press": [
+          {
+            "do": "if_var",
+            "var": "talk_rusk",
+            "op": "==",
+            "value": 0,
+            "then": [
+              {
+                "do": "set_var",
+                "var": "talk_rusk",
+                "value": 1
+              },
+              {
+                "do": "add_var",
+                "var": "fr_rusk",
+                "value": 2
+              }
+            ]
+          },
+          {
+            "do": "if_var",
+            "var": "favor_rusk",
+            "op": "==",
+            "value": 1,
+            "then": [
+              {
+                "do": "if_var",
+                "var": "fish_bass",
+                "op": ">=",
+                "value": 1,
+                "then": [
+                  {
+                    "do": "add_var",
+                    "var": "fish_bass",
+                    "value": -1
+                  },
+                  {
+                    "do": "set_var",
+                    "var": "favor_rusk",
+                    "value": 2
+                  },
+                  {
+                    "do": "add_var",
+                    "var": "fr_rusk",
+                    "value": 6
+                  },
+                  {
+                    "do": "add_var",
+                    "var": "pips",
+                    "value": 1500
+                  },
+                  {
+                    "do": "play_sfx",
+                    "sfx": "sfx_catch"
+                  },
+                  {
+                    "do": "show_dialog",
+                    "dialog": "dlg_rusk_thanks"
+                  }
+                ],
+                "else": [
+                  {
+                    "do": "show_dialog",
+                    "dialog": "dlg_rusk_waiting"
+                  }
+                ]
+              }
+            ],
+            "else": [
+              {
+                "do": "if_var",
+                "var": "favor_rusk",
+                "op": "==",
+                "value": 0,
+                "then": [
+                  {
+                    "do": "if_var",
+                    "var": "fr_rusk",
+                    "op": ">=",
+                    "value": 4,
+                    "then": [
+                      {
+                        "do": "set_var",
+                        "var": "favor_rusk",
+                        "value": 1
+                      },
+                      {
+                        "do": "show_dialog",
+                        "dialog": "dlg_rusk_favor"
+                      }
+                    ],
+                    "else": [
+                      {
+                        "do": "show_dialog",
+                        "dialog": "dlg_rusk_day"
+                      },
+                      {
+                        "do": "if_var",
+                        "var": "fr_rusk",
+                        "op": ">=",
+                        "value": 20,
+                        "then": [
+                          {
+                            "do": "show_dialog",
+                            "dialog": "dlg_rusk_friend"
+                          }
+                        ]
+                      },
+                      {
+                        "do": "if_var",
+                        "var": "hour",
+                        "op": "<",
+                        "value": 10,
+                        "then": [
+                          {
+                            "do": "show_dialog",
+                            "dialog": "dlg_rusk_morning"
+                          }
+                        ]
+                      },
+                      {
+                        "do": "if_var",
+                        "var": "hour",
+                        "op": ">=",
+                        "value": 17,
+                        "then": [
+                          {
+                            "do": "show_dialog",
+                            "dialog": "dlg_rusk_evening"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ],
+                "else": [
+                  {
+                    "do": "show_dialog",
+                    "dialog": "dlg_rusk_day"
+                  },
+                  {
+                    "do": "if_var",
+                    "var": "fr_rusk",
+                    "op": ">=",
+                    "value": 20,
+                    "then": [
+                      {
+                        "do": "show_dialog",
+                        "dialog": "dlg_rusk_friend"
+                      }
+                    ]
+                  },
+                  {
+                    "do": "if_var",
+                    "var": "hour",
+                    "op": "<",
+                    "value": 10,
+                    "then": [
+                      {
+                        "do": "show_dialog",
+                        "dialog": "dlg_rusk_morning"
+                      }
+                    ]
+                  },
+                  {
+                    "do": "if_var",
+                    "var": "hour",
+                    "op": ">=",
+                    "value": 17,
+                    "then": [
+                      {
+                        "do": "show_dialog",
+                        "dialog": "dlg_rusk_evening"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "sounds": {
+    "talk": "sfx_talk"
+  },
+  "children": [
+    "body_rusk"
+  ]
+}

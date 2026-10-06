@@ -1,0 +1,31 @@
+{
+  "id": "sfx_swish",
+  "kind": "object",
+  "type": "sfx",
+  "name": "Net swish",
+  "notes": "The bug net sweeping through the air.",
+  "priority": 1,
+  "steps": [
+    {
+      "pitch": 4,
+      "ticks": 2,
+      "volume": 5
+    },
+    {
+      "pitch": 3,
+      "ticks": 2,
+      "volume": 8
+    },
+    {
+      "pitch": 2,
+      "ticks": 3,
+      "volume": 6
+    },
+    {
+      "pitch": 3,
+      "ticks": 3,
+      "volume": 3
+    }
+  ],
+  "channel": "noise"
+}

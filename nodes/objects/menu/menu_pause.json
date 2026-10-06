@@ -1,0 +1,91 @@
+{
+  "id": "menu_pause",
+  "kind": "object",
+  "type": "menu",
+  "name": "Pause menu",
+  "notes": "START opens it anywhere: see your pockets, save, read the controls or go back to the title.",
+  "font": "font_default",
+  "title": "MOSSBROOK",
+  "cursor": "icon_cursor",
+  "box": {
+    "x": 56,
+    "y": 24,
+    "w": 128,
+    "h": 112,
+    "paper": 3,
+    "border": 2
+  },
+  "layout": {
+    "x": 80,
+    "y": 48,
+    "spacing": 16,
+    "title_y": 32
+  },
+  "options": [
+    {
+      "label": "BACK",
+      "actions": [
+        {
+          "do": "close_menu"
+        }
+      ]
+    },
+    {
+      "label": "POCKETS",
+      "actions": [
+        {
+          "do": "show_dialog",
+          "dialog": "dlg_items"
+        }
+      ]
+    },
+    {
+      "label": "SAVE",
+      "actions": [
+        {
+          "do": "set_var",
+          "var": "saved",
+          "value": 1
+        },
+        {
+          "do": "save_game"
+        },
+        {
+          "do": "show_dialog",
+          "dialog": "dlg_saved"
+        }
+      ]
+    },
+    {
+      "label": "HOW TO PLAY",
+      "actions": [
+        {
+          "do": "show_dialog",
+          "dialog": "dlg_howto"
+        }
+      ]
+    },
+    {
+      "label": "TITLE",
+      "actions": [
+        {
+          "do": "fade_out",
+          "ticks": 20
+        },
+        {
+          "do": "goto_scene",
+          "scene": "scn_title"
+        }
+      ]
+    }
+  ],
+  "on_cancel": [
+    {
+      "do": "close_menu"
+    }
+  ],
+  "sounds": {
+    "move": "sfx_select",
+    "select": "sfx_confirm"
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "id": "dlg_rusk_evening",
+  "kind": "object",
+  "type": "dialog",
+  "name": "Rusk: evening",
+  "notes": "Rusk's evening line.",
+  "font": "font_default",
+  "box": {
+    "x": 8,
+    "y": 88,
+    "w": 224,
+    "h": 64,
+    "paper": 3,
+    "border": 2
+  },
+  "ticks_per_char": 1,
+  "lines": [
+    {
+      "speaker": "RUSK",
+      "portrait": "icon_face_rusk",
+      "text": "THE FISH BITE BETTER IN THE EVENING. EVERY OLD BEAR KNOWS THAT. HRMPH."
+    }
+  ]
+}

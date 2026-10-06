@@ -1,0 +1,16 @@
+{
+  "id": "anim_boat",
+  "kind": "object",
+  "type": "animation",
+  "name": "Ferry body",
+  "notes": "Captain Puff's ferry, moored by the dock.",
+  "sprite": "spr_boat",
+  "loop": true,
+  "frames": [
+    {
+      "frame": "boat",
+      "ticks": 60
+    }
+  ],
+  "events": []
+}

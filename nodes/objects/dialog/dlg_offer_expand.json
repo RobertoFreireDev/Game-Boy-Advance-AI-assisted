@@ -1,0 +1,53 @@
+{
+  "id": "dlg_offer_expand",
+  "kind": "object",
+  "type": "dialog",
+  "name": "Expand your house?",
+  "notes": "After the welcome loan is paid, Ardea offers a bigger house for a 30,000 Pip loan.",
+  "font": "font_default",
+  "box": {
+    "x": 8,
+    "y": 88,
+    "w": 224,
+    "h": 64,
+    "paper": 3,
+    "border": 2
+  },
+  "ticks_per_char": 1,
+  "lines": [
+    {
+      "speaker": "ARDEA",
+      "portrait": "icon_face_ardea",
+      "text": "WOULD YOU LIKE A BIGGER HOUSE? A ROOMY EXPANSION COSTS 30,000 PIPS, ON A NEW LOAN."
+    }
+  ],
+  "choices": [
+    {
+      "label": "YES, EXPAND IT!",
+      "actions": [
+        {
+          "do": "set_var",
+          "var": "house_level",
+          "value": 2
+        },
+        {
+          "do": "set_var",
+          "var": "loan",
+          "value": 30000
+        },
+        {
+          "do": "play_sfx",
+          "sfx": "sfx_catch"
+        },
+        {
+          "do": "show_dialog",
+          "dialog": "dlg_expand_done"
+        }
+      ]
+    },
+    {
+      "label": "MAYBE LATER",
+      "actions": []
+    }
+  ]
+}

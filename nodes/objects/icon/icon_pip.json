@@ -1,0 +1,18 @@
+{
+  "id": "icon_pip",
+  "kind": "object",
+  "type": "icon",
+  "name": "Pip coin icon",
+  "notes": "HUD icon: your wallet.",
+  "palette": "pal_ui",
+  "pixels": [
+    "..1111..",
+    ".144441.",
+    "14422441",
+    "14244241",
+    "14244241",
+    "14422441",
+    ".144441.",
+    "..1111.."
+  ]
+}

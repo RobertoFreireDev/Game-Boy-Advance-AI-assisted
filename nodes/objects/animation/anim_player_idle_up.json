@@ -1,0 +1,16 @@
+{
+  "id": "anim_player_idle_up",
+  "kind": "object",
+  "type": "animation",
+  "name": "Player standing (up)",
+  "notes": "Seen from behind.",
+  "sprite": "spr_player",
+  "loop": true,
+  "frames": [
+    {
+      "frame": "up_0",
+      "ticks": 60
+    }
+  ],
+  "events": []
+}

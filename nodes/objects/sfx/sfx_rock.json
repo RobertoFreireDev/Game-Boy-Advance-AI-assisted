@@ -1,0 +1,26 @@
+{
+  "id": "sfx_rock",
+  "kind": "object",
+  "type": "sfx",
+  "name": "Rock",
+  "notes": "The shovel clanging on a rock.",
+  "priority": 1,
+  "steps": [
+    {
+      "pitch": 6,
+      "ticks": 2,
+      "volume": 12
+    },
+    {
+      "pitch": 4,
+      "ticks": 3,
+      "volume": 7
+    },
+    {
+      "pitch": 6,
+      "ticks": 4,
+      "volume": 3
+    }
+  ],
+  "channel": "noise"
+}

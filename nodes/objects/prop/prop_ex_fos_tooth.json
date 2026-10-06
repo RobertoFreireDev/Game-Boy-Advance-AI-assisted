@@ -1,0 +1,21 @@
+{
+  "id": "prop_ex_fos_tooth",
+  "kind": "object",
+  "type": "prop",
+  "name": "Shark Tooth exhibit",
+  "notes": "Appears in the museum once you donated a Shark Tooth (variable don_fos_tooth).",
+  "body": "body_ex_fos_tooth",
+  "logic": [
+    {
+      "behavior": "exists_when",
+      "params": {
+        "var": "don_fos_tooth",
+        "min": 1,
+        "max": 1
+      }
+    }
+  ],
+  "children": [
+    "body_ex_fos_tooth"
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "id": "npc_bramble",
+  "kind": "object",
+  "type": "npc",
+  "name": "Bramble",
+  "notes": "The badger who runs the shop, behind his counter. Talk to him (A) to sell your catches or buy things.",
+  "body": "body_bramble",
+  "logic": [
+    {
+      "behavior": "interact",
+      "params": {
+        "range": 12,
+        "on_press": [
+          {
+            "do": "show_dialog",
+            "dialog": "dlg_bramble_hello"
+          }
+        ]
+      }
+    }
+  ],
+  "sounds": {
+    "talk": "sfx_talk"
+  },
+  "children": [
+    "body_bramble"
+  ]
+}

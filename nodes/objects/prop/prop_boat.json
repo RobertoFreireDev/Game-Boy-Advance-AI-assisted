@@ -1,0 +1,21 @@
+{
+  "id": "prop_boat",
+  "kind": "object",
+  "type": "prop",
+  "name": "Ferry",
+  "notes": "The little ferry that brought you, moored by the dock on your first day.",
+  "body": "body_boat",
+  "logic": [
+    {
+      "behavior": "exists_when",
+      "params": {
+        "var": "intro",
+        "min": 0,
+        "max": 0
+      }
+    }
+  ],
+  "children": [
+    "body_boat"
+  ]
+}

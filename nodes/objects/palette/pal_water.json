@@ -1,0 +1,25 @@
+{
+  "id": "pal_water",
+  "kind": "object",
+  "type": "palette",
+  "name": "Water and tree colors",
+  "notes": "Colors of the collision layer: dark outline (1), water blues (2-4) with white foam (5), tree greens (6 darkest .. 9 highlight), trunk browns (10-11), bridge and dock wood (12-14) and a red (15).",
+  "colors": [
+    "#000000",
+    "#1c2c3c",
+    "#2860a8",
+    "#3c80d0",
+    "#78b8f0",
+    "#e8f4ff",
+    "#1e4a24",
+    "#2f7a34",
+    "#4ca444",
+    "#7cc858",
+    "#5a3a20",
+    "#8a5a30",
+    "#b07c48",
+    "#d8a868",
+    "#3a2818",
+    "#c83c30"
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "id": "sfx_shake",
+  "kind": "object",
+  "type": "sfx",
+  "name": "Tree shake",
+  "notes": "Leaves rustling when you shake a tree.",
+  "priority": 1,
+  "steps": [
+    {
+      "pitch": 1,
+      "ticks": 3,
+      "volume": 6
+    },
+    {
+      "pitch": 2,
+      "ticks": 3,
+      "volume": 8
+    },
+    {
+      "pitch": 1,
+      "ticks": 3,
+      "volume": 6
+    },
+    {
+      "pitch": 2,
+      "ticks": 3,
+      "volume": 7
+    },
+    {
+      "pitch": 1,
+      "ticks": 4,
+      "volume": 4
+    }
+  ],
+  "channel": "noise"
+}

@@ -1,0 +1,20 @@
+{
+  "id": "anim_bug_ladybug",
+  "kind": "object",
+  "type": "animation",
+  "name": "Ladybug body",
+  "notes": "How a Ladybug looks: 2-frame flutter. Shared by the bug in town and its museum terrarium. When caught it sparkles away.",
+  "sprite": "spr_bugs",
+  "loop": true,
+  "frames": [
+    {
+      "frame": "ladybug_0",
+      "ticks": 10
+    },
+    {
+      "frame": "ladybug_1",
+      "ticks": 10
+    }
+  ],
+  "events": []
+}

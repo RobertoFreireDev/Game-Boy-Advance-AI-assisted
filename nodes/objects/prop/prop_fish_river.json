@@ -1,0 +1,210 @@
+{
+  "id": "prop_fish_river",
+  "kind": "object",
+  "type": "prop",
+  "name": "River fish",
+  "notes": "A fish in the river: crucian carp or black bass by day; at night (16:00-8:59) also the dace. Face it from the shore with the rod in your hands and press A to cast. Wait for the nibbles, then press A when it bites (you have 20 ticks).",
+  "body": "body_shadow",
+  "logic": [
+    {
+      "behavior": "wander",
+      "params": {
+        "speed": 0.3,
+        "min_ticks": 30,
+        "max_ticks": 90,
+        "pause_ticks": 60,
+        "distance": 14
+      }
+    },
+    {
+      "behavior": "fish_bite",
+      "params": {
+        "var": "rod_on",
+        "window": 20,
+        "on_catch": [
+          {
+            "do": "if_var",
+            "var": "hour",
+            "op": ">=",
+            "value": 16,
+            "then": [
+              {
+                "do": "if_chance",
+                "percent": 35,
+                "then": [
+                  {
+                    "do": "add_var",
+                    "var": "fish_dace",
+                    "value": 1
+                  },
+                  {
+                    "do": "play_sfx",
+                    "sfx": "sfx_catch"
+                  },
+                  {
+                    "do": "show_dialog",
+                    "dialog": "dlg_catch_dace"
+                  }
+                ],
+                "else": [
+                  {
+                    "do": "if_chance",
+                    "percent": 50,
+                    "then": [
+                      {
+                        "do": "add_var",
+                        "var": "fish_crucian",
+                        "value": 1
+                      },
+                      {
+                        "do": "play_sfx",
+                        "sfx": "sfx_catch"
+                      },
+                      {
+                        "do": "show_dialog",
+                        "dialog": "dlg_catch_crucian"
+                      }
+                    ],
+                    "else": [
+                      {
+                        "do": "add_var",
+                        "var": "fish_bass",
+                        "value": 1
+                      },
+                      {
+                        "do": "play_sfx",
+                        "sfx": "sfx_catch"
+                      },
+                      {
+                        "do": "show_dialog",
+                        "dialog": "dlg_catch_bass"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ],
+            "else": [
+              {
+                "do": "if_var",
+                "var": "hour",
+                "op": "<",
+                "value": 9,
+                "then": [
+                  {
+                    "do": "if_chance",
+                    "percent": 35,
+                    "then": [
+                      {
+                        "do": "add_var",
+                        "var": "fish_dace",
+                        "value": 1
+                      },
+                      {
+                        "do": "play_sfx",
+                        "sfx": "sfx_catch"
+                      },
+                      {
+                        "do": "show_dialog",
+                        "dialog": "dlg_catch_dace"
+                      }
+                    ],
+                    "else": [
+                      {
+                        "do": "if_chance",
+                        "percent": 50,
+                        "then": [
+                          {
+                            "do": "add_var",
+                            "var": "fish_crucian",
+                            "value": 1
+                          },
+                          {
+                            "do": "play_sfx",
+                            "sfx": "sfx_catch"
+                          },
+                          {
+                            "do": "show_dialog",
+                            "dialog": "dlg_catch_crucian"
+                          }
+                        ],
+                        "else": [
+                          {
+                            "do": "add_var",
+                            "var": "fish_bass",
+                            "value": 1
+                          },
+                          {
+                            "do": "play_sfx",
+                            "sfx": "sfx_catch"
+                          },
+                          {
+                            "do": "show_dialog",
+                            "dialog": "dlg_catch_bass"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ],
+                "else": [
+                  {
+                    "do": "if_chance",
+                    "percent": 60,
+                    "then": [
+                      {
+                        "do": "add_var",
+                        "var": "fish_crucian",
+                        "value": 1
+                      },
+                      {
+                        "do": "play_sfx",
+                        "sfx": "sfx_catch"
+                      },
+                      {
+                        "do": "show_dialog",
+                        "dialog": "dlg_catch_crucian"
+                      }
+                    ],
+                    "else": [
+                      {
+                        "do": "add_var",
+                        "var": "fish_bass",
+                        "value": 1
+                      },
+                      {
+                        "do": "play_sfx",
+                        "sfx": "sfx_catch"
+                      },
+                      {
+                        "do": "show_dialog",
+                        "dialog": "dlg_catch_bass"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "on_escape": [
+          {
+            "do": "show_dialog",
+            "dialog": "dlg_fish_escape"
+          }
+        ],
+        "on_spook": [
+          {
+            "do": "show_dialog",
+            "dialog": "dlg_fish_spook"
+          }
+        ]
+      }
+    }
+  ],
+  "sounds": {
+    "jump": "sfx_cast",
+    "attack": "sfx_plip",
+    "hurt": "sfx_splash"
+  }
+}

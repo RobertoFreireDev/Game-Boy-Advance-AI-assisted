@@ -1,0 +1,16 @@
+{
+  "id": "anim_apple",
+  "kind": "object",
+  "type": "animation",
+  "name": "Apple body",
+  "notes": "A shiny red apple on the ground.",
+  "sprite": "spr_items",
+  "loop": true,
+  "frames": [
+    {
+      "frame": "apple",
+      "ticks": 60
+    }
+  ],
+  "events": []
+}

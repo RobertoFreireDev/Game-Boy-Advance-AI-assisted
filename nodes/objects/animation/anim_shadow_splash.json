@@ -1,0 +1,24 @@
+{
+  "id": "anim_shadow_splash",
+  "kind": "object",
+  "type": "animation",
+  "name": "Catch splash",
+  "notes": "The fish leaps out of the water.",
+  "sprite": "spr_shadow",
+  "loop": false,
+  "frames": [
+    {
+      "frame": "splash",
+      "ticks": 10
+    },
+    {
+      "frame": "bite",
+      "ticks": 10
+    },
+    {
+      "frame": "splash",
+      "ticks": 10
+    }
+  ],
+  "events": []
+}

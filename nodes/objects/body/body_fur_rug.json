@@ -1,0 +1,29 @@
+{
+  "id": "body_fur_rug",
+  "kind": "object",
+  "type": "body",
+  "name": "Moss Rug body",
+  "notes": "How the Moss Rug looks in your house.",
+  "origin": [
+    8,
+    6
+  ],
+  "hitbox": {
+    "x": -7,
+    "y": 0,
+    "w": 14,
+    "h": 6
+  },
+  "physics": {
+    "gravity": false,
+    "solid": false,
+    "collides_with": []
+  },
+  "animations": {
+    "idle": "anim_fur_rug"
+  },
+  "default_animation": "idle",
+  "children": [
+    "anim_fur_rug"
+  ]
+}

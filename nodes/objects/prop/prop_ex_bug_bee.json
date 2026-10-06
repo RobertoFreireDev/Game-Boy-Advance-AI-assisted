@@ -1,0 +1,18 @@
+{
+  "id": "prop_ex_bug_bee",
+  "kind": "object",
+  "type": "prop",
+  "name": "Honeybee exhibit",
+  "notes": "Appears in the museum once you donated a Honeybee (variable don_bug_bee).",
+  "body": "body_bug_bee",
+  "logic": [
+    {
+      "behavior": "exists_when",
+      "params": {
+        "var": "don_bug_bee",
+        "min": 1,
+        "max": 1
+      }
+    }
+  ]
+}

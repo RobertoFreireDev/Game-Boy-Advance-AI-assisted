@@ -1,0 +1,53 @@
+{
+  "id": "hud_main",
+  "kind": "object",
+  "type": "hud",
+  "name": "Village HUD",
+  "notes": "Always on screen: your Pips (top left), the time and day (top right) and the tool in your hands (bottom right: hand, shovel, net or rod).",
+  "font": "font_default",
+  "elements": [
+    {
+      "kind": "icon",
+      "x": 8,
+      "y": 8,
+      "icon": "icon_pip"
+    },
+    {
+      "kind": "text",
+      "x": 16,
+      "y": 8,
+      "text": "{pips}"
+    },
+    {
+      "kind": "text",
+      "x": 176,
+      "y": 8,
+      "text": "{hour:02}:{minute:02}"
+    },
+    {
+      "kind": "text",
+      "x": 176,
+      "y": 16,
+      "text": "DAY {day}"
+    },
+    {
+      "kind": "icon_switch",
+      "x": 216,
+      "y": 136,
+      "var": "tool",
+      "icons": [
+        "icon_hands",
+        "icon_shovel",
+        "icon_net",
+        "icon_rod"
+      ]
+    }
+  ],
+  "children": [
+    "icon_pip",
+    "icon_hands",
+    "icon_shovel",
+    "icon_net",
+    "icon_rod"
+  ]
+}

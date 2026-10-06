@@ -1,0 +1,22 @@
+{
+  "id": "sfx_pickup",
+  "kind": "object",
+  "type": "sfx",
+  "name": "Pick up",
+  "notes": "A short pop when you pick something up.",
+  "priority": 1,
+  "steps": [
+    {
+      "note": "G5",
+      "ticks": 2,
+      "volume": 8
+    },
+    {
+      "note": "D6",
+      "ticks": 4,
+      "volume": 8
+    }
+  ],
+  "channel": "square2",
+  "duty": 2
+}

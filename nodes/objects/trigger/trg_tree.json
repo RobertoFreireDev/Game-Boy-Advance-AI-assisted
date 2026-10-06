@@ -1,0 +1,75 @@
+{
+  "id": "trg_tree",
+  "kind": "object",
+  "type": "trigger",
+  "name": "Apple tree trunk",
+  "notes": "Invisible spot on the trunk of an apple tree. With empty hands, A shakes the tree: if it has apples, 3 fall down (they grow back in 3 days).",
+  "zone": {
+    "w": 16,
+    "h": 12
+  },
+  "logic": [
+    {
+      "behavior": "interact",
+      "params": {
+        "range": 6,
+        "on_press": [
+          {
+            "do": "if_var",
+            "var": "tool",
+            "op": "==",
+            "value": 0,
+            "then": [
+              {
+                "do": "play_sfx",
+                "sfx": "sfx_shake"
+              },
+              {
+                "do": "shake_camera",
+                "ticks": 8,
+                "strength": 1
+              },
+              {
+                "do": "if_var",
+                "var": "tree_1",
+                "op": "==",
+                "value": 0,
+                "then": [
+                  {
+                    "do": "set_var",
+                    "var": "tree_1",
+                    "value": 3
+                  },
+                  {
+                    "do": "spawn",
+                    "object": "item_apple",
+                    "x": 0,
+                    "y": 20
+                  },
+                  {
+                    "do": "spawn",
+                    "object": "item_apple",
+                    "x": 10,
+                    "y": 24
+                  },
+                  {
+                    "do": "spawn",
+                    "object": "item_apple",
+                    "x": 18,
+                    "y": 20
+                  }
+                ]
+              }
+            ],
+            "else": [
+              {
+                "do": "show_dialog",
+                "dialog": "dlg_hint_hands"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

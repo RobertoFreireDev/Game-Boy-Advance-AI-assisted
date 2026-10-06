@@ -1,0 +1,24 @@
+{
+  "id": "dlg_tilly_favor",
+  "kind": "object",
+  "type": "dialog",
+  "name": "Tilly: favor",
+  "notes": "Tilly's favor line.",
+  "font": "font_default",
+  "box": {
+    "x": 8,
+    "y": 88,
+    "w": 224,
+    "h": 64,
+    "paper": 3,
+    "border": 2
+  },
+  "ticks_per_char": 1,
+  "lines": [
+    {
+      "speaker": "TILLY",
+      "portrait": "icon_face_tilly",
+      "text": "OOH, CAN YOU CATCH ME A LADYBUG? THEY'RE SO CUTE! THEY SIT ON FLOWERS IN THE DAYTIME."
+    }
+  ]
+}

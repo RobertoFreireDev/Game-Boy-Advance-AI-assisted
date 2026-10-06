@@ -1,0 +1,22 @@
+{
+  "id": "hud_morning",
+  "kind": "object",
+  "type": "hud",
+  "name": "Good morning card",
+  "notes": "The text on the wake-up screen; DAY shows the new day.",
+  "font": "font_default",
+  "elements": [
+    {
+      "kind": "text",
+      "x": 64,
+      "y": 64,
+      "text": "GOOD MORNING!"
+    },
+    {
+      "kind": "text",
+      "x": 88,
+      "y": 80,
+      "text": "DAY {day}"
+    }
+  ]
+}

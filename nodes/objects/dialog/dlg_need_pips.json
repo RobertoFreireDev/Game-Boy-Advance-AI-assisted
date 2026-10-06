@@ -1,0 +1,24 @@
+{
+  "id": "dlg_need_pips",
+  "kind": "object",
+  "type": "dialog",
+  "name": "Not enough Pips",
+  "notes": "Ardea, when your wallet can't cover the payment.",
+  "font": "font_default",
+  "box": {
+    "x": 8,
+    "y": 88,
+    "w": 224,
+    "h": 64,
+    "paper": 3,
+    "border": 2
+  },
+  "ticks_per_char": 1,
+  "lines": [
+    {
+      "speaker": "ARDEA",
+      "portrait": "icon_face_ardea",
+      "text": "OH DEAR, YOU DON'T HAVE ENOUGH PIPS FOR THAT. SELL A FEW THINGS AT BRAMBLE'S FIRST!"
+    }
+  ]
+}

@@ -1,0 +1,399 @@
+{
+  "id": "menu_furniture",
+  "kind": "object",
+  "type": "menu",
+  "name": "Furniture",
+  "notes": "Furniture for your house (it appears there next time you go in). The fern plant and moss rug can also be earned from Pembrook and Tilly.",
+  "font": "font_default",
+  "title": "FURNITURE",
+  "cursor": "icon_cursor",
+  "box": {
+    "x": 40,
+    "y": 8,
+    "w": 168,
+    "h": 144,
+    "paper": 3,
+    "border": 2
+  },
+  "layout": {
+    "x": 64,
+    "y": 32,
+    "spacing": 16,
+    "title_y": 16
+  },
+  "options": [
+    {
+      "label": "LEAF LAMP    1200",
+      "actions": [
+        {
+          "do": "if_var",
+          "var": "fur_lamp",
+          "op": "==",
+          "value": 1,
+          "then": [
+            {
+              "do": "play_sfx",
+              "sfx": "sfx_nope"
+            },
+            {
+              "do": "show_dialog",
+              "dialog": "dlg_have_it"
+            }
+          ],
+          "else": [
+            {
+              "do": "if_var",
+              "var": "pips",
+              "op": ">=",
+              "value": 1200,
+              "then": [
+                {
+                  "do": "add_var",
+                  "var": "pips",
+                  "value": -1200
+                },
+                {
+                  "do": "set_var",
+                  "var": "fur_lamp",
+                  "value": 1
+                },
+                {
+                  "do": "play_sfx",
+                  "sfx": "sfx_coin"
+                },
+                {
+                  "do": "show_dialog",
+                  "dialog": "dlg_delivered"
+                }
+              ],
+              "else": [
+                {
+                  "do": "play_sfx",
+                  "sfx": "sfx_nope"
+                },
+                {
+                  "do": "show_dialog",
+                  "dialog": "dlg_broke"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "label": "RADIO        2000",
+      "actions": [
+        {
+          "do": "if_var",
+          "var": "fur_radio",
+          "op": "==",
+          "value": 1,
+          "then": [
+            {
+              "do": "play_sfx",
+              "sfx": "sfx_nope"
+            },
+            {
+              "do": "show_dialog",
+              "dialog": "dlg_have_it"
+            }
+          ],
+          "else": [
+            {
+              "do": "if_var",
+              "var": "pips",
+              "op": ">=",
+              "value": 2000,
+              "then": [
+                {
+                  "do": "add_var",
+                  "var": "pips",
+                  "value": -2000
+                },
+                {
+                  "do": "set_var",
+                  "var": "fur_radio",
+                  "value": 1
+                },
+                {
+                  "do": "play_sfx",
+                  "sfx": "sfx_coin"
+                },
+                {
+                  "do": "show_dialog",
+                  "dialog": "dlg_delivered"
+                }
+              ],
+              "else": [
+                {
+                  "do": "play_sfx",
+                  "sfx": "sfx_nope"
+                },
+                {
+                  "do": "show_dialog",
+                  "dialog": "dlg_broke"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "label": "PINE TABLE   1500",
+      "actions": [
+        {
+          "do": "if_var",
+          "var": "fur_table",
+          "op": "==",
+          "value": 1,
+          "then": [
+            {
+              "do": "play_sfx",
+              "sfx": "sfx_nope"
+            },
+            {
+              "do": "show_dialog",
+              "dialog": "dlg_have_it"
+            }
+          ],
+          "else": [
+            {
+              "do": "if_var",
+              "var": "pips",
+              "op": ">=",
+              "value": 1500,
+              "then": [
+                {
+                  "do": "add_var",
+                  "var": "pips",
+                  "value": -1500
+                },
+                {
+                  "do": "set_var",
+                  "var": "fur_table",
+                  "value": 1
+                },
+                {
+                  "do": "play_sfx",
+                  "sfx": "sfx_coin"
+                },
+                {
+                  "do": "show_dialog",
+                  "dialog": "dlg_delivered"
+                }
+              ],
+              "else": [
+                {
+                  "do": "play_sfx",
+                  "sfx": "sfx_nope"
+                },
+                {
+                  "do": "show_dialog",
+                  "dialog": "dlg_broke"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "label": "FISH BOWL     900",
+      "actions": [
+        {
+          "do": "if_var",
+          "var": "fur_bowl",
+          "op": "==",
+          "value": 1,
+          "then": [
+            {
+              "do": "play_sfx",
+              "sfx": "sfx_nope"
+            },
+            {
+              "do": "show_dialog",
+              "dialog": "dlg_have_it"
+            }
+          ],
+          "else": [
+            {
+              "do": "if_var",
+              "var": "pips",
+              "op": ">=",
+              "value": 900,
+              "then": [
+                {
+                  "do": "add_var",
+                  "var": "pips",
+                  "value": -900
+                },
+                {
+                  "do": "set_var",
+                  "var": "fur_bowl",
+                  "value": 1
+                },
+                {
+                  "do": "play_sfx",
+                  "sfx": "sfx_coin"
+                },
+                {
+                  "do": "show_dialog",
+                  "dialog": "dlg_delivered"
+                }
+              ],
+              "else": [
+                {
+                  "do": "play_sfx",
+                  "sfx": "sfx_nope"
+                },
+                {
+                  "do": "show_dialog",
+                  "dialog": "dlg_broke"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "label": "FERN PLANT    600",
+      "actions": [
+        {
+          "do": "if_var",
+          "var": "fur_plant",
+          "op": "==",
+          "value": 1,
+          "then": [
+            {
+              "do": "play_sfx",
+              "sfx": "sfx_nope"
+            },
+            {
+              "do": "show_dialog",
+              "dialog": "dlg_have_it"
+            }
+          ],
+          "else": [
+            {
+              "do": "if_var",
+              "var": "pips",
+              "op": ">=",
+              "value": 600,
+              "then": [
+                {
+                  "do": "add_var",
+                  "var": "pips",
+                  "value": -600
+                },
+                {
+                  "do": "set_var",
+                  "var": "fur_plant",
+                  "value": 1
+                },
+                {
+                  "do": "play_sfx",
+                  "sfx": "sfx_coin"
+                },
+                {
+                  "do": "show_dialog",
+                  "dialog": "dlg_delivered"
+                }
+              ],
+              "else": [
+                {
+                  "do": "play_sfx",
+                  "sfx": "sfx_nope"
+                },
+                {
+                  "do": "show_dialog",
+                  "dialog": "dlg_broke"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "label": "MOSS RUG     1000",
+      "actions": [
+        {
+          "do": "if_var",
+          "var": "fur_rug",
+          "op": "==",
+          "value": 1,
+          "then": [
+            {
+              "do": "play_sfx",
+              "sfx": "sfx_nope"
+            },
+            {
+              "do": "show_dialog",
+              "dialog": "dlg_have_it"
+            }
+          ],
+          "else": [
+            {
+              "do": "if_var",
+              "var": "pips",
+              "op": ">=",
+              "value": 1000,
+              "then": [
+                {
+                  "do": "add_var",
+                  "var": "pips",
+                  "value": -1000
+                },
+                {
+                  "do": "set_var",
+                  "var": "fur_rug",
+                  "value": 1
+                },
+                {
+                  "do": "play_sfx",
+                  "sfx": "sfx_coin"
+                },
+                {
+                  "do": "show_dialog",
+                  "dialog": "dlg_delivered"
+                }
+              ],
+              "else": [
+                {
+                  "do": "play_sfx",
+                  "sfx": "sfx_nope"
+                },
+                {
+                  "do": "show_dialog",
+                  "dialog": "dlg_broke"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "label": "BACK",
+      "actions": [
+        {
+          "do": "open_menu",
+          "menu": "menu_shop"
+        }
+      ]
+    }
+  ],
+  "on_cancel": [
+    {
+      "do": "open_menu",
+      "menu": "menu_shop"
+    }
+  ],
+  "sounds": {
+    "move": "sfx_select",
+    "select": "sfx_confirm"
+  }
+}

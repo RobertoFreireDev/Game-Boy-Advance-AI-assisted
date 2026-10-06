@@ -1,0 +1,677 @@
+{
+  "id": "npc_odessa",
+  "kind": "object",
+  "type": "npc",
+  "name": "Prof. Odessa",
+  "notes": "The okapi professor at her museum desk. Talk to her (A): she takes one of every fish, bug and fossil you carry that the museum doesn't have yet, then the room reloads to show them. All 17 = 10,000 Pips.",
+  "body": "body_odessa",
+  "logic": [
+    {
+      "behavior": "interact",
+      "params": {
+        "range": 12,
+        "on_press": [
+          {
+            "do": "set_var",
+            "var": "gave",
+            "value": 0
+          },
+          {
+            "do": "if_var",
+            "var": "fish_crucian",
+            "op": ">=",
+            "value": 1,
+            "then": [
+              {
+                "do": "if_var",
+                "var": "don_fish_crucian",
+                "op": "==",
+                "value": 0,
+                "then": [
+                  {
+                    "do": "set_var",
+                    "var": "don_fish_crucian",
+                    "value": 1
+                  },
+                  {
+                    "do": "add_var",
+                    "var": "fish_crucian",
+                    "value": -1
+                  },
+                  {
+                    "do": "add_var",
+                    "var": "museum",
+                    "value": 1
+                  },
+                  {
+                    "do": "add_var",
+                    "var": "gave",
+                    "value": 1
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "do": "if_var",
+            "var": "fish_bass",
+            "op": ">=",
+            "value": 1,
+            "then": [
+              {
+                "do": "if_var",
+                "var": "don_fish_bass",
+                "op": "==",
+                "value": 0,
+                "then": [
+                  {
+                    "do": "set_var",
+                    "var": "don_fish_bass",
+                    "value": 1
+                  },
+                  {
+                    "do": "add_var",
+                    "var": "fish_bass",
+                    "value": -1
+                  },
+                  {
+                    "do": "add_var",
+                    "var": "museum",
+                    "value": 1
+                  },
+                  {
+                    "do": "add_var",
+                    "var": "gave",
+                    "value": 1
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "do": "if_var",
+            "var": "fish_dace",
+            "op": ">=",
+            "value": 1,
+            "then": [
+              {
+                "do": "if_var",
+                "var": "don_fish_dace",
+                "op": "==",
+                "value": 0,
+                "then": [
+                  {
+                    "do": "set_var",
+                    "var": "don_fish_dace",
+                    "value": 1
+                  },
+                  {
+                    "do": "add_var",
+                    "var": "fish_dace",
+                    "value": -1
+                  },
+                  {
+                    "do": "add_var",
+                    "var": "museum",
+                    "value": 1
+                  },
+                  {
+                    "do": "add_var",
+                    "var": "gave",
+                    "value": 1
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "do": "if_var",
+            "var": "fish_carp",
+            "op": ">=",
+            "value": 1,
+            "then": [
+              {
+                "do": "if_var",
+                "var": "don_fish_carp",
+                "op": "==",
+                "value": 0,
+                "then": [
+                  {
+                    "do": "set_var",
+                    "var": "don_fish_carp",
+                    "value": 1
+                  },
+                  {
+                    "do": "add_var",
+                    "var": "fish_carp",
+                    "value": -1
+                  },
+                  {
+                    "do": "add_var",
+                    "var": "museum",
+                    "value": 1
+                  },
+                  {
+                    "do": "add_var",
+                    "var": "gave",
+                    "value": 1
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "do": "if_var",
+            "var": "fish_koi",
+            "op": ">=",
+            "value": 1,
+            "then": [
+              {
+                "do": "if_var",
+                "var": "don_fish_koi",
+                "op": "==",
+                "value": 0,
+                "then": [
+                  {
+                    "do": "set_var",
+                    "var": "don_fish_koi",
+                    "value": 1
+                  },
+                  {
+                    "do": "add_var",
+                    "var": "fish_koi",
+                    "value": -1
+                  },
+                  {
+                    "do": "add_var",
+                    "var": "museum",
+                    "value": 1
+                  },
+                  {
+                    "do": "add_var",
+                    "var": "gave",
+                    "value": 1
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "do": "if_var",
+            "var": "fish_seabass",
+            "op": ">=",
+            "value": 1,
+            "then": [
+              {
+                "do": "if_var",
+                "var": "don_fish_seabass",
+                "op": "==",
+                "value": 0,
+                "then": [
+                  {
+                    "do": "set_var",
+                    "var": "don_fish_seabass",
+                    "value": 1
+                  },
+                  {
+                    "do": "add_var",
+                    "var": "fish_seabass",
+                    "value": -1
+                  },
+                  {
+                    "do": "add_var",
+                    "var": "museum",
+                    "value": 1
+                  },
+                  {
+                    "do": "add_var",
+                    "var": "gave",
+                    "value": 1
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "do": "if_var",
+            "var": "fish_snapper",
+            "op": ">=",
+            "value": 1,
+            "then": [
+              {
+                "do": "if_var",
+                "var": "don_fish_snapper",
+                "op": "==",
+                "value": 0,
+                "then": [
+                  {
+                    "do": "set_var",
+                    "var": "don_fish_snapper",
+                    "value": 1
+                  },
+                  {
+                    "do": "add_var",
+                    "var": "fish_snapper",
+                    "value": -1
+                  },
+                  {
+                    "do": "add_var",
+                    "var": "museum",
+                    "value": 1
+                  },
+                  {
+                    "do": "add_var",
+                    "var": "gave",
+                    "value": 1
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "do": "if_var",
+            "var": "bug_white",
+            "op": ">=",
+            "value": 1,
+            "then": [
+              {
+                "do": "if_var",
+                "var": "don_bug_white",
+                "op": "==",
+                "value": 0,
+                "then": [
+                  {
+                    "do": "set_var",
+                    "var": "don_bug_white",
+                    "value": 1
+                  },
+                  {
+                    "do": "add_var",
+                    "var": "bug_white",
+                    "value": -1
+                  },
+                  {
+                    "do": "add_var",
+                    "var": "museum",
+                    "value": 1
+                  },
+                  {
+                    "do": "add_var",
+                    "var": "gave",
+                    "value": 1
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "do": "if_var",
+            "var": "bug_bee",
+            "op": ">=",
+            "value": 1,
+            "then": [
+              {
+                "do": "if_var",
+                "var": "don_bug_bee",
+                "op": "==",
+                "value": 0,
+                "then": [
+                  {
+                    "do": "set_var",
+                    "var": "don_bug_bee",
+                    "value": 1
+                  },
+                  {
+                    "do": "add_var",
+                    "var": "bug_bee",
+                    "value": -1
+                  },
+                  {
+                    "do": "add_var",
+                    "var": "museum",
+                    "value": 1
+                  },
+                  {
+                    "do": "add_var",
+                    "var": "gave",
+                    "value": 1
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "do": "if_var",
+            "var": "bug_ladybug",
+            "op": ">=",
+            "value": 1,
+            "then": [
+              {
+                "do": "if_var",
+                "var": "don_bug_ladybug",
+                "op": "==",
+                "value": 0,
+                "then": [
+                  {
+                    "do": "set_var",
+                    "var": "don_bug_ladybug",
+                    "value": 1
+                  },
+                  {
+                    "do": "add_var",
+                    "var": "bug_ladybug",
+                    "value": -1
+                  },
+                  {
+                    "do": "add_var",
+                    "var": "museum",
+                    "value": 1
+                  },
+                  {
+                    "do": "add_var",
+                    "var": "gave",
+                    "value": 1
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "do": "if_var",
+            "var": "bug_firefly",
+            "op": ">=",
+            "value": 1,
+            "then": [
+              {
+                "do": "if_var",
+                "var": "don_bug_firefly",
+                "op": "==",
+                "value": 0,
+                "then": [
+                  {
+                    "do": "set_var",
+                    "var": "don_bug_firefly",
+                    "value": 1
+                  },
+                  {
+                    "do": "add_var",
+                    "var": "bug_firefly",
+                    "value": -1
+                  },
+                  {
+                    "do": "add_var",
+                    "var": "museum",
+                    "value": 1
+                  },
+                  {
+                    "do": "add_var",
+                    "var": "gave",
+                    "value": 1
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "do": "if_var",
+            "var": "bug_cricket",
+            "op": ">=",
+            "value": 1,
+            "then": [
+              {
+                "do": "if_var",
+                "var": "don_bug_cricket",
+                "op": "==",
+                "value": 0,
+                "then": [
+                  {
+                    "do": "set_var",
+                    "var": "don_bug_cricket",
+                    "value": 1
+                  },
+                  {
+                    "do": "add_var",
+                    "var": "bug_cricket",
+                    "value": -1
+                  },
+                  {
+                    "do": "add_var",
+                    "var": "museum",
+                    "value": 1
+                  },
+                  {
+                    "do": "add_var",
+                    "var": "gave",
+                    "value": 1
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "do": "if_var",
+            "var": "bug_crab",
+            "op": ">=",
+            "value": 1,
+            "then": [
+              {
+                "do": "if_var",
+                "var": "don_bug_crab",
+                "op": "==",
+                "value": 0,
+                "then": [
+                  {
+                    "do": "set_var",
+                    "var": "don_bug_crab",
+                    "value": 1
+                  },
+                  {
+                    "do": "add_var",
+                    "var": "bug_crab",
+                    "value": -1
+                  },
+                  {
+                    "do": "add_var",
+                    "var": "museum",
+                    "value": 1
+                  },
+                  {
+                    "do": "add_var",
+                    "var": "gave",
+                    "value": 1
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "do": "if_var",
+            "var": "fos_ammonite",
+            "op": ">=",
+            "value": 1,
+            "then": [
+              {
+                "do": "if_var",
+                "var": "don_fos_ammonite",
+                "op": "==",
+                "value": 0,
+                "then": [
+                  {
+                    "do": "set_var",
+                    "var": "don_fos_ammonite",
+                    "value": 1
+                  },
+                  {
+                    "do": "add_var",
+                    "var": "fos_ammonite",
+                    "value": -1
+                  },
+                  {
+                    "do": "add_var",
+                    "var": "museum",
+                    "value": 1
+                  },
+                  {
+                    "do": "add_var",
+                    "var": "gave",
+                    "value": 1
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "do": "if_var",
+            "var": "fos_trilobite",
+            "op": ">=",
+            "value": 1,
+            "then": [
+              {
+                "do": "if_var",
+                "var": "don_fos_trilobite",
+                "op": "==",
+                "value": 0,
+                "then": [
+                  {
+                    "do": "set_var",
+                    "var": "don_fos_trilobite",
+                    "value": 1
+                  },
+                  {
+                    "do": "add_var",
+                    "var": "fos_trilobite",
+                    "value": -1
+                  },
+                  {
+                    "do": "add_var",
+                    "var": "museum",
+                    "value": 1
+                  },
+                  {
+                    "do": "add_var",
+                    "var": "gave",
+                    "value": 1
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "do": "if_var",
+            "var": "fos_tooth",
+            "op": ">=",
+            "value": 1,
+            "then": [
+              {
+                "do": "if_var",
+                "var": "don_fos_tooth",
+                "op": "==",
+                "value": 0,
+                "then": [
+                  {
+                    "do": "set_var",
+                    "var": "don_fos_tooth",
+                    "value": 1
+                  },
+                  {
+                    "do": "add_var",
+                    "var": "fos_tooth",
+                    "value": -1
+                  },
+                  {
+                    "do": "add_var",
+                    "var": "museum",
+                    "value": 1
+                  },
+                  {
+                    "do": "add_var",
+                    "var": "gave",
+                    "value": 1
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "do": "if_var",
+            "var": "fos_amber",
+            "op": ">=",
+            "value": 1,
+            "then": [
+              {
+                "do": "if_var",
+                "var": "don_fos_amber",
+                "op": "==",
+                "value": 0,
+                "then": [
+                  {
+                    "do": "set_var",
+                    "var": "don_fos_amber",
+                    "value": 1
+                  },
+                  {
+                    "do": "add_var",
+                    "var": "fos_amber",
+                    "value": -1
+                  },
+                  {
+                    "do": "add_var",
+                    "var": "museum",
+                    "value": 1
+                  },
+                  {
+                    "do": "add_var",
+                    "var": "gave",
+                    "value": 1
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "do": "if_var",
+            "var": "gave",
+            "op": ">=",
+            "value": 1,
+            "then": [
+              {
+                "do": "play_sfx",
+                "sfx": "sfx_catch"
+              },
+              {
+                "do": "show_dialog",
+                "dialog": "dlg_odessa_thanks"
+              }
+            ],
+            "else": [
+              {
+                "do": "if_var",
+                "var": "museum",
+                "op": "==",
+                "value": 17,
+                "then": [
+                  {
+                    "do": "show_dialog",
+                    "dialog": "dlg_odessa_done"
+                  }
+                ],
+                "else": [
+                  {
+                    "do": "show_dialog",
+                    "dialog": "dlg_odessa_hello"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "sounds": {
+    "talk": "sfx_talk"
+  },
+  "children": [
+    "body_odessa"
+  ]
+}

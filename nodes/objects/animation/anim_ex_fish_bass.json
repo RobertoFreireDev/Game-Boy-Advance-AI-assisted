@@ -1,0 +1,16 @@
+{
+  "id": "anim_ex_fish_bass",
+  "kind": "object",
+  "type": "animation",
+  "name": "Black Bass exhibit",
+  "notes": "The Black Bass swimming in its museum tank.",
+  "sprite": "spr_fish",
+  "loop": true,
+  "frames": [
+    {
+      "frame": "bass",
+      "ticks": 60
+    }
+  ],
+  "events": []
+}

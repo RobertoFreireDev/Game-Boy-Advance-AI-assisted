@@ -1,0 +1,22 @@
+{
+  "id": "dlg_closed_shop",
+  "kind": "object",
+  "type": "dialog",
+  "name": "Shop closed",
+  "notes": "Bramble's door outside opening hours (8:00-21:59).",
+  "font": "font_default",
+  "box": {
+    "x": 8,
+    "y": 88,
+    "w": 224,
+    "h": 64,
+    "paper": 3,
+    "border": 2
+  },
+  "ticks_per_char": 1,
+  "lines": [
+    {
+      "text": "A SIGN ON THE DOOR: CLOSED. OPEN FROM 8 IN THE MORNING TO 10 AT NIGHT."
+    }
+  ]
+}

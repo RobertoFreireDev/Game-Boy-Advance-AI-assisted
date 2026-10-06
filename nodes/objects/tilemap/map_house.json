@@ -1,0 +1,32 @@
+{
+  "id": "map_house",
+  "kind": "object",
+  "type": "tilemap",
+  "name": "Your house",
+  "notes": "Inside your house: the bed (top left) is where you sleep and save, a window and a plant. Furniture you buy at Bramble's appears in the empty spots. The mat at the bottom leads outside.",
+  "tileset": "ts_interior",
+  "layer": 1,
+  "parallax": 1,
+  "rows": [
+    "..............................",
+    "..............................",
+    "..............................",
+    "........##############........",
+    "........IWWWWWWWnmWWWJ........",
+    "........IWWWWWWWklWWWJ........",
+    "........I12wwwwwwwwwOJ........",
+    "........I34FFFFFFFFFQJ........",
+    "........I56FFFFFFFFFFJ........",
+    "........IFFFFFFFFFFFFJ........",
+    "........IFFFFFFFFFFFFJ........",
+    "........IFFFFFFFFFFFFJ........",
+    "........IFFFFFFFFFFFFJ........",
+    "........IFFFFFFFFFFFFJ........",
+    "........IFFFFFFFFFFFFJ........",
+    "........IFFFFFFFFFFFFJ........",
+    "........KHHHHHMMHHHHHL........",
+    "..............................",
+    "..............................",
+    ".............................."
+  ]
+}

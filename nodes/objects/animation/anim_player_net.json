@@ -1,0 +1,20 @@
+{
+  "id": "anim_player_net",
+  "kind": "object",
+  "type": "animation",
+  "name": "Net swing (side)",
+  "notes": "Raise the net, then sweep it forward. 14 ticks, the length of the swing.",
+  "sprite": "spr_player",
+  "loop": false,
+  "frames": [
+    {
+      "frame": "net_side_0",
+      "ticks": 5
+    },
+    {
+      "frame": "net_side_1",
+      "ticks": 9
+    }
+  ],
+  "events": []
+}

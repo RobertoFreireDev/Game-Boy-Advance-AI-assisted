@@ -1,0 +1,24 @@
+{
+  "id": "dlg_tilly_day",
+  "kind": "object",
+  "type": "dialog",
+  "name": "Tilly: day",
+  "notes": "Tilly's day line.",
+  "font": "font_default",
+  "box": {
+    "x": 8,
+    "y": 88,
+    "w": 224,
+    "h": 64,
+    "paper": 3,
+    "border": 2
+  },
+  "ticks_per_char": 1,
+  "lines": [
+    {
+      "speaker": "TILLY",
+      "portrait": "icon_face_tilly",
+      "text": "HAVE YOU MET EVERYONE YET? PEMBROOK BAKES THE BEST PIES AND RUSK IS SECRETLY SWEET!"
+    }
+  ]
+}

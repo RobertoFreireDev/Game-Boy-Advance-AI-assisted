@@ -1,0 +1,16 @@
+{
+  "id": "anim_shadow_float",
+  "kind": "object",
+  "type": "animation",
+  "name": "Bobber floating",
+  "notes": "Your bobber floats above the fish. Wait...",
+  "sprite": "spr_shadow",
+  "loop": true,
+  "frames": [
+    {
+      "frame": "float",
+      "ticks": 30
+    }
+  ],
+  "events": []
+}

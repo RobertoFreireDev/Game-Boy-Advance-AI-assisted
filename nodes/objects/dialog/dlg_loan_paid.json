@@ -1,0 +1,44 @@
+{
+  "id": "dlg_loan_paid",
+  "kind": "object",
+  "type": "dialog",
+  "name": "Loan paid off",
+  "notes": "Ardea congratulates you when the loan reaches 0.",
+  "font": "font_default",
+  "box": {
+    "x": 8,
+    "y": 88,
+    "w": 224,
+    "h": 64,
+    "paper": 3,
+    "border": 2
+  },
+  "ticks_per_char": 1,
+  "lines": [
+    {
+      "speaker": "ARDEA",
+      "portrait": "icon_face_ardea",
+      "text": "THAT'S THE LAST OF IT. YOUR LOAN IS PAID OFF! CONGRATULATIONS!"
+    }
+  ],
+  "on_end": [
+    {
+      "do": "if_var",
+      "var": "house_level",
+      "op": "==",
+      "value": 1,
+      "then": [
+        {
+          "do": "show_dialog",
+          "dialog": "dlg_offer_expand"
+        }
+      ],
+      "else": [
+        {
+          "do": "show_dialog",
+          "dialog": "dlg_paid_all"
+        }
+      ]
+    }
+  ]
+}

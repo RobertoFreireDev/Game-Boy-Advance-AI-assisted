@@ -1,0 +1,30 @@
+{
+  "id": "dlg_nothing",
+  "kind": "object",
+  "type": "dialog",
+  "name": "Nothing to sell",
+  "notes": "Bramble when your pockets hold none of that.",
+  "font": "font_default",
+  "box": {
+    "x": 8,
+    "y": 88,
+    "w": 224,
+    "h": 64,
+    "paper": 3,
+    "border": 2
+  },
+  "ticks_per_char": 1,
+  "lines": [
+    {
+      "speaker": "BRAMBLE",
+      "portrait": "icon_face_bramble",
+      "text": "HMM? YOU DON'T HAVE ANY OF THOSE. COME BACK WITH A FULL POCKET!"
+    }
+  ],
+  "on_end": [
+    {
+      "do": "open_menu",
+      "menu": "menu_sell"
+    }
+  ]
+}

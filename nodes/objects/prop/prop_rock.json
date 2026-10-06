@@ -1,0 +1,66 @@
+{
+  "id": "prop_rock",
+  "kind": "object",
+  "type": "prop",
+  "name": "Rock",
+  "notes": "One of the 3 rocks in town. Hit it with the shovel (A): once a day, one of them (lucky_rock) drops a bag of 1,000 Pips.",
+  "body": "body_rock",
+  "logic": [
+    {
+      "behavior": "interact",
+      "params": {
+        "range": 4,
+        "on_press": [
+          {
+            "do": "if_var",
+            "var": "tool",
+            "op": "==",
+            "value": 1,
+            "then": [
+              {
+                "do": "play_sfx",
+                "sfx": "sfx_rock"
+              },
+              {
+                "do": "shake_camera",
+                "ticks": 6,
+                "strength": 1
+              },
+              {
+                "do": "if_var",
+                "var": "lucky_found",
+                "op": "==",
+                "value": 0,
+                "then": [
+                  {
+                    "do": "if_var",
+                    "var": "lucky_rock",
+                    "op": "==",
+                    "value": 1,
+                    "then": [
+                      {
+                        "do": "set_var",
+                        "var": "lucky_found",
+                        "value": 1
+                      },
+                      {
+                        "do": "spawn",
+                        "object": "item_money",
+                        "x": 0,
+                        "y": 14
+                      },
+                      {
+                        "do": "show_dialog",
+                        "dialog": "dlg_lucky"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

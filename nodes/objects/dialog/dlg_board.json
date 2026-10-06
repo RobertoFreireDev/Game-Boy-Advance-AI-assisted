@@ -1,0 +1,22 @@
+{
+  "id": "dlg_board",
+  "kind": "object",
+  "type": "dialog",
+  "name": "Bulletin board",
+  "notes": "A sign in town.",
+  "font": "font_default",
+  "box": {
+    "x": 8,
+    "y": 88,
+    "w": 224,
+    "h": 64,
+    "paper": 3,
+    "border": 2
+  },
+  "ticks_per_char": 1,
+  "lines": [
+    {
+      "text": "BULLETIN BOARD: SHOP 8:00-22:00. MUSEUM FROM 7:00. NEW FOSSILS, APPLES AND SHELLS EVERY MORNING!"
+    }
+  ]
+}

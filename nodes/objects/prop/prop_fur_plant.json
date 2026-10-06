@@ -1,0 +1,21 @@
+{
+  "id": "prop_fur_plant",
+  "kind": "object",
+  "type": "prop",
+  "name": "Fern Plant",
+  "notes": "Stands in your house once you own it (fur_plant).",
+  "body": "body_fur_plant",
+  "logic": [
+    {
+      "behavior": "exists_when",
+      "params": {
+        "var": "fur_plant",
+        "min": 1,
+        "max": 1
+      }
+    }
+  ],
+  "children": [
+    "body_fur_plant"
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "id": "dlg_locked_rusk",
+  "kind": "object",
+  "type": "dialog",
+  "name": "Rusk's door",
+  "notes": "A sign in town.",
+  "font": "font_default",
+  "box": {
+    "x": 8,
+    "y": 88,
+    "w": 224,
+    "h": 64,
+    "paper": 3,
+    "border": 2
+  },
+  "ticks_per_char": 1,
+  "lines": [
+    {
+      "text": "RUSK'S HOUSE. THE DOOR IS LOCKED... MAYBE HE IS OUT FOR A WALK."
+    }
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "id": "sfx_dig",
+  "kind": "object",
+  "type": "sfx",
+  "name": "Dig",
+  "notes": "Two scrapes of the shovel in the dirt.",
+  "priority": 1,
+  "steps": [
+    {
+      "pitch": 9,
+      "ticks": 3,
+      "volume": 10
+    },
+    {
+      "pitch": 12,
+      "ticks": 3,
+      "volume": 6
+    },
+    {
+      "pitch": 0,
+      "ticks": 3,
+      "volume": 0
+    },
+    {
+      "pitch": 8,
+      "ticks": 3,
+      "volume": 9
+    },
+    {
+      "pitch": 12,
+      "ticks": 4,
+      "volume": 5
+    }
+  ],
+  "channel": "noise"
+}

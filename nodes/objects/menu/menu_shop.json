@@ -1,0 +1,71 @@
+{
+  "id": "menu_shop",
+  "kind": "object",
+  "type": "menu",
+  "name": "Bramble's counter",
+  "notes": "What Bramble can do for you: buy your catches, sell tools or furniture.",
+  "font": "font_default",
+  "title": "BRAMBLE'S",
+  "cursor": "icon_cursor",
+  "box": {
+    "x": 56,
+    "y": 16,
+    "w": 136,
+    "h": 96,
+    "paper": 3,
+    "border": 2
+  },
+  "layout": {
+    "x": 88,
+    "y": 40,
+    "spacing": 16,
+    "title_y": 24
+  },
+  "options": [
+    {
+      "label": "SELL",
+      "actions": [
+        {
+          "do": "open_menu",
+          "menu": "menu_sell"
+        }
+      ]
+    },
+    {
+      "label": "TOOLS",
+      "actions": [
+        {
+          "do": "open_menu",
+          "menu": "menu_tools"
+        }
+      ]
+    },
+    {
+      "label": "FURNITURE",
+      "actions": [
+        {
+          "do": "open_menu",
+          "menu": "menu_furniture"
+        }
+      ]
+    },
+    {
+      "label": "BYE",
+      "actions": [
+        {
+          "do": "show_dialog",
+          "dialog": "dlg_bramble_bye"
+        }
+      ]
+    }
+  ],
+  "on_cancel": [
+    {
+      "do": "close_menu"
+    }
+  ],
+  "sounds": {
+    "move": "sfx_select",
+    "select": "sfx_confirm"
+  }
+}

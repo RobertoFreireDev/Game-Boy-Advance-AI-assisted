@@ -1,0 +1,351 @@
+{
+  "id": "prop_clock",
+  "kind": "object",
+  "type": "prop",
+  "name": "Clock",
+  "notes": "Invisible keeper of time, placed in every scene: one game minute per second (a day lasts 24 real minutes). Each new hour it sets the town music and darkness (evening 17-19 and dawn 5-6 are dim, night 20-4 is dark with the night song); interiors turn that off. At 6:00 a new day starts: neighbors can be greeted again, fossil cracks move, apples ripen, shells wash up and a new lucky rock is chosen.",
+  "logic": [
+    {
+      "behavior": "day_clock",
+      "params": {
+        "minute_var": "minute",
+        "hour_var": "hour",
+        "day_var": "day",
+        "ticks_per_minute": 60,
+        "new_day_hour": 6,
+        "on_hour": [
+          {
+            "do": "if_var",
+            "var": "hour",
+            "op": ">=",
+            "value": 20,
+            "then": [
+              {
+                "do": "play_music",
+                "music": "mus_night"
+              },
+              {
+                "do": "set_darkness",
+                "level": 7
+              }
+            ],
+            "else": [
+              {
+                "do": "if_var",
+                "var": "hour",
+                "op": "<",
+                "value": 5,
+                "then": [
+                  {
+                    "do": "play_music",
+                    "music": "mus_night"
+                  },
+                  {
+                    "do": "set_darkness",
+                    "level": 7
+                  }
+                ],
+                "else": [
+                  {
+                    "do": "play_music",
+                    "music": "mus_town"
+                  },
+                  {
+                    "do": "set_darkness",
+                    "level": 0
+                  },
+                  {
+                    "do": "if_var",
+                    "var": "hour",
+                    "op": ">=",
+                    "value": 17,
+                    "then": [
+                      {
+                        "do": "set_darkness",
+                        "level": 3
+                      }
+                    ]
+                  },
+                  {
+                    "do": "if_var",
+                    "var": "hour",
+                    "op": "<",
+                    "value": 7,
+                    "then": [
+                      {
+                        "do": "set_darkness",
+                        "level": 3
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "on_new_day": [
+          {
+            "do": "set_var",
+            "var": "talk_pembrook",
+            "value": 0
+          },
+          {
+            "do": "set_var",
+            "var": "talk_rusk",
+            "value": 0
+          },
+          {
+            "do": "set_var",
+            "var": "talk_tilly",
+            "value": 0
+          },
+          {
+            "do": "if_chance",
+            "percent": 55,
+            "then": [
+              {
+                "do": "set_var",
+                "var": "fossil_1",
+                "value": 0
+              }
+            ],
+            "else": [
+              {
+                "do": "set_var",
+                "var": "fossil_1",
+                "value": 1
+              }
+            ]
+          },
+          {
+            "do": "if_chance",
+            "percent": 55,
+            "then": [
+              {
+                "do": "set_var",
+                "var": "fossil_2",
+                "value": 0
+              }
+            ],
+            "else": [
+              {
+                "do": "set_var",
+                "var": "fossil_2",
+                "value": 1
+              }
+            ]
+          },
+          {
+            "do": "if_chance",
+            "percent": 55,
+            "then": [
+              {
+                "do": "set_var",
+                "var": "fossil_3",
+                "value": 0
+              }
+            ],
+            "else": [
+              {
+                "do": "set_var",
+                "var": "fossil_3",
+                "value": 1
+              }
+            ]
+          },
+          {
+            "do": "if_chance",
+            "percent": 55,
+            "then": [
+              {
+                "do": "set_var",
+                "var": "fossil_4",
+                "value": 0
+              }
+            ],
+            "else": [
+              {
+                "do": "set_var",
+                "var": "fossil_4",
+                "value": 1
+              }
+            ]
+          },
+          {
+            "do": "if_var",
+            "var": "tree_1",
+            "op": ">",
+            "value": 0,
+            "then": [
+              {
+                "do": "add_var",
+                "var": "tree_1",
+                "value": -1
+              }
+            ]
+          },
+          {
+            "do": "if_var",
+            "var": "tree_2",
+            "op": ">",
+            "value": 0,
+            "then": [
+              {
+                "do": "add_var",
+                "var": "tree_2",
+                "value": -1
+              }
+            ]
+          },
+          {
+            "do": "if_var",
+            "var": "tree_3",
+            "op": ">",
+            "value": 0,
+            "then": [
+              {
+                "do": "add_var",
+                "var": "tree_3",
+                "value": -1
+              }
+            ]
+          },
+          {
+            "do": "if_var",
+            "var": "tree_4",
+            "op": ">",
+            "value": 0,
+            "then": [
+              {
+                "do": "add_var",
+                "var": "tree_4",
+                "value": -1
+              }
+            ]
+          },
+          {
+            "do": "if_var",
+            "var": "tree_5",
+            "op": ">",
+            "value": 0,
+            "then": [
+              {
+                "do": "add_var",
+                "var": "tree_5",
+                "value": -1
+              }
+            ]
+          },
+          {
+            "do": "if_chance",
+            "percent": 60,
+            "then": [
+              {
+                "do": "set_var",
+                "var": "shell_1",
+                "value": 0
+              }
+            ],
+            "else": [
+              {
+                "do": "set_var",
+                "var": "shell_1",
+                "value": 1
+              }
+            ]
+          },
+          {
+            "do": "if_chance",
+            "percent": 60,
+            "then": [
+              {
+                "do": "set_var",
+                "var": "shell_2",
+                "value": 0
+              }
+            ],
+            "else": [
+              {
+                "do": "set_var",
+                "var": "shell_2",
+                "value": 1
+              }
+            ]
+          },
+          {
+            "do": "if_chance",
+            "percent": 60,
+            "then": [
+              {
+                "do": "set_var",
+                "var": "shell_3",
+                "value": 0
+              }
+            ],
+            "else": [
+              {
+                "do": "set_var",
+                "var": "shell_3",
+                "value": 1
+              }
+            ]
+          },
+          {
+            "do": "if_chance",
+            "percent": 60,
+            "then": [
+              {
+                "do": "set_var",
+                "var": "shell_4",
+                "value": 0
+              }
+            ],
+            "else": [
+              {
+                "do": "set_var",
+                "var": "shell_4",
+                "value": 1
+              }
+            ]
+          },
+          {
+            "do": "set_var",
+            "var": "lucky_found",
+            "value": 0
+          },
+          {
+            "do": "if_chance",
+            "percent": 34,
+            "then": [
+              {
+                "do": "set_var",
+                "var": "lucky_rock",
+                "value": 1
+              }
+            ],
+            "else": [
+              {
+                "do": "if_chance",
+                "percent": 50,
+                "then": [
+                  {
+                    "do": "set_var",
+                    "var": "lucky_rock",
+                    "value": 2
+                  }
+                ],
+                "else": [
+                  {
+                    "do": "set_var",
+                    "var": "lucky_rock",
+                    "value": 3
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

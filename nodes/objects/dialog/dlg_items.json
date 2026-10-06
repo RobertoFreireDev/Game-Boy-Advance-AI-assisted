@@ -1,0 +1,29 @@
+{
+  "id": "dlg_items",
+  "kind": "object",
+  "type": "dialog",
+  "name": "Your pockets",
+  "notes": "Everything you carry, counted, and how the museum and loan are going.",
+  "font": "font_default",
+  "box": {
+    "x": 8,
+    "y": 8,
+    "w": 224,
+    "h": 144,
+    "paper": 3,
+    "border": 2
+  },
+  "ticks_per_char": 0,
+  "lines": [
+    {
+      "speaker": "POCKETS",
+      "text": "FISH - CRUCIAN {fish_crucian}  BASS {fish_bass}  DACE {fish_dace}  CARP {fish_carp}  KOI {fish_koi}  SEA BASS {fish_seabass}  SNAPPER {fish_snapper}\nBUGS - WHITE {bug_white}  BEE {bug_bee}  LADYBUG {bug_ladybug}  FIREFLY {bug_firefly}  CRICKET {bug_cricket}  CRAB {bug_crab}\nFOSSILS - AMMONITE {fos_ammonite}  TRILOBITE {fos_trilobite}  TOOTH {fos_tooth}  AMBER {fos_amber}\nAPPLES {apples}  SHELLS {shells}\nMUSEUM {museum} OF 17   LOAN {loan}"
+    }
+  ],
+  "on_end": [
+    {
+      "do": "open_menu",
+      "menu": "menu_pause"
+    }
+  ]
+}

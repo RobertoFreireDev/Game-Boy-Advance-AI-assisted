@@ -1,0 +1,24 @@
+{
+  "id": "dlg_arrival",
+  "kind": "object",
+  "type": "dialog",
+  "name": "Arrival",
+  "notes": "Shown when you step off the ferry on day 1.",
+  "font": "font_default",
+  "box": {
+    "x": 8,
+    "y": 88,
+    "w": 224,
+    "h": 64,
+    "paper": 3,
+    "border": 2
+  },
+  "ticks_per_char": 1,
+  "lines": [
+    {
+      "speaker": "PUFF",
+      "portrait": "icon_face_puff",
+      "text": "LAND HO! WELCOME TO MOSSBROOK, YOUR NEW HOME. MAYOR ARDEA IS WAITING FOR YOU JUST UP THE DOCK!"
+    }
+  ]
+}

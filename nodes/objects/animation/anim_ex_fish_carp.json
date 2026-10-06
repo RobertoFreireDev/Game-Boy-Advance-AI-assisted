@@ -1,0 +1,16 @@
+{
+  "id": "anim_ex_fish_carp",
+  "kind": "object",
+  "type": "animation",
+  "name": "Carp exhibit",
+  "notes": "The Carp swimming in its museum tank.",
+  "sprite": "spr_fish",
+  "loop": true,
+  "frames": [
+    {
+      "frame": "carp",
+      "ticks": 60
+    }
+  ],
+  "events": []
+}

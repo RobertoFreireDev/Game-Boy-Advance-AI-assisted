@@ -1,0 +1,16 @@
+{
+  "id": "anim_shell",
+  "kind": "object",
+  "type": "animation",
+  "name": "Seashell body",
+  "notes": "A cream seashell half in the sand.",
+  "sprite": "spr_items",
+  "loop": true,
+  "frames": [
+    {
+      "frame": "shell",
+      "ticks": 60
+    }
+  ],
+  "events": []
+}

@@ -1,0 +1,22 @@
+{
+  "id": "dlg_hint_hands",
+  "kind": "object",
+  "type": "dialog",
+  "name": "Shake hint",
+  "notes": "Shown when you press A on an apple tree with a tool in your hands.",
+  "font": "font_default",
+  "box": {
+    "x": 8,
+    "y": 88,
+    "w": 224,
+    "h": 64,
+    "paper": 3,
+    "border": 2
+  },
+  "ticks_per_char": 1,
+  "lines": [
+    {
+      "text": "TO SHAKE A TREE, PUT YOUR TOOLS AWAY (L / R UNTIL THE HAND SHOWS) AND PRESS A."
+    }
+  ]
+}

@@ -1,0 +1,52 @@
+{
+  "id": "enm_white",
+  "kind": "object",
+  "type": "enemy",
+  "name": "Cabbage White",
+  "notes": "A Cabbage White that comes out between 6:00 and 17:59. Swing the net (A, with the net in your hands) to catch it: it goes to your pockets (bug_white) and you see a message. Harmless.",
+  "body": "body_bug_white",
+  "logic": [
+    {
+      "behavior": "exists_when",
+      "params": {
+        "var": "hour",
+        "min": 6,
+        "max": 17
+      }
+    },
+    {
+      "behavior": "wander",
+      "params": {
+        "speed": 0.7,
+        "min_ticks": 10,
+        "max_ticks": 40,
+        "pause_ticks": 20,
+        "distance": 40
+      }
+    },
+    {
+      "behavior": "health",
+      "params": {
+        "max": 1,
+        "invincible_ticks": 0,
+        "knockback": 0,
+        "spikes": false,
+        "on_death": [
+          {
+            "do": "add_var",
+            "var": "bug_white",
+            "value": 1
+          },
+          {
+            "do": "play_sfx",
+            "sfx": "sfx_catch"
+          },
+          {
+            "do": "show_dialog",
+            "dialog": "dlg_catch_white"
+          }
+        ]
+      }
+    }
+  ]
+}
