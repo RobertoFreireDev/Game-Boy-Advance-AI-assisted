@@ -23,6 +23,9 @@ void bhv_topdown_controller_update(Actor *a, const void *params) {
     if (dx && dy) {                             // diagonal: same speed as straight (x 0.707)
         a->vx = a->vx * 181 / 256;
         a->vy = a->vy * 181 / 256;
+        // Same sub-pixel on both axes, so x and y step on the same frame: otherwise the
+        // world scrolls in a zig-zag (x one frame, y the next) that looks like shaking.
+        a->y = (a->y & ~(FX_ONE - 1)) | (a->x & (FX_ONE - 1));
     }
     actor_face(a, dx, dy);                      // picks the up / down / side animations
     actor_play_slot(a, (dx || dy) ? (running ? ANIM_RUN : ANIM_WALK) : ANIM_IDLE);

@@ -6,6 +6,7 @@
 #define SCREEN_W 240
 #define SCREEN_H 160
 #define DEADZONE_X 8        // the target can move this far from center before the camera follows
+#define DEADZONE_Y 8        // same vertically (exact follow: easing wobbled at uneven speeds)
 
 static s32 s_x, s_y, s_ox, s_oy;
 static Actor *s_target;
@@ -47,8 +48,8 @@ void camera_update(void) {
         } else {
             if (tx > s_x + DEADZONE_X) s_x = tx - DEADZONE_X;
             if (tx < s_x - DEADZONE_X) s_x = tx + DEADZONE_X;
-            s32 d = ty - s_y;                         // ease vertically
-            s_y += (d + (d > 0 ? 3 : d < 0 ? -3 : 0)) / 4;
+            if (ty > s_y + DEADZONE_Y) s_y = ty - DEADZONE_Y;
+            if (ty < s_y - DEADZONE_Y) s_y = ty + DEADZONE_Y;
         }
     }
     s_snap = 0;
