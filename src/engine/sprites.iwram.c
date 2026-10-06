@@ -8,6 +8,7 @@
 #include "actor.h"
 #include "particles.h"
 #include "camera.h"
+#include "physics.h"
 
 // An uploaded sheet, with the numbers every sprite of it needs copied from ROM (slow to read)
 // into IWRAM: a horde draws ~100 sprites a frame from a handful of sheets.
@@ -69,7 +70,7 @@ static const Sheet *sheet_of(const SpriteData *s) {
 }
 
 // Add one hardware sprite of an uploaded sheet (skipped when off screen or OAM is full).
-static void put_obj(const Sheet *sh, u16 frame, s32 sx, s32 sy, u8 flip) {
+static void put_obj(const Sheet *sh, u16 frame, s32 sx, s32 sy, u8 flip, int behind) {
     if (s_count >= 128) return;
     if (sx <= -(s32)sh->w || sx >= 240 || sy <= -(s32)sh->h || sy >= 160) return;
     OBJ_ATTR *o = &s_oam[s_count++];
@@ -77,13 +78,22 @@ static void put_obj(const Sheet *sh, u16 frame, s32 sx, s32 sy, u8 flip) {
     o->attr1 = (u16)((sx & 0x1FF) | sh->size |
                      ((flip & FLIP_X) ? ATTR1_HFLIP : 0) | ((flip & FLIP_Y) ? ATTR1_VFLIP : 0));
     o->attr2 = (u16)((sh->base + frame * sh->tpf) | sh->attr2);
+    if (behind) o->attr2 = (u16)((o->attr2 & ~ATTR2_PRIO_MASK) | ATTR2_PRIO(2));
+}
+
+// An actor that walks on the map (collides with tiles) is behind the collision layer while its
+// feet stand on an 'over' tile (a tree top): priority 2 puts it under that layer's art.
+static int actor_behind(const Actor *a) {
+    if (!(a->collides & 1)) return 0;
+    s32 x = fx_to_int(a->x), y = fx_to_int(a->y) - 1;
+    return ((physics_tile_at(x - 5, y) | physics_tile_at(x, y) | physics_tile_at(x + 5, y)) & TILE_OVER) != 0;
 }
 
 void sprites_draw(const SpriteData *s, u16 frame, s32 sx, s32 sy, u8 flip) {
     if (s_count >= 128) return;
     if (sx <= -(s32)s->width || sx >= 240 || sy <= -(s32)s->height || sy >= 160) return;
     const Sheet *sh = sheet_of(s);
-    if (sh) put_obj(sh, frame, sx, sy, flip);
+    if (sh) put_obj(sh, frame, sx, sy, flip, 0);
 }
 
 static void draw_actor(const Actor *a, s32 cx, s32 cy) {
@@ -102,7 +112,7 @@ static void draw_actor(const Actor *a, s32 cx, s32 cy) {
     // The origin is mirrored with the art, so flipping keeps the feet in place.
     s32 ox = (flip & FLIP_X) ? sh->w - a->body->origin_x : a->body->origin_x;
     s32 oy = (flip & FLIP_Y) ? sh->h - a->body->origin_y : a->body->origin_y;
-    put_obj(sh, f->frame, x - ox, y - oy, flip);
+    put_obj(sh, f->frame, x - ox, y - oy, flip, actor_behind(a));
 }
 
 #if GAME_Y_SORT

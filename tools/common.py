@@ -66,7 +66,7 @@ CATEGORIES = ["tiles", "player", "enemy", "npc", "prop", "platform", "pickup", "
 CHANNELS = ["square1", "square2", "wave", "noise"]
 BUTTONS = {"A": 0x001, "B": 0x002, "SELECT": 0x004, "START": 0x008, "RIGHT": 0x010,
            "LEFT": 0x020, "UP": 0x040, "DOWN": 0x080, "R": 0x100, "L": 0x200}
-TILE_FLAGS = ["solid", "one_way", "hazard", "ladder"]
+TILE_FLAGS = ["solid", "one_way", "hazard", "ladder", "over"]
 
 # Valid OBJ sizes (w, h) -> (shape, size) as the hardware encodes them.
 OBJ_SIZES = {

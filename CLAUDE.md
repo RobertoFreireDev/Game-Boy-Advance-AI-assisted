@@ -236,7 +236,7 @@ Structural rules (enforced by `validate.py`):
 | **Art** | | | | |
 | `palette` | `pal_` | Up to 16 colors. Index 0 = transparent. | `colors[]` | — |
 | `sprite` | `spr_` | Sprite sheet for moving things (OBJ layer). | `palette`, `width`, `height` (valid OBJ size, §9), `frames{name: pixels}` | — |
-| `tileset` | `ts_` | 8×8 background tiles keyed by one char. | `palette`, `tiles{char: {pixels, solid, one_way, hazard, ladder}}` | — |
+| `tileset` | `ts_` | 8×8 background tiles keyed by one char. | `palette`, `tiles{char: {pixels, solid, one_way, hazard, ladder, over}}` | — |
 | `tilemap` | `map_` | A background layer drawn with a tileset. | `tileset`, `layer` (1–3), `rows[]`, `parallax` (1 = moves with camera) | `tileset` |
 | `font` | `font_` | 8×8 glyphs for text. | `palette`, `glyphs{char: pixels}` | — |
 | `icon` | `icon_` | Small single UI image (8×8 or 16×16). | `palette`, `pixels` | — |
@@ -274,7 +274,9 @@ groups them for humans. **What an actor does comes only from its `logic` list.**
 - **palette**: `colors[0]` is the transparent slot (its value is ignored).
 - **sprite** frames are listed in order; the art faces **right** (the engine mirrors it).
 - **tileset** keys are one printable ASCII char (not `.` or space); flags `solid`, `one_way`,
-  `hazard`, `ladder` (a tile can't be both solid and one-way; `ladder` + `one_way` = ladder top).
+  `hazard`, `ladder`, `over` (a tile can't be both solid and one-way; `ladder` + `one_way` = ladder top).
+  `over` (collision layer, top-down games): an actor that collides with tiles and whose feet stand on
+  it is drawn behind layer 1 (OBJ priority 2), e.g. walking behind a tree top. Only the trunk is solid.
 - **tilemap**: layer 1 is the collision layer and must have `parallax` 1; `repeat_x: true` makes a
   background layer wrap sideways. The map sides are invisible walls; falling below the map kills.
 - **font**: glyph keys are ASCII 32–126; lowercase falls back to uppercase; space needs no glyph.
@@ -682,7 +684,7 @@ Palette banks are handed out per scene in first-use order (BG and OBJ separately
 | scene | Whole scene on a canvas: backdrop, tilemaps with parallax, every instance drawn with its default animation (animated), HUD on top. Overlays: tile grid, hitboxes, origins, instance labels, platform paths, trigger zones, 240×160 screen frame at camera start. Click an instance → selects its object. Instance list below. |
 | palette | Swatches with index, hex and 15-bit value. |
 | sprite, icon, font | Pixel-perfect zoom of every frame/glyph; optional index grid. |
-| tileset | Every tile with its char and flags (solid, one-way, hazard, ladder). |
+| tileset | Every tile with its char and flags (solid, one-way, hazard, ladder, over). |
 | tilemap | Full map render with collision overlay. |
 | animation | Live playback at real speed, frame strip with ticks, play/pause/step, flips, events on a timeline. |
 | particle | Live emitter simulation with restart button. |

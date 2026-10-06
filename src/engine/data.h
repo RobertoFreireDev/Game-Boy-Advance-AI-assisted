@@ -51,6 +51,7 @@ typedef struct {
 #define TILE_ONE_WAY 2
 #define TILE_HAZARD  4
 #define TILE_LADDER  8
+#define TILE_OVER    16     // drawn in front of actors whose feet stand on it (tree tops)
 
 typedef struct {
     const PaletteData *palette;

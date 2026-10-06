@@ -58,7 +58,7 @@ branches (start from that branch, or merge its engine commit, to reuse them):
 |-------|--------|---------|---------------------|
 | Platformer | `platformer_controller`, `health`, `camera_target` | `patrol`, `chase_player`, `stompable`, `damage_on_touch` | `follow_path` + `solid_platform` lifts, `collectible`, `trigger_zone` exits, gravity bodies, one-way/ladder/hazard tiles |
 | Top-down adventure | `topdown_controller`, `sword_attack`, `health` | `wander`, `chase_player`, `damage_on_touch` | `talk` + dialogs, `locked_door`, `if_var` flags, `*_up`/`*_down` animation slots |
-| Village life sim (Mossbrook branch) | `topdown_controller` (run), `interactor`, `sword_attack` as the bug net | bugs: `wander` + `health` + `exists_when` (hours) | `interact` (talk, shake, dig), `day_clock` + `set_darkness`, `fish_bite`, `exists_when` daily flags, menus that sell with `add_var times`, `save` + bed, `game.y_sort` |
+| Village life sim (Mossbrook branch) | `topdown_controller` (run), `interactor`, `sword_attack` as the bug net | bugs: `wander` + `health` + `exists_when` (hours) | `interact` (talk, shake, dig), `day_clock` + `set_darkness`, `fish_bite`, `exists_when` daily flags, menus that sell with `add_var times`, `save` + bed, `game.y_sort`, trees with an `over` canopy (walk behind) and a solid trunk base |
 | Survivors / bullet heaven | `topdown_controller` (`speed_var`), `weapon` ×N, `aura` | `swarm`, `spawn_wave` (on an invisible `prop` director) | `projectile` props, `magnet` gems, `level_up` + `upgrade` nodes + upgrade menu, `run_clock`, `persistent` vars + `save_game` shop |
 
 If the genre is new (shmup, puzzle, racing, RPG battles…), map it to these first, then list

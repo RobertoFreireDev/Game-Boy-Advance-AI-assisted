@@ -104,6 +104,7 @@ aside.collapsed:hover { background: var(--panel2); }
 .badge.one_way { background: #2a3f5a; color: #a8d0ff; }
 .badge.hazard { background: #5a4520; color: #ffd28a; }
 .badge.ladder { background: #24502f; color: #9ff0b5; }
+.badge.tover { background: #3b2f5c; color: #d6c8ff; }
 .badge.default { background: #2c3140; color: #8b93a6; }
 .badge.set { background: #2d4a6b; color: #cfe5ff; }
 .badge.over { background: #5a3d16; color: #ffd28a; }
@@ -850,9 +851,9 @@ PREVIEW.tileset = (id, n) => {
   const draw = () => {
     box.innerHTML = "";
     for (const [ch, t] of Object.entries(n.tiles || {})) {
-      const flags = ["solid", "one_way", "hazard", "ladder"].filter(f => t[f]);
+      const flags = ["solid", "one_way", "hazard", "ladder", "over"].filter(f => t[f]);
       box.append(h("div", { class: "frame" }, bigImage(pixelsCanvas(t.pixels, n.palette), st.zoom, st.grid),
-        h("div", { class: "cap" }, h("code", {}, "'" + ch + "'"), " ", flags.length ? flags.map(f => h("span", { class: "badge " + f }, f.replace("_", "-"))) : h("span", { class: "badge" }, "scenery"))));
+        h("div", { class: "cap" }, h("code", {}, "'" + ch + "'"), " ", flags.length ? flags.map(f => h("span", { class: "badge " + (f === "over" ? "tover" : f) }, f.replace("_", "-"))) : h("span", { class: "badge" }, "scenery"))));
     }
   };
   draw();
@@ -884,6 +885,7 @@ function collisionOverlay(ctx, mapId, ox, oy) {
     if (t.one_way) { ctx.fillStyle = "rgba(90,170,255,.9)"; ctx.fillRect(px, py, 8, 2); }
     if (t.hazard) { ctx.fillStyle = "rgba(255,170,30,.45)"; ctx.fillRect(px, py, 8, 8); }
     if (t.ladder) { ctx.fillStyle = "rgba(60,220,110,.35)"; ctx.fillRect(px, py, 8, 8); }
+    if (t.over) { ctx.strokeStyle = "rgba(190,160,255,.8)"; ctx.strokeRect(px + .5, py + .5, 7, 7); }
   }));
 }
 PREVIEW.tilemap = (id, n) => {
@@ -900,7 +902,7 @@ PREVIEW.tilemap = (id, n) => {
   draw();
   return card(`Map — ${src.width / 8}×${src.height / 8} tiles (${src.width}×${src.height} px), layer ${n.layer}, parallax ${n.parallax === undefined ? 1 : n.parallax}${n.repeat_x ? ", repeats sideways" : ""}`,
     h("div", { class: "toolbar" }, zoomSelect(st.zoom, z => { st.zoom = z; draw(); }), toggle("Collision overlay", st, "coll", draw), toggle("Tile grid", st, "grid", draw),
-      h("span", { class: "small" }, h("span", { class: "badge solid" }, "solid"), h("span", { class: "badge one_way" }, "one-way"), h("span", { class: "badge hazard" }, "hazard"), h("span", { class: "badge ladder" }, "ladder"))),
+      h("span", { class: "small" }, h("span", { class: "badge solid" }, "solid"), h("span", { class: "badge one_way" }, "one-way"), h("span", { class: "badge hazard" }, "hazard"), h("span", { class: "badge ladder" }, "ladder"), h("span", { class: "badge tover" }, "over"))),
     stage);
 };
 
