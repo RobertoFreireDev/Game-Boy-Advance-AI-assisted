@@ -1,5 +1,5 @@
-// bg.h - background layers: tile/palette upload, scrolling with parallax, and streaming
-// big maps into the 32x32-tile hardware maps as the camera moves.
+// bg.h - background layers: tile/palette upload, scrolling with parallax, streaming big
+// maps into the 32x32-tile hardware maps as the camera moves, and animated tiles.
 // VRAM plan: BG0 = UI (charblock 0, screenblock 31); layer n (1-3) = charblock n, screenblock 31-n.
 #ifndef ENGINE_BG_H
 #define ENGINE_BG_H
@@ -19,7 +19,8 @@ s32 bg_world_h(void);
 int bg_pal_bank(const PaletteData *pal);
 // Tell the layers where the camera is (top-left world pixel).
 void bg_set_camera(s32 x, s32 y);
-// VBlank: write scroll registers and draw newly visible map columns/rows.
+// VBlank: write scroll registers, draw newly visible map columns/rows and step the tile
+// animations (copying new frames only for the ones on screen).
 void bg_vblank(void);
 // Redraw the visible part of every layer (after a scene load).
 void bg_refresh_all(void);

@@ -210,5 +210,12 @@ If a new game pushes past this (more actors, bullets, particles), measure with t
   split a busy picture over layers 3 (far) and 2 (near), make hill lines repeat every 80 px, keep
   dithers and edges on the tile grid, and snap small repeated details (eyes, posts) to the same
   spot inside a tile. Night Swarm's map_sky / map_night / map_logo were made this way.
+- Animated tiles (water, surf, trees in the wind): generate the `frames` with a scratchpad script from
+  each tile's own pixels. Ripples on flat water = move the pixels that differ from the base colour
+  (or dither) and wrap inside the tile; a picture spread over several tiles (a tree) = edit the whole
+  picture, cut it back into tiles and give all of them the same ticks list so they stay in step.
+  Keep the animation inside the tile's silhouette when neighbours don't animate. A tile that must
+  move differently in two places (pond vs river) needs its own copy: one char = one animation.
+  Mossbrook's river, pond, ocean, surf and wind tiles were made this way.
 - Redrawing a level map: generate it from the committed layout (`git show HEAD:...`), never from
   the file you just rewrote, and assert that the solid cells did not move.

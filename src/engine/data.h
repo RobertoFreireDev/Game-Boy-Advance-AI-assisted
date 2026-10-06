@@ -53,12 +53,24 @@ typedef struct {
 #define TILE_LADDER  8
 #define TILE_OVER    16     // drawn in front of actors whose feet stand on it (tree tops)
 
+// Animated tiles that share the same timing: their pixels are swapped in VRAM together.
+typedef struct {
+    u8 tile_count, frame_count;
+    const u16 *tiles;                   // tile numbers in the tileset (1-based, 0 = empty tile)
+    const u8 *ticks;                    // how long each frame shows
+    const u32 *frames;                  // [frame][tile], 8 words per tile
+} TileAnimData;
+
 typedef struct {
     const PaletteData *palette;
     u16 tile_count;                     // includes the empty tile 0
     const u32 *tiles;
     const u8 *flags;                    // TILE_* per tile
+    u8 anim_count;                      // tile animations (at most MAX_TILE_ANIMS)
+    const TileAnimData *anims;
 } TilesetData;
+
+#define ANIM_CHUNK_SHIFT 6              // tile-animation visibility is tracked in 64x64-px chunks
 
 typedef struct {
     const TilesetData *tileset;
@@ -66,6 +78,9 @@ typedef struct {
     fixed parallax;
     u16 width, height;                  // tiles
     const u8 *cells;                    // tileset tile index per cell, row by row
+    // Per tileset animation: one bit per 64x64-px chunk of this map that uses its tiles
+    // (bit cy * chunks_w + cx, chunks_w = (width + 7) / 8). NULL if the tileset has none.
+    const u8 *anim_chunks;
 } TilemapData;
 
 typedef struct {

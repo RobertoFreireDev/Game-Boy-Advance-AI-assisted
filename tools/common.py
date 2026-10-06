@@ -254,6 +254,18 @@ def load_config():
         return {}
 
 
+def tile_anim_groups(tiles):
+    """Animated tiles of a tileset grouped by timing (same ticks list = one group, swapped
+    together by the engine). Returns [(ticks list, [tile chars in tileset order])]."""
+    groups = {}
+    for ch, t in (tiles or {}).items():
+        frames = t.get("frames") if isinstance(t, dict) else None
+        if isinstance(frames, list) and len(frames) >= 2 and all(isinstance(f, dict) for f in frames):
+            key = tuple(f.get("ticks") for f in frames)
+            groups.setdefault(key, []).append(ch)
+    return [(list(k), v) for k, v in groups.items()]
+
+
 def read_engine_limits():
     """Read the #define limits from src/engine/config.h (single source of truth)."""
     limits = {}

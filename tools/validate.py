@@ -526,13 +526,35 @@ def V_tileset(c):
             c.err("%s must be an object with 'pixels'" % label)
             continue
         for k in t:
-            if k not in ["pixels"] + C.TILE_FLAGS:
+            if k not in ["pixels", "frames"] + C.TILE_FLAGS:
                 c.err("%s has unknown field '%s'" % (label, k))
         c.pixels(t.get("pixels"), 8, 8, pal, label + ".pixels")
+        if "frames" in t:
+            frames = c.get(t, "frames", "list", label + ".frames", default=[])
+            if len(frames) < 2:
+                c.err("%s.frames needs at least 2 frames (an animation)" % label)
+            for i, f in enumerate(frames):
+                fl = "%s.frames[%d]" % (label, i)
+                if not isinstance(f, dict):
+                    c.err("%s must be an object with 'ticks' (and 'pixels'; without them it shows the tile's own pixels)" % fl)
+                    continue
+                for k in f:
+                    if k not in ("pixels", "ticks"):
+                        c.err("%s has unknown field '%s'" % (fl, k))
+                c.get(f, "ticks", "int", fl + ".ticks", lo=1, hi=255)
+                if "pixels" in f:
+                    c.pixels(f.get("pixels"), 8, 8, pal, fl + ".pixels")
         for f in C.TILE_FLAGS:
             c.get(t, f, "bool", "%s.%s" % (label, f), required=False)
         if t.get("solid") and t.get("one_way"):
             c.err("%s cannot be both solid and one_way" % label)
+    groups = C.tile_anim_groups(tiles)
+    limit = C.read_engine_limits().get("MAX_TILE_ANIMS", 8)
+    if len(groups) > limit:
+        c.err("animated tiles use %d different timings (ticks lists); the engine allows %d (MAX_TILE_ANIMS). "
+              "Give tiles that animate together the same ticks" % (len(groups), limit))
+    if any(len(chars) > 255 for _, chars in groups):
+        c.err("more than 255 tiles share one animation timing")
 
 
 def V_tilemap(c):

@@ -269,8 +269,26 @@ class Gen:
         ts, fs = self.sym(nid + "_tiles"), self.sym(nid + "_flags")
         self.emit("static const u32 %s[] = {\n%s\n};" % (ts, u32_array(words)))
         self.emit("static const u8 %s[] = { %s };" % (fs, ", ".join(str(f) for f in flags)))
-        self.emit("const TilesetData node_%s = { %s, %d, %s, %s };" % (
-            nid, self.ptr(n["palette"]), len(flags), ts, fs))
+        # Tile animations: one entry per group of animated tiles sharing the same timing.
+        number = {ch: i + 1 for i, ch in enumerate(n["tiles"])}
+        entries = []
+        for ticks, chars in C.tile_anim_groups(n["tiles"]):
+            fw = []
+            for f in range(len(ticks)):
+                for ch in chars:
+                    t = n["tiles"][ch]
+                    fw.extend(tile_words(t["frames"][f].get("pixels") or t["pixels"]))
+            tl, tk, fr = self.sym(nid + "_atiles"), self.sym(nid + "_aticks"), self.sym(nid + "_aframes")
+            self.emit("static const u16 %s[] = { %s };" % (tl, ", ".join(str(number[ch]) for ch in chars)))
+            self.emit("static const u8 %s[] = { %s };" % (tk, ", ".join(str(t) for t in ticks)))
+            self.emit("static const u32 %s[] = {\n%s\n};" % (fr, u32_array(fw)))
+            entries.append("{ %d, %d, %s, %s, %s }" % (len(chars), len(ticks), tl, tk, fr))
+        anims = "NULL"
+        if entries:
+            anims = self.sym(nid + "_anims")
+            self.emit("static const TileAnimData %s[] = { %s };" % (anims, ", ".join(entries)))
+        self.emit("const TilesetData node_%s = { %s, %d, %s, %s, %d, %s };" % (
+            nid, self.ptr(n["palette"]), len(flags), ts, fs, len(entries), anims))
 
     def E_tilemap(self, nid, n):
         tiles = list(self.p.nodes[n["tileset"]]["tiles"].keys())
@@ -278,9 +296,27 @@ class Gen:
         cells = [index.get(ch, 0) for row in n["rows"] for ch in row]
         s = self.sym(nid + "_cells")
         self.emit("static const u8 %s[] = {\n%s\n};" % (s, int_array(cells, 32)))
-        self.emit("const TilemapData node_%s = { %s, %d, %d, %d, %d, %d, %s };" % (
+        # Where each tile animation is used: a bit per 64x64-px (8x8-tile) chunk of the map,
+        # so the engine only copies frames for the animations on screen.
+        chunks = "NULL"
+        groups = C.tile_anim_groups(self.p.nodes[n["tileset"]]["tiles"])
+        if groups:
+            cw = (len(n["rows"][0]) + 7) // 8
+            nbytes = (cw * ((len(n["rows"]) + 7) // 8) + 7) // 8
+            data = []
+            for _, chars in groups:
+                bits = [0] * nbytes
+                for y, row in enumerate(n["rows"]):
+                    for x, ch in enumerate(row):
+                        if ch in chars:
+                            b = (y // 8) * cw + x // 8
+                            bits[b >> 3] |= 1 << (b & 7)
+                data.extend(bits)
+            chunks = self.sym(nid + "_anim_chunks")
+            self.emit("static const u8 %s[] = {\n%s\n};" % (chunks, int_array(data, 32)))
+        self.emit("const TilemapData node_%s = { %s, %d, %d, %d, %d, %d, %s, %s };" % (
             nid, self.ptr(n["tileset"]), n["layer"], 1 if n.get("repeat_x") else 0,
-            fx(n.get("parallax", 1)), len(n["rows"][0]), len(n["rows"]), s))
+            fx(n.get("parallax", 1)), len(n["rows"][0]), len(n["rows"]), s, chunks))
 
     def E_font(self, nid, n):
         glyphs = list(n["glyphs"].items())

@@ -19,7 +19,7 @@ void anim_start(AnimPlayer *p, const AnimationData *a, struct Actor *owner);
 void anim_set(AnimPlayer *p, const AnimationData *a, struct Actor *owner);
 // Advance one tick.
 void anim_step(AnimPlayer *p, struct Actor *owner);
-// Advance every actor's animation by one tick.
+// Advance every actor's animation by one tick (looping ones without events pause off screen).
 void anim_update(void);
 // The frame being shown (NULL if nothing plays). Inline: the sprite list asks for every actor.
 static inline const AnimFrame *anim_frame(const AnimPlayer *p) {

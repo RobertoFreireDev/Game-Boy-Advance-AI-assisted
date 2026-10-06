@@ -4,6 +4,7 @@
 #include <tonc_memdef.h>
 #include <tonc_core.h>
 #include "bg.h"
+#include "config.h"
 
 #define VIEW_COLS 31        // tiles visible across (240 px + partial tile)
 #define VIEW_ROWS 21        // tiles visible down (160 px + partial tile)
@@ -13,6 +14,9 @@ typedef struct {
     u8 bank, valid;
     s32 sx, sy;             // scroll in pixels
     s32 tx, ty;             // top-left tile already drawn
+    u8 anim_frame[MAX_TILE_ANIMS];  // frame each tile animation is on
+    u8 anim_tick[MAX_TILE_ANIMS];   // ticks spent on that frame
+    u8 anim_shown[MAX_TILE_ANIMS];  // frame whose pixels are in VRAM (0xFF = none yet)
 } Layer;
 
 static Layer s_layers[4];   // 1..3 used
@@ -59,6 +63,9 @@ void bg_set_layer(const TilemapData *map) {
     L->map = map;
     L->bank = (u8)bg_pal_bank(map->tileset->palette);
     L->valid = 0;
+    memset(L->anim_frame, 0, sizeof(L->anim_frame));
+    memset(L->anim_tick, 0, sizeof(L->anim_tick));
+    memset(L->anim_shown, 0xFF, sizeof(L->anim_shown));
     memset32(&tile_mem[n][0], 0, 8);                                    // tile 0 = empty
     memcpy32(&tile_mem[n][1], &map->tileset->tiles[8], (map->tileset->tile_count - 1) * 8);
     *bg_cnt(n) = BG_CBB(n) | BG_SBB(31 - n) | BG_4BPP | BG_REG_32x32 | BG_PRIO(n);
@@ -152,11 +159,57 @@ static void stream(int n) {
     L->valid = 1;
 }
 
+// Tile animations swap tile pixels in VRAM, so every copy of a tile on the map changes at
+// once and the cost doesn't grow with the map. Pixels are only copied while a chunk of the
+// map that uses the animation is on screen; the clock keeps running off screen, so the
+// animation picks up in step when it comes back into view.
+
+// True if a 64x64-px chunk marked in `bits` overlaps the layer's view.
+static int anim_on_screen(const Layer *L, const u8 *bits) {
+    const TilemapData *m = L->map;
+    if (m->repeat_x) return 1;                          // wrapping maps: assume visible
+    s32 cw = (m->width + 7) >> 3, chh = (m->height + 7) >> 3;
+    s32 cx0 = L->sx >> ANIM_CHUNK_SHIFT, cx1 = (L->sx + 239) >> ANIM_CHUNK_SHIFT;
+    s32 cy0 = L->sy >> ANIM_CHUNK_SHIFT, cy1 = (L->sy + 159) >> ANIM_CHUNK_SHIFT;
+    if (cx0 < 0) cx0 = 0;
+    if (cy0 < 0) cy0 = 0;
+    if (cx1 >= cw) cx1 = cw - 1;
+    if (cy1 >= chh) cy1 = chh - 1;
+    for (s32 cy = cy0; cy <= cy1; cy++)
+        for (s32 cx = cx0; cx <= cx1; cx++) {
+            s32 bit = cy * cw + cx;
+            if (bits[bit >> 3] & (1 << (bit & 7))) return 1;
+        }
+    return 0;
+}
+
+// Advance layer n's tile animations one tick and copy changed frames that are on screen.
+static void animate_tiles(int n, Layer *L) {
+    const TilemapData *m = L->map;
+    const TilesetData *ts = m->tileset;
+    if (!ts->anim_count || !m->anim_chunks) return;
+    const u8 *bits = m->anim_chunks;
+    s32 bytes = (((m->width + 7) >> 3) * ((m->height + 7) >> 3) + 7) >> 3;
+    for (int g = 0; g < ts->anim_count; g++, bits += bytes) {
+        const TileAnimData *a = &ts->anims[g];
+        if (++L->anim_tick[g] >= a->ticks[L->anim_frame[g]]) {
+            L->anim_tick[g] = 0;
+            if (++L->anim_frame[g] >= a->frame_count) L->anim_frame[g] = 0;
+        }
+        u8 f = L->anim_frame[g];
+        if (L->anim_shown[g] == f || !anim_on_screen(L, bits)) continue;
+        L->anim_shown[g] = f;
+        const u32 *src = &a->frames[f * a->tile_count * 8];
+        for (int t = 0; t < a->tile_count; t++, src += 8) memcpy32(&tile_mem[n][a->tiles[t]], src, 8);
+    }
+}
+
 void bg_vblank(void) {
     for (int n = 1; n <= 3; n++) {
         Layer *L = &s_layers[n];
         if (!L->map) continue;
         stream(n);
+        animate_tiles(n, L);
         *bg_hofs(n) = (u16)L->sx;
         *bg_vofs(n) = (u16)L->sy;
     }

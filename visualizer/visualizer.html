@@ -845,34 +845,77 @@ PREVIEW.font = (id, n) => {
   drawText(ctx, id, "THE QUICK BROWN FOX\nJUMPS OVER THE LAZY DOG\n0123456789 .,!?:-'/+=%", 1, 1);
   return [card("Sample text (on a 240×160 screen)", c), card("Glyphs", ...framesView(Object.entries(n.glyphs || {}).map(([k, v]) => [k === " " ? "space" : k, v]), n.palette, 6))];
 };
+// Animated tiles (like bg.c): `frames` is the whole cycle; a frame without pixels shows the
+// tile's own pixels. Every tile with the same ticks list runs on the same clock.
+function tileFrame(t, tick) {
+  const fr = t && Array.isArray(t.frames) && t.frames.length >= 2 ? t.frames : null;
+  if (!fr) return { pixels: t && t.pixels, index: -1 };
+  const total = fr.reduce((s, f) => s + Math.max(1, f.ticks | 0), 0);
+  let k = tick % total;
+  for (let i = 0; i < fr.length; i++) {
+    const d = Math.max(1, fr[i].ticks | 0);
+    if (k < d) return { pixels: fr[i].pixels || t.pixels, index: i };
+    k -= d;
+  }
+  return { pixels: t.pixels, index: 0 };
+}
 PREVIEW.tileset = (id, n) => {
   const st = { zoom: 6, grid: false };
   const box = h("div", { class: "frames" });
+  let anims = [];
   const draw = () => {
-    box.innerHTML = "";
+    box.innerHTML = ""; anims = [];
     for (const [ch, t] of Object.entries(n.tiles || {})) {
       const flags = ["solid", "one_way", "hazard", "ladder", "over"].filter(f => t[f]);
-      box.append(h("div", { class: "frame" }, bigImage(pixelsCanvas(t.pixels, n.palette), st.zoom, st.grid),
-        h("div", { class: "cap" }, h("code", {}, "'" + ch + "'"), " ", flags.length ? flags.map(f => h("span", { class: "badge " + (f === "over" ? "tover" : f) }, f.replace("_", "-"))) : h("span", { class: "badge" }, "scenery"))));
+      const holder = h("span", {}, bigImage(pixelsCanvas(t.pixels, n.palette), st.zoom, st.grid));
+      const nf = Array.isArray(t.frames) ? t.frames.length : 0;
+      if (nf >= 2) anims.push({ t, holder, last: -1 });
+      box.append(h("div", { class: "frame" }, holder,
+        h("div", { class: "cap" }, h("code", {}, "'" + ch + "'"), " ", flags.length ? flags.map(f => h("span", { class: "badge " + (f === "over" ? "tover" : f) }, f.replace("_", "-"))) : h("span", { class: "badge" }, "scenery"),
+          nf >= 2 ? h("span", { class: "badge", title: "Ticks per frame: " + t.frames.map(f => f.ticks).join(", ") }, `animated · ${nf} frames`) : null)));
     }
   };
   draw();
-  return card("Tiles — the character is what you type in a tilemap row", h("div", { class: "toolbar" }, zoomSelect(st.zoom, z => { st.zoom = z; draw(); }), toggle("Pixel grid", st, "grid", draw)), box);
+  live(tick => {
+    if (!box.isConnected) return;
+    for (const a of anims) {
+      const f = tileFrame(a.t, tick);
+      if (f.index === a.last) continue;
+      a.last = f.index;
+      a.holder.innerHTML = ""; a.holder.append(bigImage(pixelsCanvas(f.pixels, n.palette), st.zoom, st.grid));
+    }
+  });
+  return card("Tiles — the character is what you type in a tilemap row. Animated tiles play here; in the game every copy of the tile on the map moves at once.", h("div", { class: "toolbar" }, zoomSelect(st.zoom, z => { st.zoom = z; draw(); }), toggle("Pixel grid", st, "grid", draw), playButtons()), box);
 };
 
 const _mapCache = new Map();
-function mapCanvas(mapId) {
-  if (_mapCache.has(mapId)) return _mapCache.get(mapId);
-  const m = NODES[mapId], ts = m && NODES[m.tileset];
-  const rows = (m && m.rows) || [];
-  const w = Math.max(1, ...rows.map(r => r.length)) * 8, hh = Math.max(1, rows.length * 8);
-  const c = h("canvas", { width: w, height: hh }), ctx = c.getContext("2d");
-  if (ts) rows.forEach((r, y) => [...r].forEach((ch, x) => {
-    const t = ts.tiles && ts.tiles[ch];
-    if (t) ctx.drawImage(pixelsCanvas(t.pixels, ts.palette), x * 8, y * 8);
-  }));
-  _mapCache.set(mapId, c);
-  return c;
+// The whole map drawn once; animated tiles are redrawn in place when their frame changes.
+function mapCanvas(mapId, tick) {
+  let e = _mapCache.get(mapId);
+  if (!e) {
+    const m = NODES[mapId], ts = m && NODES[m.tileset];
+    const rows = (m && m.rows) || [];
+    const w = Math.max(1, ...rows.map(r => r.length)) * 8, hh = Math.max(1, rows.length * 8);
+    const c = h("canvas", { width: w, height: hh }), ctx = c.getContext("2d");
+    const cells = {};
+    if (ts) rows.forEach((r, y) => [...r].forEach((ch, x) => {
+      const t = ts.tiles && ts.tiles[ch];
+      if (!t) return;
+      ctx.drawImage(pixelsCanvas(t.pixels, ts.palette), x * 8, y * 8);
+      if (Array.isArray(t.frames) && t.frames.length >= 2) (cells[ch] = cells[ch] || []).push([x * 8, y * 8]);
+    }));
+    e = { c, ctx, ts, cells, shown: {}, version: 0 };
+    _mapCache.set(mapId, e);
+  }
+  if (tick !== undefined && e.ts) for (const ch in e.cells) {
+    const t = e.ts.tiles[ch], f = tileFrame(t, tick);
+    if ((e.shown[ch] === undefined ? 0 : e.shown[ch]) === f.index) continue;
+    e.shown[ch] = f.index;
+    e.version++;
+    const img = pixelsCanvas(f.pixels, e.ts.palette);
+    for (const [px, py] of e.cells[ch]) { e.ctx.clearRect(px, py, 8, 8); e.ctx.drawImage(img, px, py); }
+  }
+  return e.c;
 }
 function collisionOverlay(ctx, mapId, ox, oy) {
   const m = NODES[mapId], ts = m && NODES[m.tileset];
@@ -891,15 +934,28 @@ function collisionOverlay(ctx, mapId, ox, oy) {
 PREVIEW.tilemap = (id, n) => {
   const st = { zoom: 2, coll: true, grid: false };
   const stage = h("div", { class: "stage" });
-  const src = mapCanvas(id);
-  const draw = () => {
-    const [c, ctx] = zoomCanvas(src.width, src.height, st.zoom);
+  const src = mapCanvas(id, clock.tick);
+  const animated = Object.values((NODES[n.tileset] || {}).tiles || {}).some(t => Array.isArray(t.frames) && t.frames.length >= 2);
+  let c, ctx;
+  const paint = () => {
+    ctx.clearRect(0, 0, src.width, src.height);
     ctx.drawImage(src, 0, 0);
     if (st.coll) collisionOverlay(ctx, id, 0, 0);
     if (st.grid) drawGrid(ctx, src.width, src.height, 8, st.zoom, "rgba(255,255,255,.15)");
+  };
+  const draw = () => {
+    [c, ctx] = zoomCanvas(src.width, src.height, st.zoom);
+    paint();
     stage.innerHTML = ""; stage.append(c);
   };
   draw();
+  let version = -1;
+  if (animated) live(tick => {
+    if (!c.isConnected) return;
+    mapCanvas(id, tick);
+    const v = _mapCache.get(id).version;
+    if (v !== version) { version = v; paint(); }
+  });
   return card(`Map — ${src.width / 8}×${src.height / 8} tiles (${src.width}×${src.height} px), layer ${n.layer}, parallax ${n.parallax === undefined ? 1 : n.parallax}${n.repeat_x ? ", repeats sideways" : ""}`,
     h("div", { class: "toolbar" }, zoomSelect(st.zoom, z => { st.zoom = z; draw(); }), toggle("Collision overlay", st, "coll", draw), toggle("Tile grid", st, "grid", draw),
       h("span", { class: "small" }, h("span", { class: "badge solid" }, "solid"), h("span", { class: "badge one_way" }, "one-way"), h("span", { class: "badge hazard" }, "hazard"), h("span", { class: "badge ladder" }, "ladder"), h("span", { class: "badge tover" }, "over"))),
@@ -1211,7 +1267,7 @@ function sceneLayout(sc) {
 function drawScene(ctx, sc, L, tick, ov, layersOnScreen) {
   ctx.fillStyle = rgbCss(q15(sc.backdrop || "#000000")); ctx.fillRect(0, 0, L.W, L.H);
   [...L.maps].sort((a, b) => (b.node.layer || 1) - (a.node.layer || 1)).forEach(m => {
-    const src = mapCanvas(m.object), par = m.node.parallax === undefined ? 1 : m.node.parallax;
+    const src = mapCanvas(m.object, tick), par = m.node.parallax === undefined ? 1 : m.node.parallax;
     // Parallax layers are drawn where they appear when the camera is at its start position.
     const offx = Math.floor(L.cx - L.cx * par), offy = Math.floor(L.cy - L.cy * par);
     if (m.node.repeat_x) for (let x = offx - src.width * Math.ceil((offx + 1) / src.width); x < L.W; x += src.width) ctx.drawImage(src, x, offy);

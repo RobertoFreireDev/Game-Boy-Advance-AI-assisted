@@ -14,5 +14,6 @@
 #define MAX_OBJ_TILES   1024    // OBJ VRAM tiles (32 KB, 4bpp)
 #define MAX_ICONS       24      // different icons in UI VRAM at once
 #define MAX_UPGRADE_CHOICES 3   // cards on a level-up (upgrade) menu
+#define MAX_TILE_ANIMS  8       // tile animations (groups of tiles with the same timing) per tileset
 
 #endif

@@ -2,6 +2,7 @@
 #include "anim.h"
 #include "actor.h"
 #include "actions.h"
+#include "camera.h"
 
 static void fire_events(const AnimPlayer *p, struct Actor *owner) {
     const AnimationData *a = p->anim;
@@ -39,9 +40,18 @@ void anim_step(AnimPlayer *p, struct Actor *owner) {
 }
 
 void anim_update(void) {
+    s32 cx = camera_x(), cy = camera_y();
     for (int i = 0; i < MAX_ACTORS; i++) {
         Actor *a = &g_actors[i];
-        if (a->active) anim_step(&a->anim, a);
+        if (!a->active) continue;
+        // Far off screen (same margin as sprites.iwram.c), a looping animation without frame
+        // events only changes looks: hold it until the actor comes back into view.
+        const AnimationData *an = a->anim.anim;
+        if (an && an->loop && !an->event_count) {
+            s32 x = fx_to_int(a->x) - cx, y = fx_to_int(a->y) - cy;
+            if (x <= -64 || x >= 240 + 64 || y <= -64 || y >= 160 + 64) continue;
+        }
+        anim_step(&a->anim, a);
     }
 }
 

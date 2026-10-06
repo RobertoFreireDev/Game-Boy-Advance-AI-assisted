@@ -236,7 +236,7 @@ Structural rules (enforced by `validate.py`):
 | **Art** | | | | |
 | `palette` | `pal_` | Up to 16 colors. Index 0 = transparent. | `colors[]` | — |
 | `sprite` | `spr_` | Sprite sheet for moving things (OBJ layer). | `palette`, `width`, `height` (valid OBJ size, §9), `frames{name: pixels}` | — |
-| `tileset` | `ts_` | 8×8 background tiles keyed by one char. | `palette`, `tiles{char: {pixels, solid, one_way, hazard, ladder, over}}` | — |
+| `tileset` | `ts_` | 8×8 background tiles keyed by one char. | `palette`, `tiles{char: {pixels, solid, one_way, hazard, ladder, over, frames}}` | — |
 | `tilemap` | `map_` | A background layer drawn with a tileset. | `tileset`, `layer` (1–3), `rows[]`, `parallax` (1 = moves with camera) | `tileset` |
 | `font` | `font_` | 8×8 glyphs for text. | `palette`, `glyphs{char: pixels}` | — |
 | `icon` | `icon_` | Small single UI image (8×8 or 16×16). | `palette`, `pixels` | — |
@@ -277,6 +277,13 @@ groups them for humans. **What an actor does comes only from its `logic` list.**
   `hazard`, `ladder`, `over` (a tile can't be both solid and one-way; `ladder` + `one_way` = ladder top).
   `over` (collision layer, top-down games): an actor that collides with tiles and whose feet stand on
   it is drawn behind layer 1 (OBJ priority 2), e.g. walking behind a tree top. Only the trunk is solid.
+  **Animated tiles** (water, waves, leaves in the wind): `frames[{ticks, pixels?}]` is the whole cycle
+  (≥ 2 frames, ticks 1–255); a frame without `pixels` shows the tile's own `pixels`. Flags never
+  animate. The engine swaps the tile's pixels in VRAM, so every copy on the map moves at once and the
+  cost doesn't grow with the map. Tiles with the same ticks list share one clock (that's how a big
+  picture split over several tiles, like a tree, stays in step); at most `MAX_TILE_ANIMS` different
+  ticks lists per tileset. Frames are only copied while a 64×64-px chunk of the map that uses them is on
+  screen; the clock keeps running off screen (and while menus are open).
 - **tilemap**: layer 1 is the collision layer and must have `parallax` 1; `repeat_x: true` makes a
   background layer wrap sideways. The map sides are invisible walls; falling below the map kills.
 - **font**: glyph keys are ASCII 32–126; lowercase falls back to uppercase; space needs no glyph.
@@ -558,10 +565,12 @@ src/engine/
 ├── physics.iwram.c/.h gravity, tile collision (solid/one_way/hazard/ladder), actor overlaps
 │                      (contacts only test the categories an actor lists, via per-frame buckets;
 │                       big buckets many actors look into are binned in a 32 px grid)
-├── anim.iwram.c/.h    animation players and frame events
+├── anim.iwram.c/.h    animation players and frame events (looping animations without events
+│                      pause while their actor is far off screen)
 ├── particles.c/.h particle pool
 ├── camera.c/.h    follow target, clamp to bounds, shake
-├── bg.c/.h        tiles/palettes upload, tilemap scrolling, streaming for big maps
+├── bg.c/.h        tiles/palettes upload, tilemap scrolling, streaming for big maps, animated
+│                  tiles (VRAM tile swaps, only for the parts of the map on screen)
 ├── sprites.iwram.c/.h OAM shadow buffer and OBJ VRAM allocation
 ├── audio.c/.h     PSG driver: music sequencer + sfx
 ├── ui.c/.h        text, hud, menus (incl. upgrade cards), dialogs
@@ -684,8 +693,8 @@ Palette banks are handed out per scene in first-use order (BG and OBJ separately
 | scene | Whole scene on a canvas: backdrop, tilemaps with parallax, every instance drawn with its default animation (animated), HUD on top. Overlays: tile grid, hitboxes, origins, instance labels, platform paths, trigger zones, 240×160 screen frame at camera start. Click an instance → selects its object. Instance list below. |
 | palette | Swatches with index, hex and 15-bit value. |
 | sprite, icon, font | Pixel-perfect zoom of every frame/glyph; optional index grid. |
-| tileset | Every tile with its char and flags (solid, one-way, hazard, ladder, over). |
-| tilemap | Full map render with collision overlay. |
+| tileset | Every tile with its char and flags (solid, one-way, hazard, ladder, over); animated tiles play live. |
+| tilemap | Full map render with collision overlay; animated tiles play live. |
 | animation | Live playback at real speed, frame strip with ticks, play/pause/step, flips, events on a timeline. |
 | particle | Live emitter simulation with restart button. |
 | body | Animation slots as tabs, live playback with hitbox and origin overlay, physics summary. |
