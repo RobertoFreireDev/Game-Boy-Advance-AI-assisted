@@ -3,17 +3,21 @@
   "kind": "object",
   "type": "animation",
   "name": "Net swing (up)",
-  "notes": "Net swung up over the head.",
+  "notes": "Net held low at your right side, swung up past your shoulder (white smear), then slapped flat on the ground ahead, beyond your head (drawn behind it). 4+4+6 = 14 ticks.",
   "sprite": "spr_player",
   "loop": false,
   "frames": [
     {
       "frame": "net_up_0",
-      "ticks": 5
+      "ticks": 4
     },
     {
       "frame": "net_up_1",
-      "ticks": 9
+      "ticks": 4
+    },
+    {
+      "frame": "net_up_2",
+      "ticks": 6
     }
   ],
   "events": []

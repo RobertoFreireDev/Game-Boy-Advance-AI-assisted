@@ -3,17 +3,21 @@
   "kind": "object",
   "type": "animation",
   "name": "Net swing (side)",
-  "notes": "Raise the net, then sweep it forward. 14 ticks, the length of the swing.",
+  "notes": "Pull the net back behind you, sweep it forward at chest height (white smear), then slap it down low in front while stepping in. 4+4+6 = 14 ticks, the length of the swing.",
   "sprite": "spr_player",
   "loop": false,
   "frames": [
     {
       "frame": "net_side_0",
-      "ticks": 5
+      "ticks": 4
     },
     {
       "frame": "net_side_1",
-      "ticks": 9
+      "ticks": 4
+    },
+    {
+      "frame": "net_side_2",
+      "ticks": 6
     }
   ],
   "events": []

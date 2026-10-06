@@ -5,7 +5,7 @@
   "name": "You body",
   "notes": "How you look and collide. The hitbox is only the feet (10x6), so you can walk close to trees and walls and your head may overlap things above, like in classic top-down games.",
   "origin": [
-    8,
+    16,
     31
   ],
   "hitbox": {

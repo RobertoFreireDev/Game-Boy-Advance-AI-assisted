@@ -3,17 +3,21 @@
   "kind": "object",
   "type": "animation",
   "name": "Net swing (down)",
-  "notes": "Net raised over the head, then slapped down in front.",
+  "notes": "Net raised over your right shoulder (behind your head), swung down along your right side (white smear), then slapped flat on the ground in front of your feet with both hands. 4+4+6 = 14 ticks.",
   "sprite": "spr_player",
   "loop": false,
   "frames": [
     {
       "frame": "net_down_0",
-      "ticks": 5
+      "ticks": 4
     },
     {
       "frame": "net_down_1",
-      "ticks": 9
+      "ticks": 4
+    },
+    {
+      "frame": "net_down_2",
+      "ticks": 6
     }
   ],
   "events": []
