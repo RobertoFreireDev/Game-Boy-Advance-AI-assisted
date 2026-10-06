@@ -57,13 +57,14 @@
     }
   },
   "add_var": {
-    "description": "Add to a game variable (use a negative number to subtract).",
+    "description": "Add to a game variable (use a negative number to subtract). With 'from' and 'times' it adds another variable multiplied by a number.",
     "sentence": "Add {value} to {var}",
     "params": {
       "var":      {"type": "var", "required": true, "description": "Variable to change."},
       "value":    {"type": "int", "default": 0, "description": "Amount to add (negative to subtract)."},
       "from":     {"type": "var", "default": "", "description": "Add this other variable's value instead of 'value'. Empty = use 'value'."},
-      "max_var":  {"type": "var", "default": "", "description": "Never go above this other variable (health up to max health). Empty = no limit."}
+      "max_var":  {"type": "var", "default": "", "description": "Never go above this other variable (health up to max health). Empty = no limit."},
+      "times":    {"type": "int", "default": 1, "description": "Multiply the amount by this first (sell 3 fish at 120 each: from the fish count, times 120; subtract a variable: from it, times -1)."}
     }
   },
   "reset_vars": {
@@ -148,6 +149,13 @@
     "sentence": "Run custom code {function}",
     "params": {
       "function":  {"type": "string", "required": true, "description": "Name of the C function: void name(Actor *self)."}
+    }
+  },
+  "set_darkness": {
+    "description": "Darken the world (maps and sprites, not the HUD or boxes) for evening and night. 0 = normal, 16 = black. Every scene starts at 0.",
+    "sentence": "Darken the world to level {level}",
+    "params": {
+      "level":  {"type": "int", "default": 0, "description": "How dark, 0 (normal) to 16 (black)."}
     }
   }
 }

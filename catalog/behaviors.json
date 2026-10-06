@@ -11,11 +11,13 @@
     }
   },
   "topdown_controller": {
-    "description": "Top-down control: walk in any direction with the D-pad (no gravity). Faces up, down, left or right and picks the matching idle / walk animations (idle_up, walk_down...).",
+    "description": "Top-down control: walk in any direction with the D-pad (no gravity), hold the run button to run. Faces up, down, left or right and picks the matching idle / walk animations (idle_up, walk_down...); running uses the run slot (side view) and the walk_up / walk_down slots. Stands still while stunned (held by fishing).",
     "params": {
-      "speed":      {"type": "fixed", "default": 1.0, "description": "Walking speed (pixels per tick)."},
-      "eight_way":  {"type": "bool", "default": true, "description": "Allow diagonal movement."},
-      "speed_var":  {"type": "var", "default": "", "description": "Each point of this game variable adds 10% speed (speed upgrades). Empty = no bonus."}
+      "speed":       {"type": "fixed", "default": 1.0, "description": "Walking speed (pixels per tick)."},
+      "eight_way":   {"type": "bool", "default": true, "description": "Allow diagonal movement."},
+      "speed_var":   {"type": "var", "default": "", "description": "Each point of this game variable adds 10% speed (speed upgrades). Empty = no bonus."},
+      "run_button":  {"type": "button", "default": "B", "description": "Hold this button to run."},
+      "run_speed":   {"type": "fixed", "default": 0, "description": "Running speed (pixels per tick). 0 = no running."}
     }
   },
   "sword_attack": {
@@ -97,9 +99,9 @@
   "damage_on_touch": {
     "description": "Hurts whoever touches it (if they have health). Does not hurt someone who stomps it from above when it is stompable. With stun_ticks, a hit that lands stuns it: it stands still and hurts no one for a while (so it can't keep chasing and biting).",
     "params": {
-      "amount":  {"type": "int", "default": 1, "description": "Health removed per hit."},
-      "hurts":   {"type": "choice", "default": "player", "options": ["player", "enemy", "any"], "description": "Who it hurts."},
-      "stun_ticks": {"type": "ticks", "default": 0, "description": "After it hurts someone it is stunned this long: swarm, chase_player, patrol and wander hold still and it does no touch damage. 0 = never stunned."}
+      "amount":      {"type": "int", "default": 1, "description": "Health removed per hit."},
+      "hurts":       {"type": "choice", "default": "player", "options": ["player", "enemy", "any"], "description": "Who it hurts."},
+      "stun_ticks":  {"type": "ticks", "default": 0, "description": "After it hurts someone it is stunned this long: swarm, chase_player, patrol and wander hold still and it does no touch damage. 0 = never stunned."}
     }
   },
   "stompable": {
@@ -248,8 +250,62 @@
   "button_actions": {
     "description": "When a button is pressed, run actions (for example: START opens the pause menu). Does nothing while a menu or dialog is open.",
     "params": {
-      "button":   {"type": "button", "default": "START", "description": "Button to watch."},
-      "on_press": {"type": "actions", "default": [], "description": "What happens when the button is pressed."}
+      "button":    {"type": "button", "default": "START", "description": "Button to watch."},
+      "on_press":  {"type": "actions", "default": [], "description": "What happens when the button is pressed."}
+    }
+  },
+  "interact": {
+    "description": "The player can use this object with the A button (see interactor): talk to a neighbor, shake a tree, dig a fossil, read a sign. Its actions run with this object as 'self'; check the tool variable in them with if_var. Plays the object's 'talk' sound. Works on triggers too (invisible spots: a bed, a shop counter).",
+    "params": {
+      "range":        {"type": "int", "default": 4, "description": "Extra pixels around its hitbox (or trigger zone) that still count as 'in front of it'."},
+      "face_player":  {"type": "bool", "default": false, "description": "Turn to look at the player when used (neighbors)."},
+      "on_press":     {"type": "actions", "default": [], "description": "What happens when the player uses it."}
+    }
+  },
+  "interactor": {
+    "description": "The player's 'use' button: on a press, uses the nearest object with the interact behavior in a small box in front of the player. A used press holds the player for 2 ticks, so behaviors listed after this one on the same button (a net swing) don't also react. List it before sword_attack.",
+    "params": {
+      "button":  {"type": "button", "default": "A", "description": "Button that uses things."},
+      "reach":   {"type": "int", "default": 12, "description": "How far in front of the body the use box reaches (pixels)."},
+      "width":   {"type": "int", "default": 12, "description": "How wide the use box is (pixels)."}
+    }
+  },
+  "exists_when": {
+    "description": "The object only exists while a game variable is between min and max (inclusive): fruit still on its tree, a fossil not dug up today, a butterfly that only comes out by day, the player placed at the door you came out of. If min is bigger than max the range wraps around (hour 19 to 4 = night). List it first.",
+    "params": {
+      "var":   {"type": "var", "required": true, "description": "Game variable to check."},
+      "min":   {"type": "int", "default": 1, "description": "Smallest value for which it exists."},
+      "max":   {"type": "int", "default": 1, "description": "Biggest value for which it exists."},
+      "live":  {"type": "bool", "default": false, "description": "Also check every tick and vanish as soon as the value leaves the range. Off = only checked when the scene places it."}
+    }
+  },
+  "day_clock": {
+    "description": "The in-game clock, on an invisible prop: one game minute every few ticks. Keeps the minute, hour (0-23) and day variables, runs on_hour at every new hour (and once when the scene starts, so music and night darkness match the time) and on_new_day when the hour reaches new_day_hour. Stops while a menu or dialog is open.",
+    "params": {
+      "minute_var":        {"type": "var", "required": true, "description": "Game variable for the minutes (0-59)."},
+      "hour_var":          {"type": "var", "required": true, "description": "Game variable for the hour (0-23)."},
+      "day_var":           {"type": "var", "required": true, "description": "Game variable counting the days."},
+      "ticks_per_minute":  {"type": "ticks", "default": 60, "description": "Ticks per game minute (60 = one real second)."},
+      "new_day_hour":      {"type": "int", "default": 6, "description": "Hour at which a new day starts (the day variable goes up)."},
+      "hour_at_start":     {"type": "bool", "default": true, "description": "Run on_hour once when the scene starts."},
+      "on_hour":           {"type": "actions", "default": [], "description": "What happens every new hour (music, darkness...)."},
+      "on_new_day":        {"type": "actions", "default": [], "description": "What happens when a new day starts (fruit grows back, fossils move...)."}
+    }
+  },
+  "fish_bite": {
+    "description": "A fish shadow caught with the rod. Face it from the shore and press the button (with the rod variable on): the line is cast and the player holds still. The fish nibbles 1 to nibbles_max times (pressing then scares it: on_spook), then bites: press within 'window' ticks to catch it (on_catch; it plays 'die'), or it gets away (on_escape). The cancel button reels in. Body slots: walk/idle swimming, jump bobber floating, attack bobber dipping, hurt bobber pulled under, die the catch splash. Sounds: jump = cast, attack = nibble, hurt = bite. Give it wander (with a distance) to swim around.",
+    "params": {
+      "var":            {"type": "var", "default": "", "description": "Only works while this game variable is not 0 (the rod is in hand). Empty = always."},
+      "button":         {"type": "button", "default": "A", "description": "Button that casts and pulls."},
+      "cancel_button":  {"type": "button", "default": "B", "description": "Button that reels the line back in."},
+      "range":          {"type": "int", "default": 28, "description": "How close the player must stand (pixels of gap between them)."},
+      "wait_min":       {"type": "ticks", "default": 50, "description": "Shortest wait before the first nibble (ticks)."},
+      "wait_max":       {"type": "ticks", "default": 140, "description": "Longest wait before the first nibble (ticks)."},
+      "nibbles_max":    {"type": "int", "default": 4, "description": "Most nibbles before the bite (at least 1)."},
+      "window":         {"type": "ticks", "default": 20, "description": "Ticks the player has to press after the bite."},
+      "on_catch":       {"type": "actions", "default": [], "description": "What happens when it is caught (which fish, the message)."},
+      "on_escape":      {"type": "actions", "default": [], "description": "What happens when the player was too slow."},
+      "on_spook":       {"type": "actions", "default": [], "description": "What happens when the player pulled too early."}
     }
   }
 }

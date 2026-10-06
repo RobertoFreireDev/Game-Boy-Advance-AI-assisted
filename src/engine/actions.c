@@ -91,7 +91,7 @@ static int run(Script *s) {
             vars_set(a->var, a->var_from >= 0 ? vars_get(a->var_from) : a->a);
             break;
         case ACT_ADD_VAR: {
-            s32 v = vars_get(a->var) + (a->var_from >= 0 ? vars_get(a->var_from) : a->a);
+            s32 v = vars_get(a->var) + (a->var_from >= 0 ? vars_get(a->var_from) : a->a) * a->b;   // b = times
             if (a->var_max >= 0 && v > vars_get(a->var_max)) v = vars_get(a->var_max);
             vars_set(a->var, v);
             break;
@@ -131,6 +131,9 @@ static int run(Script *s) {
             break;
         case ACT_SHAKE_CAMERA:
             camera_shake(a->a, a->b);
+            break;
+        case ACT_SET_DARKNESS:
+            scene_set_darkness(a->a);
             break;
         case ACT_SAVE_GAME:
             save_write();

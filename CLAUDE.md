@@ -183,7 +183,9 @@ broken into the parts it is made of.
 }
 ```
 `title` ≤ 12 chars, `game_code` exactly 4 chars (ROM header). `gravity` (px/tick², default 0.25)
-and `max_fall_speed` (px/tick, default 4) apply to every body with `physics.gravity`. Variables
+and `max_fall_speed` (px/tick, default 4) apply to every body with `physics.gravity`. `"y_sort": true`
+(top-down games) draws actors sorted by their feet (origin y), lower on screen in front, instead of
+"players on top". Variables
 are the game's global state; HUD, behaviors and actions read and write them by name. Flags are
 stored as 0/1. A variable with `"persistent": true` keeps its value through `reset_vars` (permanent
 unlocks, banked gold); `save_game` saves every variable. Index order: scenes first, then objects.
@@ -291,7 +293,8 @@ groups them for humans. **What an actor does comes only from its `logic` list.**
 - **hud** elements (x, y multiples of 8): `text {text}` (`{var}` placeholders, 3 chars reserved
   per value; `{var:02}` pads to 2 digits, for clocks), `icon {icon}`, `icon_repeat {icon, empty_icon?, var, max_var?, max, spacing?}` (`var` full icons, then
   empty icons up to `max_var` — heart containers — or up to `max` without it),
-  `bar {var, max, length (tiles), color, back}` (colors are indexes of the font palette).
+  `bar {var, max, length (tiles), color, back}` (colors are indexes of the font palette),
+  `icon_switch {var, icons[]}` (draws `icons[var]`, all the same size: the tool in your hands).
 - **menu**: `layout {x, y, spacing, title_y}`, optional `box {x, y, w, h, paper, border}`,
   `sounds {move, select}`. Up/Down move, A picks, B or START runs `on_cancel`. Picking an option **locks**
   the menu (no more input) and runs its actions, so they should `close_menu`, `goto_scene`,
@@ -311,7 +314,8 @@ groups them for humans. **What an actor does comes only from its `logic` list.**
   fits 2 lines of 22 chars. Evolutions need `requires[{upgrade, level (1-9 or "max")}]` and
   `replaces` (a weapon). The level variable is what weapon behaviors read (`weapon.level_var`).
 - **dialog**: `box {x, y, w, h, paper, border}` (required), `ticks_per_char` (0 = instant).
-  Codegen word-wraps each line (`common.wrap_text`); the speaker uses the first row, a 16×16
+  Line text may use `{var}` / `{var:02}` (5 columns reserved per value when wrapping; the number
+  appears at once while typing). Codegen word-wraps each line (`common.wrap_text`); the speaker uses the first row, a 16×16
   portrait takes 3 columns. A/B skip typing / next line; choices show after the last line.
   An icon on a box (portrait, cursor) only gets the box color behind it when it uses the font's
   palette; in any other palette its transparent pixels show the map, so paint its background with
@@ -500,7 +504,14 @@ Every channel in a pattern has the same number of rows. Missing channels are sil
   actions, e.g. START opens a pause menu). Top-down set: `sword_attack`,
   `wander`, `locked_door`. Survivors set: `weapon` (auto-fire, level from a variable), `projectile`
   (the shot), `aura`, `swarm` (horde movement with grid-based crowd spreading), `magnet` (pickups fly
-  to the player), `spawn_wave` (timed off-screen waves), `run_clock`, `level_up`. Add more as games need them.
+  to the player), `spawn_wave` (timed off-screen waves), `run_clock`, `level_up`. Life-sim set:
+  `interactor` (on the player: A uses the nearest `interact` object in front; list it before
+  `sword_attack` so a used press doesn't also swing), `interact` (talk, shake, dig, read: its
+  `on_press` actions run with the object as self; works on triggers), `exists_when` (the actor exists
+  only while a variable is in a range: hours, collected-today flags, one player copy per door; list it
+  first), `day_clock` (minute/hour/day variables, `on_hour`, `on_new_day`), `fish_bite` (rod fishing on
+  a fish shadow: cast, nibbles, timed bite). `topdown_controller` runs while `run_button` is held
+  (`run_speed`) and holds still while the actor is stunned. Add more as games need them.
 - Prefer a new reusable behavior over custom code.
 
 ### 7.2 Actions (what happens when something occurs)
@@ -508,7 +519,9 @@ Action lists appear in `on_start`, `on_enter`, `on_death`, menu options, dialog 
 animation events, etc. Format: `{ "do": "<action>", ...params }`, run in order; `wait` pauses
 the list. Catalog in `catalog/actions.json`. Starter set:
 `goto_scene`, `fade_in`, `fade_out`, `wait`, `play_sfx`, `play_music`, `stop_music`,
-`set_var`, `add_var` (both take `value` or `from` another variable; `add_var` can cap at `max_var`),
+`set_var`, `add_var` (both take `value` or `from` another variable; `add_var` can cap at `max_var` and
+multiply by `times`: sell 3 fish at 120 = from the count, times 120; subtract a variable = times -1),
+`set_darkness` (night: darkens maps and sprites but not the UI, 0-16, reset every scene),
 `reset_vars` (skips persistent variables), `if_var` (`then[]`/`else[]`), `if_chance` (`percent`,
 `then[]`/`else[]`, random drops), `show_dialog`, `open_menu`,
 `close_menu`, `spawn`, `destroy_self`, `shake_camera`, `save_game`, `load_game`, `call` (custom C, §7.3).
@@ -572,7 +585,8 @@ flashes).
 
 **VRAM plan** (mode 0, 4bpp): BG0 = UI on charblock 0 / screenblock 31; tilemap layer *n* (1–3)
 = charblock *n* / screenblock 31−*n*, priority *n*; big maps stream into the 32×32 hardware map as
-the camera moves. Sprites use priority 1 (above every map, below the UI); players draw on top.
+the camera moves. Sprites use priority 1 (above every map, below the UI); players draw on top (or, with
+`game.y_sort`, everyone is sorted by feet).
 Palette banks are handed out per scene in first-use order (BG and OBJ separately).
 
 **Code rules:**

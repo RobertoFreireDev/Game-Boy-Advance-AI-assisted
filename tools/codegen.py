@@ -147,6 +147,7 @@ class Gen:
             var_from = self.var_enum(val("from"))
             if do == "add_var":
                 var_max = self.var_enum(val("max_var"))
+                vb = int(val("times") if val("times") is not None else 1)
         elif do == "if_chance":
             va = int(val("percent"))
             then_l = self.actions(val("then") or [], base + "_then")
@@ -163,6 +164,8 @@ class Gen:
         elif do == "spawn":
             node = self.node_enum(val("object"))
             va, vb, sub = int(val("x") or 0), int(val("y") or 0), 1 if val("relative") else 0
+        elif do == "set_darkness":
+            va = int(val("level") or 0)
         elif do == "shake_camera":
             va, vb = int(val("ticks") or 0), int(val("strength") or 0)
         elif do == "call":
@@ -438,15 +441,20 @@ class Gen:
             var = self.var_enum(e.get("var"))
             max_var = self.var_enum(e.get("max_var"))
             mx = length = color = back = spacing = 0
+            icons = "NULL"
             if kind == "text":
                 text = self.text(e["text"])
+            elif kind == "icon_switch":
+                mx = len(e["icons"])
+                icons = self.sym(nid + "_icons")
+                self.emit("static const IconData *const %s[] = { %s };" % (icons, ", ".join(self.ptr(i) for i in e["icons"])))
             elif kind == "icon_repeat":
                 size = len(self.p.nodes[e["icon"]]["pixels"])
                 mx, spacing = e["max"], e.get("spacing", size) // 8
             elif kind == "bar":
                 mx, length, color, back = e["max"], e["length"], e["color"], e.get("back", 0)
-            items.append("{ HUD_%s, %d, %d, %d, %s, %s, %d, %d, %d, %d, %s, %s, %s }" % (
-                up(kind), x, y, mx, var, max_var, length, color, back, spacing, icon, empty, text))
+            items.append("{ HUD_%s, %d, %d, %d, %s, %s, %d, %d, %d, %d, %s, %s, %s, %s }" % (
+                up(kind), x, y, mx, var, max_var, length, color, back, spacing, icon, empty, icons, text))
         s = self.sym(nid + "_elements")
         self.emit("static const HudElement %s[] = {\n    %s\n};" % (s, ",\n    ".join(items)))
         self.emit("const HudData node_%s = { %s, %d, %s };" % (nid, self.ptr(n["font"]), len(items), s))
@@ -507,7 +515,7 @@ class Gen:
             lay = C.dialog_layout(n["box"], ln)
             wrapped, _ = C.wrap_text(ln["text"], lay["text_w"])
             lines.append("{ %s, %s, %s, %d, %d, %d, %d, %d, %d }" % (
-                cstr(ln.get("speaker") or None), self.ptr(ln.get("portrait")), cstr("\n".join(wrapped)),
+                cstr(ln.get("speaker") or None), self.ptr(ln.get("portrait")), self.text("\n".join(wrapped)),
                 lay["speaker_x"], lay["speaker_y"], lay["portrait_x"], lay["portrait_y"],
                 lay["text_x"], lay["text_y"]))
         ls = self.sym(nid + "_lines")
@@ -599,6 +607,7 @@ def gen_node_ids(p):
     enum("Behaviors (catalog/behaviors.json)", ["BHV_%s" % up(b) for b in p.behaviors], "BHV_COUNT")
     out.append("#define BHV_ARRAY_SIZE %d\n" % max(1, len(p.behaviors)))
     out.append("#define GAME_SAVE %d\n" % (1 if p.game.get("save") else 0))
+    out.append("#define GAME_Y_SORT %d\n" % (1 if p.game.get("y_sort") else 0))
     out.append("#endif\n")
     return "\n".join(out)
 

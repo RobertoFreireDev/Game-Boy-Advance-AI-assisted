@@ -405,6 +405,7 @@ function drawHud(ctx, hudId, values) {
     const x = e.x >> 3, y = e.y >> 3;
     if (e.kind === "text") drawText(ctx, hd.font, fillText(e.text, get), x, y);
     else if (e.kind === "icon") drawIcon(ctx, e.icon, x, y);
+    else if (e.kind === "icon_switch") { const ics = e.icons || []; if (ics.length) drawIcon(ctx, ics[Math.max(0, Math.min(ics.length - 1, get(e.var)))], x, y); }
     else if (e.kind === "icon_repeat") {
       const ic = NODES[e.icon]; const size = ic ? ic.pixels.length / 8 : 1;
       const sp = (e.spacing || size * 8) >> 3, v = get(e.var);
@@ -485,7 +486,7 @@ function drawDialog(ctx, dlgId, lineIdx, chars, choosing, choice) {
   if (!ln || !L) return;
   if (ln.speaker) drawText(ctx, d.font, ln.speaker, L.speaker_x, L.speaker_y, paper);
   if (ln.portrait) drawIcon(ctx, ln.portrait, L.portrait_x, L.portrait_y, paper, f && f.palette);
-  let text = L.wrapped.join("\n");
+  let text = fillText(L.wrapped.join("\n"));   // {var} shows its starting value
   if (chars !== undefined) text = text.slice(0, chars);
   drawText(ctx, d.font, text, L.text_x, L.text_y, paper);
 }
@@ -1191,7 +1192,9 @@ function drawScene(ctx, sc, L, tick, ov, layersOnScreen) {
   if (ov.grid) drawGrid(ctx, L.W, L.H, 8, ov.zoom, "rgba(255,255,255,.12)");
   const hits = [];
   const actors = L.insts.filter(i => i.type && ACTOR_TYPES.includes(i.type) && i.node);
-  const order = [...actors.filter(i => i.type !== "player"), ...actors.filter(i => i.type === "player")];
+  // Like sprites.iwram.c: players on top, or everyone sorted by feet (y) with game.y_sort.
+  const order = (D.game || {}).y_sort ? [...actors].sort((a, b) => (a.y || 0) - (b.y || 0) || (a.type === "player") - (b.type === "player"))
+    : [...actors.filter(i => i.type !== "player"), ...actors.filter(i => i.type === "player")];
   for (const i of order) {
     const x = i.x || 0, y = i.y || 0;
     if (i.type === "trigger") {

@@ -20,6 +20,7 @@ static s16 s_pending = -1;
 static fixed s_fade;        // 0 = clear, 16 << 8 = black
 static fixed s_fade_step;
 static fixed s_fade_target;
+static u8 s_dark;           // world darkness (night), 0..16; the UI layer is never darkened
 
 const SceneData *scene_current(void) { return s_scene; }
 s16 scene_current_node(void) { return s_scene_node; }
@@ -40,9 +41,19 @@ void scene_fade(int to_black, int ticks) {
     if (s_fade_step == 0) s_fade_step = 1;
 }
 
+void scene_set_darkness(int level) {
+    s_dark = (u8)(level < 0 ? 0 : level > 16 ? 16 : level);
+}
+
 void scene_vblank(void) {
-    REG_BLDCNT = BLD_BUILD(BLD_ALL | BLD_BACKDROP, 0, 3);      // mode 3 = fade to black
-    REG_BLDY = (u16)fx_to_int(s_fade);
+    int fade = fx_to_int(s_fade);
+    if (s_dark > fade) {                                        // night: darken all but BG0 (UI)
+        REG_BLDCNT = BLD_BUILD(BLD_BG1 | BLD_BG2 | BLD_BG3 | BLD_OBJ | BLD_BACKDROP, 0, 3);
+        REG_BLDY = s_dark;
+    } else {
+        REG_BLDCNT = BLD_BUILD(BLD_ALL | BLD_BACKDROP, 0, 3);  // mode 3 = fade to black
+        REG_BLDY = (u16)fade;
+    }
 }
 
 Actor *scene_spawn(s16 node, s32 x, s32 y) {
@@ -71,6 +82,7 @@ static void load_scene(s16 node) {
     s_fade = 0;
     s_fade_step = 0;
     s_fade_target = 0;
+    s_dark = 0;
 
     camera_reset(sc->cam_x, sc->cam_y, sc->camera_bounds);
 

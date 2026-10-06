@@ -164,17 +164,26 @@ UPGRADE_ICON_DX = 3      # icon columns left of the text (2 wide + 1 gap); curso
 MAX_UPGRADE_CHOICES = 3
 
 
+DIALOG_VAR_WIDTH = 5  # columns reserved for a {var} value inside dialog text (up to 99999)
+
+
+def text_width(text):
+    """Columns a dialog text takes: each {var} counts DIALOG_VAR_WIDTH."""
+    return len(PLACEHOLDER_RE.sub("x" * DIALOG_VAR_WIDTH, text))
+
+
 def wrap_text(text, width):
-    """Word-wrap text to lines of at most `width` chars. Returns (lines, error_or_None)."""
+    """Word-wrap text to lines of at most `width` chars ({var} placeholders count
+    DIALOG_VAR_WIDTH and stay in the output). Returns (lines, error_or_None)."""
     lines = []
     for para in text.split("\n"):
         line = ""
         for word in para.split(" "):
-            if len(word) > width:
+            if text_width(word) > width:
                 return lines, "the word '%s' is longer than the box is wide (%d chars)" % (word, width)
             if not line:
                 line = word
-            elif len(line) + 1 + len(word) <= width:
+            elif text_width(line) + 1 + text_width(word) <= width:
                 line += " " + word
             else:
                 lines.append(line)

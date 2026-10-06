@@ -105,9 +105,41 @@ static void draw_actor(const Actor *a, s32 cx, s32 cy) {
     put_obj(sh, f->frame, x - ox, y - oy, flip);
 }
 
+#if GAME_Y_SORT
+// Top-down depth: actors near the screen sorted by their feet (origin y), the lowest one first
+// in OAM (the GBA draws lower OAM entries in front). At equal height the player is in front.
+static void build_sorted(s32 cx, s32 cy) {
+    u8 order[MAX_ACTORS];
+    s32 key[MAX_ACTORS];
+    int n = 0;
+    for (int i = 0; i < MAX_ACTORS; i++) {
+        const Actor *a = &g_actors[i];
+        if (!a->active || !a->body || (a->flags & ACTOR_HIDDEN)) continue;
+        s32 x = fx_to_int(a->x) - cx, y = fx_to_int(a->y) - cy;
+        if (x <= -64 || x >= 240 + 64 || y <= -64 || y >= 160 + 64) continue;
+        s32 k = y * 2 + (a->type == NT_PLAYER);
+        int j = n++;
+        while (j > 0 && key[j - 1] < k) {          // insertion sort, biggest key first
+            key[j] = key[j - 1];
+            order[j] = order[j - 1];
+            j--;
+        }
+        key[j] = k;
+        order[j] = (u8)i;
+    }
+    for (int k = 0; k < n; k++) draw_actor(&g_actors[order[k]], cx, cy);
+}
+#endif
+
 void sprites_build(void) {
     s32 cx = camera_x(), cy = camera_y();
     s_count = 0;
+#if GAME_Y_SORT
+    build_sorted(cx, cy);
+    particles_draw(cx, cy);
+    for (int i = s_count; i < 128; i++) s_oam[i].attr0 = ATTR0_HIDE;
+    return;
+#endif
     u8 others[MAX_ACTORS];
     int n = 0;
     for (int i = 0; i < MAX_ACTORS; i++) {              // players on top, everyone else after

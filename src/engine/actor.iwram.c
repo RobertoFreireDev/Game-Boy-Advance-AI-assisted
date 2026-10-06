@@ -157,12 +157,12 @@ Actor *actor_spawn(s16 node, s32 x, s32 y, const LogicEntry *logic, u8 logic_cou
         a->collides = d->type == NT_TRIGGER ? 1 << CAT_PLAYER : 0;   // bodiless props touch nothing
         a->flags |= ACTOR_HIDDEN;
     }
-    for (int i = 0; i < a->logic_count; i++) {
+    for (int i = 0; i < a->logic_count && a->active; i++) {      // exists_when may remove it
         const BehaviorDef *b = &g_behaviors[a->logic[i].behavior];
         s_slot = i;
         if (b->init) b->init(a, a->logic[i].params);
     }
-    if (d->on_start) d->on_start(a);
+    if (a->active && d->on_start) d->on_start(a);
     return a;
 }
 

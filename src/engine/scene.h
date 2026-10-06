@@ -14,6 +14,8 @@ void scene_vblank(void);
 const SceneData *scene_current(void);
 // Node id of the scene being played.
 s16 scene_current_node(void);
+// Darken the world (maps + sprites, never the UI): 0 = normal .. 16 = black. Reset per scene.
+void scene_set_darkness(int level);
 // Fade to black (to_black = 1) or back from black (0) over `ticks`.
 void scene_fade(int to_black, int ticks);
 // Spawn an object or particle burst at a world position. Returns the actor or NULL.

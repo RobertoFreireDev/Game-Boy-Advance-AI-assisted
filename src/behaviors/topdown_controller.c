@@ -1,4 +1,5 @@
-// topdown_controller - walk in any direction with the D-pad (no gravity).
+// topdown_controller - walk in any direction with the D-pad (no gravity). Holding the run
+// button runs. A stunned actor (held by fishing, a cutscene...) stands still.
 #include "topdown_controller.h"
 #include "behavior_params.h"
 #include "engine/input.h"
@@ -9,7 +10,13 @@ void bhv_topdown_controller_update(Actor *a, const void *params) {
     int dx = input_dir_x(), dy = input_dir_y();
     if (!p->eight_way && dx && dy) dy = 0;
     if (a->anim_lock) return;                   // being knocked back
+    if (a->stun) {                              // held in place
+        a->vx = a->vy = 0;
+        return;
+    }
     fixed speed = p->speed;
+    int running = p->run_speed > 0 && (dx || dy) && input_held(p->run_button);
+    if (running) speed = p->run_speed;
     if (p->speed_var >= 0) speed = speed * (10 + vars_get(p->speed_var)) / 10;   // +10% per point
     a->vx = dx * speed;
     a->vy = dy * speed;
@@ -18,5 +25,5 @@ void bhv_topdown_controller_update(Actor *a, const void *params) {
         a->vy = a->vy * 181 / 256;
     }
     actor_face(a, dx, dy);                      // picks the up / down / side animations
-    actor_play_slot(a, (dx || dy) ? ANIM_WALK : ANIM_IDLE);
+    actor_play_slot(a, (dx || dy) ? (running ? ANIM_RUN : ANIM_WALK) : ANIM_IDLE);
 }

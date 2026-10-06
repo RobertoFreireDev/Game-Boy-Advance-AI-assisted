@@ -148,13 +148,14 @@ typedef struct {
 // ---- UI ------------------------------------------------------------------------------
 typedef struct { u8 x, y, w, h, paper, border; } UiBox;    // tiles
 
-enum { HUD_TEXT, HUD_ICON, HUD_ICON_REPEAT, HUD_BAR };
+enum { HUD_TEXT, HUD_ICON, HUD_ICON_REPEAT, HUD_BAR, HUD_ICON_SWITCH };
 
 typedef struct {
     u8 kind, x, y, max;                 // x, y in tiles
     s16 var, max_var;                   // max_var: icon_repeat shows empty icons up to it (-1 = max)
     u8 length, color, back, spacing;
     const IconData *icon, *empty_icon;
+    const IconData *const *icons;       // icon_switch: icons[var] (max = how many)
     const char *text;                   // \001 + (var+1) = {var}; \002 + (var+1) = {var:02} (2 digits)
 } HudElement;
 

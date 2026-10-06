@@ -163,6 +163,18 @@ static u16 glyph(char c, int paper) {
     return paper ? (u16)((T_PAPER + g - 1) | (s_paper_bank << 12)) : (u16)((T_FONT + g - 1) | (s_font_bank << 12));
 }
 
+// Print the variable of a {var} code (s points at \001 or \002, s[1] = var + 1) at column *cx.
+static void draw_var(int *cx, int y, const char *s, int paper) {
+    char buf[12];
+    int digits = *s == '\002' ? 2 : 1;
+    s32 v = vars_get((s16)((u8)s[1] - 1));
+    int neg = v < 0, n = 0;
+    u32 u = neg ? (u32)-v : (u32)v;
+    do { buf[n++] = (char)('0' + u % 10); u /= 10; } while ((u || n < digits) && n < 10);
+    if (neg) buf[n++] = '-';
+    while (n) put((*cx)++, y, glyph(buf[--n], paper));
+}
+
 // Draw text; \n starts a new line, \001 + (var+1) prints a variable, \002 + (var+1) prints it
 // with at least 2 digits (05). Returns columns used.
 static int draw_text(int x, int y, const char *s, int paper) {
@@ -170,15 +182,8 @@ static int draw_text(int x, int y, const char *s, int paper) {
     for (; *s; s++) {
         if (*s == '\n') { y++; cx = x; continue; }
         if ((*s == '\001' || *s == '\002') && s[1]) {
-            char buf[12];
-            int digits = *s == '\002' ? 2 : 1;
-            s32 v = vars_get((s16)((u8)s[1] - 1));
+            draw_var(&cx, y, s, paper);
             s++;
-            int neg = v < 0, n = 0;
-            u32 u = neg ? (u32)-v : (u32)v;
-            do { buf[n++] = (char)('0' + u % 10); u /= 10; } while ((u || n < digits) && n < 10);
-            if (neg) buf[n++] = '-';
-            while (n) put(cx++, y, glyph(buf[--n], paper));
             continue;
         }
         put(cx++, y, glyph(*s, paper));
@@ -251,6 +256,12 @@ static void draw_hud(int all) {
         case HUD_ICON:
             draw_icon(e->x, e->y, e->icon, 0xFF);
             break;
+        case HUD_ICON_SWITCH: {
+            s32 v = vars_get(e->var);
+            v = v < 0 ? 0 : v >= e->max ? e->max - 1 : v;
+            draw_icon(e->x, e->y, e->icons[v], 0xFF);
+            break;
+        }
         case HUD_ICON_REPEAT: {
             s32 v = vars_get(e->var);
             s32 slots = e->max_var >= 0 ? vars_get(e->max_var) : e->max;     // empty icons up to here
@@ -485,6 +496,12 @@ static void type_char(void) {
     const DialogLine *ln = &s_dlg->lines[s_line];
     char c = *s_text_pos++;
     if (c == '\n') { s_cy++; s_cx = ln->text_x; }
+    else if ((c == '\001' || c == '\002') && *s_text_pos) {     // a {var}: its number at once
+        int cx = s_cx;
+        draw_var(&cx, s_cy, s_text_pos - 1, 1);
+        s_cx = (u8)cx;
+        s_text_pos++;
+    }
     else put(s_cx++, s_cy, glyph(c, 1));
     if (!*s_text_pos) s_typing = 0;
 }

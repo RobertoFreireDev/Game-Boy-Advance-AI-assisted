@@ -828,9 +828,10 @@ def V_hud(c):
         kind = e.get("kind")
         allowed = {"text": ("text",), "icon": ("icon",),
                    "icon_repeat": ("icon", "empty_icon", "var", "max_var", "max", "spacing"),
+                   "icon_switch": ("icons", "var"),
                    "bar": ("var", "max", "length", "color", "back")}.get(kind)
         if allowed is None:
-            c.err("%s.kind must be text, icon, icon_repeat or bar" % label)
+            c.err("%s.kind must be text, icon, icon_repeat, icon_switch or bar" % label)
             continue
         for k in e:
             if k not in ("kind", "x", "y") + allowed:
@@ -862,6 +863,19 @@ def V_hud(c):
                 if sp % 8:
                     c.err("%s.spacing must be a multiple of 8" % label)
                 width_tiles = (mx - 1) * (sp // 8) + size
+        elif kind == "icon_switch":
+            c.param_value("var", {"required": True}, e.get("var"), label + ".var")
+            ics = c.get(e, "icons", "list", label + ".icons", default=[])
+            if not ics:
+                c.err("%s.icons needs at least one icon" % label)
+            sizes = set()
+            for k, ic in enumerate(ics):
+                iid = c.ref(ic, ["icon"], "%s.icons[%d]" % (label, k))
+                if iid:
+                    sizes.add(len(c.p.nodes.get(iid, {}).get("pixels", [])))
+            if len(sizes) > 1:
+                c.err("%s.icons must all be the same size (each one is drawn over the last)" % label)
+            width_tiles = (sizes.pop() // 8) if len(sizes) == 1 else 1
         elif kind == "bar":
             c.param_value("var", {"required": True}, e.get("var"), label + ".var")
             c.get(e, "max", "int", label + ".max", lo=1)
@@ -1051,7 +1065,8 @@ def V_dialog(c):
                 c.err("%s has unknown field '%s'" % (label, k))
         text = c.get(ln, "text", "str", label + ".text", default="")
         sp = c.get(ln, "speaker", "str", label + ".speaker", required=False, default="")
-        c.text_in_font(text + sp, font, label)
+        c.text_in_font(sp, font, label)
+        check_placeholders(c, text, font, label + ".text")
         if ln.get("portrait"):
             pid = c.ref(ln["portrait"], ["icon"], label + ".portrait")
             if pid and len(c.p.nodes.get(pid, {}).get("pixels", [])) != 16:
@@ -1108,7 +1123,7 @@ def check_game(p, r):
     if not isinstance(g, dict):
         r.err(where, "'game' settings are missing")
         return
-    allowed = {"title", "game_code", "rom_name", "start_scene", "save", "variables", "gravity", "max_fall_speed"}
+    allowed = {"title", "game_code", "rom_name", "start_scene", "save", "variables", "gravity", "max_fall_speed", "y_sort"}
     for k in g:
         if k not in allowed:
             r.err(where, "game has unknown field '%s'" % k)
@@ -1123,6 +1138,8 @@ def check_game(p, r):
         r.err(where, "game.rom_name must be snake_case")
     if not isinstance(g.get("save", False), bool):
         r.err(where, "game.save must be true or false")
+    if not isinstance(g.get("y_sort", False), bool):
+        r.err(where, "game.y_sort must be true or false")
     for k, lo, hi in (("gravity", 0.01, 2), ("max_fall_speed", 0.5, 8)):
         if k in g and (not is_num(g[k]) or not lo <= g[k] <= hi):
             r.err(where, "game.%s must be a number between %s and %s" % (k, lo, hi))

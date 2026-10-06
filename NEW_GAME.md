@@ -47,15 +47,18 @@ The repo is ~8.6k lines of engine/tools plus a handful of template nodes (a full
 
 ## 2. Genre → building blocks that already exist
 
-Three games have been built so far: **Hero Quest** (side platformer, commit `ba0261a^`),
-**Sun Shrine** (top-down Zelda-like, commit `1c794e3^`), **Night Swarm** (survivors-like, branch
-`games/night_swarm`). `main` is now an **empty template** (one start scene + the generic UI
-nodes), but their engine features stayed, so all three genres are covered without new code:
+Games built so far: **Hero Quest** (side platformer, commit `ba0261a^`), **Sun Shrine** (top-down
+Zelda-like, commit `1c794e3^`), **Night Swarm** (survivors-like, branch `games/night_swarm`),
+**Void Vessel** (metroidvania, branch `games/void_vessel`) and **Mossbrook** (cozy village life sim,
+branch `games/mossbrook`). `main` is an **empty template** (one start scene + the generic UI nodes)
+with the engine features of the first three games; Void Vessel and Mossbrook added theirs on their own
+branches (start from that branch, or merge its engine commit, to reuse them):
 
 | Genre | Player | Enemies | World / progression |
 |-------|--------|---------|---------------------|
 | Platformer | `platformer_controller`, `health`, `camera_target` | `patrol`, `chase_player`, `stompable`, `damage_on_touch` | `follow_path` + `solid_platform` lifts, `collectible`, `trigger_zone` exits, gravity bodies, one-way/ladder/hazard tiles |
 | Top-down adventure | `topdown_controller`, `sword_attack`, `health` | `wander`, `chase_player`, `damage_on_touch` | `talk` + dialogs, `locked_door`, `if_var` flags, `*_up`/`*_down` animation slots |
+| Village life sim (Mossbrook branch) | `topdown_controller` (run), `interactor`, `sword_attack` as the bug net | bugs: `wander` + `health` + `exists_when` (hours) | `interact` (talk, shake, dig), `day_clock` + `set_darkness`, `fish_bite`, `exists_when` daily flags, menus that sell with `add_var times`, `save` + bed, `game.y_sort` |
 | Survivors / bullet heaven | `topdown_controller` (`speed_var`), `weapon` ×N, `aura` | `swarm`, `spawn_wave` (on an invisible `prop` director) | `projectile` props, `magnet` gems, `level_up` + `upgrade` nodes + upgrade menu, `run_clock`, `persistent` vars + `save_game` shop |
 
 If the genre is new (shmup, puzzle, racing, RPG battles…), map it to these first, then list
