@@ -139,10 +139,12 @@ Moves unlock one at a time, in order, by level (section 7). Tuned so a normal ru
 
 ### 5.3 Shapes / targeting
 
-- **Single target (`<= N tiles`):** auto-aims at the **nearest** enemy within N tiles. If none is in range, it fires straight ahead in the facing direction, N tiles long, and hits nothing.
-- **Triangular (cone):** fires in the facing direction. Starts 1 tile wide next to the player and widens by 1 tile on each side every tile of distance, up to N tiles. Hits every enemy inside.
-- **Circular:** hits every enemy within N tiles around the player.
-- **Ground zone:** places a hazard on tiles while it lasts; it damages an enemy the moment the enemy steps on it, then again every 0.5 s while that enemy stays on it (each enemy has its own timer).
+**What you see is what you get: a move hurts exactly what its animation draws.** Every enemy whose body comes within **2 px** of the move's effect picture (any frame of its animation, wherever it is drawn) is hit. The shape only decides where the animation plays:
+
+- **Single target (`<= N tiles`):** auto-aims at the **nearest** enemy within N tiles; its animation plays on it (or as a trail from the player to it), so it is hit, and so is any other enemy the animation touches. If none is in range, it fires straight ahead in the facing direction at full range and hits whatever its animation touches there.
+- **Beam:** the animation plays on every tile along the facing direction, N tiles long, and hits every enemy it touches.
+- **Burst (circular):** the animation bursts out of the player; every enemy a piece of it touches is hit.
+- **Ground zone:** places a hazard on tiles while it lasts; it damages an enemy the moment its picture touches the enemy, then again every 0.5 s while the enemy stays in it (each enemy has its own timer). Nothing is drawn once it stops hurting.
 - **Whole screen:** hits every enemy visible on the current camera view.
 
 **A player's move always counts as used.** If the player fires a move and it reaches no enemy, that was the player's mistake: the move still plays its animation and its charge restarts. No damage, no XP. (Enemies are different: they only attack when the player is within their move's reach.)
@@ -151,14 +153,14 @@ Moves unlock one at a time, in order, by level (section 7). Tuned so a normal ru
 
 | Type | Move 1 | Move 2 | Move 3 |
 |---|---|---|---|
-| **Normal** | **Tackle** — single target ≤1 tile | **Quick Attack** — dash 1 tile toward the nearest enemy (or facing direction), then single target ≤1 tile | **Growl** — every enemy ≤2 tiles has 33% chance to be **paralyzed 1–3 s**. No damage |
-| **Fire** | **Ember** — fire on the 1 tile in front of the player for 1–3 s (ground zone) | **Fire Spin** — circular, ≤3 tiles | **Flamethrower** — single target ≤6 tiles |
-| **Water** | **Water Gun** — single target ≤2 tiles | **Bubble Beam** — cone ≤3 tiles | **Surf** — whole screen |
-| **Electric** | **Thunder Shock** — single target ≤5 tiles | **Spark** — single target ≤5 tiles, 33% chance to **paralyze 3–5 s** | **Thunderbolt** — cone ≤10 tiles |
-| **Grass** | **Vine Whip** — single target ≤3 tiles | **Razor Leaf** — cone ≤3 tiles | **Solar Beam** — cone ≤6 tiles |
+| **Normal** | **Tackle** — single target ≤1 tile | **Quick Attack** — dash 1 tile toward the nearest enemy (or facing direction), then single target ≤1 tile | **Growl** — notes burst out; every enemy they touch has 33% chance to be **paralyzed 1–3 s**. No damage |
+| **Fire** | **Ember** — fire on the 1 tile in front of the player for 1–3 s (ground zone) | **Fire Spin** — a ring of fireballs bursts out | **Flamethrower** — single target ≤6 tiles; the stream burns everything it crosses |
+| **Water** | **Water Gun** — single target ≤2 tiles | **Bubble Beam** — beam 3 tiles | **Surf** — whole screen |
+| **Electric** | **Thunder Shock** — single target ≤5 tiles | **Spark** — single target ≤5 tiles, 33% chance to **paralyze 3–5 s** | **Thunderbolt** — beam 10 tiles |
+| **Grass** | **Vine Whip** — single target ≤3 tiles | **Razor Leaf** — beam 3 tiles | **Solar Beam** — beam 6 tiles |
 | **Poison** | **Poison Sting** — single target ≤1 tile, 50% chance to **poison** | **Acid** — acid on a 3×3 tile area in front of the player for 3 s (ground zone) | **Toxic** — single target ≤4 tiles, 50% chance to **badly poison** |
-| **Flying** | **Gust** — cone ≤3 tiles | **Peck** — single target ≤1 tile | **Fly** — 3 s untouchable; player sprite replaced by a shadow, can move freely. No damage |
-| **Ghost** | **Lick** — single target ≤1 tile | **Night Shade** — cone ≤3 tiles | **Phase** (Ghost) — 3 s passing through enemies (no body collision). No damage |
+| **Flying** | **Gust** — beam 3 tiles | **Peck** — single target ≤1 tile | **Fly** — 3 s untouchable; player sprite replaced by a shadow, can move freely. No damage |
+| **Ghost** | **Lick** — single target ≤1 tile | **Night Shade** — beam 3 tiles | **Phase** (Ghost) — 3 s passing through enemies (no body collision). No damage |
 | **Rock** | **Rock Throw** — single target ≤3 tiles | **Sandstorm** — 5 s: all enemies on screen freeze (no move, no attack); screen covered by a sand overlay so the player can't see | **Rock Slide** — 3 random 2×2 tile spots on the visible screen get hit by falling rocks |
 
 ### 5.5 Move power and accuracy
@@ -211,11 +213,11 @@ A new status replaces the old one. Poison damage gives XP like a hit (section 7)
 
 ### 5.9 Animations and floating text
 
-Every move has its own animation (sprite effect, 4–8 frames): e.g. Ember = flickering flame tile, Bubble Beam = bubbles expanding in a cone, Rock Slide = rock shadow growing then rock falling, Surf = wave sweeping across the screen.
+Every move has its own animation (sprite effect, 4–8 frames): e.g. Ember = flickering flame tile, Bubble Beam = bubbles streaming ahead, Rock Slide = rock shadow growing then rock falling (it hurts where it lands, when it lands), Surf = wave sweeping across the screen. The animation is the move's hit area (section 5.3).
 
 **The animation plays every time the player uses a move**, not only when it hits: on a hit, on a MISS, and when it reaches no enemy at all.
 - Single target: on the target, or straight ahead at full range when no enemy is in range.
-- Cone, circle, whole screen: over the whole area.
+- Beam, burst, whole screen: over the whole area (that is what they hit).
 - Ground zones: on their tiles, for as long as they last.
 - Status / self moves (Growl, Fly, Phase, Sandstorm): around the player or across the screen.
 
@@ -426,9 +428,10 @@ These points weren't specified, so this doc picks a value:
 2. **No type immunities** — otherwise some player picks could never win.
 3. **Single-target moves auto-aim** at the nearest enemy in range.
 4. **Toxic** range = 4 tiles; **Sandstorm** lasts 5 s; **Acid** lasts 3 s.
-5. **Growl** rolls 33% for each enemy within 2 tiles.
+5. **Growl** rolls 33% for each enemy its notes touch.
 6. Enemies use only **Move 1**, with a 4 s charge; at most 3 hostile at once.
 7. Level-up adds the HP gained to current HP (not a full heal).
 8. A player's move always fires and uses its charge, even with no enemy in reach (aiming is the player's job). Enemies only attack when the player is in reach.
 9. Moves have accuracy, which is where "MISS" comes from.
 10. Ghost's Move 3 is named **Phase** in this doc to avoid confusion with the Ghost type name.
+11. **A move hits exactly what its animation draws** (+2 px). Cones became straight beams, because that is what their animations draw.

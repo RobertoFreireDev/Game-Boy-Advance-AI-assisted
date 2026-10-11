@@ -1321,11 +1321,33 @@ def V_move(c):
     at = n.get("effect_at", "target")
     if at not in C.EFFECT_AT:
         c.err("'effect_at' must be one of %s" % ", ".join(C.EFFECT_AT))
-    elif eff:
-        if at in ("tiles", "center") and shape != "zone":
-            c.err("'effect_at' %s is only for zone moves" % at)
-        if at in ("target", "line") and shape not in ("single", "dash", "cone", "circle", "screen"):
-            c.err("'effect_at' %s needs a move that hits targets" % at)
+    elif shape in C.MOVE_EFFECT_AT and at not in C.MOVE_EFFECT_AT[shape]:
+        c.err("'effect_at' of a %s move must be %s" % (shape, " or ".join(C.MOVE_EFFECT_AT[shape])))
+    # A move hurts exactly what its effect draws (except screen: the whole view; self: no one).
+    if shape in ("single", "dash", "beam", "circle", "zone"):
+        if not n.get("effect"):
+            c.err("a %s move hurts what its effect draws, so it needs an 'effect'" % shape)
+        elif eff:
+            box = C.effect_box(c.p, n)
+            if box is None and shape == "zone" and at == "center":
+                c.err("its effect is gone (or shows nothing) while the zone can hurt (particle steps %d-%d): "
+                      "make the particle live longer or the zone's delay shorter" % C.zone_hurt_steps(n))
+            elif box is None:
+                c.err("its effect draws nothing, so the move can't hurt anyone")
+            elif any(not -128 <= v <= 127 for v in box):
+                c.err("its effect's picture reaches more than 127 px from the particle")
+            life = c.p.nodes.get(n["effect"], {}).get("lifetime", 0)
+            z = n.get("zone") if isinstance(n.get("zone"), dict) else {}
+            if shape == "zone" and at == "center" and box is not None and is_int(life) \
+                    and life - 1 < C.zone_hurt_steps(n)[1]:
+                c.err("its effect (lifetime %d) ends before the zone stops hurting (tick %d): "
+                      "nothing would be drawn where it still hurts" % (life, C.zone_hurt_steps(n)[1]))
+            # A particle is drawn lifetime - 1 frames; the zone lights it again every `every` frames.
+            if shape == "zone" and at == "tiles" and is_int(life) and is_int(z.get("every", 0)) \
+                    and 0 < z.get("every", 0) and life - 1 < z["every"]:
+                c.err("its effect (lifetime %d, so drawn %d frames) goes out before it flickers again "
+                      "(every %d ticks): give the particle a lifetime of at least %d"
+                      % (life, life - 1, z["every"], z["every"] + 1))
     c.ref(n.get("sfx"), ["sfx"], "sfx", allow_empty=True)
     if "on_use" in n:
         c.actions(n["on_use"], "on_use")

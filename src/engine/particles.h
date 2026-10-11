@@ -4,8 +4,21 @@
 
 #include "data.h"
 
+// One particle picked but not sent off yet: its start (world pixels), speed (px per tick) and
+// life (ticks; the particle's lifetime unless the caller cuts it short).
+typedef struct {
+    const ParticleData *data;
+    s32 x, y;
+    fixed vx, vy;
+    u16 life;
+} ParticleShot;
+
 // Remove every particle and emitter (scene change).
 void particles_clear(void);
+// Pick one particle's random direction and speed (so a move can see where it will fly first).
+void particles_aim(const ParticleData *p, s32 x, s32 y, ParticleShot *out);
+// Send off a particle picked by particles_aim.
+void particles_shoot(const ParticleShot *s);
 // Emit one particle at a world position.
 void particles_emit_one(const ParticleData *p, s32 x, s32 y);
 // Emit a whole burst (count particles; one particle for stream emitters).

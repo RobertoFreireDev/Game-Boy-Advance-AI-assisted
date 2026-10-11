@@ -241,6 +241,7 @@ typedef struct {
     u8 zone_count, zone_every;          // zones placed; ticks before a zone hurts the same monster again (0 = one hit)
     u16 zone_delay;                     // ticks before a zone hurts (a rock falling)
     u8 effect_at, pad;                  // FX_AT_*: where the effect particles appear
+    s8 fx_l, fx_t, fx_r, fx_b;          // what the effect draws around each particle (px, inclusive; l > r = nothing)
     const ParticleData *effect;         // NULL = none
     const SfxData *sfx;                 // NULL = silent
     ActionList on_use;                  // runs (as the user) each time the move fires

@@ -3,7 +3,7 @@
   "kind": "object",
   "type": "move",
   "name": "Quick Attack",
-  "notes": "Furrbit's move 2 (B). Rushes 1 tile toward the nearest monster within 2 tiles, then strikes it. Charge: 10 s.",
+  "notes": "Furrbit's move 2 (B). Rushes 1 tile toward the nearest monster within 2 tiles, then strikes it. If it got away (or something blocked the rush), the blow lands in front of the user, toward it, on whatever is there. Charge: 10 s.",
   "title": "QUICK ATTACK",
   "monster_type": "normal",
   "shape": "dash",

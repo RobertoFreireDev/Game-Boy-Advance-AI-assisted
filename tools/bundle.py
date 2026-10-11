@@ -17,7 +17,7 @@ import validate  # noqa: E402
 
 
 def derived(p):
-    out = {"dialogs": {}, "menus": {}, "upgrades": {},
+    out = {"dialogs": {}, "menus": {}, "upgrades": {}, "moves": {},
            "upgrade_card": {"icon_dx": C.UPGRADE_ICON_DX, "tag_dx": C.UPGRADE_TAG_DX, "text_w": C.UPGRADE_TEXT_W}}
     for nid, n in p.nodes.items():
         t = p.type_of(nid)
@@ -36,6 +36,9 @@ def derived(p):
                 out["menus"][nid] = C.menu_layout(n)
             elif t == "upgrade":
                 out["upgrades"][nid] = [C.wrap_text(d, C.UPGRADE_TEXT_W)[0] for d in n.get("descriptions", [])]
+            elif t == "move":       # what its effect draws around each particle: the move hurts that
+                out["moves"][nid] = {"box": C.effect_box(p, n),
+                                     "hurt_steps": list(C.zone_hurt_steps(n)) if n.get("shape") == "zone" else None}
         except (KeyError, TypeError, ValueError):
             pass
     return out

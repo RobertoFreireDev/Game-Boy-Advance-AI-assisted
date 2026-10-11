@@ -341,24 +341,34 @@ groups them for humans. **What an actor does comes only from its `logic` list.**
   the picker), `cry` (sfx), exactly 3 `moves` (A, B, hold A). Its number for `species_var` and
   `{var.name}` is its order among the species in nodes.json, from 0.
 - **move**: `title` ≤ 13 chars, `monster_type`, `power` (0 = status only), `accuracy` % (a miss shows
-  MISS; zones never miss), `charge` (ticks to recharge for the player). `shape` and `range` (tiles
-  between the two bodies' hitboxes: 1 = touching, then 1 more every 8 px of gap, half a tile rounding
-  up; the larger of across and down): `single` = the nearest foe in range; `dash` = rush `dash`
-  tiles to the nearest foe within range + dash, then hit it; `cone` = in front, 1 tile wide next to the
-  user and 2 wider every tile (diagonal = the quarter between two directions); `circle` = all in range;
-  `screen` = all in the camera view; `zone` = `zone {w, h, place: front|screen, count, delay, ticks
-  [min,max], every}` tiles on the ground that hurt each foe the moment it steps on them, then again
-  every `every` ticks while it stays (each foe has its own timer; 0 = once, after `delay`; screen
-  spots aim near foes in view; `range` = how close a foe must be to use it); `self` = `buff {kind: fly|
-  phase, ticks}` (fly: only a `shadow` shows, can't be hit, passes over monsters; phase: passes through
-  them). `status {kind: par|psn|tox|freeze, chance %, ticks [min,max]}` (paralysis: no moving or
-  attacking, flashes yellow; poison: 1 damage a second; toxic: 1, 2, 3… a second; freeze: no moving or
-  attacking). A wild monster's move with no foe in reach doesn't fire and keeps its charge (self moves always
-  fire); the player's moves always go off (aiming is their job): with no foe the effect plays straight ahead
-  at full range (`target` / `line`), nothing is hit and the charge is used.
-  `effect` (particle) appears at `effect_at`: `target` (each one hit), `line` (from the user to it),
-  `user`, `axis` (each tile along the facing, `range` long), `tiles` (each zone tile, flickering every
-  `every` ticks), `center` (each zone's center when placed), `screen` (down the left edge of the view).
+  MISS; zones never miss), `charge` (ticks to recharge for the player). **A move hurts exactly what its
+  effect draws**: every foe whose hitbox comes within `MOVE_HIT_MARGIN` (2) px of the effect's picture —
+  the opaque pixels of every frame its animation shows (codegen bakes the box into the move), at every
+  spot each particle is drawn in its flight (particles flying off at random angles hurt only where they
+  really go). The shape decides where the effect goes; `screen` hurts everything in view and `self` no
+  one. `shape` and `range` (tiles between the two bodies' hitboxes: 1 = touching, then 1 more every 8 px
+  of gap, half a tile rounding up; the larger of across and down): `single` = the effect plays on the
+  nearest foe in range (`target`) or as a trail to it (`line`); it is hit, and so is any other foe the
+  effect touches; `dash` = rush `dash` tiles to the nearest foe within range + dash, then strike it like
+  `single` (if it got away, the blow lands in front, toward it, on whatever is there); `beam` = the effect on
+  each tile along the facing, `range` tiles (`axis`); `circle` = the effect bursts out of the user (`user`;
+  `range` = how close a wild monster gets before using it); `screen` = every foe with any of its body in
+  the camera view (± the margin); `zone` = `zone {w, h, place: front|screen, count, delay, ticks [min,max],
+  every}` tiles on the ground; the zone hurts each foe its picture touches (on each tile, or at its center
+  as drawn while it can hurt: a falling rock where it lands), the moment it touches, then again every
+  `every` ticks while it stays (each foe has its own timer; 0 = once, after `delay`; screen spots aim near
+  foes in view; `range` = how close a foe must be to use it). Its last flicker is cut short so nothing is
+  drawn once it stops hurting, and a flickering effect must live longer than `every` (no blinking out).
+  `self` = `buff {kind: fly|phase, ticks}` (fly: only a `shadow` shows, can't be hit, passes over monsters;
+  phase: passes through them). `status {kind: par|psn|tox|freeze, chance %, ticks [min,max]}` (paralysis:
+  no moving or attacking, flashes yellow; poison: 1 damage a second; toxic: 1, 2, 3… a second; freeze: no
+  moving or attacking). A wild monster's move that would hurt no one doesn't fire and keeps its charge (self
+  moves always fire); the player's moves always go off (aiming is their job): with no foe in range the effect
+  plays straight ahead at full range (`target` / `line`), hurts whatever it touches there, and the charge
+  is used. `effect` (particle, required unless `screen` / `self`) appears at `effect_at`, which depends on
+  the shape: `target` / `line` (single, dash), `axis` (beam: the middle of each tile along the facing),
+  `user` (circle, self, screen), `tiles` / `center` (zone: each tile, flickering every `every` ticks, or its
+  center when placed), `screen` (down the left edge of the view).
   `on_use[]` runs as the user each time (e.g. `cover_screen` for a sandstorm). `sfx` plays when it goes
   off, except the player's damaging moves that hit at once (not zone / self): they play only the result
   sound. Each use plays one result sound for the best result over its targets (zones: one per frame in
@@ -606,7 +616,7 @@ Designed so a human can follow "what runs when" without reading code.
 ```
 src/engine/
 ├── data.h         layout of every generated const struct (must match codegen.py)
-├── config.h       pool sizes and limits (MAX_ACTORS, MAX_PARTICLES, …) — validate.py reads them
+├── config.h       pool sizes and limits (MAX_ACTORS, MAX_PARTICLES, …, MOVE_HIT_MARGIN) — validate.py reads them
 ├── core.c/.h      main loop, VBlank wait, frame counter
 ├── input.c/.h     pressed / held / released for every button
 ├── fixed.h        fixed-point 24.8 math, sin/cos table, rng
@@ -619,7 +629,7 @@ src/engine/
 │                       solid bodies found inside each other are pushed apart
 ├── physics.c          physics questions asked now and then, kept in ROM (can an actor stand here?)
 ├── anim.iwram.c/.h    animation players and frame events
-├── particles.c/.h particle pool (front / back of the actors)
+├── particles.c/.h particle pool (front / back of the actors); aim a particle first, shoot it later (moves see its flight)
 ├── floattext.c/.h floating words (damage numbers, MISS, LV UP!) drawn as 8x8 sprites
 ├── camera.c/.h    follow target, clamp to bounds, shake
 ├── bg.c/.h        tiles/palettes upload, tilemap scrolling, streaming for big maps, layer offsets
@@ -697,8 +707,8 @@ Palette banks are handed out per scene in first-use order (BG and OBJ separately
 - `visualizer/visualizer.html` — the whole app in **one file** (HTML, CSS, JS inline).
   No frameworks, no CDN, no internet. Works by double-clicking (`file://`).
 - `visualizer/data.js` — generated by `tools/bundle.py`:
-  `window.GAME_DATA = { generated_at, game, index, nodes: {id: json}, catalog: {behaviors, actions}, validation: {ok, errors[], warnings[]}, engine: {...}, derived: {dialogs, menus} }`.
-  `derived` holds the layouts codegen computes (dialog word-wrap, menu positions) so the
+  `window.GAME_DATA = { generated_at, game, index, nodes: {id: json}, catalog: {behaviors, actions}, validation: {ok, errors[], warnings[]}, engine: {...}, derived: {dialogs, menus, upgrades, moves} }`.
+  `derived` holds the layouts codegen computes (dialog word-wrap, menu positions, each move's effect box) so the
   visualizer draws exactly what the GBA draws.
   Loaded with `<script src="data.js">` because `fetch` doesn't work on `file://`.
 - `bundle.py` runs after every AI change, so a browser refresh shows the latest work.
@@ -756,7 +766,7 @@ Palette banks are handed out per scene in first-use order (BG and OBJ separately
 | hud, menu, dialog | Rendered inside a 240×160 GBA screen with the real font and icons. HUD uses variables' initial values; dialog has prev/next line; menu shows the cursor on each option (upgrade menus show sample cards). |
 | upgrade | Its card on the level-up menu with prev/next level, the text per level as wrapped on the GBA, the evolution recipe and what picking it does. |
 | species | Portrait, the body's animations (with an Alpha-colors toggle), its 3 moves, cry player, type matchups and the full type chart. |
-| move | What it does in plain words, a tile diagram of its area (user facing right), its effect playing live, sound, and its multiplier against each type. |
+| move | What it does in plain words, a live pixel diagram of what it hurts (the user facing right, the effect playing where the engine puts it, the orange area = its picture + the margin along each particle's real flight), its effect playing live, sound, and its multiplier against each type. |
 | sfx, music | **Audio player**: play/stop/loop + visual (step list for sfx; tracker grid per channel with playhead for music). Web Audio synth approximating the PSG: square with duty, 4-bit wave, noise, 0–15 volume. |
 
 ### 10.4 Fidelity and navigation

@@ -3,7 +3,7 @@
   "kind": "object",
   "type": "move",
   "name": "Fire Spin",
-  "notes": "Emberpup's move 2 (B). A ring of fireballs bursts out and hits every monster within 3 tiles. Charge: 10 s.",
+  "notes": "Emberpup's move 2 (B). A ring of 12 fireballs bursts out of the user; every monster a fireball touches is hurt (they fly about 1.5 tiles past the user's body). Charge: 10 s.",
   "title": "FIRE SPIN",
   "monster_type": "fire",
   "shape": "circle",

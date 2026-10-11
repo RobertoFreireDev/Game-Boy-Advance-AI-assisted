@@ -71,11 +71,16 @@ BUTTONS = {"A": 0x001, "B": 0x002, "SELECT": 0x004, "START": 0x008, "RIGHT": 0x0
 TILE_FLAGS = ["solid", "one_way", "hazard", "ladder"]
 
 # Monster battles (species / move nodes, game.battle). Order matters: these become C enums.
-MOVE_SHAPES = ["single", "dash", "cone", "circle", "screen", "zone", "self"]
+MOVE_SHAPES = ["single", "dash", "beam", "circle", "screen", "zone", "self"]
 STATUSES = ["none", "par", "psn", "tox", "freeze"]
 BUFFS = ["none", "fly", "phase"]
 ZONE_PLACES = ["front", "screen"]
 EFFECT_AT = ["target", "line", "user", "axis", "tiles", "center", "screen"]
+# Where each shape's effect may appear. A move hurts what its effect draws, so the shape decides
+# where the effect goes and the effect decides who is hit (screen: the whole view; self: no one).
+MOVE_EFFECT_AT = {"single": ["target", "line"], "dash": ["target", "line"], "beam": ["axis"],
+                  "circle": ["user"], "screen": ["screen", "user"], "zone": ["tiles", "center"],
+                  "self": ["user"]}
 BATTLE_TEXTS = ["damage", "miss", "super", "weak", "par", "psn", "tox"]
 BATTLE_SOUNDS = ["hit", "super", "weak", "miss", "faint"]
 SPECIES_FIELDS = ["name", "type", "move1", "move2", "move3"]    # {var.field} placeholders
@@ -295,12 +300,73 @@ def read_engine_limits():
     try:
         with open(path, "r", encoding="utf-8") as f:
             for line in f:
-                m = re.match(r"\s*#define\s+(MAX_\w+|BSTATE_\w+)\s+(\d+)", line)
+                m = re.match(r"\s*#define\s+(MAX_\w+|BSTATE_\w+|MOVE_\w+)\s+(\d+)", line)
                 if m:
                     limits[m.group(1)] = int(m.group(2))
     except OSError:
         pass
     return limits
+
+
+# ---- what a move's effect draws (codegen bakes it in, the visualizer gets it from bundle.py) ----
+def anim_frame_at(anim, steps):
+    """Index of the frame an animation shows after `steps` calls of anim_step (src/engine/anim.iwram.c)."""
+    ticks = [max(1, int(f.get("ticks", 1))) for f in anim["frames"]]
+    total = sum(ticks)
+    if steps >= total:
+        if not anim.get("loop", True):
+            return len(ticks) - 1               # a finished animation keeps its last frame
+        steps %= total
+    for i, t in enumerate(ticks):
+        if steps < t:
+            return i
+        steps -= t
+    return len(ticks) - 1
+
+
+def zone_hurt_steps(move):
+    """The particle steps (frames since the zone landed, + 1) during which a zone can hurt:
+    from the end of its delay to the end of its longest life (moves_tick runs before or after
+    the move in the frame it is used, so one step of slack on each side)."""
+    z = move.get("zone") or {}
+    delay = int(z.get("delay", 0))
+    ticks = z.get("ticks") or [1, 1]
+    return delay + 1, delay + int(ticks[-1]) + 1
+
+
+def effect_box(p, move):
+    """What a move's effect draws around each of its particles: [left, top, right, bottom] pixel
+    offsets from the particle's position (inclusive), or None when it draws nothing. It is the
+    union of the opaque pixels of every frame shown while the particle is drawn (steps 1 to
+    lifetime - 1, flips included); for a zone whose effect plays at its center, only the frames
+    shown while the zone can hurt (a falling rock hurts where it lands, not up in the air).
+    moves.c hurts every foe whose hitbox comes within MOVE_HIT_MARGIN px of it."""
+    eff = p.nodes.get(move.get("effect") or "") or {}
+    anim = p.nodes.get(eff.get("animation") or "") or {}
+    spr = p.nodes.get(anim.get("sprite") or "") or {}
+    frames = anim.get("frames") or []
+    if not frames or not isinstance(spr.get("frames"), dict):
+        return None
+    life = int(eff.get("lifetime", 1))
+    lo, hi = 1, life - 1
+    if move.get("shape") == "zone" and move.get("effect_at") == "center":
+        zlo, zhi = zone_hurt_steps(move)
+        lo, hi = max(lo, zlo), min(hi, zhi)
+    w, h = int(spr.get("width", 0)), int(spr.get("height", 0))
+    l = t = 1 << 20
+    r = b = -(1 << 20)
+    for i in sorted({anim_frame_at(anim, s) for s in range(lo, hi + 1)}):
+        f = frames[i]
+        for y, row in enumerate(spr["frames"].get(f.get("frame"), [])):
+            for x, ch in enumerate(row):
+                if ch == ".":
+                    continue
+                px = w - 1 - x if f.get("flip_x") else x
+                py = h - 1 - y if f.get("flip_y") else y
+                l, r, t, b = min(l, px), max(r, px), min(t, py), max(b, py)
+    if r < l:
+        return None
+    return [l - w // 2, t - h // 2, r - w // 2, b - h // 2]
 
 
 class Project:

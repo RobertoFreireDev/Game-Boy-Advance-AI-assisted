@@ -3,11 +3,11 @@
   "kind": "object",
   "type": "particle",
   "name": "Acid effect",
-  "notes": "Bubbling acid on the ground, drawn in front of the monsters.",
+  "notes": "Bubbling acid on the ground, drawn in front of the monsters. Lives 31 ticks: its zone lights a new one every 30, so the acid never blinks out (the last one goes out the moment the zone stops hurting).",
   "animation": "anim_fx_acid",
   "mode": "burst",
   "count": 1,
-  "lifetime": 30,
+  "lifetime": 31,
   "speed": [
     0,
     0

@@ -17,5 +17,6 @@
 #define MAX_QUEUED_SPRITES 24  // extra sprites behaviors draw each frame (portraits, rings, crowns)
 #define MAX_FLOAT_TEXTS 8       // floating words at once (damage numbers, MISS, LV UP!)
 #define MAX_ZONES       12      // move zones on the ground at once (fire, acid, falling rocks)
+#define MOVE_HIT_MARGIN 2       // pixels: a move hurts every monster its effect's picture comes this close to
 
 #endif

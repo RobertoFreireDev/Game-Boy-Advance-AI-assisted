@@ -85,7 +85,7 @@ These live on the `games/night_swarm` branch, not on `main`. Read them without s
 
 For a monster battler, copy from `games/monster_survival` instead: species `mon_emberpup` (owns
 its body, portrait, Alpha palette, cry and moves), moves `mov_ember` (zone), `mov_bubble_beam`
-(cone), `mov_rock_slide` (screen zone), `mov_fly` (self buff); actors `plr_monster`, `enm_wild`
+(beam), `mov_rock_slide` (screen zone), `mov_fly` (self buff); actors `plr_monster`, `enm_wild`
 (species per instance), `enm_alpha`; the picker `prop_picker` + `hud_select` + `scn_menu`; the
 pause screen `menu_pause` (texts with `{chosen.move2}` / `{moves|...}`); `game.battle` in
 nodes.json. Its art, map and audio came from a scratchpad generator (session a013694e,

@@ -26,26 +26,42 @@ void particles_clear(void) {
     for (int i = 0; i < MAX_EMITTERS; i++) s_emitters[i].data = NULL;
 }
 
-void particles_emit_one(const ParticleData *d, s32 x, s32 y) {
+void particles_aim(const ParticleData *d, s32 x, s32 y, ParticleShot *s) {
+    s32 angle = rng_range(d->angle_min, d->angle_max);
+    fixed speed = rng_range(d->speed_min, d->speed_max);
+    s->data = d;
+    s->x = x;
+    s->y = y;
+    // |cos| <= 1.0, so a plain 32-bit multiply can't overflow (fx_mul's 64-bit one is a slow
+    // library call in Thumb code, and an aura pulse emits 16 of these at once).
+    s->vx = (fx_cos_deg(angle) * speed) >> FX_SHIFT;
+    s->vy = -((fx_sin_deg(angle) * speed) >> FX_SHIFT);  // 90 degrees = up
+    s->life = d->lifetime;
+}
+
+void particles_shoot(const ParticleShot *s) {
+    const ParticleData *d = s->data;
     Particle *p = NULL;
     for (int i = 0; i < MAX_PARTICLES; i++) {           // reuse the oldest slot when full
         int k = (s_next + i) % MAX_PARTICLES;
         if (!s_parts[k].active) { p = &s_parts[k]; s_next = k + 1; break; }
     }
     if (!p) { p = &s_parts[s_next % MAX_PARTICLES]; s_next++; }
-    s32 angle = rng_range(d->angle_min, d->angle_max);
-    fixed speed = rng_range(d->speed_min, d->speed_max);
     p->active = 1;
     p->front = d->on_top;
-    p->life = d->lifetime;
-    p->x = fx_from_int(x);
-    p->y = fx_from_int(y);
-    // |cos| <= 1.0, so a plain 32-bit multiply can't overflow (fx_mul's 64-bit one is a slow
-    // library call in Thumb code, and an aura pulse emits 16 of these at once).
-    p->vx = (fx_cos_deg(angle) * speed) >> FX_SHIFT;
-    p->vy = -((fx_sin_deg(angle) * speed) >> FX_SHIFT);  // 90 degrees = up
+    p->life = s->life;
+    p->x = fx_from_int(s->x);
+    p->y = fx_from_int(s->y);
+    p->vx = s->vx;
+    p->vy = s->vy;
     p->gravity = d->gravity;
     anim_start(&p->anim, d->anim, NULL);
+}
+
+void particles_emit_one(const ParticleData *d, s32 x, s32 y) {
+    ParticleShot s;
+    particles_aim(d, x, y, &s);
+    particles_shoot(&s);
 }
 
 void particles_burst(const ParticleData *d, s32 x, s32 y) {

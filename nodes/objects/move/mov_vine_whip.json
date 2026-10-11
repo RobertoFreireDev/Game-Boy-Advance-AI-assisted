@@ -3,7 +3,7 @@
   "kind": "object",
   "type": "move",
   "name": "Vine Whip",
-  "notes": "Sproutle's move 1 (A). Lashes the nearest monster up to 3 tiles away with a vine. Charge: 3 s. Wild Sproutles use it every 4 s.",
+  "notes": "Sproutle's move 1 (A). Lashes the nearest monster up to 3 tiles away with a vine; any other monster the vine crosses is hit too. Charge: 3 s. Wild Sproutles use it every 4 s.",
   "title": "VINE WHIP",
   "monster_type": "grass",
   "shape": "single",
