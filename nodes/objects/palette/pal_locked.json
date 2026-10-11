@@ -1,0 +1,25 @@
+{
+  "id": "pal_locked",
+  "kind": "object",
+  "type": "palette",
+  "name": "Locked monster silhouette",
+  "notes": "Colors for a locked monster's portrait on the menu: every color slot of the monster palettes turns dark slate (the outline slot a little darker), so a locked monster shows only as a silhouette, eyes included, until a won run unlocks it.",
+  "colors": [
+    "#000000",
+    "#101828",
+    "#304060",
+    "#304060",
+    "#304060",
+    "#304060",
+    "#304060",
+    "#304060",
+    "#304060",
+    "#304060",
+    "#304060",
+    "#304060",
+    "#304060",
+    "#304060",
+    "#304060",
+    "#304060"
+  ]
+}

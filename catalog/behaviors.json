@@ -324,15 +324,19 @@
     }
   },
   "species_select": {
-    "description": "Shows the big portrait of the species whose number is in a variable, bobbing gently, centered on the actor. With 'browse', Left / Right change the variable (wrapping around): the portrait slides out, the new one slides in and plays its cry. The pick button runs the pick actions once (start the run).",
+    "description": "Shows the big portrait of the species whose number is in a variable, bobbing gently, centered on the actor. With 'browse', Left / Right change the variable (wrapping around): the portrait slides out, the new one slides in and plays its cry. The pick button runs the pick actions once (start the run). With 'unlocked_var', only the first species can be picked: the others still show, as dark silhouettes, and the pick button buzzes on them. If something else changes the variable (progress cleared), the portrait switches to it at once.",
     "params": {
       "var":           {"type": "var", "required": true, "description": "Game variable with the species number (order of the species nodes, from 0)."},
+      "unlocked_var":  {"type": "var", "default": "", "description": "Game variable with how many species can be picked, counting from the first (2 = the first two). The rest are locked. Empty = every species."},
+      "locked_var":    {"type": "var", "default": "", "description": "Game variable set to 1 while the species shown is locked and 0 otherwise (HUD text can change with it). Empty = none."},
+      "locked_palette": {"type": "node:palette", "default": "", "description": "Colors of a locked species' portrait (a silhouette), in the portrait's color slots. Empty = its own colors."},
+      "locked_sound":  {"type": "node:sfx", "default": "", "description": "Sound when the pick button is pressed on a locked species. Empty = silent."},
       "browse":        {"type": "bool", "default": true, "description": "Left / Right choose another species. Off = only shows it."},
       "button":        {"type": "button", "default": "START", "description": "Button that picks."},
       "slide":         {"type": "int", "default": 40, "description": "How far the portrait slides when changing (pixels)."},
       "slide_ticks":   {"type": "ticks", "default": 6, "description": "How long each half of the slide takes (ticks)."},
       "bob":           {"type": "int", "default": 2, "description": "How far the portrait bobs up and down (pixels)."},
-      "cry_on_start":  {"type": "bool", "default": true, "description": "Play the species' cry when it appears."},
+      "cry_on_start":  {"type": "bool", "default": true, "description": "Play the species' cry when it appears (locked species stay silent)."},
       "move_sound":    {"type": "node:sfx", "default": "", "description": "Sound when Left / Right is pressed. Empty = only the cry."},
       "on_pick":       {"type": "actions", "default": [], "description": "What happens when the button is pressed."}
     }

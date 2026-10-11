@@ -1,6 +1,7 @@
 // species_select - shows the big portrait of the species chosen in a variable, bobbing gently.
 // With `browse`, Left / Right pick another species (wrapping around): the portrait slides out,
 // the new one slides in and plays its cry. The confirm button runs the pick actions once.
+// Species past `unlocked_var` are locked: drawn as a silhouette, silent, and they can't be picked.
 #include "species_select.h"
 #include "behavior_params.h"
 #include <tonc_memdef.h>
@@ -21,9 +22,13 @@ static const SpeciesData *species_at(s32 i) {
     return b->species[i];
 }
 
-static void cry(s32 i) {
+static int locked(const Params_species_select *p, s32 i) {
+    return p->unlocked_var >= 0 && i >= vars_get(p->unlocked_var);
+}
+
+static void cry(const Params_species_select *p, s32 i) {
     const SpeciesData *sp = species_at(i);
-    if (sp && sp->cry) audio_play_sfx(sp->cry);
+    if (sp && sp->cry && !locked(p, i)) audio_play_sfx(sp->cry);
 }
 
 void bhv_species_select_init(Actor *a, const void *params) {
@@ -34,7 +39,7 @@ void bhv_species_select_init(Actor *a, const void *params) {
     st[ST_TIMER] = 0;
     st[ST_DIR] = 0;
     st[ST_PICKED] = 0;
-    if (p->cry_on_start) cry(vars_get(p->var));
+    if (p->cry_on_start) cry(p, vars_get(p->var));
 }
 
 void bhv_species_select_update(Actor *a, const void *params) {
@@ -52,11 +57,14 @@ void bhv_species_select_update(Actor *a, const void *params) {
             st[ST_SHOWN] = (u32)vars_get(p->var);
             st[ST_PHASE] = PH_IN;
             st[ST_TIMER] = 0;
-            cry((s32)st[ST_SHOWN]);
+            cry(p, (s32)st[ST_SHOWN]);
         }
     } else if (st[ST_PHASE] == PH_IN) {
         off = side * p->slide * (ticks - (s32)st[ST_TIMER]) / ticks;
         if (++st[ST_TIMER] > (u32)ticks) st[ST_PHASE] = PH_IDLE;
+    } else if (st[ST_SHOWN] != (u32)vars_get(p->var)) {
+        st[ST_SHOWN] = (u32)vars_get(p->var);       // changed by something else (progress cleared)
+        cry(p, (s32)st[ST_SHOWN]);
     } else if (!st[ST_PICKED]) {
         int dir = input_pressed(KEY_RIGHT) - input_pressed(KEY_LEFT);
         if (dir && p->browse) {
@@ -66,12 +74,18 @@ void bhv_species_select_update(Actor *a, const void *params) {
             st[ST_TIMER] = 0;
             if (p->move_sound) audio_play_sfx(p->move_sound);
         } else if (input_pressed(p->button)) {
-            st[ST_PICKED] = 1;
-            scripts_start(p->on_pick, a);
+            if (locked(p, (s32)st[ST_SHOWN])) {
+                if (p->locked_sound) audio_play_sfx(p->locked_sound);
+            } else {
+                st[ST_PICKED] = 1;
+                scripts_start(p->on_pick, a);
+            }
         }
     }
+    vars_set(p->locked_var, locked(p, vars_get(p->var)));     // with the name the HUD shows
     const SpeciesData *sp = species_at((s32)st[ST_SHOWN]);
     if (!sp || !sp->portrait) return;
     s32 bob = (fx_sin_deg((s32)(core_frame() * 6 % 360)) * p->bob) >> FX_SHIFT;
-    sprites_queue(sp->portrait, 0, a, off - sp->portrait->width / 2, bob - sp->portrait->height / 2, 0, NULL);
+    sprites_queue(sp->portrait, 0, a, off - sp->portrait->width / 2, bob - sp->portrait->height / 2, 0,
+                  locked(p, (s32)st[ST_SHOWN]) ? p->locked_palette : NULL);
 }

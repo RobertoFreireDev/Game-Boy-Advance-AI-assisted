@@ -1539,6 +1539,14 @@ def check_game(p, r):
         for k in v:
             if k not in ("name", "type", "initial", "notes", "persistent"):
                 r.err(where, "%s has unknown field '%s'" % (label, k))
+    keys = {}
+    for v in vars_:
+        name = v.get("name") if isinstance(v, dict) else None
+        if isinstance(name, str):
+            k = C.var_save_key(name)
+            if k in keys and keys[k] != name:
+                r.err(where, "variables '%s' and '%s' get the same save key: rename one" % (keys[k], name))
+            keys[k] = name
 
 
 def check_index(p, r):

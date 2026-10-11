@@ -3,7 +3,7 @@
   "kind": "scene",
   "type": "credits",
   "name": "Victory",
-  "notes": "YOU SURVIVED! over the meadow, with the winning monster bobbing, the final time, level and kills. START goes back to the menu.",
+  "notes": "YOU SURVIVED! over the meadow, with the winning monster bobbing, the final time, level and kills. Winning unlocks the next locked monster of the roster (while any is left): its name shows under the stats with a jingle, and the progress is saved at once. START goes back to the menu.",
   "backdrop": "#58a8f0",
   "music": "mus_victory",
   "camera": {
@@ -29,8 +29,50 @@
   ],
   "on_start": [
     {
+      "do": "set_var",
+      "var": "new_mon",
+      "value": -1
+    },
+    {
+      "do": "if_var",
+      "var": "unlocked",
+      "op": "<",
+      "value": 9,
+      "then": [
+        {
+          "do": "set_var",
+          "var": "new_mon",
+          "from": "unlocked"
+        },
+        {
+          "do": "add_var",
+          "var": "unlocked",
+          "value": 1
+        },
+        {
+          "do": "save_game"
+        }
+      ]
+    },
+    {
       "do": "fade_in",
       "ticks": 20
+    },
+    {
+      "do": "if_var",
+      "var": "new_mon",
+      "op": ">=",
+      "value": 0,
+      "then": [
+        {
+          "do": "wait",
+          "ticks": 20
+        },
+        {
+          "do": "play_sfx",
+          "sfx": "sfx_new_move"
+        }
+      ]
     }
   ]
 }

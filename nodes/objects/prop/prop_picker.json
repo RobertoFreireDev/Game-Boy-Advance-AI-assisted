@@ -3,12 +3,16 @@
   "kind": "object",
   "type": "prop",
   "name": "Monster picker",
-  "notes": "Invisible: shows the chosen monster's big portrait, bobbing. Left / Right pick another (it slides and cries). START resets the run's variables and starts the run.",
+  "notes": "Invisible: shows the chosen monster's big portrait, bobbing. Left / Right pick another (it slides and cries). Only the first 'unlocked' monsters can be played (Furrbit at first, one more for each won run, in roster order); a locked one shows as a dark silhouette (pal_locked) without its cry, the text under it says LOCKED / WIN A RUN TO UNLOCK, and START on it buzzes (sfx_error). START on an unlocked one resets the run's variables, saves the pick and starts the run. SELECT opens the 'clear saved progress' question.",
   "logic": [
     {
       "behavior": "species_select",
       "params": {
         "var": "chosen",
+        "unlocked_var": "unlocked",
+        "locked_var": "sel_locked",
+        "locked_palette": "pal_locked",
+        "locked_sound": "sfx_error",
         "browse": true,
         "button": "START",
         "slide": 40,
@@ -18,6 +22,9 @@
         "on_pick": [
           {
             "do": "reset_vars"
+          },
+          {
+            "do": "save_game"
           },
           {
             "do": "play_sfx",
@@ -30,6 +37,18 @@
           {
             "do": "goto_scene",
             "scene": "scn_run"
+          }
+        ]
+      }
+    },
+    {
+      "behavior": "button_actions",
+      "params": {
+        "button": "SELECT",
+        "on_press": [
+          {
+            "do": "open_menu",
+            "menu": "menu_clear_save"
           }
         ]
       }

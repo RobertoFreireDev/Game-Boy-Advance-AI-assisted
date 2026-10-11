@@ -318,6 +318,7 @@ extern const NodeEntry g_nodes[NODE_COUNT];
 extern const GameData g_game;
 extern const s32 g_var_initial[VAR_ARRAY_SIZE];
 extern const u8 g_var_persistent[VAR_ARRAY_SIZE];  // 1 = kept by reset_vars (permanent unlocks)
+extern const u16 g_var_key[VAR_ARRAY_SIZE];        // each variable's save key (from its name)
 extern const BehaviorDef g_behaviors[BHV_ARRAY_SIZE];
 
 #endif

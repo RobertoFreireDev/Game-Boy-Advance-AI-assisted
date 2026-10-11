@@ -53,10 +53,10 @@ All monsters, names, sprites, tiles and music are **original**. The style may ev
 |          S U R V I V A L                 |
 |                                          |
 |      ◀      [ monster sprite ]      ▶    |   ← large sprite (32×32 scaled 2×)
-|              EMBERPUP                    |
-|              type: FIRE                  |
+|         FURRBIT  TYPE: NORMAL            |
 |                                          |
-|             PRESS START                  |   ← blinks every 0.5 s
+|             PRESS START                  |   ← blinks every 0.5 s (locked: LOCKED)
+|         SELECT: CLEAR SAVE               |   ← locked: WIN A RUN TO UNLOCK
 +------------------------------------------+
 ```
 
@@ -69,6 +69,12 @@ All monsters, names, sprites, tiles and music are **original**. The style may ev
 - **Left / Right** cycles through the 9 monsters (wraps around). Short slide animation + a cry sound effect for each monster.
 - **Start** begins the run with the selected monster.
 - The selected monster idles (bobbing animation).
+
+**Locked monsters (progress):**
+- At first only **Furrbit (Normal)** can be played. Every other monster is **locked**: it still shows in the selector (so the player sees what is coming), but as a dark silhouette, without its cry, with **LOCKED** blinking and **WIN A RUN TO UNLOCK** under it. Start on a locked monster buzzes and does nothing.
+- **Every won run unlocks one more monster**, in roster order (section 6.1): Emberpup, Splashell, Voltail, Sproutle, Venomole, Gustling, Wispook, then Pebbulk. After the 8th win all 9 are open and wins unlock nothing more.
+- Progress is **saved on the cartridge** (SRAM) the moment it changes — when a run is won, when a run starts (the pick), and when it is cleared — and loaded every time the menu opens, so it survives switching the game off.
+- **Select** opens *CLEAR SAVED PROGRESS?* with **NO** (cursor starts here) / **YES**. YES locks every monster again except Furrbit, selects Furrbit and saves. NO, B or Start close it.
 
 **Music — "Monster Survival Theme" (new, original):**
 - Original chiptune composition. It should *feel* like an energetic, adventurous handheld-monster-game title theme, but the melody must be written from scratch — **do not transcribe or reproduce any existing game's melody**.
@@ -91,7 +97,7 @@ All monsters, names, sprites, tiles and music are **original**. The style may ev
 - Run music: a separate original, upbeat loop (same channel setup, faster ~155 BPM). A short jingle plays on level-up and when a new move unlocks.
 
 **End conditions:**
-- **Victory:** all 25 enemies defeated → "YOU SURVIVED!" screen with final time, level and kills → press Start → Menu.
+- **Victory:** all 25 enemies defeated → "YOU SURVIVED!" screen with final time, level and kills, plus **NEW MONSTER: <name>** (with a jingle) when the win unlocked one (section 3.1) → press Start → Menu.
 - **Game Over:** player HP = 0 → player sprite blinks and fades → "GAME OVER" → after 3 s (or Start) → Menu.
 
 **Pause:** Start during the run pauses (shows level, XP, kills, timer, and which moves are unlocked). Start again resumes.
@@ -442,3 +448,4 @@ These points weren't specified, so this doc picks a value:
 9. Moves have accuracy, which is where "MISS" comes from.
 10. Ghost's Move 3 is named **Phase** in this doc to avoid confusion with the Ghost type name.
 11. **A move hits exactly what its animation draws** (+2 px). Cones became straight beams, because that is what their animations draw.
+12. **Unlocks follow the roster order** (Normal first, Rock last), one per won run, so every player sees the same order. Locked monsters stay visible as silhouettes with their name and type. Clearing the save is on Select, behind a NO/YES question.

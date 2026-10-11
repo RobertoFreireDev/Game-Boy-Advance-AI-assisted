@@ -148,6 +148,14 @@ def pixel_index(ch):
     return PIXEL_CHARS.index(ch)
 
 
+def var_save_key(name):
+    """16-bit key a variable is saved under (from its name: a save survives new variables)."""
+    h = 2166136261
+    for ch in name.encode("utf-8"):
+        h = ((h ^ ch) * 16777619) & 0xFFFFFFFF
+    return (h ^ (h >> 16)) & 0xFFFF
+
+
 def color_to_bgr555(hex_color):
     """Convert '#RRGGBB' to a 15-bit GBA color (what the hardware shows)."""
     r = int(hex_color[1:3], 16) >> 3

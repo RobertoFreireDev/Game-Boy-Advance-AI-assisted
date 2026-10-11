@@ -769,6 +769,8 @@ def gen_game_data(p):
     g.emit("const s32 g_var_initial[VAR_ARRAY_SIZE] = { %s };" % ", ".join(str(v) for v in inits))
     keep = [1 if v.get("persistent") else 0 for v in game.get("variables", [])] or [0]
     g.emit("const u8 g_var_persistent[VAR_ARRAY_SIZE] = { %s };" % ", ".join(str(v) for v in keep))
+    keys = [C.var_save_key(v["name"]) for v in game.get("variables", [])] or [0]
+    g.emit("const u16 g_var_key[VAR_ARRAY_SIZE] = { %s };" % ", ".join("0x%04X" % k for k in keys))
     sq, wv = [], []
     for note in range(128):
         f = 440.0 * math.pow(2, (note - 69) / 12.0)

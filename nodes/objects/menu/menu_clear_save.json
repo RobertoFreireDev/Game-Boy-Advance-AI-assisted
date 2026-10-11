@@ -1,0 +1,76 @@
+{
+  "id": "menu_clear_save",
+  "kind": "object",
+  "type": "menu",
+  "name": "Clear saved progress",
+  "notes": "Opens with SELECT on the menu screen. Asks before wiping the saved progress; the cursor starts on NO so it is never cleared by accident. YES locks every monster again except Furrbit (the Normal one), selects Furrbit and saves that. NO, B or START close it and keep everything.",
+  "font": "font_default",
+  "title": "CLEAR SAVED PROGRESS?",
+  "cursor": "icon_cursor",
+  "box": {
+    "x": 8,
+    "y": 40,
+    "w": 224,
+    "h": 80,
+    "paper": 3,
+    "border": 2
+  },
+  "texts": [
+    {
+      "x": 24,
+      "y": 64,
+      "text": "EVERY MONSTER BUT FURRBIT"
+    },
+    {
+      "x": 24,
+      "y": 72,
+      "text": "WILL BE LOCKED AGAIN."
+    }
+  ],
+  "layout": {
+    "x": 104,
+    "y": 88,
+    "spacing": 16,
+    "title_y": 48
+  },
+  "options": [
+    {
+      "label": "NO",
+      "actions": [
+        {
+          "do": "close_menu"
+        }
+      ]
+    },
+    {
+      "label": "YES",
+      "actions": [
+        {
+          "do": "set_var",
+          "var": "unlocked",
+          "value": 1
+        },
+        {
+          "do": "set_var",
+          "var": "chosen",
+          "value": 0
+        },
+        {
+          "do": "save_game"
+        },
+        {
+          "do": "close_menu"
+        }
+      ]
+    }
+  ],
+  "on_cancel": [
+    {
+      "do": "close_menu"
+    }
+  ],
+  "sounds": {
+    "move": "sfx_select",
+    "select": "sfx_confirm"
+  }
+}

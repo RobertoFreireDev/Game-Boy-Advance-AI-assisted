@@ -3,7 +3,7 @@
   "kind": "scene",
   "type": "title",
   "name": "Menu",
-  "notes": "The first screen. The MONSTER SURVIVAL logo drops in over the meadow and bounces twice, a white flash, then the monster picker appears: Left / Right choose one of the 9 monsters (it slides in and cries), START begins the run with it. Coming back from a run, the last pick is still selected.",
+  "notes": "The first screen. It loads the saved progress (which monsters are unlocked, the last pick), then the MONSTER SURVIVAL logo drops in over the meadow and bounces twice, a white flash, then the monster picker appears: Left / Right browse the 9 monsters (each slides in and cries), START begins the run with it. Only Furrbit (Normal) is playable at first; every won run unlocks the next monster in the roster, and the locked ones show as dark silhouettes. SELECT asks whether to clear the saved progress. Coming back from a run, the last pick is still selected.",
   "backdrop": "#58a8f0",
   "music": "mus_menu",
   "camera": {
@@ -26,6 +26,9 @@
     }
   ],
   "on_start": [
+    {
+      "do": "load_game"
+    },
     {
       "do": "fade_in",
       "ticks": 16

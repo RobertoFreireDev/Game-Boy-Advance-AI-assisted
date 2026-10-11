@@ -5,16 +5,35 @@
     "game_code": "AMSE",
     "rom_name": "monster_survival",
     "start_scene": "scn_menu",
-    "save": false,
+    "save": true,
     "gravity": 0.25,
     "max_fall_speed": 4,
     "variables": [
       {
         "name": "chosen",
         "type": "int",
-        "initial": 1,
-        "notes": "Species number picked on the menu (0 Furrbit, 1 Emberpup, 2 Splashell, 3 Voltail, 4 Sproutle, 5 Venomole, 6 Gustling, 7 Wispook, 8 Pebbulk). Kept between runs.",
+        "initial": 0,
+        "notes": "Species number picked on the menu (0 Furrbit, 1 Emberpup, 2 Splashell, 3 Voltail, 4 Sproutle, 5 Venomole, 6 Gustling, 7 Wispook, 8 Pebbulk). Kept between runs and saved, so the last pick is still selected after switching the game off.",
         "persistent": true
+      },
+      {
+        "name": "unlocked",
+        "type": "int",
+        "initial": 1,
+        "notes": "How many monsters can be picked, counting from Furrbit in the roster order above (1 = only Furrbit, 9 = all). Each won run adds 1. Saved on the cartridge; clearing the saved progress puts it back to 1.",
+        "persistent": true
+      },
+      {
+        "name": "sel_locked",
+        "type": "flag",
+        "initial": false,
+        "notes": "Set by the menu picker while the monster on screen is locked (the HUD then says LOCKED / WIN A RUN TO UNLOCK)."
+      },
+      {
+        "name": "new_mon",
+        "type": "int",
+        "initial": -1,
+        "notes": "Species number the last win unlocked, shown on the victory screen. -1 = this run unlocked nothing."
       },
       {
         "name": "hp",
@@ -234,6 +253,7 @@
     {"id": "pal_mon_5", "kind": "object", "type": "palette", "path": "objects/palette/pal_mon_5.json", "parent": null},
     {"id": "pal_fx", "kind": "object", "type": "palette", "path": "objects/palette/pal_fx.json", "parent": null},
     {"id": "pal_fx_off", "kind": "object", "type": "palette", "path": "objects/palette/pal_fx_off.json", "parent": null},
+    {"id": "pal_locked", "kind": "object", "type": "palette", "path": "objects/palette/pal_locked.json", "parent": null},
     {"id": "mov_tackle", "kind": "object", "type": "move", "path": "objects/move/mov_tackle.json", "parent": "mon_furrbit"},
     {"id": "spr_fx_tackle", "kind": "object", "type": "sprite", "path": "objects/sprite/spr_fx_tackle.json", "parent": "mov_tackle"},
     {"id": "anim_fx_tackle", "kind": "object", "type": "animation", "path": "objects/animation/anim_fx_tackle.json", "parent": "ptc_fx_tackle"},
@@ -574,6 +594,7 @@
     {"id": "hud_game_over", "kind": "object", "type": "hud", "path": "objects/hud/hud_game_over.json", "parent": null},
     {"id": "hud_victory", "kind": "object", "type": "hud", "path": "objects/hud/hud_victory.json", "parent": null},
     {"id": "menu_pause", "kind": "object", "type": "menu", "path": "objects/menu/menu_pause.json", "parent": null},
+    {"id": "menu_clear_save", "kind": "object", "type": "menu", "path": "objects/menu/menu_clear_save.json", "parent": null},
     {"id": "plr_monster", "kind": "object", "type": "player", "path": "objects/player/plr_monster.json", "parent": null},
     {"id": "ptc_zzz", "kind": "object", "type": "particle", "path": "objects/particle/ptc_zzz.json", "parent": "enm_alpha"},
     {"id": "anim_zzz", "kind": "object", "type": "animation", "path": "objects/animation/anim_zzz.json", "parent": "ptc_zzz"},

@@ -187,7 +187,8 @@ and `max_fall_speed` (px/tick, default 4) apply to every body with `physics.grav
 games add `battle` (§6.1b): the monster types, the type chart, the floating-text font and words. Variables
 are the game's global state; HUD, behaviors and actions read and write them by name. Flags are
 stored as 0/1. A variable with `"persistent": true` keeps its value through `reset_vars` (permanent
-unlocks, banked gold); `save_game` saves every variable. Index order: scenes first, then objects.
+unlocks, banked gold); `save_game` saves every variable (each under a key made from its name, so `load_game`
+still restores the rest after an update adds, removes or reorders variables). Index order: scenes first, then objects.
 
 ### 5.3 Common fields (every node file)
 
@@ -590,7 +591,8 @@ Every channel in a pattern has the same number of rows. Missing channels are sil
   sleeping boss; keeps `spread` tiles from other wild monsters, walking around them and sliding
   sideways around the player, so a pack spreads out), `move_buttons` (the player's 3 moves on A, B, hold R, with charge gauges, a
   locked-move buzz and a miss sound when a move reaches no one; the hold-R ring shows at once and fills),
-  `species_select` (the picker's bobbing portrait, Left / Right), `drop_in` (a logo or layer that
+  `species_select` (the picker's bobbing portrait, Left / Right; species past `unlocked_var` show as a
+  silhouette and can't be picked), `drop_in` (a logo or layer that
   falls in and bounces). Add more as games need them.
 - Prefer a new reusable behavior over custom code.
 
@@ -651,7 +653,7 @@ src/engine/
 ├── audio.c/.h     PSG driver: music sequencer + sfx
 ├── ui.c/.h        text, hud, menus (incl. upgrade cards), dialogs
 ├── actions.c/.h   action list interpreter
-└── save.c/.h      SRAM save/load of variables (only if game.save)
+└── save.c/.h      SRAM save/load of variables, matched by name key (only if game.save)
 ```
 
 **Every frame:**

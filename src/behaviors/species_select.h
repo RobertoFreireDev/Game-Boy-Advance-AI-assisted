@@ -1,4 +1,5 @@
-// species_select - the monster picker: a bobbing portrait, Left / Right to browse (see the .c).
+// species_select - the monster picker: a bobbing portrait, Left / Right to browse, locked species
+// as silhouettes (see the .c).
 #ifndef BHV_SPECIES_SELECT_H
 #define BHV_SPECIES_SELECT_H
 
