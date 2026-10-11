@@ -1,0 +1,25 @@
+{
+  "id": "pal_ground",
+  "kind": "object",
+  "type": "palette",
+  "name": "Overworld ground colors",
+  "notes": "Colors of the ground tiles: dark outline, white, three grass greens and a deep green, three path browns, three water blues, two stone greys and flower red.",
+  "colors": [
+    "#000000",
+    "#183020",
+    "#f8f8f0",
+    "#a8e070",
+    "#78c050",
+    "#4c9038",
+    "#2e6830",
+    "#e8d098",
+    "#c8a868",
+    "#98784c",
+    "#8cc8f8",
+    "#4888e0",
+    "#2c58a8",
+    "#c0c0b8",
+    "#7c7c80",
+    "#f06058"
+  ]
+}

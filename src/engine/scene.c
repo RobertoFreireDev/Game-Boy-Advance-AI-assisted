@@ -12,6 +12,7 @@
 #include "sprites.h"
 #include "audio.h"
 #include "ui.h"
+#include "floattext.h"
 
 static const SceneData *s_scene;
 static s16 s_scene_node = -1;
@@ -20,6 +21,8 @@ static s16 s_pending = -1;
 static fixed s_fade;        // 0 = clear, 16 << 8 = black
 static fixed s_fade_step;
 static fixed s_fade_target;
+static fixed s_flash;       // > 0: the screen is lit up white (16 << 8 = fully white)
+static fixed s_flash_step;
 
 const SceneData *scene_current(void) { return s_scene; }
 s16 scene_current_node(void) { return s_scene_node; }
@@ -40,7 +43,18 @@ void scene_fade(int to_black, int ticks) {
     if (s_fade_step == 0) s_fade_step = 1;
 }
 
+void scene_flash(int ticks) {
+    s_flash = fx_from_int(16);
+    s_flash_step = fx_from_int(16) / (ticks > 0 ? ticks : 1);
+    if (s_flash_step == 0) s_flash_step = 1;
+}
+
 void scene_vblank(void) {
+    if (s_flash > 0) {
+        REG_BLDCNT = BLD_BUILD(BLD_ALL | BLD_BACKDROP, 0, 2);  // mode 2 = fade to white
+        REG_BLDY = (u16)fx_to_int(s_flash);
+        return;
+    }
     REG_BLDCNT = BLD_BUILD(BLD_ALL | BLD_BACKDROP, 0, 3);      // mode 3 = fade to black
     REG_BLDY = (u16)fx_to_int(s_fade);
 }
@@ -63,6 +77,7 @@ static void load_scene(s16 node) {
     scripts_clear();
     actor_clear_all();
     particles_clear();
+    ftext_reset();
     ui_reset();
     sprites_reset();
     bg_reset(sc->backdrop);
@@ -71,6 +86,7 @@ static void load_scene(s16 node) {
     s_fade = 0;
     s_fade_step = 0;
     s_fade_target = 0;
+    s_flash = 0;
 
     camera_reset(sc->cam_x, sc->cam_y, sc->camera_bounds);
 
@@ -119,8 +135,10 @@ void scene_update(void) {
             if (s_fade < s_fade_target) s_fade = s_fade_target;
         }
     }
+    if (s_flash > 0) s_flash -= s_flash_step;
     scripts_update();
     if (!core_paused()) {
+        sprites_queue_clear();          // behaviors queue this frame's extra sprites again
         actor_update_all();
         if (s_scene && s_scene->on_update_fn) s_scene->on_update_fn();
     }

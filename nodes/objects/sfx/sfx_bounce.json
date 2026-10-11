@@ -1,0 +1,21 @@
+{
+  "id": "sfx_bounce",
+  "kind": "object",
+  "type": "sfx",
+  "name": "Logo bounce",
+  "notes": "A soft thump as the title logo lands.",
+  "channel": "noise",
+  "priority": 1,
+  "steps": [
+    {
+      "pitch": 2,
+      "ticks": 3,
+      "volume": 10
+    },
+    {
+      "pitch": 1,
+      "ticks": 5,
+      "volume": 6
+    }
+  ]
+}

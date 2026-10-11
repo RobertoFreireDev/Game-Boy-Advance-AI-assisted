@@ -10,6 +10,7 @@ static const TilemapData *s_map;
 // bump into them) and every live actor grouped by collision category.
 static u8 s_solid[MAX_ACTORS];
 static int s_solid_n;
+static s16 s_srect[MAX_ACTORS][4];  // hitbox of solid k (left, top, right, bottom), kept current as it moves
 static u8 s_bucket[CAT_COUNT][MAX_ACTORS];
 static u8 s_bucket_n[CAT_COUNT];
 static s16 s_rect[MAX_ACTORS][4];   // hitboxes (left, top, right, bottom) for this frame's contacts
@@ -116,16 +117,27 @@ static void move_x(Actor *a) {
     }
     fixed old_x = a->x;
     a->x = nx;
-    // Fully solid actors (crates, rocks) block sideways.
+    // Fully solid actors (crates, rocks, top-down monsters) block sideways. The cached hitboxes
+    // reject far ones without touching the actors in slow EWRAM (a field of 25 solid monsters).
+    s32 l = fx_to_int(nx) + a->hb_x, r = l + a->hb_w - 1;
+    s32 t = fx_to_int(a->y) + a->hb_y, b = t + a->hb_h - 1;
     for (int k = 0; k < s_solid_n; k++) {
+        const s16 *sr = s_srect[k];
+        if (sr[0] > r || sr[2] < l || sr[1] > b || sr[3] < t) continue;
         Actor *s = &g_actors[s_solid[k]];
-        if (!blocks(a, s) || s->solid_mode != SOLID_FULL || !physics_overlap(a, s)) continue;
-        s32 sl, st, sr, sb;
-        actor_rect(s, &sl, &st, &sr, &sb);
-        if (nx > old_x) a->x = fx_from_int(sl - a->hb_x - a->hb_w);
-        else a->x = fx_from_int(sr + 1 - a->hb_x);
+        if (!blocks(a, s) || s->solid_mode != SOLID_FULL) continue;
+        if (!a->gravity) {
+            // Top-down: already inside it before this step (it just became solid again):
+            // let it walk out instead of jumping to one side.
+            s32 ol = fx_to_int(old_x) + a->hb_x;
+            if (ol <= sr[2] && sr[0] <= ol + a->hb_w - 1) continue;
+        }
+        if (nx > old_x) a->x = fx_from_int(sr[0] - a->hb_x - a->hb_w);
+        else a->x = fx_from_int(sr[2] + 1 - a->hb_x);
         a->vx = 0;
         a->hit_wall = 1;
+        l = fx_to_int(a->x) + a->hb_x;
+        r = l + a->hb_w - 1;
     }
 }
 
@@ -152,16 +164,26 @@ static void move_y(Actor *a) {
                 }
             }
         }
-        // Platforms and solid actors: land on their top.
+        // Platforms and solid actors: land on their top. Top-down bodies (no gravity) are
+        // only blocked by fully solid ones, like by a wall, and never ride them.
         for (int k = 0; k < s_solid_n; k++) {
+            const s16 *rc = s_srect[k];
+            s32 sl = rc[0], st = rc[1], sr = rc[2];
+            if (r < sl || l > sr) continue;
+            s32 new_b = fx_to_int(ny) + a->hb_y + a->hb_h - 1;
+            if (!a->gravity && (old_b >= st || new_b < st)) continue;
             int i = s_solid[k];
             Actor *s = &g_actors[i];
             if (!blocks(a, s)) continue;
-            s32 sl, st, sr, sb;
-            actor_rect(s, &sl, &st, &sr, &sb);
-            if (r < sl || l > sr) continue;
+            if (!a->gravity) {
+                if (s->solid_mode == SOLID_FULL && old_b < st && new_b >= st) {
+                    ny = fx_from_int(st - a->hb_y - a->hb_h);
+                    a->vy = 0;
+                    a->hit_wall = 1;
+                }
+                continue;
+            }
             s32 prev_top = fx_to_int(s->prev_y) + s->hb_y;
-            s32 new_b = fx_to_int(ny) + a->hb_y + a->hb_h - 1;
             if (old_b <= (st > prev_top ? st : prev_top) + 1 && new_b + 1 >= st) {
                 ny = fx_from_int(st - a->hb_y - a->hb_h);
                 a->vy = 0;
@@ -182,14 +204,16 @@ static void move_y(Actor *a) {
             }
         }
         for (int k = 0; k < s_solid_n; k++) {       // bump the head on fully solid actors
+            const s16 *rc = s_srect[k];
+            s32 sl = rc[0], sr = rc[2], sb = rc[3];
+            new_t = fx_to_int(ny) + a->hb_y;
+            if (!(r >= sl && l <= sr && old_t > sb && new_t <= sb)) continue;
             Actor *s = &g_actors[s_solid[k]];
             if (!blocks(a, s) || s->solid_mode != SOLID_FULL) continue;
-            s32 sl, st, sr, sb;
-            actor_rect(s, &sl, &st, &sr, &sb);
-            new_t = fx_to_int(ny) + a->hb_y;
-            if (r >= sl && l <= sr && old_t > sb && new_t <= sb) {
+            {
                 ny = fx_from_int(sb + 1 - a->hb_y);
                 a->vy = 0;
+                if (!a->gravity) a->hit_wall = 1;
             }
         }
     }
@@ -210,10 +234,11 @@ static void touch_tiles(Actor *a) {
 static void step(Actor *a) {
     a->prev_x = a->x;
     a->prev_y = a->y;
-    if (!a->vx && !a->vy && !a->gravity && a->riding < 0 && !(a->collides & CAT_BIT(CAT_TILES))) {
-        a->was_on_ground = a->on_ground;    // resting (a gem on the ground): nothing to move
+    if (!a->vx && !a->vy && !a->gravity && a->riding < 0) {
+        a->was_on_ground = a->on_ground;    // resting (a gem, a monster standing still): nothing moves
         a->on_ground = 0;
         a->hit_wall = 0;
+        if (a->collides & CAT_BIT(CAT_TILES)) touch_tiles(a);
         return;
     }
     if (s_solid_n == 0 && !a->gravity && a->riding < 0 && !(a->collides & CAT_BIT(CAT_TILES))) {
@@ -243,7 +268,7 @@ static void step(Actor *a) {
         if (a->vy > g_game.max_fall) a->vy = g_game.max_fall;
     }
     move_x(a);
-    move_y(a);
+    if (a->vy || a->gravity || a->riding >= 0) move_y(a);
     if (a->collides & CAT_BIT(CAT_TILES)) touch_tiles(a);
 }
 
@@ -288,10 +313,26 @@ static const Grid *grid_of(int c) {
 void physics_update(void) {
     s_map = bg_collision_map();
     s_solid_n = 0;
-    for (int i = 0; i < MAX_ACTORS; i++)
-        if (g_actors[i].active && g_actors[i].solid_mode != SOLID_NONE) s_solid[s_solid_n++] = (u8)i;
-    // Platforms move first so riders can follow them.
-    for (int k = 0; k < s_solid_n; k++) step(&g_actors[s_solid[k]]);
+    for (int i = 0; i < MAX_ACTORS; i++) {
+        Actor *a = &g_actors[i];
+        if (!a->active || a->solid_mode == SOLID_NONE) continue;
+        s16 *rc = s_srect[s_solid_n];
+        rc[0] = (s16)(fx_to_int(a->x) + a->hb_x);
+        rc[1] = (s16)(fx_to_int(a->y) + a->hb_y);
+        rc[2] = (s16)(rc[0] + a->hb_w - 1);
+        rc[3] = (s16)(rc[1] + a->hb_h - 1);
+        s_solid[s_solid_n++] = (u8)i;
+    }
+    // Platforms move first so riders can follow them; each one's cached hitbox follows it.
+    for (int k = 0; k < s_solid_n; k++) {
+        Actor *a = &g_actors[s_solid[k]];
+        step(a);
+        s16 *rc = s_srect[k];
+        rc[0] = (s16)(fx_to_int(a->x) + a->hb_x);
+        rc[1] = (s16)(fx_to_int(a->y) + a->hb_y);
+        rc[2] = (s16)(rc[0] + a->hb_w - 1);
+        rc[3] = (s16)(rc[1] + a->hb_h - 1);
+    }
 
     // Everyone else moves, and in the same pass (its position is final once it has moved) gets
     // ready for contacts: a pair touches when either one collides with the other's category.

@@ -1,0 +1,21 @@
+{
+  "id": "mov_thunderbolt",
+  "kind": "object",
+  "type": "move",
+  "name": "Thunderbolt",
+  "notes": "Voltail's move 3 (hold A). A huge blast of electricity in a cone 10 tiles long in front of the user. Charge: 60 s.",
+  "title": "THUNDERBOLT",
+  "monster_type": "electric",
+  "shape": "cone",
+  "range": 10,
+  "power": 40,
+  "accuracy": 100,
+  "charge": 3600,
+  "effect": "ptc_fx_orb",
+  "effect_at": "axis",
+  "sfx": "sfx_mv_electric",
+  "children": [
+    "spr_fx_orb",
+    "ptc_fx_orb"
+  ]
+}

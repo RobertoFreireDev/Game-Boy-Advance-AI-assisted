@@ -134,6 +134,7 @@ class Gen:
         var_from = var_max = "-1"
         then_l = else_l = "{ NULL, 0 }"
         fn = "NULL"
+        text = "NULL"
         if do == "goto_scene":
             node = self.node_enum(val("scene"))
         elif do in ("fade_in", "fade_out", "wait"):
@@ -168,16 +169,32 @@ class Gen:
         elif do == "call":
             fn = val("function")
             self.extern_fns.add("void %s(struct Actor *self);" % fn)
-        return ("{ %s, %d, %s, %s, %s, %s, 0, %d, %d, %s, %s, %s }"
-                % (op, sub, node, var, var_from, var_max, va, vb, then_l, else_l, fn))
+        elif do == "show_hud":
+            node = self.node_enum(val("hud"))
+        elif do == "flash_screen":
+            va = int(val("ticks") or 0)
+        elif do == "cover_screen":
+            node, va = self.node_enum(val("icon")), int(val("ticks") or 0)
+        elif do == "float_text":
+            node, va, text = self.node_enum(val("palette")), int(val("height") or 0), cstr(val("text"))
+        return ("{ %s, %d, %s, %s, %s, %s, 0, %d, %d, %s, %s, %s, %s }"
+                % (op, sub, node, var, var_from, var_max, va, vb, then_l, else_l, fn, text))
 
     def text(self, t):
-        """C string for UI text: {var} -> \\001 + (var+1), {var:02} -> \\002 + (var+1)."""
+        """C string for UI text with its placeholders as codes (see src/engine/data.h):
+        {var} -> \\001 v, {var:02} -> \\002 v, {var.field} -> \\003 v f, {var|a|b} -> \\004 v n a\\005 b\\005."""
         if t is None:
             return "NULL"
-        t = C.PLACEHOLDER_RE.sub(
-            lambda m: ("\x02" if m.group(2) else "\x01") + chr(self.vars.index(m.group(1)) + 1), t)
-        return cstr(t)
+
+        def code(m):
+            v = chr(self.vars.index(m.group(1)) + 1)
+            if m.group(3):
+                return "\x03" + v + chr(C.SPECIES_FIELDS.index(m.group(3)) + 1)
+            if m.group(4) is not None:
+                opts = m.group(4).split("|")
+                return "\x04" + v + chr(len(opts)) + "".join(o + "\x05" for o in opts)
+            return ("\x02" if m.group(2) else "\x01") + v
+        return cstr(C.PLACEHOLDER_RE.sub(code, t))
 
     # ---- behavior params ----
     def param_init(self, ptype, pdef, v, base):
@@ -193,8 +210,8 @@ class Gen:
             return self.var_enum(v)
         if ptype == "choice":
             return str(pdef["options"].index(v))
-        if ptype == "string":
-            return cstr(v)
+        if ptype in ("string", "text"):
+            return cstr(v) if v else "NULL"
         if ptype == "actions":
             return self.actions(v or [], base)
         if ptype == "points":
@@ -275,8 +292,8 @@ class Gen:
         cells = [index.get(ch, 0) for row in n["rows"] for ch in row]
         s = self.sym(nid + "_cells")
         self.emit("static const u8 %s[] = {\n%s\n};" % (s, int_array(cells, 32)))
-        self.emit("const TilemapData node_%s = { %s, %d, %d, %d, %d, %d, %s };" % (
-            nid, self.ptr(n["tileset"]), n["layer"], 1 if n.get("repeat_x") else 0,
+        self.emit("const TilemapData node_%s = { %s, %d, %d, %d, 0, %d, %d, %d, %s };" % (
+            nid, self.ptr(n["tileset"]), n["layer"], 1 if n.get("repeat_x") else 0, 1 if n.get("over") else 0,
             fx(n.get("parallax", 1)), len(n["rows"][0]), len(n["rows"]), s))
 
     def E_font(self, nid, n):
@@ -319,7 +336,10 @@ class Gen:
     def E_music(self, nid, n):
         rows = {ch: [] for ch in C.CHANNELS}
         used = {ch: False for ch in C.CHANNELS}
-        for pname in n["order"]:
+        loop_row = 0
+        for i, pname in enumerate(n["order"]):
+            if i == n.get("loop_from", 0):
+                loop_row = len(rows["square1"])
             pat = n["patterns"][pname]
             length = len(C.split_music_tokens(next(iter(pat.values()))))
             for ch in C.CHANNELS:
@@ -358,8 +378,8 @@ class Gen:
             else:
                 insts.append("{ 0, 0, 0, 0, { 0, 0, 0, 0 } }")
         tpr = fx(3600.0 / (n["bpm"] * n["rows_per_beat"]))
-        self.emit("const MusicData node_%s = { %d, %d, %d, { %s }, { %s } };" % (
-            nid, tpr, 1 if n.get("loop", True) else 0, row_count, ", ".join(insts), ", ".join(ptrs)))
+        self.emit("const MusicData node_%s = { %d, %d, %d, %d, { %s }, { %s } };" % (
+            nid, tpr, 1 if n.get("loop", True) else 0, row_count, loop_row, ", ".join(insts), ", ".join(ptrs)))
 
     def E_animation(self, nid, n):
         names = list(self.p.nodes[n["sprite"]]["frames"].keys())
@@ -383,9 +403,9 @@ class Gen:
 
     def E_particle(self, nid, n):
         sp, an = n["speed"], n["angle"]
-        self.emit("const ParticleData node_%s = { %s, %s, %d, %d, %d, %d, %d, %d, %d, %d };" % (
+        self.emit("const ParticleData node_%s = { %s, %s, %d, %d, 0, %d, %d, %d, %d, %d, %d, %d };" % (
             nid, self.ptr(n["animation"]), "PTC_BURST" if n["mode"] == "burst" else "PTC_STREAM",
-            n.get("count", 1), n.get("rate", 1), n["lifetime"], fx(sp[0]), fx(sp[1]),
+            n.get("count", 1), 1 if n.get("on_top") else 0, n.get("rate", 1), n["lifetime"], fx(sp[0]), fx(sp[1]),
             fx(n.get("gravity", 0)), int(an[0]), int(an[1])))
 
     def E_body(self, nid, n):
@@ -438,15 +458,27 @@ class Gen:
             var = self.var_enum(e.get("var"))
             max_var = self.var_enum(e.get("max_var"))
             mx = length = color = back = spacing = 0
+            center = blink = span = mid = low = 0
+            icons, icon_count = "NULL", 0
             if kind == "text":
                 text = self.text(e["text"])
+                center = 1 if e.get("align") == "center" else 0
+                blink = e.get("blink", 0)
+                span = min(30, C.placeholder_width(e["text"]))
             elif kind == "icon_repeat":
                 size = len(self.p.nodes[e["icon"]]["pixels"])
                 mx, spacing = e["max"], e.get("spacing", size) // 8
             elif kind == "bar":
-                mx, length, color, back = e["max"], e["length"], e["color"], e.get("back", 0)
-            items.append("{ HUD_%s, %d, %d, %d, %s, %s, %d, %d, %d, %d, %s, %s, %s }" % (
-                up(kind), x, y, mx, var, max_var, length, color, back, spacing, icon, empty, text))
+                mx, length, color, back = e.get("max", 1), e["length"], e["color"], e.get("back", 0)
+                mid, low = e.get("mid_color", 0), e.get("low_color", 0)
+            elif kind == "gauge":
+                icons = self.sym(nid + "_gauge")
+                icon_count = len(e["icons"])
+                self.emit("static const IconData *const %s[] = { %s };" % (
+                    icons, ", ".join(self.ptr(i) for i in e["icons"])))
+            items.append("{ HUD_%s, %d, %d, %d, %s, %s, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, 0, 0, %s, %s, %s, %s }" % (
+                up(kind), x, y, mx, var, max_var, length, color, back, spacing, center, blink, span, mid, low,
+                icon_count, icon, empty, icons, text))
         s = self.sym(nid + "_elements")
         self.emit("static const HudElement %s[] = {\n    %s\n};" % (s, ",\n    ".join(items)))
         self.emit("const HudData node_%s = { %s, %d, %s };" % (nid, self.ptr(n["font"]), len(items), s))
@@ -471,10 +503,17 @@ class Gen:
         opts = self.options(n.get("options") or [], lay["options"], nid)
         snd = n.get("sounds") or {}
         cancel = self.actions(n.get("on_cancel") or [], nid + "_cancel")
-        self.emit("const MenuData node_%s = { %s, %s, %d, %d, %d, %d, %s, %s, %s, %s, %s, %s, %d };" % (
+        texts = n.get("texts") or []
+        ts = "NULL"
+        if texts:
+            ts = self.sym(nid + "_texts")
+            self.emit("static const MenuText %s[] = { %s };" % (ts, ", ".join(
+                "{ %s, %d, %d }" % (self.text(t["text"]), t["x"] // 8, t["y"] // 8) for t in texts)))
+        self.emit("const MenuData node_%s = { %s, %s, %d, %d, %d, %d, %s, %s, %s, %s, %s, %s, %d, %d, %s };" % (
             nid, self.ptr(n["font"]), self.text(n.get("title") or None), lay["title_x"], lay["title_y"],
             len(lay["options"]), 1 if n.get("box") else 0, opts, self.ptr(n["cursor"]), self.box(n.get("box")),
-            cancel, self.node_enum(snd.get("move")), self.node_enum(snd.get("select")), n.get("upgrades", 0)))
+            cancel, self.node_enum(snd.get("move")), self.node_enum(snd.get("select")), n.get("upgrades", 0),
+            len(texts), ts))
 
     def E_upgrade(self, nid, n):
         cat = n["category"]
@@ -500,6 +539,55 @@ class Gen:
             nid, up(cat), 255 if cat == "bonus" else n.get("max_level", 1), len(reqs), len(descs),
             self.var_enum(n.get("var")), self.node_enum(n.get("replaces")), cstr(n["title"]),
             self.ptr(n.get("icon")), ds, rs, on_pick))
+
+    def type_enum(self, t):
+        return "TYPE_%s" % up(t)
+
+    def E_move(self, nid, n):
+        st = n.get("status") or {}
+        z = n.get("zone") or {}
+        bf = n.get("buff") or {}
+        sticks = st.get("ticks", [0, 0])
+        ticks = z.get("ticks") or ([bf["ticks"], bf["ticks"]] if bf.get("ticks") else [0, 0])
+        on_use = self.actions(n.get("on_use") or [], nid + "_use")
+        self.emit(("const MoveData node_%s = { %s, %s, SHAPE_%s, %d, %d, %d, STATUS_%s, %d, BUFF_%s, %d, %d, %d, "
+                   "%d, %d, %d, %d, %d, ZONE_%s, %d, %d, %d, FX_AT_%s, 0, %s, %s, %s };") % (
+            nid, cstr(n["title"]), self.type_enum(n["monster_type"]), up(n["shape"]), n.get("range", 0), n.get("power", 0),
+            n.get("accuracy", 100), up(st.get("kind", "none")), st.get("chance", 0), up(bf.get("kind", "none")),
+            n["charge"], sticks[0], sticks[1], ticks[0], ticks[1], n.get("dash", 0), z.get("w", 0), z.get("h", 0),
+            up(z.get("place", "front")), z.get("count", 1), z.get("every", 0), z.get("delay", 0),
+            up(n.get("effect_at", "target")), self.ptr(n.get("effect")), self.ptr(n.get("sfx")), on_use))
+
+    def E_species(self, nid, n):
+        self.emit("const SpeciesData node_%s = { %s, %s, 0, %s, %s, %s, %s, { %s } };" % (
+            nid, cstr(n["title"]), self.type_enum(n["monster_type"]), self.ptr(n["body"]), self.ptr(n.get("alpha_palette")),
+            self.ptr(n.get("portrait")), self.ptr(n.get("cry")), ", ".join(self.ptr(m) for m in n["moves"])))
+
+    def battle(self):
+        """game.battle -> g_battle (type names, chart, species list, floating words)."""
+        b = self.p.game.get("battle")
+        if not isinstance(b, dict):
+            return "NULL"
+        types = b["types"]
+        names = self.sym("battle_types")
+        self.emit("static const char *const %s[] = { %s };" % (names, ", ".join(cstr(t.upper()) for t in types)))
+        chart = []
+        for att in types:
+            row = b.get("chart", {}).get(att, {})
+            chart.extend(int(round(row.get(dfn, 1) * 100)) for dfn in types)
+        cs = self.sym("battle_chart")
+        self.emit("static const u8 %s[] = {\n%s\n};" % (cs, int_array(chart, len(types))))
+        species = [e["id"] for e in self.p.index if e.get("type") == "species"]
+        ss = self.sym("battle_species")
+        self.emit("static const SpeciesData *const %s[] = { %s };" % (ss, ", ".join(self.ptr(s) for s in species) or "NULL"))
+        texts = b.get("texts", {})
+        words = ", ".join("{ %s, %s }" % (cstr(texts.get(k, {}).get("text")) if k != "damage" else "NULL",
+                                          self.ptr(texts.get(k, {}).get("palette"))) for k in C.BATTLE_TEXTS)
+        snd = b.get("sounds", {})
+        self.emit("const BattleData g_battle = { %d, %d, %s, %s, %s, %s, { %s }, %s, %s, { %s } };" % (
+            len(types), len(species), names, cs, ss, self.ptr(b["font"]), words, self.ptr(b.get("flash_palette")),
+            self.ptr(b.get("par_palette")), ", ".join(self.ptr(snd.get(k)) for k in C.BATTLE_SOUNDS)))
+        return "&g_battle"
 
     def E_dialog(self, nid, n):
         lines = []
@@ -558,17 +646,18 @@ class Gen:
 
 # Behavior param node types that become typed pointers (others become node indexes).
 PARAM_NODE_PTR = {"dialog": "DialogData", "particle": "ParticleData", "sfx": "SfxData",
-                  "music": "MusicData", "menu": "MenuData", "icon": "IconData"}
+                  "music": "MusicData", "menu": "MenuData", "icon": "IconData", "species": "SpeciesData",
+                  "sprite": "SpriteData", "palette": "PaletteData", "font": "FontData", "move": "MoveData"}
 
 C_TYPES = {"int": "s32", "fixed": "fixed", "bool": "u8", "ticks": "s32", "button": "u16",
            "var": "s16", "actions": "ActionList", "points": "PointList", "choice": "u8",
-           "string": "const char *"}
+           "string": "const char *", "text": "const char *"}
 
 STRUCT_OF = {"palette": "PaletteData", "sprite": "SpriteData", "tileset": "TilesetData",
              "tilemap": "TilemapData", "font": "FontData", "icon": "IconData", "sfx": "SfxData",
              "music": "MusicData", "animation": "AnimationData", "particle": "ParticleData",
              "body": "BodyData", "hud": "HudData", "menu": "MenuData", "dialog": "DialogData",
-             "upgrade": "UpgradeData"}
+             "upgrade": "UpgradeData", "species": "SpeciesData", "move": "MoveData"}
 for _t in C.ACTOR_TYPES:
     STRUCT_OF[_t] = "ActorData"
 
@@ -598,6 +687,16 @@ def gen_node_ids(p):
     enum("if_var comparisons", ["CMP_%s" % names[o] for o in ops])
     enum("Behaviors (catalog/behaviors.json)", ["BHV_%s" % up(b) for b in p.behaviors], "BHV_COUNT")
     out.append("#define BHV_ARRAY_SIZE %d\n" % max(1, len(p.behaviors)))
+    battle = p.game.get("battle") if isinstance(p.game.get("battle"), dict) else {}
+    enum("Monster types (game.battle.types)", ["TYPE_%s" % up(t) for t in battle.get("types", [])], "TYPE_COUNT")
+    enum("Move shapes", ["SHAPE_%s" % up(s) for s in C.MOVE_SHAPES])
+    enum("Statuses", ["STATUS_%s" % up(s) for s in C.STATUSES])
+    enum("Buffs", ["BUFF_%s" % up(s) for s in C.BUFFS])
+    enum("Zone places", ["ZONE_%s" % up(s) for s in C.ZONE_PLACES])
+    enum("Where move effects appear", ["FX_AT_%s" % up(s) for s in C.EFFECT_AT])
+    enum("Floating battle words", ["BT_%s" % up(s) for s in C.BATTLE_TEXTS], "BT_COUNT")
+    enum("Battle sounds", ["BS_%s" % up(s) for s in C.BATTLE_SOUNDS], "BS_COUNT")
+    out.append("#define SPECIES_COUNT %d\n" % sum(1 for e in p.index if e.get("type") == "species"))
     out.append("#define GAME_SAVE %d\n" % (1 if p.game.get("save") else 0))
     out.append("#endif\n")
     return "\n".join(out)
@@ -650,9 +749,10 @@ def gen_game_data(p):
         rows.append("    { %s, &node_%s, %s }," % (nt, e["id"], cstr(e["id"])))
     g.emit("\nconst NodeEntry g_nodes[NODE_COUNT] = {\n%s\n};" % "\n".join(rows))
     game = p.game
-    g.emit("const GameData g_game = { %s, %s, %d, %d, %d };" % (
+    battle = g.battle()
+    g.emit("const GameData g_game = { %s, %s, %d, %d, %d, %s };" % (
         cstr(game["title"]), g.node_enum(game["start_scene"]), 1 if game.get("save") else 0,
-        fx(game.get("gravity", 0.25)), fx(game.get("max_fall_speed", 4))))
+        fx(game.get("gravity", 0.25)), fx(game.get("max_fall_speed", 4)), battle))
     inits = [int(v["initial"]) for v in game.get("variables", [])] or [0]
     g.emit("const s32 g_var_initial[VAR_ARRAY_SIZE] = { %s };" % ", ".join(str(v) for v in inits))
     keep = [1 if v.get("persistent") else 0 for v in game.get("variables", [])] or [0]

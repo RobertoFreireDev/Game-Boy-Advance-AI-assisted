@@ -1,0 +1,28 @@
+{
+  "id": "anim_sproutle_walk_down",
+  "kind": "object",
+  "type": "animation",
+  "name": "Sproutle walk down",
+  "notes": "Sproutle walking facing down (its front): a 4-step waddle.",
+  "sprite": "spr_sproutle",
+  "loop": true,
+  "frames": [
+    {
+      "frame": "down",
+      "ticks": 8
+    },
+    {
+      "frame": "down_a",
+      "ticks": 8
+    },
+    {
+      "frame": "down",
+      "ticks": 8
+    },
+    {
+      "frame": "down_b",
+      "ticks": 8
+    }
+  ],
+  "events": []
+}

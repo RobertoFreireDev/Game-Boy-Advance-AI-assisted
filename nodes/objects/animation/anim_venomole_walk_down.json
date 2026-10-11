@@ -1,0 +1,28 @@
+{
+  "id": "anim_venomole_walk_down",
+  "kind": "object",
+  "type": "animation",
+  "name": "Venomole walk down",
+  "notes": "Venomole walking facing down (its front): a 4-step waddle.",
+  "sprite": "spr_venomole",
+  "loop": true,
+  "frames": [
+    {
+      "frame": "down",
+      "ticks": 8
+    },
+    {
+      "frame": "down_a",
+      "ticks": 8
+    },
+    {
+      "frame": "down",
+      "ticks": 8
+    },
+    {
+      "frame": "down_b",
+      "ticks": 8
+    }
+  ],
+  "events": []
+}

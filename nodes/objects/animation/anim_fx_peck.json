@@ -1,0 +1,24 @@
+{
+  "id": "anim_fx_peck",
+  "kind": "object",
+  "type": "animation",
+  "name": "Peck effect",
+  "notes": "Plays beak slash marks.",
+  "sprite": "spr_fx_peck",
+  "loop": false,
+  "frames": [
+    {
+      "frame": "f0",
+      "ticks": 4
+    },
+    {
+      "frame": "f1",
+      "ticks": 4
+    },
+    {
+      "frame": "f2",
+      "ticks": 4
+    }
+  ],
+  "events": []
+}

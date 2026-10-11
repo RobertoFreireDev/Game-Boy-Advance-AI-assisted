@@ -116,7 +116,7 @@ static void music_row(void) {
     const MusicData *m = s_music;
     if (s_row >= m->row_count) {
         if (!m->loop) { audio_stop_music(); return; }
-        s_row = 0;
+        s_row = m->loop_row;            // an intro plays once; the loop starts after it
     }
     for (int ch = 0; ch < 4; ch++) {
         if (!m->rows[ch] || !m->inst[ch].used || s_sfx[ch].sfx) continue;

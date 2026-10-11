@@ -1,0 +1,39 @@
+{
+  "id": "hud_victory",
+  "kind": "object",
+  "type": "hud",
+  "name": "Victory text",
+  "notes": "YOU SURVIVED! with the final time, level and kills.",
+  "font": "font_default",
+  "elements": [
+    {
+      "kind": "text",
+      "x": 120,
+      "y": 8,
+      "text": "YOU SURVIVED!",
+      "align": "center"
+    },
+    {
+      "kind": "text",
+      "x": 120,
+      "y": 104,
+      "text": "TIME {time_min:02}:{time_sec:02}",
+      "align": "center"
+    },
+    {
+      "kind": "text",
+      "x": 120,
+      "y": 112,
+      "text": "LEVEL {level}   KILLS {kills}/25",
+      "align": "center"
+    },
+    {
+      "kind": "text",
+      "x": 120,
+      "y": 136,
+      "text": "PRESS START",
+      "align": "center",
+      "blink": 30
+    }
+  ]
+}

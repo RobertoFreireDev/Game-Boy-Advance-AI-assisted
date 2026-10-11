@@ -1,0 +1,50 @@
+{
+  "id": "body_sproutle",
+  "kind": "object",
+  "type": "body",
+  "name": "Sproutle body",
+  "notes": "How Sproutle looks in the world and the box that bumps into walls and other monsters. Its feet stand on the origin; the hitbox is a small 10x8 box at the feet so monsters can stand side by side, and being solid, monsters never walk through each other.",
+  "origin": [
+    8,
+    15
+  ],
+  "hitbox": {
+    "x": -5,
+    "y": -7,
+    "w": 10,
+    "h": 8
+  },
+  "physics": {
+    "gravity": false,
+    "solid": true,
+    "collides_with": [
+      "tiles",
+      "player",
+      "enemy"
+    ]
+  },
+  "animations": {
+    "idle": "anim_sproutle_idle",
+    "walk": "anim_sproutle_walk",
+    "attack": "anim_sproutle_attack",
+    "idle_up": "anim_sproutle_idle_up",
+    "walk_up": "anim_sproutle_walk_up",
+    "attack_up": "anim_sproutle_attack_up",
+    "idle_down": "anim_sproutle_idle_down",
+    "walk_down": "anim_sproutle_walk_down",
+    "attack_down": "anim_sproutle_attack_down"
+  },
+  "default_animation": "idle_down",
+  "children": [
+    "spr_sproutle",
+    "anim_sproutle_idle",
+    "anim_sproutle_walk",
+    "anim_sproutle_attack",
+    "anim_sproutle_idle_up",
+    "anim_sproutle_walk_up",
+    "anim_sproutle_attack_up",
+    "anim_sproutle_idle_down",
+    "anim_sproutle_walk_down",
+    "anim_sproutle_attack_down"
+  ]
+}

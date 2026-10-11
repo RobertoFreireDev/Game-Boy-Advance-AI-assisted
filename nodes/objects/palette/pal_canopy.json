@@ -1,0 +1,19 @@
+{
+  "id": "pal_canopy",
+  "kind": "object",
+  "type": "palette",
+  "name": "Tree top colors",
+  "notes": "Leafy greens (lit from the top-left) for the tree tops.",
+  "colors": [
+    "#000000",
+    "#183020",
+    "#d0f090",
+    "#98d860",
+    "#68b048",
+    "#3e8a38",
+    "#24602c",
+    "#8a6038",
+    "#5c3c24",
+    "#204828"
+  ]
+}

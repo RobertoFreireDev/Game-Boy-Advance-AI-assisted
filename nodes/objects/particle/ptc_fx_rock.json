@@ -1,0 +1,24 @@
+{
+  "id": "ptc_fx_rock",
+  "kind": "object",
+  "type": "particle",
+  "name": "Rock Throw effect",
+  "notes": "A rock crashing into pieces, drawn in front of the monsters.",
+  "animation": "anim_fx_rock",
+  "mode": "burst",
+  "count": 1,
+  "lifetime": 16,
+  "speed": [
+    0,
+    0
+  ],
+  "angle": [
+    0,
+    0
+  ],
+  "gravity": 0,
+  "on_top": true,
+  "children": [
+    "anim_fx_rock"
+  ]
+}

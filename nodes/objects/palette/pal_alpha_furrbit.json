@@ -1,0 +1,25 @@
+{
+  "id": "pal_alpha_furrbit",
+  "kind": "object",
+  "type": "palette",
+  "name": "Furrbit Alpha colors",
+  "notes": "The rare colors Furrbit wears when it is the Alpha (the boss of the run): the same slots as its sprite's palette, with Furrbit's own colors changed.",
+  "colors": [
+    "#000000",
+    "#282830",
+    "#f8f8f8",
+    "#f0e0ff",
+    "#c8a8f0",
+    "#8868c0",
+    "#f8f070",
+    "#9058b8",
+    "#503080",
+    "#d0d0c8",
+    "#a0a098",
+    "#686870",
+    "#a8e060",
+    "#589030",
+    "#806850",
+    "#f888a0"
+  ]
+}

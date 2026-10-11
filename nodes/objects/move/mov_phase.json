@@ -1,0 +1,23 @@
+{
+  "id": "mov_phase",
+  "kind": "object",
+  "type": "move",
+  "name": "Phase",
+  "notes": "Wispook's move 3 (hold A). Turns ghostly for 3 s: the user passes through monsters (they still can hit it). Charge: 60 s.",
+  "title": "PHASE",
+  "monster_type": "ghost",
+  "shape": "self",
+  "power": 0,
+  "charge": 3600,
+  "buff": {
+    "kind": "phase",
+    "ticks": 180
+  },
+  "effect": "ptc_fx_phase",
+  "effect_at": "user",
+  "sfx": "sfx_mv_ghost",
+  "children": [
+    "spr_fx_phase",
+    "ptc_fx_phase"
+  ]
+}

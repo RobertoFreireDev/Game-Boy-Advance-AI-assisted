@@ -1,0 +1,36 @@
+{
+  "id": "mus_victory",
+  "kind": "object",
+  "type": "music",
+  "name": "Victory fanfare",
+  "notes": "A short triumphant fanfare when all 25 monsters are defeated.",
+  "bpm": 120,
+  "rows_per_beat": 4,
+  "loop": false,
+  "instruments": {
+    "square1": {
+      "duty": 2,
+      "volume": 11,
+      "decay": 0
+    },
+    "square2": {
+      "duty": 1,
+      "volume": 6,
+      "decay": 0
+    },
+    "wave": {
+      "wave": "0123456789abcdeffedcba9876543210",
+      "volume": 3
+    }
+  },
+  "patterns": {
+    "J": {
+      "square1": "G5 -- G5 -- G5 -- C6 -- -- -- -- -- .. .. A5 -- B5 -- C6 -- D6 -- E6 -- -- -- -- -- -- -- -- -- -- -- .. .. .. ..",
+      "square2": "E5 -- E5 -- E5 -- E5 -- -- -- -- -- .. .. F5 -- G5 -- A5 -- B5 -- G5 -- -- -- -- -- -- -- -- -- -- -- .. .. .. ..",
+      "wave": "C3 -- -- -- -- -- -- -- .. .. .. .. F2 -- -- -- G2 -- -- -- C3 -- -- -- -- -- -- -- -- -- -- -- -- -- .. .. .. .."
+    }
+  },
+  "order": [
+    "J"
+  ]
+}

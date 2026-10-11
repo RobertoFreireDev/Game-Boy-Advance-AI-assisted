@@ -1,0 +1,134 @@
+{
+  "id": "hud_run",
+  "kind": "object",
+  "type": "hud",
+  "name": "Run HUD",
+  "notes": "Top: HP bar (green, yellow at half, red at a quarter; its length follows the max HP), level and kills; the XP bar to the next level and the run timer. Bottom: the 3 moves with their charge circles (a padlock while locked, a white blink when one becomes ready).",
+  "font": "font_default",
+  "elements": [
+    {
+      "kind": "text",
+      "x": 0,
+      "y": 0,
+      "text": "HP"
+    },
+    {
+      "kind": "bar",
+      "x": 16,
+      "y": 0,
+      "var": "hp",
+      "max_var": "hp_max",
+      "length": 8,
+      "color": 9,
+      "mid_color": 4,
+      "low_color": 5,
+      "back": 13
+    },
+    {
+      "kind": "text",
+      "x": 88,
+      "y": 0,
+      "text": "LV{level}"
+    },
+    {
+      "kind": "text",
+      "x": 144,
+      "y": 0,
+      "text": "KILLS {kills}/25"
+    },
+    {
+      "kind": "text",
+      "x": 0,
+      "y": 8,
+      "text": "XP"
+    },
+    {
+      "kind": "bar",
+      "x": 16,
+      "y": 8,
+      "var": "xp_pct",
+      "max": 100,
+      "length": 8,
+      "color": 6,
+      "back": 13
+    },
+    {
+      "kind": "text",
+      "x": 144,
+      "y": 8,
+      "text": "TIME {time_min:02}:{time_sec:02}"
+    },
+    {
+      "kind": "text",
+      "x": 8,
+      "y": 152,
+      "text": "A"
+    },
+    {
+      "kind": "gauge",
+      "x": 16,
+      "y": 152,
+      "var": "g1",
+      "icons": [
+        "icon_gauge_0",
+        "icon_gauge_1",
+        "icon_gauge_2",
+        "icon_gauge_3",
+        "icon_gauge_4",
+        "icon_gauge_5",
+        "icon_gauge_6"
+      ]
+    },
+    {
+      "kind": "text",
+      "x": 40,
+      "y": 152,
+      "text": "B"
+    },
+    {
+      "kind": "gauge",
+      "x": 48,
+      "y": 152,
+      "var": "g2",
+      "icons": [
+        "icon_gauge_0",
+        "icon_gauge_1",
+        "icon_gauge_2",
+        "icon_gauge_3",
+        "icon_gauge_4",
+        "icon_gauge_5",
+        "icon_gauge_6"
+      ]
+    },
+    {
+      "kind": "text",
+      "x": 72,
+      "y": 152,
+      "text": "HOLD A"
+    },
+    {
+      "kind": "gauge",
+      "x": 128,
+      "y": 152,
+      "var": "g3",
+      "icons": [
+        "icon_gauge_0",
+        "icon_gauge_1",
+        "icon_gauge_2",
+        "icon_gauge_3",
+        "icon_gauge_4",
+        "icon_gauge_5",
+        "icon_gauge_6"
+      ]
+    }
+  ],
+  "children": [
+    "icon_gauge_0",
+    "icon_gauge_1",
+    "icon_gauge_2",
+    "icon_gauge_3",
+    "icon_gauge_4",
+    "icon_gauge_5",
+    "icon_gauge_6"
+  ]
+}

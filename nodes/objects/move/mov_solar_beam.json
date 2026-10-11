@@ -1,0 +1,21 @@
+{
+  "id": "mov_solar_beam",
+  "kind": "object",
+  "type": "move",
+  "name": "Solar Beam",
+  "notes": "Sproutle's move 3 (hold A). A beam of sunlight in a cone 6 tiles long in front of the user. Charge: 60 s.",
+  "title": "SOLAR BEAM",
+  "monster_type": "grass",
+  "shape": "cone",
+  "range": 6,
+  "power": 40,
+  "accuracy": 100,
+  "charge": 3600,
+  "effect": "ptc_fx_solar",
+  "effect_at": "axis",
+  "sfx": "sfx_mv_grass",
+  "children": [
+    "spr_fx_solar",
+    "ptc_fx_solar"
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "id": "anim_fx_spark",
+  "kind": "object",
+  "type": "animation",
+  "name": "Spark effect",
+  "notes": "Plays sparks flying outward.",
+  "sprite": "spr_fx_spark",
+  "loop": false,
+  "frames": [
+    {
+      "frame": "f0",
+      "ticks": 4
+    },
+    {
+      "frame": "f1",
+      "ticks": 4
+    }
+  ],
+  "events": []
+}

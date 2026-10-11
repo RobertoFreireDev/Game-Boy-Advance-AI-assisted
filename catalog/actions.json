@@ -149,5 +149,36 @@
     "params": {
       "function":  {"type": "string", "required": true, "description": "Name of the C function: void name(Actor *self)."}
     }
+  },
+  "show_hud": {
+    "description": "Show a HUD, replacing the one on screen (text that appears after an intro).",
+    "sentence": "Show HUD {hud}",
+    "params": {
+      "hud":  {"type": "node:hud", "required": true, "description": "HUD to show."}
+    }
+  },
+  "flash_screen": {
+    "description": "Light the whole screen up white, fading back over a few ticks (a camera flash).",
+    "sentence": "Flash the screen white for {ticks} ticks",
+    "params": {
+      "ticks":  {"type": "ticks", "default": 12, "description": "How long the flash fades."}
+    }
+  },
+  "cover_screen": {
+    "description": "Cover the world with a drifting pattern for a while (a sandstorm): only the HUD stays readable. No icon or 0 ticks removes the cover.",
+    "sentence": "Cover the screen with {icon} for {ticks} ticks",
+    "params": {
+      "icon":   {"type": "node:icon", "default": "", "description": "8x8 or 16x16 pattern repeated over the screen."},
+      "ticks":  {"type": "ticks", "default": 300, "description": "How long it stays."}
+    }
+  },
+  "float_text": {
+    "description": "Pop up a few words over the object running the action; they float up and vanish (LV UP!). Uses the floating-text font of game.battle.",
+    "sentence": "Float \"{text}\" over this object",
+    "params": {
+      "text":     {"type": "text", "required": true, "description": "Words to show (up to 15 characters)."},
+      "palette":  {"type": "node:palette", "default": "", "description": "Colors of the words. Empty = the font's."},
+      "height":   {"type": "int", "default": 26, "description": "Pixels above the object's origin (its feet)."}
+    }
   }
 }

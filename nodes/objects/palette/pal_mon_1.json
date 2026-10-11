@@ -1,0 +1,25 @@
+{
+  "id": "pal_mon_1",
+  "kind": "object",
+  "type": "palette",
+  "name": "Monster colors: Furrbit and Pebbulk",
+  "notes": "Shared colors of Furrbit and Pebbulk's sprites and portraits: 1 = dark outline, 2 = white, 3-8 = Furrbit's light / mid / dark body colors and accents, 9-14 = Pebbulk's, 15 = pink blush.",
+  "colors": [
+    "#000000",
+    "#282830",
+    "#f8f8f8",
+    "#fff4d0",
+    "#f0d098",
+    "#c09060",
+    "#f8b0b8",
+    "#b07050",
+    "#704830",
+    "#d0d0c8",
+    "#a0a098",
+    "#686870",
+    "#a8e060",
+    "#589030",
+    "#806850",
+    "#f888a0"
+  ]
+}

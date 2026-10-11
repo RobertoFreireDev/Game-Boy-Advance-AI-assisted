@@ -1,0 +1,21 @@
+{
+  "id": "mov_lick",
+  "kind": "object",
+  "type": "move",
+  "name": "Lick",
+  "notes": "Wispook's move 1 (A). Licks the monster next to the user. Charge: 3 s. Wild Wispooks use it every 4 s.",
+  "title": "LICK",
+  "monster_type": "ghost",
+  "shape": "single",
+  "range": 1,
+  "power": 10,
+  "accuracy": 95,
+  "charge": 180,
+  "effect": "ptc_fx_lick",
+  "effect_at": "target",
+  "sfx": "sfx_mv_ghost",
+  "children": [
+    "spr_fx_lick",
+    "ptc_fx_lick"
+  ]
+}

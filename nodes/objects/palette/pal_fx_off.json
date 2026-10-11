@@ -1,0 +1,25 @@
+{
+  "id": "pal_fx_off",
+  "kind": "object",
+  "type": "palette",
+  "name": "Charge ring (not ready)",
+  "notes": "The same slots as the effect colors, in greys: the hold ring turns grey while move 3 is locked or still charging.",
+  "colors": [
+    "#000000",
+    "#282830",
+    "#a0a0a8",
+    "#787880",
+    "#585860",
+    "#585860",
+    "#a0a0a8",
+    "#787880",
+    "#a0a0a8",
+    "#787880",
+    "#a0a0a8",
+    "#787880",
+    "#a0a0a8",
+    "#787880",
+    "#404048",
+    "#a0a0a8"
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "id": "scn_victory",
+  "kind": "scene",
+  "type": "credits",
+  "name": "Victory",
+  "notes": "YOU SURVIVED! over the meadow, with the winning monster bobbing, the final time, level and kills. START goes back to the menu.",
+  "backdrop": "#58a8f0",
+  "music": "mus_victory",
+  "camera": {
+    "x": 0,
+    "y": 0,
+    "bounds": "none"
+  },
+  "instances": [
+    {
+      "id": "sky",
+      "object": "map_sky"
+    },
+    {
+      "id": "hud",
+      "object": "hud_victory"
+    },
+    {
+      "id": "trophy",
+      "object": "prop_trophy",
+      "x": 120,
+      "y": 60
+    }
+  ],
+  "on_start": [
+    {
+      "do": "fade_in",
+      "ticks": 20
+    }
+  ]
+}

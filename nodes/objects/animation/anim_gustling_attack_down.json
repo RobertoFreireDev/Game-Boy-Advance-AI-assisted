@@ -1,0 +1,16 @@
+{
+  "id": "anim_gustling_attack_down",
+  "kind": "object",
+  "type": "animation",
+  "name": "Gustling attack down",
+  "notes": "Gustling lunges facing down (its front) as it uses a move.",
+  "sprite": "spr_gustling",
+  "loop": false,
+  "frames": [
+    {
+      "frame": "atk_down",
+      "ticks": 12
+    }
+  ],
+  "events": []
+}

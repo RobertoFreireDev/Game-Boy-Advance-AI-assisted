@@ -1,0 +1,116 @@
+{
+  "id": "plr_monster",
+  "kind": "object",
+  "type": "player",
+  "name": "Player monster",
+  "notes": "The monster the human picked on the menu (its species comes from 'chosen'). The D-pad walks in 8 directions (diagonals as fast as straight). A = move 1, B = move 2, hold A with the D-pad untouched for 3 s = move 3 (a ring of dots fills; grey = not ready). Moves recharge on their own timers; move 2 unlocks at level 4 and move 3 at level 7. HP starts at 60; each level adds 8 to the max and to the current HP. START pauses. When its HP runs out it blinks away and the run ends.",
+  "logic": [
+    {
+      "behavior": "monster",
+      "params": {
+        "species_var": "chosen",
+        "hp_var": "hp",
+        "hp_max_var": "hp_max",
+        "level_var": "level",
+        "xp_var": "xp",
+        "xp_pct_var": "xp_pct",
+        "shadow": "spr_shadow",
+        "on_level_up": [
+          {
+            "do": "float_text",
+            "text": "LV UP!",
+            "palette": "pal_txt_yellow"
+          },
+          {
+            "do": "play_sfx",
+            "sfx": "sfx_level_up"
+          }
+        ],
+        "on_death": [
+          {
+            "do": "set_var",
+            "var": "run_over",
+            "value": 1
+          },
+          {
+            "do": "stop_music"
+          },
+          {
+            "do": "wait",
+            "ticks": 110
+          },
+          {
+            "do": "fade_out",
+            "ticks": 30
+          },
+          {
+            "do": "goto_scene",
+            "scene": "scn_game_over"
+          }
+        ]
+      }
+    },
+    {
+      "behavior": "topdown_controller",
+      "params": {
+        "speed": 1.0,
+        "eight_way": true
+      }
+    },
+    {
+      "behavior": "move_buttons",
+      "params": {
+        "level_var": "level",
+        "unlock_2": 4,
+        "unlock_3": 7,
+        "gauge_1": "g1",
+        "gauge_2": "g2",
+        "gauge_3": "g3",
+        "unlocked_var": "moves",
+        "ring": "spr_ring_dot",
+        "ring_off_palette": "pal_fx_off",
+        "on_unlock": [
+          {
+            "do": "wait",
+            "ticks": 24
+          },
+          {
+            "do": "float_text",
+            "text": "NEW MOVE!",
+            "palette": "pal_txt_cyan",
+            "height": 34
+          },
+          {
+            "do": "play_sfx",
+            "sfx": "sfx_new_move"
+          }
+        ]
+      }
+    },
+    {
+      "behavior": "camera_target",
+      "params": {}
+    },
+    {
+      "behavior": "button_actions",
+      "params": {
+        "button": "START",
+        "on_press": [
+          {
+            "do": "open_menu",
+            "menu": "menu_pause"
+          }
+        ]
+      }
+    },
+    {
+      "behavior": "run_clock",
+      "params": {
+        "total_var": "time",
+        "minutes_var": "time_min",
+        "seconds_var": "time_sec",
+        "stop_var": "run_over"
+      }
+    }
+  ]
+}

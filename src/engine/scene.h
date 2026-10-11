@@ -16,6 +16,8 @@ const SceneData *scene_current(void);
 s16 scene_current_node(void);
 // Fade to black (to_black = 1) or back from black (0) over `ticks`.
 void scene_fade(int to_black, int ticks);
+// Light the screen up white, fading back to normal over `ticks` (a camera flash).
+void scene_flash(int ticks);
 // Spawn an object or particle burst at a world position. Returns the actor or NULL.
 struct Actor *scene_spawn(s16 node, s32 x, s32 y);
 

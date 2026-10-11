@@ -1,0 +1,28 @@
+{
+  "id": "anim_sproutle_walk",
+  "kind": "object",
+  "type": "animation",
+  "name": "Sproutle walk side",
+  "notes": "Sproutle walking facing sideways: a 4-step waddle.",
+  "sprite": "spr_sproutle",
+  "loop": true,
+  "frames": [
+    {
+      "frame": "side",
+      "ticks": 8
+    },
+    {
+      "frame": "side_a",
+      "ticks": 8
+    },
+    {
+      "frame": "side",
+      "ticks": 8
+    },
+    {
+      "frame": "side_b",
+      "ticks": 8
+    }
+  ],
+  "events": []
+}

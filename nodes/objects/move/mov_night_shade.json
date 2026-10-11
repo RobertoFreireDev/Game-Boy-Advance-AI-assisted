@@ -1,0 +1,21 @@
+{
+  "id": "mov_night_shade",
+  "kind": "object",
+  "type": "move",
+  "name": "Night Shade",
+  "notes": "Wispook's move 2 (B). Dark shadows rise in a cone in front of the user (3 tiles). Charge: 10 s.",
+  "title": "NIGHT SHADE",
+  "monster_type": "ghost",
+  "shape": "cone",
+  "range": 3,
+  "power": 18,
+  "accuracy": 90,
+  "charge": 600,
+  "effect": "ptc_fx_shade",
+  "effect_at": "axis",
+  "sfx": "sfx_mv_ghost",
+  "children": [
+    "spr_fx_shade",
+    "ptc_fx_shade"
+  ]
+}

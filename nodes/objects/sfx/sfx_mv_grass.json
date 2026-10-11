@@ -1,0 +1,26 @@
+{
+  "id": "sfx_mv_grass",
+  "kind": "object",
+  "type": "sfx",
+  "name": "Grass move",
+  "notes": "A leafy swish.",
+  "channel": "noise",
+  "priority": 1,
+  "steps": [
+    {
+      "pitch": 11,
+      "ticks": 3,
+      "volume": 9
+    },
+    {
+      "pitch": 12,
+      "ticks": 4,
+      "volume": 7
+    },
+    {
+      "pitch": 13,
+      "ticks": 4,
+      "volume": 4
+    }
+  ]
+}

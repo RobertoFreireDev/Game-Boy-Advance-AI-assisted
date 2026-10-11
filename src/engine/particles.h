@@ -14,7 +14,8 @@ void particles_burst(const ParticleData *p, s32 x, s32 y);
 void particles_place(const ParticleData *p, s32 x, s32 y);
 // Move and age every particle; run emitters. Once per frame.
 void particles_update(void);
-// Add every particle to the sprite list (camera at cx, cy).
-void particles_draw(s32 cx, s32 cy);
+// Add the particles to the sprite list (camera at cx, cy): front = 1 the on_top ones (drawn
+// in front of the actors), 0 the others.
+void particles_draw(s32 cx, s32 cy, int front);
 
 #endif

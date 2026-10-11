@@ -5,7 +5,7 @@
 #include "sprites.h"
 
 typedef struct {
-    u8 active;
+    u8 active, front;
     u16 life;
     fixed x, y, vx, vy, gravity;
     AnimPlayer anim;
@@ -17,7 +17,7 @@ typedef struct {
     u16 timer;
 } Emitter;
 
-static Particle s_parts[MAX_PARTICLES];
+EWRAM_BSS static Particle s_parts[MAX_PARTICLES];    // EWRAM (IWRAM is full); cleared on scene load
 static Emitter s_emitters[MAX_EMITTERS];
 static int s_next;
 
@@ -36,6 +36,7 @@ void particles_emit_one(const ParticleData *d, s32 x, s32 y) {
     s32 angle = rng_range(d->angle_min, d->angle_max);
     fixed speed = rng_range(d->speed_min, d->speed_max);
     p->active = 1;
+    p->front = d->on_top;
     p->life = d->lifetime;
     p->x = fx_from_int(x);
     p->y = fx_from_int(y);
@@ -84,10 +85,10 @@ void particles_update(void) {
     }
 }
 
-void particles_draw(s32 cx, s32 cy) {
+void particles_draw(s32 cx, s32 cy, int front) {
     for (int i = 0; i < MAX_PARTICLES; i++) {
         Particle *p = &s_parts[i];
-        if (!p->active || !p->anim.anim) continue;
+        if (!p->active || !p->anim.anim || p->front != front) continue;
         const AnimFrame *f = anim_frame(&p->anim);
         const SpriteData *s = p->anim.anim->sprite;
         // A particle's position is the center of its sprite.

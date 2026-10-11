@@ -1,0 +1,32 @@
+{
+  "id": "sfx_level_up",
+  "kind": "object",
+  "type": "sfx",
+  "name": "Level up jingle",
+  "notes": "Bright little fanfare when the player levels up.",
+  "channel": "square1",
+  "duty": 2,
+  "priority": 3,
+  "steps": [
+    {
+      "note": "C5",
+      "ticks": 4,
+      "volume": 12
+    },
+    {
+      "note": "E5",
+      "ticks": 4,
+      "volume": 12
+    },
+    {
+      "note": "G5",
+      "ticks": 4,
+      "volume": 12
+    },
+    {
+      "note": "C6",
+      "ticks": 10,
+      "volume": 11
+    }
+  ]
+}

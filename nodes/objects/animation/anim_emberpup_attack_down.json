@@ -1,0 +1,16 @@
+{
+  "id": "anim_emberpup_attack_down",
+  "kind": "object",
+  "type": "animation",
+  "name": "Emberpup attack down",
+  "notes": "Emberpup lunges facing down (its front) as it uses a move.",
+  "sprite": "spr_emberpup",
+  "loop": false,
+  "frames": [
+    {
+      "frame": "atk_down",
+      "ticks": 12
+    }
+  ],
+  "events": []
+}

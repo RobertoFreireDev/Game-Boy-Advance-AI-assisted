@@ -1,0 +1,84 @@
+{
+  "id": "enm_alpha",
+  "kind": "object",
+  "type": "enemy",
+  "name": "Alpha",
+  "notes": "The 25th monster: a random species (never the player's), in its rare Alpha colors with a golden crown and sparkles. Level 8, 180 HP, its moves hit 1.5x harder, and it gives 60 XP. It sleeps in the stone circle of the south-east clearing until the other 24 have fainted, then wakes with a roar for the final fight.",
+  "logic": [
+    {
+      "behavior": "monster",
+      "params": {
+        "random": true,
+        "avoid_var": "chosen",
+        "alpha": true,
+        "level": 8,
+        "hp": 180,
+        "power": 150,
+        "crown": "spr_crown",
+        "aura": "ptc_sparkle",
+        "xp_reward": 60,
+        "kills_var": "kills",
+        "on_death": [
+          {
+            "do": "if_var",
+            "var": "kills",
+            "op": ">=",
+            "value": 25,
+            "then": [
+              {
+                "do": "set_var",
+                "var": "run_over",
+                "value": 1
+              },
+              {
+                "do": "stop_music"
+              },
+              {
+                "do": "wait",
+                "ticks": 60
+              },
+              {
+                "do": "fade_out",
+                "ticks": 30
+              },
+              {
+                "do": "goto_scene",
+                "scene": "scn_victory"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "behavior": "monster_ai",
+      "params": {
+        "speed": 0.5,
+        "chase_speed": 0.85,
+        "roam": 40,
+        "sight": 7,
+        "give_up": 16,
+        "max_hostile": 3,
+        "charge": 200,
+        "wake_var": "kills",
+        "wake_at": 24,
+        "sleep_effect": "ptc_zzz",
+        "on_wake": [
+          {
+            "do": "play_sfx",
+            "sfx": "sfx_wake"
+          },
+          {
+            "do": "shake_camera",
+            "ticks": 40,
+            "strength": 2
+          }
+        ]
+      }
+    }
+  ],
+  "children": [
+    "ptc_zzz",
+    "ptc_sparkle"
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "id": "pal_mon_5",
+  "kind": "object",
+  "type": "palette",
+  "name": "Monster colors: Wispook",
+  "notes": "Shared colors of Wispook's sprites and portraits: 1 = dark outline, 2 = white, 3-8 = Wispook's light / mid / dark body colors and accents, 15 = pink blush.",
+  "colors": [
+    "#000000",
+    "#282830",
+    "#f8f8f8",
+    "#e8d0f8",
+    "#b890f0",
+    "#7850c0",
+    "#f8f8ff",
+    "#c8c8e8",
+    "#483078",
+    "#000000",
+    "#000000",
+    "#000000",
+    "#000000",
+    "#000000",
+    "#000000",
+    "#f888a0"
+  ]
+}

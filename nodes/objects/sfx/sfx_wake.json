@@ -1,0 +1,31 @@
+{
+  "id": "sfx_wake",
+  "kind": "object",
+  "type": "sfx",
+  "name": "Alpha awakes",
+  "notes": "A low roar: the Alpha wakes up.",
+  "channel": "noise",
+  "priority": 3,
+  "steps": [
+    {
+      "pitch": 1,
+      "ticks": 8,
+      "volume": 14
+    },
+    {
+      "pitch": 2,
+      "ticks": 8,
+      "volume": 12
+    },
+    {
+      "pitch": 1,
+      "ticks": 8,
+      "volume": 9
+    },
+    {
+      "pitch": 0,
+      "ticks": 6,
+      "volume": 6
+    }
+  ]
+}

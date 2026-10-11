@@ -1,0 +1,25 @@
+{
+  "id": "pal_flash_yellow",
+  "kind": "object",
+  "type": "palette",
+  "name": "Paralysis flash",
+  "notes": "All yellow: a paralyzed monster keeps flashing yellow.",
+  "colors": [
+    "#000000",
+    "#f8e040",
+    "#f8e040",
+    "#f8e040",
+    "#f8e040",
+    "#f8e040",
+    "#f8e040",
+    "#f8e040",
+    "#f8e040",
+    "#f8e040",
+    "#f8e040",
+    "#f8e040",
+    "#f8e040",
+    "#f8e040",
+    "#f8e040",
+    "#f8e040"
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "id": "sfx_mv_sandstorm",
+  "kind": "object",
+  "type": "sfx",
+  "name": "Sandstorm",
+  "notes": "A long gusty howl of sand.",
+  "channel": "noise",
+  "priority": 2,
+  "steps": [
+    {
+      "pitch": 13,
+      "ticks": 6,
+      "volume": 10
+    },
+    {
+      "pitch": 12,
+      "ticks": 8,
+      "volume": 12
+    },
+    {
+      "pitch": 13,
+      "ticks": 8,
+      "volume": 9
+    },
+    {
+      "pitch": 14,
+      "ticks": 8,
+      "volume": 5
+    }
+  ]
+}

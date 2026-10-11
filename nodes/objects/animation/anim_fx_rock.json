@@ -1,0 +1,28 @@
+{
+  "id": "anim_fx_rock",
+  "kind": "object",
+  "type": "animation",
+  "name": "Rock Throw effect",
+  "notes": "Plays a rock crashing into pieces.",
+  "sprite": "spr_fx_rock",
+  "loop": false,
+  "frames": [
+    {
+      "frame": "f0",
+      "ticks": 4
+    },
+    {
+      "frame": "f1",
+      "ticks": 4
+    },
+    {
+      "frame": "f2",
+      "ticks": 4
+    },
+    {
+      "frame": "f3",
+      "ticks": 4
+    }
+  ],
+  "events": []
+}

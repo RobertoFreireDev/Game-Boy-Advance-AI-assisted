@@ -1,0 +1,27 @@
+{
+  "id": "mon_sproutle",
+  "kind": "object",
+  "type": "species",
+  "name": "Sproutle",
+  "notes": "Sproutle: a green turtle with a brown shell and a leafy sprout growing on top. Type GRASS. Moves: Vine Whip (A), Razor Leaf (B) and Solar Beam (hold A). It can be the player, and the 8 species that aren't picked live on the map.",
+  "title": "SPROUTLE",
+  "monster_type": "grass",
+  "body": "body_sproutle",
+  "alpha_palette": "pal_alpha_sproutle",
+  "portrait": "spr_sproutle_portrait",
+  "cry": "sfx_cry_sproutle",
+  "moves": [
+    "mov_vine_whip",
+    "mov_razor_leaf",
+    "mov_solar_beam"
+  ],
+  "children": [
+    "body_sproutle",
+    "spr_sproutle_portrait",
+    "pal_alpha_sproutle",
+    "sfx_cry_sproutle",
+    "mov_vine_whip",
+    "mov_razor_leaf",
+    "mov_solar_beam"
+  ]
+}

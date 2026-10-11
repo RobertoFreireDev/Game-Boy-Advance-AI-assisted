@@ -1,0 +1,29 @@
+{
+  "id": "mov_spark",
+  "kind": "object",
+  "type": "move",
+  "name": "Spark",
+  "notes": "Voltail's move 2 (B). Sparks fly at the nearest monster up to 5 tiles away, with a 1 in 3 chance to paralyze it for 3-5 s. Charge: 10 s.",
+  "title": "SPARK",
+  "monster_type": "electric",
+  "shape": "single",
+  "range": 5,
+  "power": 18,
+  "accuracy": 90,
+  "charge": 600,
+  "status": {
+    "kind": "par",
+    "chance": 33,
+    "ticks": [
+      180,
+      300
+    ]
+  },
+  "effect": "ptc_fx_spark",
+  "effect_at": "target",
+  "sfx": "sfx_mv_electric",
+  "children": [
+    "spr_fx_spark",
+    "ptc_fx_spark"
+  ]
+}

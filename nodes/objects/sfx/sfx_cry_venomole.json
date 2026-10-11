@@ -1,0 +1,27 @@
+{
+  "id": "sfx_cry_venomole",
+  "kind": "object",
+  "type": "sfx",
+  "name": "Venomole's cry",
+  "notes": "A grumbly low snuffle. Plays when it is picked on the menu.",
+  "channel": "square2",
+  "duty": 3,
+  "priority": 1,
+  "steps": [
+    {
+      "note": "D4",
+      "ticks": 4,
+      "volume": 11
+    },
+    {
+      "note": "C#4",
+      "ticks": 4,
+      "volume": 10
+    },
+    {
+      "note": "A3",
+      "ticks": 8,
+      "volume": 7
+    }
+  ]
+}

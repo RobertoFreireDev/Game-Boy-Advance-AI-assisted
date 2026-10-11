@@ -1,0 +1,36 @@
+{
+  "id": "anim_fx_rockslide",
+  "kind": "object",
+  "type": "animation",
+  "name": "Rock Slide effect",
+  "notes": "Plays a shadow growing on the ground, then a rock falling and crashing.",
+  "sprite": "spr_fx_rockslide",
+  "loop": false,
+  "frames": [
+    {
+      "frame": "f0",
+      "ticks": 6
+    },
+    {
+      "frame": "f1",
+      "ticks": 6
+    },
+    {
+      "frame": "f2",
+      "ticks": 6
+    },
+    {
+      "frame": "f3",
+      "ticks": 6
+    },
+    {
+      "frame": "f4",
+      "ticks": 6
+    },
+    {
+      "frame": "f5",
+      "ticks": 6
+    }
+  ],
+  "events": []
+}

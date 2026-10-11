@@ -1,0 +1,27 @@
+{
+  "id": "mon_pebbulk",
+  "kind": "object",
+  "type": "species",
+  "name": "Pebbulk",
+  "notes": "Pebbulk: a stubby grey boulder creature with a cap of moss. Type ROCK. Moves: Rock Throw (A), Sandstorm (B) and Rock Slide (hold A). It can be the player, and the 8 species that aren't picked live on the map.",
+  "title": "PEBBULK",
+  "monster_type": "rock",
+  "body": "body_pebbulk",
+  "alpha_palette": "pal_alpha_pebbulk",
+  "portrait": "spr_pebbulk_portrait",
+  "cry": "sfx_cry_pebbulk",
+  "moves": [
+    "mov_rock_throw",
+    "mov_sandstorm",
+    "mov_rock_slide"
+  ],
+  "children": [
+    "body_pebbulk",
+    "spr_pebbulk_portrait",
+    "pal_alpha_pebbulk",
+    "sfx_cry_pebbulk",
+    "mov_rock_throw",
+    "mov_sandstorm",
+    "mov_rock_slide"
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "id": "mov_rock_slide",
+  "kind": "object",
+  "type": "move",
+  "name": "Rock Slide",
+  "notes": "Pebbulk's move 3 (hold A). Three big rocks fall on 2x2-tile spots of the screen (each aimed near a monster in view); their shadows grow for half a second before they land. Charge: 60 s.",
+  "title": "ROCK SLIDE",
+  "monster_type": "rock",
+  "shape": "zone",
+  "range": 0,
+  "power": 40,
+  "charge": 3600,
+  "zone": {
+    "w": 2,
+    "h": 2,
+    "place": "screen",
+    "count": 3,
+    "delay": 30,
+    "ticks": [
+      1,
+      1
+    ],
+    "every": 0
+  },
+  "effect": "ptc_fx_rockslide",
+  "effect_at": "center",
+  "sfx": "sfx_mv_rock",
+  "children": [
+    "spr_fx_rockslide",
+    "ptc_fx_rockslide"
+  ]
+}

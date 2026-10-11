@@ -1,0 +1,32 @@
+{
+  "id": "prop_trophy",
+  "kind": "object",
+  "type": "prop",
+  "name": "Winner portrait",
+  "notes": "Invisible: shows the winning monster's portrait bobbing and plays its cry. START goes back to the menu.",
+  "logic": [
+    {
+      "behavior": "species_select",
+      "params": {
+        "var": "chosen",
+        "browse": false,
+        "button": "START",
+        "bob": 2,
+        "on_pick": [
+          {
+            "do": "play_sfx",
+            "sfx": "sfx_confirm"
+          },
+          {
+            "do": "fade_out",
+            "ticks": 20
+          },
+          {
+            "do": "goto_scene",
+            "scene": "scn_menu"
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -13,6 +13,7 @@
 #include "physics.h"
 #include "anim.h"
 #include "particles.h"
+#include "floattext.h"
 #include "camera.h"
 #include "bg.h"
 #include "sprites.h"
@@ -76,6 +77,7 @@ void core_run(void) {
             // 5. Animations and particles.
             anim_update();
             particles_update();
+            ftext_update();
         }
         // 6. Camera.
         camera_update();

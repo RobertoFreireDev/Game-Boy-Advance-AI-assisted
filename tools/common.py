@@ -50,6 +50,8 @@ OBJECT_TYPES = {
     "menu":      ("menu_", ["icon"]),
     "dialog":    ("dlg_",  ["icon"]),
     "upgrade":   ("upg_",  ["icon"]),
+    "species":   ("mon_",  ["body", "sprite", "sfx", "move", "palette"]),
+    "move":      ("mov_",  ["particle", "sprite", "sfx"]),
 }
 SCENE_PREFIX = "scn_"
 
@@ -67,6 +69,18 @@ CHANNELS = ["square1", "square2", "wave", "noise"]
 BUTTONS = {"A": 0x001, "B": 0x002, "SELECT": 0x004, "START": 0x008, "RIGHT": 0x010,
            "LEFT": 0x020, "UP": 0x040, "DOWN": 0x080, "R": 0x100, "L": 0x200}
 TILE_FLAGS = ["solid", "one_way", "hazard", "ladder"]
+
+# Monster battles (species / move nodes, game.battle). Order matters: these become C enums.
+MOVE_SHAPES = ["single", "dash", "cone", "circle", "screen", "zone", "self"]
+STATUSES = ["none", "par", "psn", "tox", "freeze"]
+BUFFS = ["none", "fly", "phase"]
+ZONE_PLACES = ["front", "screen"]
+EFFECT_AT = ["target", "line", "user", "axis", "tiles", "center", "screen"]
+BATTLE_TEXTS = ["damage", "miss", "super", "weak", "par", "psn", "tox"]
+BATTLE_SOUNDS = ["hit", "super", "weak", "miss", "faint"]
+SPECIES_FIELDS = ["name", "type", "move1", "move2", "move3"]    # {var.field} placeholders
+SPECIES_TITLE_W = 10     # chars of a species name
+MOVE_TITLE_W = 13        # chars of a move name
 
 # Valid OBJ sizes (w, h) -> (shape, size) as the hardware encodes them.
 OBJ_SIZES = {
@@ -144,13 +158,42 @@ def split_music_tokens(text):
 
 HUD_VAR_WIDTH = 3  # characters reserved for a {var} value when checking that text fits
 
-# {var} prints a game variable; {var:02} prints it with at least 2 digits (a clock: 05).
-PLACEHOLDER_RE = re.compile(r"\{(\w+)(:02)?\}")
+# UI text placeholders:
+#   {var}        a game variable          {var:02}   with at least 2 digits (a clock: 05)
+#   {var.field}  a field (name, type, move1..3) of the species whose number is in var
+#   {var|a|b|c}  one of the words: the first when var is 0, the second when 1... (last if more)
+PLACEHOLDER_RE = re.compile(r"\{(\w+)(?:(:02)|\.(\w+)|\|([^{}]*))?\}")
+
+# Widest text each species field prints (set from the project by set_species_widths).
+SPECIES_FIELD_W = {f: (SPECIES_TITLE_W if f == "name" else MOVE_TITLE_W) for f in SPECIES_FIELDS}
+
+
+def set_species_widths(project):
+    """Remember how wide species names, types and move names really are (for text fitting)."""
+    w = {f: 1 for f in SPECIES_FIELDS}
+    for nid, n in project.nodes.items():
+        if project.type_of(nid) != "species":
+            continue
+        w["name"] = max(w["name"], len(str(n.get("title", ""))))
+        w["type"] = max(w["type"], len(str(n.get("monster_type", ""))))
+        for i, m in enumerate(n.get("moves") or []):
+            if i < 3:
+                w["move%d" % (i + 1)] = max(w["move%d" % (i + 1)], len(str(project.nodes.get(m, {}).get("title", ""))))
+    SPECIES_FIELD_W.update(w)
+
+
+def placeholder_value_width(m):
+    """Columns one placeholder match takes at most."""
+    if m.group(3):
+        return SPECIES_FIELD_W.get(m.group(3), MOVE_TITLE_W)
+    if m.group(4) is not None:
+        return max(len(o) for o in m.group(4).split("|"))
+    return HUD_VAR_WIDTH
 
 
 def placeholder_width(text):
-    """Columns a text with {var} placeholders takes (HUD_VAR_WIDTH reserved per value)."""
-    return len(PLACEHOLDER_RE.sub("x" * HUD_VAR_WIDTH, text))
+    """Columns a text with placeholders takes at most (HUD_VAR_WIDTH reserved per number)."""
+    return len(PLACEHOLDER_RE.sub(lambda m: "x" * placeholder_value_width(m), text))
 
 
 # Upgrade menus (CLAUDE.md §6.1b): each card = 16x16 icon left of the text, the title with a
@@ -339,4 +382,5 @@ def load_project():
             p.load_errors.append(("catalog/" + name, "file is missing"))
         except ValueError as ex:
             p.load_errors.append(("catalog/" + name, "is not valid JSON: %s" % ex))
+    set_species_widths(p)
     return p

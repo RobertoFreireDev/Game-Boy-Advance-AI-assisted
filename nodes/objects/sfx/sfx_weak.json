@@ -1,0 +1,21 @@
+{
+  "id": "sfx_weak",
+  "kind": "object",
+  "type": "sfx",
+  "name": "Weak hit",
+  "notes": "A dull, low thump.",
+  "channel": "noise",
+  "priority": 2,
+  "steps": [
+    {
+      "pitch": 1,
+      "ticks": 3,
+      "volume": 9
+    },
+    {
+      "pitch": 0,
+      "ticks": 4,
+      "volume": 6
+    }
+  ]
+}

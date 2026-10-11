@@ -1,0 +1,28 @@
+{
+  "id": "anim_gustling_walk_down",
+  "kind": "object",
+  "type": "animation",
+  "name": "Gustling walk down",
+  "notes": "Gustling walking facing down (its front): a little hop.",
+  "sprite": "spr_gustling",
+  "loop": true,
+  "frames": [
+    {
+      "frame": "down",
+      "ticks": 8
+    },
+    {
+      "frame": "down_a",
+      "ticks": 8
+    },
+    {
+      "frame": "down",
+      "ticks": 8
+    },
+    {
+      "frame": "down_b",
+      "ticks": 8
+    }
+  ],
+  "events": []
+}

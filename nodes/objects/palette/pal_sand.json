@@ -1,0 +1,15 @@
+{
+  "id": "pal_sand",
+  "kind": "object",
+  "type": "palette",
+  "name": "Sand colors",
+  "notes": "Sandy browns for the sandstorm.",
+  "colors": [
+    "#000000",
+    "#b88850",
+    "#d0a868",
+    "#e0c088",
+    "#f0dca8",
+    "#a07040"
+  ]
+}

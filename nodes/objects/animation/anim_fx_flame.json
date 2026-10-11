@@ -1,0 +1,28 @@
+{
+  "id": "anim_fx_flame",
+  "kind": "object",
+  "type": "animation",
+  "name": "Flamethrower effect",
+  "notes": "Plays puffs of flame along the way.",
+  "sprite": "spr_fx_flame",
+  "loop": false,
+  "frames": [
+    {
+      "frame": "f0",
+      "ticks": 4
+    },
+    {
+      "frame": "f1",
+      "ticks": 4
+    },
+    {
+      "frame": "f2",
+      "ticks": 4
+    },
+    {
+      "frame": "f3",
+      "ticks": 4
+    }
+  ],
+  "events": []
+}

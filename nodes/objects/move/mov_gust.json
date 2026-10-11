@@ -1,0 +1,21 @@
+{
+  "id": "mov_gust",
+  "kind": "object",
+  "type": "move",
+  "name": "Gust",
+  "notes": "Gustling's move 1 (A). A gust of wind in a cone in front of the user (3 tiles). Charge: 3 s. Wild Gustlings use it every 4 s.",
+  "title": "GUST",
+  "monster_type": "flying",
+  "shape": "cone",
+  "range": 3,
+  "power": 10,
+  "accuracy": 95,
+  "charge": 180,
+  "effect": "ptc_fx_gust",
+  "effect_at": "axis",
+  "sfx": "sfx_mv_wind",
+  "children": [
+    "spr_fx_gust",
+    "ptc_fx_gust"
+  ]
+}

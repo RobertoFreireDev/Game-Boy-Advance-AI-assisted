@@ -1,0 +1,16 @@
+{
+  "id": "anim_venomole_idle",
+  "kind": "object",
+  "type": "animation",
+  "name": "Venomole idle side",
+  "notes": "Venomole standing, facing sideways.",
+  "sprite": "spr_venomole",
+  "loop": true,
+  "frames": [
+    {
+      "frame": "side",
+      "ticks": 60
+    }
+  ],
+  "events": []
+}

@@ -1,0 +1,42 @@
+{
+  "id": "scn_game_over",
+  "kind": "scene",
+  "type": "game_over",
+  "name": "Game over",
+  "notes": "GAME OVER with the level, kills and time reached. After 3 s (or START) it goes back to the menu.",
+  "backdrop": "#101020",
+  "music": "mus_game_over",
+  "camera": {
+    "x": 0,
+    "y": 0,
+    "bounds": "none"
+  },
+  "instances": [
+    {
+      "id": "hud",
+      "object": "hud_game_over"
+    },
+    {
+      "id": "back",
+      "object": "prop_back"
+    }
+  ],
+  "on_start": [
+    {
+      "do": "fade_in",
+      "ticks": 20
+    },
+    {
+      "do": "wait",
+      "ticks": 180
+    },
+    {
+      "do": "fade_out",
+      "ticks": 20
+    },
+    {
+      "do": "goto_scene",
+      "scene": "scn_menu"
+    }
+  ]
+}

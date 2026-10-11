@@ -1,0 +1,19 @@
+{
+  "id": "pal_logo",
+  "kind": "object",
+  "type": "palette",
+  "name": "Logo colors",
+  "notes": "Dark navy outline, blue rims, cream highlight and a yellow-to-orange fill.",
+  "colors": [
+    "#000000",
+    "#101838",
+    "#2848b8",
+    "#4878e8",
+    "#fff8c0",
+    "#f8e848",
+    "#f8c030",
+    "#e88820",
+    "#c05818",
+    "#88b0f8"
+  ]
+}

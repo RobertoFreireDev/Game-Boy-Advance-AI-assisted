@@ -1,0 +1,16 @@
+{
+  "id": "anim_wispook_idle_up",
+  "kind": "object",
+  "type": "animation",
+  "name": "Wispook idle up",
+  "notes": "Wispook standing, facing up (its back).",
+  "sprite": "spr_wispook",
+  "loop": true,
+  "frames": [
+    {
+      "frame": "up",
+      "ticks": 60
+    }
+  ],
+  "events": []
+}

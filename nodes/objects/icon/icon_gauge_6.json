@@ -1,0 +1,18 @@
+{
+  "id": "icon_gauge_6",
+  "kind": "object",
+  "type": "icon",
+  "name": "Charge gauge: flash",
+  "notes": "HUD charge circle of a move: white flash the moment it becomes fully charged.",
+  "palette": "pal_ui",
+  "pixels": [
+    "..1111..",
+    ".112211.",
+    "11222211",
+    "12222221",
+    "12222221",
+    "11222211",
+    ".112211.",
+    "..1111.."
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "id": "mov_razor_leaf",
+  "kind": "object",
+  "type": "move",
+  "name": "Razor Leaf",
+  "notes": "Sproutle's move 2 (B). Sharp leaves fly in a cone in front of the user (3 tiles). Charge: 10 s.",
+  "title": "RAZOR LEAF",
+  "monster_type": "grass",
+  "shape": "cone",
+  "range": 3,
+  "power": 18,
+  "accuracy": 90,
+  "charge": 600,
+  "effect": "ptc_fx_leaf",
+  "effect_at": "axis",
+  "sfx": "sfx_mv_grass",
+  "children": [
+    "spr_fx_leaf",
+    "ptc_fx_leaf"
+  ]
+}

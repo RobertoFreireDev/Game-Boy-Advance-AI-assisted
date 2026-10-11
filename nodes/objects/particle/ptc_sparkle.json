@@ -1,0 +1,24 @@
+{
+  "id": "ptc_sparkle",
+  "kind": "object",
+  "type": "particle",
+  "name": "Alpha sparkle",
+  "notes": "Golden sparkles drifting up around the Alpha.",
+  "animation": "anim_sparkle",
+  "mode": "burst",
+  "count": 1,
+  "lifetime": 18,
+  "speed": [
+    0.3,
+    0.5
+  ],
+  "angle": [
+    80,
+    100
+  ],
+  "gravity": 0,
+  "on_top": true,
+  "children": [
+    "anim_sparkle"
+  ]
+}

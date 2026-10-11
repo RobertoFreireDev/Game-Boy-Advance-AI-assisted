@@ -1,0 +1,16 @@
+{
+  "id": "anim_gustling_idle",
+  "kind": "object",
+  "type": "animation",
+  "name": "Gustling idle side",
+  "notes": "Gustling standing, facing sideways.",
+  "sprite": "spr_gustling",
+  "loop": true,
+  "frames": [
+    {
+      "frame": "side",
+      "ticks": 60
+    }
+  ],
+  "events": []
+}

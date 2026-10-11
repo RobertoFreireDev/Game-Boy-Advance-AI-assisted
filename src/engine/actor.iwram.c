@@ -48,6 +48,8 @@ int actor_has_slot(const Actor *a, u8 slot) {
 
 void actor_face(Actor *a, int dx, int dy) {
     if (!dx && !dy) return;
+    a->look_x = (s8)dx;
+    a->look_y = (s8)dy;
     if (dx) a->facing_left = dx < 0;
     int keep = (dx && a->facing == (dx < 0 ? DIR_LEFT : DIR_RIGHT)) ||
                (dy && a->facing == (dy < 0 ? DIR_UP : DIR_DOWN));
@@ -142,28 +144,39 @@ Actor *actor_spawn(s16 node, s32 x, s32 y, const LogicEntry *logic, u8 logic_cou
     a->home_y = y;
     a->riding = -1;
     a->facing = DIR_DOWN;
+    a->look_y = 1;
     if (a->body) {
-        a->hb_x = a->body->hb_x;
-        a->hb_y = a->body->hb_y;
-        a->hb_w = a->body->hb_w;
-        a->hb_h = a->body->hb_h;
-        a->gravity = a->body->gravity;
-        a->solid_mode = a->body->solid ? SOLID_FULL : SOLID_NONE;
-        a->collides = a->body->collides;
-        actor_play_slot(a, a->body->default_slot);
+        actor_set_body(a, a->body);
     } else {
         a->hb_w = (s16)d->zone_w;       // triggers: the zone, from the top-left corner
         a->hb_h = (s16)d->zone_h;
         a->collides = d->type == NT_TRIGGER ? 1 << CAT_PLAYER : 0;   // bodiless props touch nothing
         a->flags |= ACTOR_HIDDEN;
     }
-    for (int i = 0; i < a->logic_count; i++) {
+    // A behavior may remove the actor while it starts (a monster that isn't wanted in this
+    // run): the rest don't start, and the caller gets NULL.
+    for (int i = 0; i < a->logic_count && a->active; i++) {
         const BehaviorDef *b = &g_behaviors[a->logic[i].behavior];
         s_slot = i;
         if (b->init) b->init(a, a->logic[i].params);
     }
-    if (d->on_start) d->on_start(a);
-    return a;
+    if (a->active && d->on_start) d->on_start(a);
+    return a->active ? a : NULL;
+}
+
+void actor_set_body(Actor *a, const BodyData *body) {
+    a->body = body;
+    if (!body) return;
+    a->hb_x = body->hb_x;
+    a->hb_y = body->hb_y;
+    a->hb_w = body->hb_w;
+    a->hb_h = body->hb_h;
+    a->gravity = body->gravity;
+    a->solid_mode = body->solid ? SOLID_FULL : SOLID_NONE;
+    a->collides = body->collides;
+    a->flags &= (u8)~ACTOR_HIDDEN;
+    a->anim.anim = NULL;                // start the new body's animation from its first frame
+    actor_play_slot(a, body->default_slot);
 }
 
 int actor_count_node(s16 node) {
@@ -236,6 +249,8 @@ void actor_update_all(void) {
         Actor *a = &g_actors[n];
         if (!a->active) continue;
         if (a->flags & ACTOR_DYING) {
+            if (a->blink) a->blink--;       // a death that blinks out (set after actor_die)
+            if (a->flash) a->flash--;
             if (a->die_timer == 0 || --a->die_timer == 0) actor_destroy(a);
             continue;
         }
@@ -251,6 +266,7 @@ void actor_update_all(void) {
             continue;
         }
         if (a->blink) a->blink--;
+        if (a->flash) a->flash--;
         if (a->anim_lock) a->anim_lock--;
         if (a->stun) a->stun--;
     }

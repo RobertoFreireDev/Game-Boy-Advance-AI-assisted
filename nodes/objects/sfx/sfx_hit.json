@@ -1,0 +1,21 @@
+{
+  "id": "sfx_hit",
+  "kind": "object",
+  "type": "sfx",
+  "name": "Hit",
+  "notes": "A short thud when a move lands.",
+  "channel": "noise",
+  "priority": 2,
+  "steps": [
+    {
+      "pitch": 5,
+      "ticks": 2,
+      "volume": 13
+    },
+    {
+      "pitch": 3,
+      "ticks": 4,
+      "volume": 9
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "id": "sfx_mv_water",
+  "kind": "object",
+  "type": "sfx",
+  "name": "Water move",
+  "notes": "A splashy bloop.",
+  "channel": "wave",
+  "duty": 2,
+  "priority": 1,
+  "steps": [
+    {
+      "note": "G4",
+      "ticks": 2,
+      "volume": 4
+    },
+    {
+      "note": "C5",
+      "ticks": 2,
+      "volume": 4
+    },
+    {
+      "note": "G5",
+      "ticks": 3,
+      "volume": 3
+    },
+    {
+      "note": "C6",
+      "ticks": 4,
+      "volume": 2
+    }
+  ]
+}

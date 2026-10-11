@@ -1,0 +1,13 @@
+{
+  "id": "pal_txt_purple",
+  "kind": "object",
+  "type": "palette",
+  "name": "Floating text: purple",
+  "notes": "Colors of the floating words for PSN, TOX and poison damage: 1 = outline, 2 = letters, 3 = their lower half.",
+  "colors": [
+    "#000000",
+    "#200830",
+    "#f8c0f8",
+    "#c070e8"
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "id": "anim_pebbulk_walk_down",
+  "kind": "object",
+  "type": "animation",
+  "name": "Pebbulk walk down",
+  "notes": "Pebbulk walking facing down (its front): a 4-step waddle.",
+  "sprite": "spr_pebbulk",
+  "loop": true,
+  "frames": [
+    {
+      "frame": "down",
+      "ticks": 8
+    },
+    {
+      "frame": "down_a",
+      "ticks": 8
+    },
+    {
+      "frame": "down",
+      "ticks": 8
+    },
+    {
+      "frame": "down_b",
+      "ticks": 8
+    }
+  ],
+  "events": []
+}

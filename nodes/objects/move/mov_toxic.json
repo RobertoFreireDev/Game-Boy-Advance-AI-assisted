@@ -1,0 +1,29 @@
+{
+  "id": "mov_toxic",
+  "kind": "object",
+  "type": "move",
+  "name": "Toxic",
+  "notes": "Venomole's move 3 (hold A). Hurls toxic goo at the nearest monster up to 4 tiles away; half the time it is badly poisoned (1, 2, 3... damage a second for 8 s). Charge: 60 s.",
+  "title": "TOXIC",
+  "monster_type": "poison",
+  "shape": "single",
+  "range": 4,
+  "power": 40,
+  "accuracy": 100,
+  "charge": 3600,
+  "status": {
+    "kind": "tox",
+    "chance": 50,
+    "ticks": [
+      480,
+      480
+    ]
+  },
+  "effect": "ptc_fx_toxic",
+  "effect_at": "target",
+  "sfx": "sfx_mv_poison",
+  "children": [
+    "spr_fx_toxic",
+    "ptc_fx_toxic"
+  ]
+}

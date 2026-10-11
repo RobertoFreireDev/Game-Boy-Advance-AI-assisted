@@ -1,0 +1,13 @@
+{
+  "id": "pal_txt_yellow",
+  "kind": "object",
+  "type": "palette",
+  "name": "Floating text: yellow",
+  "notes": "Colors of the floating words for PAR, x1.5! and LV UP!: 1 = outline, 2 = letters, 3 = their lower half.",
+  "colors": [
+    "#000000",
+    "#382008",
+    "#f8f070",
+    "#f8b030"
+  ]
+}

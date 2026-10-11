@@ -1,0 +1,28 @@
+{
+  "id": "anim_fx_droplet",
+  "kind": "object",
+  "type": "animation",
+  "name": "Water Gun effect",
+  "notes": "Plays water drops along the way, splashing.",
+  "sprite": "spr_fx_droplet",
+  "loop": false,
+  "frames": [
+    {
+      "frame": "f0",
+      "ticks": 3
+    },
+    {
+      "frame": "f1",
+      "ticks": 3
+    },
+    {
+      "frame": "f2",
+      "ticks": 3
+    },
+    {
+      "frame": "f3",
+      "ticks": 3
+    }
+  ],
+  "events": []
+}

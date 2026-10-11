@@ -1,0 +1,26 @@
+{
+  "id": "sfx_cry_pebbulk",
+  "kind": "object",
+  "type": "sfx",
+  "name": "Pebbulk's cry",
+  "notes": "A deep rocky rumble. Plays when it is picked on the menu.",
+  "channel": "noise",
+  "priority": 1,
+  "steps": [
+    {
+      "pitch": 1,
+      "ticks": 4,
+      "volume": 13
+    },
+    {
+      "pitch": 2,
+      "ticks": 6,
+      "volume": 11
+    },
+    {
+      "pitch": 1,
+      "ticks": 8,
+      "volume": 7
+    }
+  ]
+}

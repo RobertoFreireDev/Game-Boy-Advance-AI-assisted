@@ -1,6 +1,6 @@
 // run_clock - counts play time: adds 1 to a seconds variable every 60 ticks and keeps
 // minutes / seconds variables for a mm:ss display. It stops while the game is paused
-// (menus pause every behavior).
+// (menus pause every behavior), and when the stop variable is set (the run is over).
 #include "run_clock.h"
 #include "behavior_params.h"
 #include "engine/vars.h"
@@ -10,6 +10,7 @@ enum { ST_TICKS };
 void bhv_run_clock_update(Actor *a, const void *params) {
     const Params_run_clock *p = params;
     u32 *st = bhv_state(a);
+    if (p->stop_var >= 0 && vars_get(p->stop_var)) return;     // the run is over
     if (++st[ST_TICKS] < 60) return;
     st[ST_TICKS] = 0;
     vars_add(p->total_var, 1);

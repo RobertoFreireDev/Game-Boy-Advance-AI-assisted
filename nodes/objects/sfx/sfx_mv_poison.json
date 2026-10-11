@@ -1,0 +1,32 @@
+{
+  "id": "sfx_mv_poison",
+  "kind": "object",
+  "type": "sfx",
+  "name": "Poison move",
+  "notes": "A gloopy low bubble.",
+  "channel": "square2",
+  "duty": 3,
+  "priority": 1,
+  "steps": [
+    {
+      "note": "C4",
+      "ticks": 3,
+      "volume": 11
+    },
+    {
+      "note": "G3",
+      "ticks": 3,
+      "volume": 10
+    },
+    {
+      "note": "D4",
+      "ticks": 3,
+      "volume": 9
+    },
+    {
+      "note": "A3",
+      "ticks": 5,
+      "volume": 6
+    }
+  ]
+}

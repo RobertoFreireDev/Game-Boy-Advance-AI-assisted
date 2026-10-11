@@ -8,7 +8,7 @@ skip, and how to test the result. It is AI-maintained: update it when you learn 
 
 ## 1. Load context efficiently
 
-The repo is ~8.6k lines of engine/tools plus a handful of template nodes (a full game is ~150). Don't read everything. Read in
+The repo is ~10k lines of engine/tools plus a handful of template nodes (a full game is ~150-350). Don't read everything. Read in
 **parallel batches** (several Read calls in one message) and stop at the tier you need.
 
 ### Tier 1 — always (enough to plan most games)
@@ -57,6 +57,7 @@ nodes), but their engine features stayed, so all three genres are covered withou
 | Platformer | `platformer_controller`, `health`, `camera_target` | `patrol`, `chase_player`, `stompable`, `damage_on_touch` | `follow_path` + `solid_platform` lifts, `collectible`, `trigger_zone` exits, gravity bodies, one-way/ladder/hazard tiles |
 | Top-down adventure | `topdown_controller`, `sword_attack`, `health` | `wander`, `chase_player`, `damage_on_touch` | `talk` + dialogs, `locked_door`, `if_var` flags, `*_up`/`*_down` animation slots |
 | Survivors / bullet heaven | `topdown_controller` (`speed_var`), `weapon` ×N, `aura` | `swarm`, `spawn_wave` (on an invisible `prop` director) | `projectile` props, `magnet` gems, `level_up` + `upgrade` nodes + upgrade menu, `run_clock`, `persistent` vars + `save_game` shop |
+| Monster battler (**Monster Survival**, branch `games/monster_survival`) | `monster` (`species_var`, HP/XP/level vars), `topdown_controller`, `move_buttons` | `monster` (species per instance, `avoid_var`), `monster_ai`; a sleeping Alpha (`random`, `alpha`, `wake_var`) | `species` + `move` nodes, `game.battle` (type chart, floating words), solid top-down bodies, `species_select` picker, `drop_in` logo, `cover_screen` / `flash_screen` / `float_text`, gauges and `{var.name}` text |
 
 If the genre is new (shmup, puzzle, racing, RPG battles…), map it to these first, then list
 the **missing** behaviors/actions and ask the human before adding a node type or changing
@@ -81,6 +82,15 @@ These live on the `games/night_swarm` branch, not on `main`. Read them without s
 | Level scene | `nodes/scenes/scn_field.json`; title `scn_title.json` |
 | HUD / menu / dialog | `hud_run`, `menu_title`, `menu_level_up`, `dlg_how_to_play` |
 | Music / sfx | `mus_field`, `sfx_hurt` |
+
+For a monster battler, copy from `games/monster_survival` instead: species `mon_emberpup` (owns
+its body, portrait, Alpha palette, cry and moves), moves `mov_ember` (zone), `mov_bubble_beam`
+(cone), `mov_rock_slide` (screen zone), `mov_fly` (self buff); actors `plr_monster`, `enm_wild`
+(species per instance), `enm_alpha`; the picker `prop_picker` + `hud_select` + `scn_menu`; the
+pause screen `menu_pause` (texts with `{chosen.move2}` / `{moves|...}`); `game.battle` in
+nodes.json. Its art, map and audio came from a scratchpad generator (session a013694e,
+`scratchpad/ms/`: `main.py` writes every node; `monsters.py`, `effects.py`, `tiles.py`,
+`mapgen.py`, `title.py`, `ui_art.py`, `audio.py`; `sheet_*.py` / `render_map.py` draw PNG previews).
 
 **Generic nodes kept across games** (on `main` too; reuse, recolor if needed, don't delete):
 `font_default`, `pal_ui`, `icon_cursor`, `icon_heart`, `sfx_select`, `sfx_confirm`.
@@ -153,8 +163,18 @@ Build it in the **session scratchpad**, never in the repo (it is not committed):
 
 Pitfalls:
 - `set var` on initialized `.data` **before crt0 runs** gets overwritten — change test knobs at
-  a checkpoint, not at the start.
+  a checkpoint, not at the start. That includes the checkpoint interval itself: start every 30
+  frames and set the real interval at checkpoint 1.
 - `EWRAM_BSS` pools are not zeroed at boot; the engine clears them itself — keep it that way.
+- gdb prints a checkpoint's `SCROLL` line *before* its `SHOT` line: pair each SCROLL with the SHOT
+  that follows it, or the renderer draws the map one checkpoint late (it looks like missing rows).
+- A long run with a bot needs help past walls: when it can't reach its target for ~10 s, teleport
+  it next to it (test-only) and count the teleports; list the live monsters (x, y, AI state) at each
+  checkpoint with a gdb `while` loop over an array the test input fills.
+- Monster Survival's harness (session a013694e scratchpad `t/`): `input_auto.c` (fight bot, god
+  mode, per-phase cycle counters, enemy list), `test_ms.py` (menu → run, screenshots),
+  `test_long.py` (a whole run to victory), `test_species.py <n>` (one species, every move charged,
+  contact sheet), `test_flow.py` (pause, game over, victory), `check_bg.py` (streamed map vs node).
 
 ---
 
@@ -168,8 +188,11 @@ them:
   with cached hitboxes, built in the same pass that moves actors; big buckets that many actors
   look into (a horde vs a volley) are binned into a 32 px grid. Free movers skip collision code.
 - Hot files are ARM code in IWRAM (`*.iwram.c`): actor, physics, anim, sprites, `swarm`,
-  `projectile`, `health`. IWRAM is 32 KB shared with globals and stack (~27 KB used) — move
-  code there only after measuring.
+  `projectile`, `health`. IWRAM is 32 KB shared with the code, every plain `static` and the stack
+  (~26 KB used, ~5.9 KB stack) — move code there only after measuring. When Monster Survival
+  pushed it over, the stack silently overwrote variables (the game hung on boot, the link was
+  clean); `build.py` now fails below 2 KB of stack. Cold pools (particles, scripts, floating
+  texts, zones, the upgrade tables) live in EWRAM.
 - **Thumb code is the trap**: no divide instruction and no 64-bit multiply. A `%` or `/` by a
   variable is a ~300–1000 cycle library call, by a constant still a call, and `fx_mul` is a call
   too. `rng_range` once cost ~1000 cycles (now one multiply); `projectile_launch` cost ~1500
@@ -185,6 +208,12 @@ them:
   menus/boxes write whole rows; paper-font tiles are converted with bit tricks, not per pixel.
 - Scene loads (~40–60 % of a frame, under a black fade): the actor pool is wiped once at boot,
   later only freed; maps stream with a pointer per row.
+
+Monster Survival (25 solid top-down monsters that block each other, measured): normal fighting
+~52 %, worst frame 74 % (a move hitting several monsters), no lag except the scene-load frame
+under the fade. Solid actors made physics the hog (~200k cycles: every mover tested every solid
+in slow EWRAM, twice); now the solids' hitboxes are cached in IWRAM once per frame (updated as
+each one moves) and checked first, and a body standing still skips movement entirely (~50k).
 
 If a new game pushes past this (more actors, bullets, particles), measure with the harness
 (§5) before optimizing, and record the result in the commit message and here.
@@ -209,3 +238,10 @@ If a new game pushes past this (more actors, bullets, particles), measure with t
   spot inside a tile. Night Swarm's map_sky / map_night / map_logo were made this way.
 - Redrawing a level map: generate it from the committed layout (`git show HEAD:...`), never from
   the file you just rewrote, and assert that the solid cells did not move.
+- Node fields named like a common field: `type` is always the node type, so a monster's type is
+  `monster_type` (a `type` field silently replaced the node type and broke the index).
+- Original designs only: check every character against well-known games (a yellow critter with
+  red cheeks reads as a famous mascot; Voltail got a ferret mask instead).
+- OBJ palettes run out fast with many species + effects + colored floating text: share palettes
+  between pairs of species (6 colors each), one effect palette, and count what the validator
+  reports (Monster Survival uses 15 of 16 in a run).

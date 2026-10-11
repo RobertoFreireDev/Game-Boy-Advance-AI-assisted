@@ -1,0 +1,20 @@
+{
+  "id": "prop_logo_drop",
+  "kind": "object",
+  "type": "prop",
+  "name": "Logo drop",
+  "notes": "Invisible: drops the title logo layer in from above; it bounces twice and settles.",
+  "logic": [
+    {
+      "behavior": "drop_in",
+      "params": {
+        "layer": 2,
+        "height": 80,
+        "gravity": 0.6,
+        "bounce": 0.4,
+        "bounces": 2,
+        "sound": "sfx_bounce"
+      }
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "id": "anim_fx_phase",
+  "kind": "object",
+  "type": "animation",
+  "name": "Phase effect",
+  "notes": "Plays a ghostly ring fading out.",
+  "sprite": "spr_fx_phase",
+  "loop": false,
+  "frames": [
+    {
+      "frame": "f0",
+      "ticks": 5
+    },
+    {
+      "frame": "f1",
+      "ticks": 5
+    },
+    {
+      "frame": "f2",
+      "ticks": 5
+    },
+    {
+      "frame": "f3",
+      "ticks": 5
+    }
+  ],
+  "events": []
+}

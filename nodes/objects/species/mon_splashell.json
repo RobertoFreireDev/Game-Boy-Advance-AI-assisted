@@ -1,0 +1,27 @@
+{
+  "id": "mon_splashell",
+  "kind": "object",
+  "type": "species",
+  "name": "Splashell",
+  "notes": "Splashell: a blue snail with eye stalks and a teal spiral shell. Type WATER. Moves: Water Gun (A), Bubble Beam (B) and Surf (hold A). It can be the player, and the 8 species that aren't picked live on the map.",
+  "title": "SPLASHELL",
+  "monster_type": "water",
+  "body": "body_splashell",
+  "alpha_palette": "pal_alpha_splashell",
+  "portrait": "spr_splashell_portrait",
+  "cry": "sfx_cry_splashell",
+  "moves": [
+    "mov_water_gun",
+    "mov_bubble_beam",
+    "mov_surf"
+  ],
+  "children": [
+    "body_splashell",
+    "spr_splashell_portrait",
+    "pal_alpha_splashell",
+    "sfx_cry_splashell",
+    "mov_water_gun",
+    "mov_bubble_beam",
+    "mov_surf"
+  ]
+}

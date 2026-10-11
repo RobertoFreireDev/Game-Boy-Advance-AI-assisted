@@ -1,0 +1,42 @@
+{
+  "id": "sfx_new_move",
+  "kind": "object",
+  "type": "sfx",
+  "name": "New move jingle",
+  "notes": "A sparkling arpeggio when a new move unlocks.",
+  "channel": "square1",
+  "duty": 2,
+  "priority": 4,
+  "steps": [
+    {
+      "note": "G5",
+      "ticks": 3,
+      "volume": 12
+    },
+    {
+      "note": "B5",
+      "ticks": 3,
+      "volume": 12
+    },
+    {
+      "note": "D6",
+      "ticks": 3,
+      "volume": 12
+    },
+    {
+      "note": "G6",
+      "ticks": 3,
+      "volume": 12
+    },
+    {
+      "note": "D6",
+      "ticks": 3,
+      "volume": 10
+    },
+    {
+      "note": "G6",
+      "ticks": 12,
+      "volume": 11
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "id": "sfx_mv_normal",
+  "kind": "object",
+  "type": "sfx",
+  "name": "Normal move",
+  "notes": "A quick swoosh-thump.",
+  "channel": "noise",
+  "priority": 1,
+  "steps": [
+    {
+      "pitch": 9,
+      "ticks": 2,
+      "volume": 10
+    },
+    {
+      "pitch": 4,
+      "ticks": 3,
+      "volume": 9
+    },
+    {
+      "pitch": 2,
+      "ticks": 3,
+      "volume": 6
+    }
+  ]
+}

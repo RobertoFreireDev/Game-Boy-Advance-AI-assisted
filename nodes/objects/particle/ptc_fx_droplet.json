@@ -1,0 +1,24 @@
+{
+  "id": "ptc_fx_droplet",
+  "kind": "object",
+  "type": "particle",
+  "name": "Water Gun effect",
+  "notes": "Water drops along the way, splashing, drawn in front of the monsters.",
+  "animation": "anim_fx_droplet",
+  "mode": "burst",
+  "count": 1,
+  "lifetime": 12,
+  "speed": [
+    0,
+    0
+  ],
+  "angle": [
+    0,
+    0
+  ],
+  "gravity": 0,
+  "on_top": true,
+  "children": [
+    "anim_fx_droplet"
+  ]
+}

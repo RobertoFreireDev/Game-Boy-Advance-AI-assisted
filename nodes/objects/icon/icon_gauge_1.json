@@ -1,0 +1,18 @@
+{
+  "id": "icon_gauge_1",
+  "kind": "object",
+  "type": "icon",
+  "name": "Charge gauge: empty",
+  "notes": "HUD charge circle of a move: empty full.",
+  "palette": "pal_ui",
+  "pixels": [
+    "..1111..",
+    ".11dd11.",
+    "11dddd11",
+    "1dddddd1",
+    "1dddddd1",
+    "11dddd11",
+    ".11dd11.",
+    "..1111.."
+  ]
+}

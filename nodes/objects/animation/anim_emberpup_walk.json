@@ -1,0 +1,28 @@
+{
+  "id": "anim_emberpup_walk",
+  "kind": "object",
+  "type": "animation",
+  "name": "Emberpup walk side",
+  "notes": "Emberpup walking facing sideways: a 4-step waddle.",
+  "sprite": "spr_emberpup",
+  "loop": true,
+  "frames": [
+    {
+      "frame": "side",
+      "ticks": 8
+    },
+    {
+      "frame": "side_a",
+      "ticks": 8
+    },
+    {
+      "frame": "side",
+      "ticks": 8
+    },
+    {
+      "frame": "side_b",
+      "ticks": 8
+    }
+  ],
+  "events": []
+}

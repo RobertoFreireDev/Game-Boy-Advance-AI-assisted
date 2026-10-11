@@ -1,0 +1,28 @@
+{
+  "id": "anim_fx_leaf",
+  "kind": "object",
+  "type": "animation",
+  "name": "Razor Leaf effect",
+  "notes": "Plays spinning leaves.",
+  "sprite": "spr_fx_leaf",
+  "loop": false,
+  "frames": [
+    {
+      "frame": "f0",
+      "ticks": 3
+    },
+    {
+      "frame": "f1",
+      "ticks": 3
+    },
+    {
+      "frame": "f2",
+      "ticks": 3
+    },
+    {
+      "frame": "f3",
+      "ticks": 3
+    }
+  ],
+  "events": []
+}

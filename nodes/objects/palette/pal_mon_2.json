@@ -1,0 +1,25 @@
+{
+  "id": "pal_mon_2",
+  "kind": "object",
+  "type": "palette",
+  "name": "Monster colors: Emberpup and Voltail",
+  "notes": "Shared colors of Emberpup and Voltail's sprites and portraits: 1 = dark outline, 2 = white, 3-8 = Emberpup's light / mid / dark body colors and accents, 9-14 = Voltail's, 15 = pink blush.",
+  "colors": [
+    "#000000",
+    "#282830",
+    "#f8f8f8",
+    "#f88858",
+    "#e04838",
+    "#a02830",
+    "#f8e868",
+    "#f8a038",
+    "#f8e0c0",
+    "#f8f090",
+    "#f0d038",
+    "#c09020",
+    "#a86030",
+    "#683818",
+    "#fff8e0",
+    "#f888a0"
+  ]
+}

@@ -1,0 +1,83 @@
+{
+  "id": "menu_pause",
+  "kind": "object",
+  "type": "menu",
+  "name": "Pause",
+  "notes": "Opens with START during a run (the world freezes). Shows the level, XP, kills, timer and the 3 moves (LOCKED until their level). RESUME (or B / START) goes back; QUIT ends the run and returns to the menu.",
+  "font": "font_default",
+  "title": "PAUSED",
+  "cursor": "icon_cursor",
+  "box": {
+    "x": 0,
+    "y": 16,
+    "w": 240,
+    "h": 128,
+    "paper": 3,
+    "border": 2
+  },
+  "texts": [
+    {
+      "x": 16,
+      "y": 40,
+      "text": "LV {level}   XP {xp}"
+    },
+    {
+      "x": 16,
+      "y": 48,
+      "text": "KILLS {kills}/25   TIME {time_min:02}:{time_sec:02}"
+    },
+    {
+      "x": 16,
+      "y": 64,
+      "text": "A      {chosen.move1}"
+    },
+    {
+      "x": 16,
+      "y": 72,
+      "text": "B      {chosen.move2} {moves|LOCKED|LOCKED||}"
+    },
+    {
+      "x": 16,
+      "y": 80,
+      "text": "HOLD A {chosen.move3} {moves|LOCKED|LOCKED|LOCKED|}"
+    }
+  ],
+  "layout": {
+    "x": 32,
+    "y": 104,
+    "spacing": 16,
+    "title_y": 24
+  },
+  "options": [
+    {
+      "label": "RESUME",
+      "actions": [
+        {
+          "do": "close_menu"
+        }
+      ]
+    },
+    {
+      "label": "QUIT",
+      "actions": [
+        {
+          "do": "fade_out",
+          "ticks": 20
+        },
+        {
+          "do": "goto_scene",
+          "scene": "scn_menu"
+        }
+      ]
+    }
+  ],
+  "on_cancel": [
+    {
+      "do": "close_menu"
+    }
+  ],
+  "sounds": {
+    "move": "sfx_select",
+    "select": "sfx_confirm"
+  }
+}

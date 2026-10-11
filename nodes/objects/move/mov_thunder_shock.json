@@ -1,0 +1,21 @@
+{
+  "id": "mov_thunder_shock",
+  "kind": "object",
+  "type": "move",
+  "name": "Thunder Shock",
+  "notes": "Voltail's move 1 (A). A bolt of lightning strikes the nearest monster up to 5 tiles away. Charge: 3 s. Wild Voltails use it every 4 s.",
+  "title": "THUNDER SHOCK",
+  "monster_type": "electric",
+  "shape": "single",
+  "range": 5,
+  "power": 10,
+  "accuracy": 95,
+  "charge": 180,
+  "effect": "ptc_fx_thunder",
+  "effect_at": "target",
+  "sfx": "sfx_mv_electric",
+  "children": [
+    "spr_fx_thunder",
+    "ptc_fx_thunder"
+  ]
+}

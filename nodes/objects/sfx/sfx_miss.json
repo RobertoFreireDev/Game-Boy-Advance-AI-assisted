@@ -1,0 +1,21 @@
+{
+  "id": "sfx_miss",
+  "kind": "object",
+  "type": "sfx",
+  "name": "Miss",
+  "notes": "A quick whiff of air.",
+  "channel": "noise",
+  "priority": 2,
+  "steps": [
+    {
+      "pitch": 12,
+      "ticks": 2,
+      "volume": 8
+    },
+    {
+      "pitch": 14,
+      "ticks": 3,
+      "volume": 5
+    }
+  ]
+}

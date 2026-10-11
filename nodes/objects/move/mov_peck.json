@@ -1,0 +1,21 @@
+{
+  "id": "mov_peck",
+  "kind": "object",
+  "type": "move",
+  "name": "Peck",
+  "notes": "Gustling's move 2 (B). Pecks the monster next to the user. Charge: 10 s.",
+  "title": "PECK",
+  "monster_type": "flying",
+  "shape": "single",
+  "range": 1,
+  "power": 18,
+  "accuracy": 90,
+  "charge": 600,
+  "effect": "ptc_fx_peck",
+  "effect_at": "target",
+  "sfx": "sfx_mv_normal",
+  "children": [
+    "spr_fx_peck",
+    "ptc_fx_peck"
+  ]
+}

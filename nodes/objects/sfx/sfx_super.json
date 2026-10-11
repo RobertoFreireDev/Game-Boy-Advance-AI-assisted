@@ -1,0 +1,27 @@
+{
+  "id": "sfx_super",
+  "kind": "object",
+  "type": "sfx",
+  "name": "Super effective hit",
+  "notes": "A crunchy thud and a rising ping.",
+  "channel": "square2",
+  "duty": 1,
+  "priority": 2,
+  "steps": [
+    {
+      "note": "C6",
+      "ticks": 2,
+      "volume": 12
+    },
+    {
+      "note": "G6",
+      "ticks": 3,
+      "volume": 11
+    },
+    {
+      "note": "C7",
+      "ticks": 4,
+      "volume": 8
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "id": "mov_quick_attack",
+  "kind": "object",
+  "type": "move",
+  "name": "Quick Attack",
+  "notes": "Furrbit's move 2 (B). Rushes 1 tile toward the nearest monster within 2 tiles, then strikes it. Charge: 10 s.",
+  "title": "QUICK ATTACK",
+  "monster_type": "normal",
+  "shape": "dash",
+  "range": 1,
+  "power": 18,
+  "accuracy": 90,
+  "charge": 600,
+  "dash": 1,
+  "effect": "ptc_fx_quick",
+  "effect_at": "target",
+  "sfx": "sfx_mv_normal",
+  "children": [
+    "spr_fx_quick",
+    "ptc_fx_quick"
+  ]
+}

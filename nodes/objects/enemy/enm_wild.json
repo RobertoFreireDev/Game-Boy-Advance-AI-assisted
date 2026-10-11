@@ -1,0 +1,62 @@
+{
+  "id": "enm_wild",
+  "kind": "object",
+  "type": "enemy",
+  "name": "Wild monster",
+  "notes": "A wild monster of the species set on each map instance (levels 2, 4 or 6 with 30, 45 or 60 HP). The player's own species stays away. It wanders near home, turns hostile within 5 tiles (at most 3 at once), walks up and uses its species' first move every 4 s, and goes home if the player gets more than 10 tiles away. Touching never hurts. Each one gives 20 XP when it faints (plus 2 XP per hit taken).",
+  "logic": [
+    {
+      "behavior": "monster",
+      "params": {
+        "species": "mon_furrbit",
+        "level": 2,
+        "hp": 30,
+        "avoid_var": "chosen",
+        "xp_reward": 20,
+        "kills_var": "kills",
+        "on_death": [
+          {
+            "do": "if_var",
+            "var": "kills",
+            "op": ">=",
+            "value": 25,
+            "then": [
+              {
+                "do": "set_var",
+                "var": "run_over",
+                "value": 1
+              },
+              {
+                "do": "stop_music"
+              },
+              {
+                "do": "wait",
+                "ticks": 60
+              },
+              {
+                "do": "fade_out",
+                "ticks": 30
+              },
+              {
+                "do": "goto_scene",
+                "scene": "scn_victory"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "behavior": "monster_ai",
+      "params": {
+        "speed": 0.5,
+        "chase_speed": 0.75,
+        "roam": 32,
+        "sight": 5,
+        "give_up": 10,
+        "max_hostile": 3,
+        "charge": 240
+      }
+    }
+  ]
+}

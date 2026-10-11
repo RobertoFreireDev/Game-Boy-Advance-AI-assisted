@@ -1,0 +1,27 @@
+{
+  "id": "mon_gustling",
+  "kind": "object",
+  "type": "species",
+  "name": "Gustling",
+  "notes": "Gustling: a small white-and-sky-blue bird with oversized wings and an orange beak. Type FLYING. Moves: Gust (A), Peck (B) and Fly (hold A). It can be the player, and the 8 species that aren't picked live on the map.",
+  "title": "GUSTLING",
+  "monster_type": "flying",
+  "body": "body_gustling",
+  "alpha_palette": "pal_alpha_gustling",
+  "portrait": "spr_gustling_portrait",
+  "cry": "sfx_cry_gustling",
+  "moves": [
+    "mov_gust",
+    "mov_peck",
+    "mov_fly"
+  ],
+  "children": [
+    "body_gustling",
+    "spr_gustling_portrait",
+    "pal_alpha_gustling",
+    "sfx_cry_gustling",
+    "mov_gust",
+    "mov_peck",
+    "mov_fly"
+  ]
+}

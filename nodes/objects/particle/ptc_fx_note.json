@@ -1,0 +1,24 @@
+{
+  "id": "ptc_fx_note",
+  "kind": "object",
+  "type": "particle",
+  "name": "Growl effect",
+  "notes": "Notes flying outward, drawn in front of the monsters. 8 of them fly outward.",
+  "animation": "anim_fx_note",
+  "mode": "burst",
+  "count": 8,
+  "lifetime": 18,
+  "speed": [
+    1.0,
+    1.2
+  ],
+  "angle": [
+    0,
+    359
+  ],
+  "gravity": 0,
+  "on_top": true,
+  "children": [
+    "anim_fx_note"
+  ]
+}

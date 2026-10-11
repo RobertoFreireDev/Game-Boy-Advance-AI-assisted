@@ -1,0 +1,24 @@
+{
+  "id": "ptc_fx_rockslide",
+  "kind": "object",
+  "type": "particle",
+  "name": "Rock Slide effect",
+  "notes": "A shadow growing on the ground, then a rock falling and crashing, drawn in front of the monsters.",
+  "animation": "anim_fx_rockslide",
+  "mode": "burst",
+  "count": 1,
+  "lifetime": 36,
+  "speed": [
+    0,
+    0
+  ],
+  "angle": [
+    0,
+    0
+  ],
+  "gravity": 0,
+  "on_top": true,
+  "children": [
+    "anim_fx_rockslide"
+  ]
+}

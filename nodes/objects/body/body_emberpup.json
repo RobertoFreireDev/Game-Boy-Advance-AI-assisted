@@ -1,0 +1,50 @@
+{
+  "id": "body_emberpup",
+  "kind": "object",
+  "type": "body",
+  "name": "Emberpup body",
+  "notes": "How Emberpup looks in the world and the box that bumps into walls and other monsters. Its feet stand on the origin; the hitbox is a small 10x8 box at the feet so monsters can stand side by side, and being solid, monsters never walk through each other.",
+  "origin": [
+    8,
+    15
+  ],
+  "hitbox": {
+    "x": -5,
+    "y": -7,
+    "w": 10,
+    "h": 8
+  },
+  "physics": {
+    "gravity": false,
+    "solid": true,
+    "collides_with": [
+      "tiles",
+      "player",
+      "enemy"
+    ]
+  },
+  "animations": {
+    "idle": "anim_emberpup_idle",
+    "walk": "anim_emberpup_walk",
+    "attack": "anim_emberpup_attack",
+    "idle_up": "anim_emberpup_idle_up",
+    "walk_up": "anim_emberpup_walk_up",
+    "attack_up": "anim_emberpup_attack_up",
+    "idle_down": "anim_emberpup_idle_down",
+    "walk_down": "anim_emberpup_walk_down",
+    "attack_down": "anim_emberpup_attack_down"
+  },
+  "default_animation": "idle_down",
+  "children": [
+    "spr_emberpup",
+    "anim_emberpup_idle",
+    "anim_emberpup_walk",
+    "anim_emberpup_attack",
+    "anim_emberpup_idle_up",
+    "anim_emberpup_walk_up",
+    "anim_emberpup_attack_up",
+    "anim_emberpup_idle_down",
+    "anim_emberpup_walk_down",
+    "anim_emberpup_attack_down"
+  ]
+}

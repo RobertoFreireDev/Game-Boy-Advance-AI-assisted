@@ -1,0 +1,18 @@
+{
+  "id": "icon_gauge_0",
+  "kind": "object",
+  "type": "icon",
+  "name": "Charge gauge: locked",
+  "notes": "HUD charge circle of a move: a padlock (the move is not unlocked yet).",
+  "palette": "pal_ui",
+  "pixels": [
+    "..111...",
+    ".17.71..",
+    ".1...1..",
+    "1111111.",
+    "1777771.",
+    "1771771.",
+    "1777771.",
+    "1111111."
+  ]
+}

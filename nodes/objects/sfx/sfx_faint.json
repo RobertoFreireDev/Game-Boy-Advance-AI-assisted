@@ -1,0 +1,32 @@
+{
+  "id": "sfx_faint",
+  "kind": "object",
+  "type": "sfx",
+  "name": "Faint",
+  "notes": "A falling three-note slide when a monster faints.",
+  "channel": "square2",
+  "duty": 2,
+  "priority": 2,
+  "steps": [
+    {
+      "note": "G5",
+      "ticks": 4,
+      "volume": 11
+    },
+    {
+      "note": "E5",
+      "ticks": 4,
+      "volume": 9
+    },
+    {
+      "note": "C5",
+      "ticks": 4,
+      "volume": 8
+    },
+    {
+      "note": "G4",
+      "ticks": 8,
+      "volume": 6
+    }
+  ]
+}

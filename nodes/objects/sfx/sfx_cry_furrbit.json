@@ -1,0 +1,37 @@
+{
+  "id": "sfx_cry_furrbit",
+  "kind": "object",
+  "type": "sfx",
+  "name": "Furrbit's cry",
+  "notes": "A quick high squeak-squeak. Plays when it is picked on the menu.",
+  "channel": "square2",
+  "duty": 1,
+  "priority": 1,
+  "steps": [
+    {
+      "note": "E6",
+      "ticks": 3,
+      "volume": 11
+    },
+    {
+      "note": "G6",
+      "ticks": 3,
+      "volume": 9
+    },
+    {
+      "note": "..",
+      "ticks": 2,
+      "volume": 0
+    },
+    {
+      "note": "E6",
+      "ticks": 3,
+      "volume": 10
+    },
+    {
+      "note": "A6",
+      "ticks": 5,
+      "volume": 7
+    }
+  ]
+}

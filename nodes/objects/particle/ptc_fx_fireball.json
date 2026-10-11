@@ -1,0 +1,24 @@
+{
+  "id": "ptc_fx_fireball",
+  "kind": "object",
+  "type": "particle",
+  "name": "Fire Spin effect",
+  "notes": "Fireballs bursting outward in a ring, drawn in front of the monsters. 12 of them fly outward.",
+  "animation": "anim_fx_fireball",
+  "mode": "burst",
+  "count": 12,
+  "lifetime": 12,
+  "speed": [
+    1.2,
+    1.4
+  ],
+  "angle": [
+    0,
+    359
+  ],
+  "gravity": 0,
+  "on_top": true,
+  "children": [
+    "anim_fx_fireball"
+  ]
+}

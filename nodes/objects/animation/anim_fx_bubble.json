@@ -1,0 +1,28 @@
+{
+  "id": "anim_fx_bubble",
+  "kind": "object",
+  "type": "animation",
+  "name": "Bubble Beam effect",
+  "notes": "Plays bubbles drifting and popping.",
+  "sprite": "spr_fx_bubble",
+  "loop": false,
+  "frames": [
+    {
+      "frame": "f0",
+      "ticks": 5
+    },
+    {
+      "frame": "f1",
+      "ticks": 5
+    },
+    {
+      "frame": "f2",
+      "ticks": 5
+    },
+    {
+      "frame": "f3",
+      "ticks": 5
+    }
+  ],
+  "events": []
+}

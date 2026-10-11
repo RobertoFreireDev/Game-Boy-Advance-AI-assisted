@@ -1,0 +1,16 @@
+{
+  "id": "anim_pebbulk_attack_up",
+  "kind": "object",
+  "type": "animation",
+  "name": "Pebbulk attack up",
+  "notes": "Pebbulk lunges facing up (its back) as it uses a move.",
+  "sprite": "spr_pebbulk",
+  "loop": false,
+  "frames": [
+    {
+      "frame": "atk_up",
+      "ticks": 12
+    }
+  ],
+  "events": []
+}

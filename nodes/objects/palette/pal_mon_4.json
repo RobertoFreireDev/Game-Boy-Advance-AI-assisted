@@ -1,0 +1,25 @@
+{
+  "id": "pal_mon_4",
+  "kind": "object",
+  "type": "palette",
+  "name": "Monster colors: Sproutle and Venomole",
+  "notes": "Shared colors of Sproutle and Venomole's sprites and portraits: 1 = dark outline, 2 = white, 3-8 = Sproutle's light / mid / dark body colors and accents, 9-14 = Venomole's, 15 = pink blush.",
+  "colors": [
+    "#000000",
+    "#282830",
+    "#f8f8f8",
+    "#c0f080",
+    "#78c848",
+    "#408830",
+    "#e0b070",
+    "#a87038",
+    "#684820",
+    "#d0a8f0",
+    "#9870d0",
+    "#604098",
+    "#d0f868",
+    "#88d830",
+    "#f098c8",
+    "#f888a0"
+  ]
+}

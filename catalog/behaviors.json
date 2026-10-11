@@ -1,5 +1,5 @@
 {
-  "_notes": "Every behavior an object can list in its logic[]. Each one is src/behaviors/<name>.c/.h. Param types: int, fixed, bool, ticks, button, var, node:<type>, actions, points, choice (one of options), string.",
+  "_notes": "Every behavior an object can list in its logic[]. Each one is src/behaviors/<name>.c/.h. Param types: int, fixed, bool, ticks, button, var, node:<type>, actions, points, choice (one of options), string (a C function name), text (words shown on screen).",
   "platformer_controller": {
     "description": "Side-view control: run left/right with the D-pad, jump with a button, climb ladders with up/down. Picks the idle, run, jump, fall and climb animations.",
     "params": {
@@ -227,11 +227,12 @@
     }
   },
   "run_clock": {
-    "description": "Counts play time: adds 1 to a seconds variable every 60 ticks and keeps minutes / seconds variables for a mm:ss display. Stops while a menu pauses the game.",
+    "description": "Counts play time: adds 1 to a seconds variable every 60 ticks and keeps minutes / seconds variables for a mm:ss display. Stops while a menu pauses the game, or when its stop variable is set.",
     "params": {
       "total_var":    {"type": "var", "required": true, "description": "Game variable counting seconds since the run started."},
       "minutes_var":  {"type": "var", "default": "", "description": "Game variable set to the whole minutes. Empty = none."},
-      "seconds_var":  {"type": "var", "default": "", "description": "Game variable set to the seconds within the minute (0-59). Empty = none."}
+      "seconds_var":  {"type": "var", "default": "", "description": "Game variable set to the seconds within the minute (0-59). Empty = none."},
+      "stop_var":     {"type": "var", "default": "", "description": "The clock stops while this game variable is not 0 (the run is won or lost). Empty = never stops."}
     }
   },
   "level_up": {
@@ -250,6 +251,97 @@
     "params": {
       "button":   {"type": "button", "default": "START", "description": "Button to watch."},
       "on_press": {"type": "actions", "default": [], "description": "What happens when the button is pressed."}
+    }
+  },
+  "monster": {
+    "description": "A creature of a monster-battle game. It takes its look, type and 3 moves from a species node, and has a level and hit points. Moves that hit it use the type chart (game.battle) for damage, can MISS, flash it white, push it back 2 px and may paralyze or poison it; floating words show what happened. When its hit points run out it faints (flashes and blinks out). The player's version keeps hit points, level and XP in game variables and levels up.",
+    "params": {
+      "species":      {"type": "node:species", "default": "", "description": "Its species. Empty = use species_var or random."},
+      "species_var":  {"type": "var", "default": "", "description": "Game variable holding the species number (order of the species nodes, from 0): the player's pick. Empty = use 'species'."},
+      "random":       {"type": "bool", "default": false, "description": "Pick a random species when it appears (never the one in avoid_var)."},
+      "avoid_var":    {"type": "var", "default": "", "description": "Game variable holding a species number to stay out of: a monster of that species does not appear at all (the player's own kind), and a random one picks another. Empty = none."},
+      "level":        {"type": "int", "default": 1, "description": "Level, for damage (when level_var is empty)."},
+      "hp":           {"type": "int", "default": 30, "description": "Hit points (when hp_var is empty)."},
+      "power":        {"type": "int", "default": 100, "description": "Damage of its moves, in percent (an Alpha hits harder: 150)."},
+      "alpha":        {"type": "bool", "default": false, "description": "Draw it in its species' Alpha colors."},
+      "crown":        {"type": "node:sprite", "default": "", "description": "Sprite drawn over its head, its 2 frames shimmering (the Alpha's crown). Empty = none."},
+      "aura":         {"type": "node:particle", "default": "", "description": "Sparkles that keep rising around it. Empty = none."},
+      "shadow":       {"type": "node:sprite", "default": "", "description": "Shown on the ground instead of its body while it flies. Empty = nothing shows."},
+      "xp_reward":    {"type": "int", "default": 20, "description": "XP the player gets when this monster faints."},
+      "kills_var":    {"type": "var", "default": "", "description": "Game variable that goes up by 1 when this monster faints. Empty = none."},
+      "hp_var":       {"type": "var", "default": "", "description": "Game variable holding its hit points (the player's, shown on the HUD). Empty = private hit points."},
+      "hp_max_var":   {"type": "var", "default": "", "description": "Game variable holding its maximum hit points (raised on level up)."},
+      "level_var":    {"type": "var", "default": "", "description": "Game variable holding its level. Empty = the 'level' param."},
+      "xp_var":       {"type": "var", "default": "", "description": "Game variable collecting its XP (the player): reaching the next total levels it up. Empty = no leveling."},
+      "xp_pct_var":   {"type": "var", "default": "", "description": "Game variable kept at 0-100 = progress to the next level (for an XP bar). Empty = none."},
+      "xp_per_hit":   {"type": "int", "default": 2, "description": "XP this monster (the player) gets for every hit that damages a wild monster, poison and ground damage included."},
+      "xp_first":     {"type": "int", "default": 40, "description": "Total XP needed for level 2."},
+      "xp_step":      {"type": "int", "default": 50, "description": "Extra total XP for each level after that (level 3 = first + step, ...)."},
+      "max_level":    {"type": "int", "default": 10, "description": "Highest level."},
+      "hp_per_level": {"type": "int", "default": 8, "description": "Each level up adds this to the maximum hit points and to the current hit points (not a full heal)."},
+      "on_level_up":  {"type": "actions", "default": [], "description": "What happens on each level gained."},
+      "on_death":     {"type": "actions", "default": [], "description": "What happens when it faints."}
+    }
+  },
+  "monster_ai": {
+    "description": "A wild monster's mind (top-down): it wanders and rests around where it was placed. When the player comes within sight it turns hostile (only a few at once), walks up to it and uses its species' first move whenever that is charged. If the player gets far away it walks back home. It holds still while paralyzed or frozen. With wake_var it sleeps until that variable reaches wake_at.",
+    "params": {
+      "speed":        {"type": "fixed", "default": 0.5, "description": "Walking speed while wandering or going home (pixels per tick)."},
+      "chase_speed":  {"type": "fixed", "default": 0.75, "description": "Speed while chasing the player (pixels per tick)."},
+      "roam":         {"type": "int", "default": 32, "description": "Wanders up to this many pixels from home."},
+      "sight":        {"type": "int", "default": 5, "description": "Turns hostile when the player is this many tiles away or closer."},
+      "give_up":      {"type": "int", "default": 10, "description": "Goes home when the player is farther than this many tiles."},
+      "max_hostile":  {"type": "int", "default": 3, "description": "At most this many monsters are hostile at the same time; others keep wandering until one faints or gives up."},
+      "charge":       {"type": "ticks", "default": 240, "description": "Ticks to recharge its move (the first attack comes after half of it)."},
+      "wake_var":     {"type": "var", "default": "", "description": "Sleeps until this game variable reaches wake_at (a boss waiting for the others to fall). Empty = always awake."},
+      "wake_at":      {"type": "int", "default": 0, "description": "Value of wake_var that wakes it."},
+      "sleep_effect": {"type": "node:particle", "default": "", "description": "Particles shown now and then while it sleeps (a Z). Empty = none."},
+      "on_wake":      {"type": "actions", "default": [], "description": "What happens when it wakes up."}
+    }
+  },
+  "move_buttons": {
+    "description": "The player's 3 moves (from its species) on buttons. Each move recharges on its own timer (the move node's charge) from the moment it is unlocked: move 2 and move 3 unlock at a level. A fires move 1 when charged, B fires move 2, and holding A without touching the D-pad fills a ring of dots around the player: when it is full, move 3 fires (grey dots = move 3 is locked or still charging, nothing fires). A move with nothing in reach keeps its charge. HUD gauges read the charges through variables.",
+    "params": {
+      "level_var":         {"type": "var", "required": true, "description": "Game variable with the player's level."},
+      "unlock_2":          {"type": "int", "default": 4, "description": "Level that unlocks move 2."},
+      "unlock_3":          {"type": "int", "default": 7, "description": "Level that unlocks move 3."},
+      "button_1":          {"type": "button", "default": "A", "description": "Button for move 1 (held for move 3)."},
+      "button_2":          {"type": "button", "default": "B", "description": "Button for move 2."},
+      "hold_ticks":        {"type": "ticks", "default": 180, "description": "How long the button is held (D-pad untouched) to fire move 3."},
+      "gauge_1":           {"type": "var", "default": "", "description": "Game variable showing move 1's charge: 0 locked, 1 empty .. 5 full, 6 = the flash when it just became full."},
+      "gauge_2":           {"type": "var", "default": "", "description": "Same for move 2."},
+      "gauge_3":           {"type": "var", "default": "", "description": "Same for move 3."},
+      "unlocked_var":      {"type": "var", "default": "", "description": "Game variable set to how many moves are unlocked (1-3). Empty = none."},
+      "ring":              {"type": "node:sprite", "default": "", "description": "One dot of the hold ring (frame 0 = unlit, frame 1 = lit); 8 dots go around the player. Empty = no ring."},
+      "ring_off_palette":  {"type": "node:palette", "default": "", "description": "Colors of the ring when move 3 is locked or not charged (grey)."},
+      "ring_radius":       {"type": "int", "default": 14, "description": "Distance of the ring dots from the player's middle (pixels)."},
+      "on_unlock":         {"type": "actions", "default": [], "description": "What happens when a move unlocks (NEW MOVE!)."}
+    }
+  },
+  "species_select": {
+    "description": "Shows the big portrait of the species whose number is in a variable, bobbing gently, centered on the actor. With 'browse', Left / Right change the variable (wrapping around): the portrait slides out, the new one slides in and plays its cry. The pick button runs the pick actions once (start the run).",
+    "params": {
+      "var":           {"type": "var", "required": true, "description": "Game variable with the species number (order of the species nodes, from 0)."},
+      "browse":        {"type": "bool", "default": true, "description": "Left / Right choose another species. Off = only shows it."},
+      "button":        {"type": "button", "default": "START", "description": "Button that picks."},
+      "slide":         {"type": "int", "default": 40, "description": "How far the portrait slides when changing (pixels)."},
+      "slide_ticks":   {"type": "ticks", "default": 6, "description": "How long each half of the slide takes (ticks)."},
+      "bob":           {"type": "int", "default": 2, "description": "How far the portrait bobs up and down (pixels)."},
+      "cry_on_start":  {"type": "bool", "default": true, "description": "Play the species' cry when it appears."},
+      "move_sound":    {"type": "node:sfx", "default": "", "description": "Sound when Left / Right is pressed. Empty = only the cry."},
+      "on_pick":       {"type": "actions", "default": [], "description": "What happens when the button is pressed."}
+    }
+  },
+  "drop_in": {
+    "description": "Falls in from above and bounces before settling (a title logo). It moves itself, or a whole background layer: with 'layer' 1-3 that layer's tilemap drops instead (use an invisible prop).",
+    "params": {
+      "height":   {"type": "int", "default": 120, "description": "Starts this many pixels above its place."},
+      "gravity":  {"type": "fixed", "default": 0.5, "description": "Speed gained each tick while falling (pixels per tick)."},
+      "bounce":   {"type": "fixed", "default": 0.45, "description": "How much of its speed a bounce keeps (0-1)."},
+      "bounces":  {"type": "int", "default": 2, "description": "How many times it bounces before settling."},
+      "delay":    {"type": "ticks", "default": 0, "description": "Waits this long before falling."},
+      "layer":    {"type": "int", "default": 0, "description": "0 = moves this actor; 1-3 = moves that background layer."},
+      "sound":    {"type": "node:sfx", "default": "", "description": "Played on each bounce. Empty = silent."}
     }
   }
 }

@@ -1,0 +1,37 @@
+{
+  "id": "sfx_cry_gustling",
+  "kind": "object",
+  "type": "sfx",
+  "name": "Gustling's cry",
+  "notes": "A bright bird tweet. Plays when it is picked on the menu.",
+  "channel": "square2",
+  "duty": 1,
+  "priority": 1,
+  "steps": [
+    {
+      "note": "G6",
+      "ticks": 2,
+      "volume": 11
+    },
+    {
+      "note": "B6",
+      "ticks": 2,
+      "volume": 9
+    },
+    {
+      "note": "D7",
+      "ticks": 3,
+      "volume": 8
+    },
+    {
+      "note": "B6",
+      "ticks": 2,
+      "volume": 6
+    },
+    {
+      "note": "D7",
+      "ticks": 5,
+      "volume": 5
+    }
+  ]
+}

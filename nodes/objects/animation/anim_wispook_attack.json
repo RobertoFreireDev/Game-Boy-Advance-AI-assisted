@@ -1,0 +1,16 @@
+{
+  "id": "anim_wispook_attack",
+  "kind": "object",
+  "type": "animation",
+  "name": "Wispook attack side",
+  "notes": "Wispook lunges facing sideways as it uses a move.",
+  "sprite": "spr_wispook",
+  "loop": false,
+  "frames": [
+    {
+      "frame": "atk_side",
+      "ticks": 12
+    }
+  ],
+  "events": []
+}

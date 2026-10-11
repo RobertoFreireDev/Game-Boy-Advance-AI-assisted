@@ -1,0 +1,13 @@
+{
+  "id": "pal_txt_grey",
+  "kind": "object",
+  "type": "palette",
+  "name": "Floating text: grey",
+  "notes": "Colors of the floating words for MISS and x0.75: 1 = outline, 2 = letters, 3 = their lower half.",
+  "colors": [
+    "#000000",
+    "#202028",
+    "#c8c8d0",
+    "#8c8c98"
+  ]
+}

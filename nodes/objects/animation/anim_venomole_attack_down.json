@@ -1,0 +1,16 @@
+{
+  "id": "anim_venomole_attack_down",
+  "kind": "object",
+  "type": "animation",
+  "name": "Venomole attack down",
+  "notes": "Venomole lunges facing down (its front) as it uses a move.",
+  "sprite": "spr_venomole",
+  "loop": false,
+  "frames": [
+    {
+      "frame": "atk_down",
+      "ticks": 12
+    }
+  ],
+  "events": []
+}

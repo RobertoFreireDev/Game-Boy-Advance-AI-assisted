@@ -1,0 +1,24 @@
+{
+  "id": "ptc_fx_bubble",
+  "kind": "object",
+  "type": "particle",
+  "name": "Bubble Beam effect",
+  "notes": "Bubbles drifting and popping, drawn in front of the monsters. 3 of them fly outward.",
+  "animation": "anim_fx_bubble",
+  "mode": "burst",
+  "count": 3,
+  "lifetime": 20,
+  "speed": [
+    0.3,
+    0.8
+  ],
+  "angle": [
+    0,
+    359
+  ],
+  "gravity": 0,
+  "on_top": true,
+  "children": [
+    "anim_fx_bubble"
+  ]
+}

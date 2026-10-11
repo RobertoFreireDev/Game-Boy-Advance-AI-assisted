@@ -13,6 +13,7 @@ typedef struct {
     u8 bank, valid;
     s32 sx, sy;             // scroll in pixels
     s32 tx, ty;             // top-left tile already drawn
+    s32 ox, oy;             // extra offset (a behavior moving the whole layer)
 } Layer;
 
 static Layer s_layers[4];   // 1..3 used
@@ -61,7 +62,8 @@ void bg_set_layer(const TilemapData *map) {
     L->valid = 0;
     memset32(&tile_mem[n][0], 0, 8);                                    // tile 0 = empty
     memcpy32(&tile_mem[n][1], &map->tileset->tiles[8], (map->tileset->tile_count - 1) * 8);
-    *bg_cnt(n) = BG_CBB(n) | BG_SBB(31 - n) | BG_4BPP | BG_REG_32x32 | BG_PRIO(n);
+    // An 'over' layer (tree tops) has priority 0: above the sprites (priority 1), below BG0's UI.
+    *bg_cnt(n) = BG_CBB(n) | BG_SBB(31 - n) | BG_4BPP | BG_REG_32x32 | BG_PRIO(map->over ? 0 : n);
     update_dispcnt();
 }
 
@@ -87,9 +89,15 @@ void bg_set_camera(s32 x, s32 y) {
     for (int n = 1; n <= 3; n++) {
         Layer *L = &s_layers[n];
         if (!L->map) continue;
-        L->sx = (x * L->map->parallax) >> FX_SHIFT;     // parallax 1.0 = moves with the camera
-        L->sy = (y * L->map->parallax) >> FX_SHIFT;
+        L->sx = ((x * L->map->parallax) >> FX_SHIFT) - L->ox;  // parallax 1.0 = moves with the camera
+        L->sy = ((y * L->map->parallax) >> FX_SHIFT) - L->oy;
     }
+}
+
+void bg_set_offset(int n, s32 dx, s32 dy) {
+    if (n < 1 || n > 3) return;
+    s_layers[n].ox = dx;
+    s_layers[n].oy = dy;
 }
 
 // Map rows/columns are copied into the 32x32 hardware map with a pointer per row, not a

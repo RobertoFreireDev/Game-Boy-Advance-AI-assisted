@@ -1,0 +1,32 @@
+{
+  "id": "sfx_cry_emberpup",
+  "kind": "object",
+  "type": "sfx",
+  "name": "Emberpup's cry",
+  "notes": "A short puppy bark that rises. Plays when it is picked on the menu.",
+  "channel": "square2",
+  "duty": 2,
+  "priority": 1,
+  "steps": [
+    {
+      "note": "A4",
+      "ticks": 3,
+      "volume": 12
+    },
+    {
+      "note": "E5",
+      "ticks": 4,
+      "volume": 11
+    },
+    {
+      "note": "C#5",
+      "ticks": 4,
+      "volume": 8
+    },
+    {
+      "note": "A4",
+      "ticks": 4,
+      "volume": 5
+    }
+  ]
+}

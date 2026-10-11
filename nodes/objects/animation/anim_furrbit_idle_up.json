@@ -1,0 +1,16 @@
+{
+  "id": "anim_furrbit_idle_up",
+  "kind": "object",
+  "type": "animation",
+  "name": "Furrbit idle up",
+  "notes": "Furrbit standing, facing up (its back).",
+  "sprite": "spr_furrbit",
+  "loop": true,
+  "frames": [
+    {
+      "frame": "up",
+      "ticks": 60
+    }
+  ],
+  "events": []
+}

@@ -1,0 +1,25 @@
+{
+  "id": "pal_alpha_wispook",
+  "kind": "object",
+  "type": "palette",
+  "name": "Wispook Alpha colors",
+  "notes": "The rare colors Wispook wears when it is the Alpha (the boss of the run): the same slots as its sprite's palette, with Wispook's own colors changed.",
+  "colors": [
+    "#000000",
+    "#282830",
+    "#f8f8f8",
+    "#d0f8d8",
+    "#78e0a0",
+    "#30a068",
+    "#f8fff0",
+    "#c8e8d0",
+    "#1c5c40",
+    "#000000",
+    "#000000",
+    "#000000",
+    "#000000",
+    "#000000",
+    "#000000",
+    "#f888a0"
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "id": "hud_game_over",
+  "kind": "object",
+  "type": "hud",
+  "name": "Game over text",
+  "notes": "GAME OVER and how far the run got.",
+  "font": "font_default",
+  "elements": [
+    {
+      "kind": "text",
+      "x": 120,
+      "y": 56,
+      "text": "GAME OVER",
+      "align": "center"
+    },
+    {
+      "kind": "text",
+      "x": 120,
+      "y": 80,
+      "text": "LEVEL {level}   KILLS {kills}/25",
+      "align": "center"
+    },
+    {
+      "kind": "text",
+      "x": 120,
+      "y": 96,
+      "text": "TIME {time_min:02}:{time_sec:02}",
+      "align": "center"
+    },
+    {
+      "kind": "text",
+      "x": 120,
+      "y": 128,
+      "text": "PRESS START",
+      "align": "center",
+      "blink": 30
+    }
+  ]
+}

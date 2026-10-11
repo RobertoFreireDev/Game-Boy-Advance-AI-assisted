@@ -1,0 +1,28 @@
+{
+  "id": "anim_voltail_walk_up",
+  "kind": "object",
+  "type": "animation",
+  "name": "Voltail walk up",
+  "notes": "Voltail walking facing up (its back): a 4-step waddle.",
+  "sprite": "spr_voltail",
+  "loop": true,
+  "frames": [
+    {
+      "frame": "up",
+      "ticks": 8
+    },
+    {
+      "frame": "up_a",
+      "ticks": 8
+    },
+    {
+      "frame": "up",
+      "ticks": 8
+    },
+    {
+      "frame": "up_b",
+      "ticks": 8
+    }
+  ],
+  "events": []
+}

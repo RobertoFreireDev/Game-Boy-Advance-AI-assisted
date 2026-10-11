@@ -1,0 +1,24 @@
+{
+  "id": "ptc_fx_leaf",
+  "kind": "object",
+  "type": "particle",
+  "name": "Razor Leaf effect",
+  "notes": "Spinning leaves, drawn in front of the monsters. 2 of them fly outward.",
+  "animation": "anim_fx_leaf",
+  "mode": "burst",
+  "count": 2,
+  "lifetime": 12,
+  "speed": [
+    0.4,
+    1.0
+  ],
+  "angle": [
+    0,
+    359
+  ],
+  "gravity": 0,
+  "on_top": true,
+  "children": [
+    "anim_fx_leaf"
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "id": "anim_splashell_walk",
+  "kind": "object",
+  "type": "animation",
+  "name": "Splashell walk side",
+  "notes": "Splashell walking facing sideways: a gentle slide (it has no legs).",
+  "sprite": "spr_splashell",
+  "loop": true,
+  "frames": [
+    {
+      "frame": "side",
+      "ticks": 8
+    },
+    {
+      "frame": "side_a",
+      "ticks": 8
+    },
+    {
+      "frame": "side",
+      "ticks": 8
+    },
+    {
+      "frame": "side_b",
+      "ticks": 8
+    }
+  ],
+  "events": []
+}

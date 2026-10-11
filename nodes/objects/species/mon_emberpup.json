@@ -1,0 +1,27 @@
+{
+  "id": "mon_emberpup",
+  "kind": "object",
+  "type": "species",
+  "name": "Emberpup",
+  "notes": "Emberpup: a small red puppy with a cream muzzle and a flame for a tail tip. Type FIRE. Moves: Ember (A), Fire Spin (B) and Flamethrower (hold A). It can be the player, and the 8 species that aren't picked live on the map.",
+  "title": "EMBERPUP",
+  "monster_type": "fire",
+  "body": "body_emberpup",
+  "alpha_palette": "pal_alpha_emberpup",
+  "portrait": "spr_emberpup_portrait",
+  "cry": "sfx_cry_emberpup",
+  "moves": [
+    "mov_ember",
+    "mov_fire_spin",
+    "mov_flamethrower"
+  ],
+  "children": [
+    "body_emberpup",
+    "spr_emberpup_portrait",
+    "pal_alpha_emberpup",
+    "sfx_cry_emberpup",
+    "mov_ember",
+    "mov_fire_spin",
+    "mov_flamethrower"
+  ]
+}

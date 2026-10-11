@@ -1,0 +1,28 @@
+{
+  "id": "anim_fx_orb",
+  "kind": "object",
+  "type": "animation",
+  "name": "Thunderbolt effect",
+  "notes": "Plays crackling balls of lightning.",
+  "sprite": "spr_fx_orb",
+  "loop": false,
+  "frames": [
+    {
+      "frame": "f0",
+      "ticks": 3
+    },
+    {
+      "frame": "f1",
+      "ticks": 3
+    },
+    {
+      "frame": "f2",
+      "ticks": 3
+    },
+    {
+      "frame": "f3",
+      "ticks": 3
+    }
+  ],
+  "events": []
+}

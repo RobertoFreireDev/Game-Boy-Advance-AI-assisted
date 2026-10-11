@@ -1,0 +1,42 @@
+{
+  "id": "sfx_mv_electric",
+  "kind": "object",
+  "type": "sfx",
+  "name": "Electric move",
+  "notes": "A crackling zap.",
+  "channel": "square2",
+  "duty": 0,
+  "priority": 1,
+  "steps": [
+    {
+      "note": "C7",
+      "ticks": 1,
+      "volume": 12
+    },
+    {
+      "note": "C6",
+      "ticks": 1,
+      "volume": 12
+    },
+    {
+      "note": "B6",
+      "ticks": 1,
+      "volume": 11
+    },
+    {
+      "note": "D6",
+      "ticks": 1,
+      "volume": 11
+    },
+    {
+      "note": "A6",
+      "ticks": 2,
+      "volume": 9
+    },
+    {
+      "note": "C6",
+      "ticks": 4,
+      "volume": 6
+    }
+  ]
+}

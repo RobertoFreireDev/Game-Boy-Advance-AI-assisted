@@ -1,0 +1,16 @@
+{
+  "id": "anim_venomole_idle_down",
+  "kind": "object",
+  "type": "animation",
+  "name": "Venomole idle down",
+  "notes": "Venomole standing, facing down (its front).",
+  "sprite": "spr_venomole",
+  "loop": true,
+  "frames": [
+    {
+      "frame": "down",
+      "ticks": 60
+    }
+  ],
+  "events": []
+}

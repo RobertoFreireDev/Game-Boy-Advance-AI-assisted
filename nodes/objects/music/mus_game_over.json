@@ -1,0 +1,36 @@
+{
+  "id": "mus_game_over",
+  "kind": "object",
+  "type": "music",
+  "name": "Game over",
+  "notes": "A slow falling tune in A minor after the player's monster faints.",
+  "bpm": 90,
+  "rows_per_beat": 4,
+  "loop": false,
+  "instruments": {
+    "square1": {
+      "duty": 2,
+      "volume": 11,
+      "decay": 0
+    },
+    "square2": {
+      "duty": 1,
+      "volume": 6,
+      "decay": 0
+    },
+    "wave": {
+      "wave": "0123456789abcdeffedcba9876543210",
+      "volume": 3
+    }
+  },
+  "patterns": {
+    "J": {
+      "square1": "E5 -- -- -- -- -- D5 -- -- -- -- -- C5 -- -- -- -- -- B4 -- -- -- -- -- A4 -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- .. .. .. .. .. .. .. ..",
+      "square2": "C5 -- -- -- -- -- B4 -- -- -- -- -- A4 -- -- -- -- -- G#4 -- -- -- -- -- E4 -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- .. .. .. .. .. .. .. ..",
+      "wave": "A2 -- -- -- -- -- -- -- -- -- -- -- E2 -- -- -- -- -- -- -- -- -- -- -- A2 -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- .. .. .. .. .. .. .. .."
+    }
+  },
+  "order": [
+    "J"
+  ]
+}

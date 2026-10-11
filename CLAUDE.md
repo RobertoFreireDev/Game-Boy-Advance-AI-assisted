@@ -183,7 +183,8 @@ broken into the parts it is made of.
 }
 ```
 `title` ≤ 12 chars, `game_code` exactly 4 chars (ROM header). `gravity` (px/tick², default 0.25)
-and `max_fall_speed` (px/tick, default 4) apply to every body with `physics.gravity`. Variables
+and `max_fall_speed` (px/tick, default 4) apply to every body with `physics.gravity`. Monster-battle
+games add `battle` (§6.1b): the monster types, the type chart, the floating-text font and words. Variables
 are the game's global state; HUD, behaviors and actions read and write them by name. Flags are
 stored as 0/1. A variable with `"persistent": true` keeps its value through `reset_vars` (permanent
 unlocks, banked gold); `save_game` saves every variable. Index order: scenes first, then objects.
@@ -220,6 +221,10 @@ Structural rules (enforced by `validate.py`):
 - **Tile maps**: one char per 8×8 tile, legend defined in the tileset. `.` is always the empty tile.
 - **UI positions** (HUD elements, menu layout, boxes) are pixels but must be multiples of 8:
   BG0 text sits on the 8×8 tile grid.
+- **UI text placeholders** (HUD, menu titles / options / texts): `{var}` a variable, `{var:02}` at
+  least 2 digits, `{var.field}` a field of the species whose number (nodes.json order, from 0) is in
+  `var`: `name`, `type`, `move1`…`move3`; `{var|a|b|c}` one of the words, picked by the value (0 = first,
+  past the end = last).
 
 ---
 
@@ -254,11 +259,14 @@ Structural rules (enforced by `validate.py`):
 | `pickup` | `item_` | Collectible: coin, key, heart. | same | same |
 | `trigger` | `trg_` | Invisible zone that runs actions (exit, checkpoint). | `zone{w,h}`, `logic[]` | — |
 | **UI** | | | | |
-| `hud` | `hud_` | Always-on overlay bound to variables. | `font`, `elements[{kind: text│icon│icon_repeat│bar, x, y, …}]`; text uses `{var}` placeholders | `icon` |
-| `menu` | `menu_` | List of options the player picks from. | `font`, `title`, `options[{label, actions[]}]`, `cursor` (icon), `layout`, `on_cancel[]` | `icon` |
+| `hud` | `hud_` | Always-on overlay bound to variables. | `font`, `elements[{kind: text│icon│icon_repeat│bar│gauge, x, y, …}]`; text uses placeholders (§5.4) | `icon` |
+| `menu` | `menu_` | List of options the player picks from. | `font`, `title`, `options[{label, actions[]}]`, `texts[]`, `cursor` (icon), `layout`, `on_cancel[]` | `icon` |
 | `dialog` | `dlg_` | Text box conversation. | `font`, `box{x,y,w,h}`, `lines[{speaker, portrait, text}]`, `choices[{label, actions[]}]`, `on_end[]` | `icon` |
 | **Progression** | | | | |
 | `upgrade` | `upg_` | One card of the level-up menu: a weapon, a passive item, an evolution or a bonus filler. | `category`, `title`, `icon`, `var`, `max_level`, `descriptions[]`, `requires[]`, `replaces`, `on_pick[]` | `icon` |
+| **Monster battles** | | | | |
+| `species` | `mon_` | A kind of monster: its look, type and 3 moves. Actors with the `monster` behavior take their body from it. | `title`, `monster_type`, `body`, `alpha_palette`, `portrait`, `cry`, `moves[3]` | `body`, `sprite`, `sfx`, `move`, `palette` |
+| `move` | `mov_` | One move a monster uses: what it hits, how hard, how often, what status and effect. | `title`, `monster_type`, `shape`, `range`, `power`, `accuracy`, `charge`, `status`, `dash`, `zone`, `buff`, `effect`, `effect_at`, `sfx`, `on_use[]` | `particle`, `sprite`, `sfx` |
 
 Actor types (`player` … `pickup`) share one structure; the type gives sensible defaults and
 groups them for humans. **What an actor does comes only from its `logic` list.**
@@ -274,11 +282,15 @@ groups them for humans. **What an actor does comes only from its `logic` list.**
 - **tileset** keys are one printable ASCII char (not `.` or space); flags `solid`, `one_way`,
   `hazard`, `ladder` (a tile can't be both solid and one-way; `ladder` + `one_way` = ladder top).
 - **tilemap**: layer 1 is the collision layer and must have `parallax` 1; `repeat_x: true` makes a
-  background layer wrap sideways. The map sides are invisible walls; falling below the map kills.
+  background layer wrap sideways; `over: true` (layers 2-3) draws it above the sprites (tree tops
+  you walk behind). The map sides are invisible walls; falling below the map kills.
+- **music**: `loop_from` (index into `order`, default 0): a looping song starts again there, so the
+  patterns before it are an intro that plays once.
 - **font**: glyph keys are ASCII 32–126; lowercase falls back to uppercase; space needs no glyph.
 - **sfx** steps: `note` (or `".."` silence) for square/wave, `pitch` 0–15 for noise.
 - **animation** `events[{at: frame index, action | actions}]` run when that frame starts.
-- **particle**: positions are the sprite's center; `rate` = ticks between stream particles.
+- **particle**: positions are the sprite's center; `rate` = ticks between stream particles;
+  `on_top: true` draws it in front of the actors (attack effects), else behind them (dust).
 - **body** animation slots: `idle walk run jump fall hurt die attack climb`, plus the top-down
   slots `idle_up idle_down walk_up walk_down attack_up attack_down`. `origin` mirrors with
   the art when it faces left; the **hitbox does not mirror**. The `*_up` / `*_down` slots are
@@ -286,12 +298,18 @@ groups them for humans. **What an actor does comes only from its `logic` list.**
   `tiles player enemy npc prop platform pickup trigger`. Two actors touch (and both get
   `on_touch`) when either lists the other's category. `physics.solid` = others can't walk through
   it and can stand on it (like a crate).
-- **actor** `sounds{event: sfx}` events: `jump land hurt die collect stomp talk attack`.
+- **actor** `sounds{event: sfx}` events: `jump land hurt die collect stomp talk attack`. A player or
+  enemy with a `monster` behavior may leave out `body`: it takes its species' body when it appears.
 - **trigger**: `zone{w,h}` with its top-left corner at the instance x, y; touches the player only.
-- **hud** elements (x, y multiples of 8): `text {text}` (`{var}` placeholders, 3 chars reserved
-  per value; `{var:02}` pads to 2 digits, for clocks), `icon {icon}`, `icon_repeat {icon, empty_icon?, var, max_var?, max, spacing?}` (`var` full icons, then
+- **hud** elements (x, y multiples of 8): `text {text, align?, blink?}` (placeholders §5.4, 3 chars
+  reserved per number; `align: "center"` = x is the middle of the text; `blink` = on/off every that
+  many ticks), `icon {icon}`, `icon_repeat {icon, empty_icon?, var, max_var?, max, spacing?}` (`var` full icons, then
   empty icons up to `max_var` — heart containers — or up to `max` without it),
-  `bar {var, max, length (tiles), color, back}` (colors are indexes of the font palette).
+  `bar {var, max | max_var, length (tiles), color, back, mid_color?, low_color?}` (colors are indexes
+  of the font palette; the bar turns `mid_color` at ≤ 50 % and `low_color` at ≤ 25 %; a dark rim
+  frames it), `gauge {var, icons[]}` (shows `icons[var]`: charge circles, lock icons). A HUD can show
+  bars in up to 4 different colors.
+- **menu** `texts [{x, y, text}]`: lines that can't be picked (a pause screen's stats), inside the box.
 - **menu**: `layout {x, y, spacing, title_y}`, optional `box {x, y, w, h, paper, border}`,
   `sounds {move, select}`. Up/Down move, A picks, B or START runs `on_cancel`. Picking an option **locks**
   the menu (no more input) and runs its actions, so they should `close_menu`, `goto_scene`,
@@ -318,6 +336,32 @@ groups them for humans. **What an actor does comes only from its `logic` list.**
   a palette color equal to the box paper.
 - A menu or dialog **pauses the world** (actor logic, physics, animations) until it closes.
 - Use **one font per scene** for the HUD and box-less menus (BG0 has one transparent-font slot).
+- **species**: `title` ≤ 10 chars, `monster_type` one of `game.battle.types`, `body` (its look in the
+  world), `alpha_palette` (the same color slots recolored: the Alpha boss), `portrait` (a sprite for
+  the picker), `cry` (sfx), exactly 3 `moves` (A, B, hold A). Its number for `species_var` and
+  `{var.name}` is its order among the species in nodes.json, from 0.
+- **move**: `title` ≤ 13 chars, `monster_type`, `power` (0 = status only), `accuracy` % (a miss shows
+  MISS; zones never miss), `charge` (ticks to recharge for the player). `shape` and `range` (tiles,
+  measured as max(|dx|, |dy|) between feet): `single` = the nearest foe in range; `dash` = rush `dash`
+  tiles to the nearest foe within range + dash, then hit it; `cone` = in front, 1 tile wide next to the
+  user and 2 wider every tile (diagonal = the quarter between two directions); `circle` = all in range;
+  `screen` = all in the camera view; `zone` = `zone {w, h, place: front|screen, count, delay, ticks
+  [min,max], every}` tiles on the ground that hurt every `every` ticks (0 = once, after `delay`; screen
+  spots aim near foes in view; `range` = how close a foe must be to use it); `self` = `buff {kind: fly|
+  phase, ticks}` (fly: only a `shadow` shows, can't be hit, passes over monsters; phase: passes through
+  them). `status {kind: par|psn|tox|freeze, chance %, ticks [min,max]}` (paralysis: no moving or
+  attacking, flashes yellow; poison: 1 damage a second; toxic: 1, 2, 3… a second; freeze: no moving or
+  attacking). A move with no foe in reach doesn't fire and keeps its charge (self moves always fire).
+  `effect` (particle) appears at `effect_at`: `target` (each one hit), `line` (from the user to it),
+  `user`, `axis` (each tile along the facing, `range` long), `tiles` (each zone tile, at every hit),
+  `center` (each zone's center when placed), `screen` (down the left edge of the view). `on_use[]` runs
+  as the user each time (e.g. `cover_screen` for a sandstorm).
+- **game.battle** (nodes.json): `types[]` (names, in order), `chart {attacker: {defender: multiplier}}`
+  (missing = 1, 0–2.55), `font` (floating words, drawn as sprites; needs the digits), `texts {damage,
+  miss, super, weak, par, psn, tox: {text, palette}}` (damage has only a palette), `flash_palette`
+  (hit flash), `par_palette` (paralysis flicker), `sounds {hit, super, weak, miss, faint}`. Damage =
+  power × (1 + 0.15 × (level − 1)) × multiplier × user power %, rounded, at least 1; a hit flashes the
+  target white for 4 frames and pushes it 2 px away.
 
 ### 6.2 Examples
 
@@ -494,13 +538,22 @@ Every channel in a pattern has the same number of rows. Missing channels are sil
   `damage_on_touch` hurts no one (knockback still applies).
 - `health` on a body **without gravity** (top-down) knocks straight away from the hit (slowing
   down) and dies in place; with gravity it knocks sideways and falls off the screen.
+- **Solid actors, top-down**: a body without gravity is blocked by fully solid actors on every side
+  (like walls) and never rides them; with gravity it lands on them (platforms, crates). So top-down
+  monsters with `physics.solid` and each other's categories in `collides_with` never overlap.
 - Starter set: `platformer_controller`, `topdown_controller`, `patrol`, `chase_player`,
   `follow_path`, `solid_platform`, `health`, `damage_on_touch`, `stompable`, `collectible`,
   `trigger_zone`, `talk`, `camera_target`, `spawn_particles`, `button_actions` (a button press runs
   actions, e.g. START opens a pause menu). Top-down set: `sword_attack`,
   `wander`, `locked_door`. Survivors set: `weapon` (auto-fire, level from a variable), `projectile`
   (the shot), `aura`, `swarm` (horde movement with grid-based crowd spreading), `magnet` (pickups fly
-  to the player), `spawn_wave` (timed off-screen waves), `run_clock`, `level_up`. Add more as games need them.
+  to the player), `spawn_wave` (timed off-screen waves), `run_clock` (`stop_var` freezes it), `level_up`.
+  Monster-battle set: `monster` (species, level, HP, statuses, damage by the type chart, XP and
+  levels for the player, fainting; the shared combat code is `src/behaviors/monster.c` + `moves.c`),
+  `monster_ai` (wander at home, hostile near the player with a cap, attack with move 1, go home; a
+  sleeping boss), `move_buttons` (the player's 3 moves on A, B, hold A, with charge gauges),
+  `species_select` (the picker's bobbing portrait, Left / Right), `drop_in` (a logo or layer that
+  falls in and bounces). Add more as games need them.
 - Prefer a new reusable behavior over custom code.
 
 ### 7.2 Actions (what happens when something occurs)
@@ -511,7 +564,10 @@ the list. Catalog in `catalog/actions.json`. Starter set:
 `set_var`, `add_var` (both take `value` or `from` another variable; `add_var` can cap at `max_var`),
 `reset_vars` (skips persistent variables), `if_var` (`then[]`/`else[]`), `if_chance` (`percent`,
 `then[]`/`else[]`, random drops), `show_dialog`, `open_menu`,
-`close_menu`, `spawn`, `destroy_self`, `shake_camera`, `save_game`, `load_game`, `call` (custom C, §7.3).
+`close_menu`, `spawn`, `destroy_self`, `shake_camera`, `save_game`, `load_game`, `call` (custom C, §7.3),
+`show_hud` (switch HUD, e.g. after an intro), `flash_screen` (white flash), `cover_screen` (a drifting
+pattern hides the world, HUD on top: a sandstorm), `float_text` (words float up over the object; the
+battle font).
 Each catalog entry has a `sentence` the visualizer reads aloud ("Go to scene {scene}").
 Codegen maps every action to the generic `Action` struct (`src/engine/data.h`); a new action
 needs a case in `codegen.py` (`Gen.action`) and in `src/engine/actions.c`.
@@ -544,10 +600,12 @@ src/engine/
 │                      (contacts only test the categories an actor lists, via per-frame buckets;
 │                       big buckets many actors look into are binned in a 32 px grid)
 ├── anim.iwram.c/.h    animation players and frame events
-├── particles.c/.h particle pool
+├── particles.c/.h particle pool (front / back of the actors)
+├── floattext.c/.h floating words (damage numbers, MISS, LV UP!) drawn as 8x8 sprites
 ├── camera.c/.h    follow target, clamp to bounds, shake
-├── bg.c/.h        tiles/palettes upload, tilemap scrolling, streaming for big maps
-├── sprites.iwram.c/.h OAM shadow buffer and OBJ VRAM allocation
+├── bg.c/.h        tiles/palettes upload, tilemap scrolling, streaming for big maps, layer offsets
+├── sprites.iwram.c/.h OAM shadow buffer and OBJ VRAM allocation, per-actor colors (flash, Alpha),
+│                      a queue of extra sprites behaviors draw (portraits, rings, crowns)
 ├── audio.c/.h     PSG driver: music sequencer + sfx
 ├── ui.c/.h        text, hud, menus (incl. upgrade cards), dialogs
 ├── actions.c/.h   action list interpreter
@@ -585,8 +643,10 @@ Palette banks are handed out per scene in first-use order (BG and OBJ separately
 - One module, one job. Each public function has a one-line comment in plain English.
 - Move hot code to IWRAM (ARM mode) only when a measured slowdown requires it: rename the file
   `*.iwram.c` (done for actor, physics, anim, sprites and the `swarm`, `projectile` and `health`
-  behaviors after profiling hordes of 60+ monsters). IWRAM is 32 KB shared with globals and the
-  stack (~27 KB used); keep it lean.
+  behaviors after profiling hordes of 60+ monsters). IWRAM is 32 KB shared with the `*.iwram.c` code,
+  **every plain `static` variable** and the stack (~26 KB used, ~5.9 KB stack); keep it lean. The
+  linker doesn't count the stack: `build.py` fails when less than 2 KB is left. Pools that aren't hot
+  go in EWRAM (`EWRAM_BSS`).
 - Thumb code (everything not `*.iwram.c`) has no fast divide or 64-bit multiply: in code that
   runs per actor per tick avoid `/`, `%` by a variable and `fx_mul`, or move it to IWRAM.
 - Big pools live in EWRAM (`EWRAM_BSS`, not zeroed at boot: clear them yourself).
@@ -665,7 +725,7 @@ Palette banks are handed out per scene in first-use order (BG and OBJ separately
 
 | Type | Preview |
 |------|---------|
-| scene | Whole scene on a canvas: backdrop, tilemaps with parallax, every instance drawn with its default animation (animated), HUD on top. Overlays: tile grid, hitboxes, origins, instance labels, platform paths, trigger zones, 240×160 screen frame at camera start. Click an instance → selects its object. Instance list below. |
+| scene | Whole scene on a canvas: backdrop, tilemaps with parallax (`over` layers above the actors), every instance drawn with its default animation (animated; monsters in their species' look, faded when it is the player's own kind), HUD on top. Overlays: tile grid, hitboxes, origins, instance labels, platform paths, trigger zones, 240×160 screen frame at camera start. Click an instance → selects its object. Instance list below. |
 | palette | Swatches with index, hex and 15-bit value. |
 | sprite, icon, font | Pixel-perfect zoom of every frame/glyph; optional index grid. |
 | tileset | Every tile with its char and flags (solid, one-way, hazard, ladder). |
@@ -676,6 +736,8 @@ Palette banks are handed out per scene in first-use order (BG and OBJ separately
 | player, enemy, npc, prop, platform, pickup, trigger | Body preview, hitbox, **logic list** (each behavior: plain description + params), sounds with play buttons, path preview for `follow_path`, zone for triggers. |
 | hud, menu, dialog | Rendered inside a 240×160 GBA screen with the real font and icons. HUD uses variables' initial values; dialog has prev/next line; menu shows the cursor on each option (upgrade menus show sample cards). |
 | upgrade | Its card on the level-up menu with prev/next level, the text per level as wrapped on the GBA, the evolution recipe and what picking it does. |
+| species | Portrait, the body's animations (with an Alpha-colors toggle), its 3 moves, cry player, type matchups and the full type chart. |
+| move | What it does in plain words, a tile diagram of its area (user facing right), its effect playing live, sound, and its multiplier against each type. |
 | sfx, music | **Audio player**: play/stop/loop + visual (step list for sfx; tracker grid per channel with playhead for music). Web Audio synth approximating the PSG: square with duty, 4-bit wave, noise, 0–15 volume. |
 
 ### 10.4 Fidelity and navigation

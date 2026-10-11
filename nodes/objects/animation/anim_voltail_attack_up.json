@@ -1,0 +1,16 @@
+{
+  "id": "anim_voltail_attack_up",
+  "kind": "object",
+  "type": "animation",
+  "name": "Voltail attack up",
+  "notes": "Voltail lunges facing up (its back) as it uses a move.",
+  "sprite": "spr_voltail",
+  "loop": false,
+  "frames": [
+    {
+      "frame": "atk_up",
+      "ticks": 12
+    }
+  ],
+  "events": []
+}

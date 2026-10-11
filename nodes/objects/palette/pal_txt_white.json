@@ -1,0 +1,13 @@
+{
+  "id": "pal_txt_white",
+  "kind": "object",
+  "type": "palette",
+  "name": "Floating text: white",
+  "notes": "Colors of the floating words for damage numbers: 1 = outline, 2 = letters, 3 = their lower half.",
+  "colors": [
+    "#000000",
+    "#202028",
+    "#f8f8f8",
+    "#c8d0e0"
+  ]
+}

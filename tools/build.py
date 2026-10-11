@@ -164,6 +164,28 @@ def compile_all(tools):
     return objs, ok, "\n".join(problems)
 
 
+IWRAM_MIN_STACK = 2048      # bytes of IWRAM that must stay free for the stack
+
+
+def iwram_check(map_path):
+    """IWRAM (32 KB) holds the *.iwram.c code, every plain static variable and the stack. The
+    linker doesn't count the stack, so an over-full IWRAM links fine and then the stack silently
+    overwrites variables (the game hangs). Returns an error message, or None if there is room."""
+    try:
+        text = open(os.path.join(C.ROOT, map_path), "r", encoding="utf-8", errors="replace").read()
+    except OSError:
+        return None
+    end = re.search(r"0x([0-9a-f]+)\s+__iwram_overlay_end = ", text)
+    sp = re.search(r"0x([0-9a-f]+)\s+__sp_usr = ", text)
+    if not end or not sp:
+        return None
+    free = int(sp.group(1), 16) - int(end.group(1), 16)
+    if free < IWRAM_MIN_STACK:
+        return ("✖ IWRAM is full: only %d bytes are left for the stack (needs %d). Move big static arrays "
+                "to EWRAM (EWRAM_BSS) or hot code out of *.iwram.c files. Paste this to the AI." % (free, IWRAM_MIN_STACK))
+    return None
+
+
 def build():
     """Full build. Returns 0 on success."""
     C.setup_console()
@@ -208,6 +230,10 @@ def build():
     if rc != 0 or "warning:" in out:
         print(out.strip())
         print("✖ Link failed. Paste the messages above to the AI.")
+        return 1
+    problem = iwram_check("build/%s.map" % rom)
+    if problem:
+        print(problem)
         return 1
     rc, out = run([tools.objcopy, "-O", "binary", elf, gba])
     if rc != 0:

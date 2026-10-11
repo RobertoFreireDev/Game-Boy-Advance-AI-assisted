@@ -1,0 +1,25 @@
+{
+  "id": "pal_flash_white",
+  "kind": "object",
+  "type": "palette",
+  "name": "Hit flash",
+  "notes": "All white: a monster flashes white for 4 frames when a move hits it.",
+  "colors": [
+    "#000000",
+    "#f8f8f8",
+    "#f8f8f8",
+    "#f8f8f8",
+    "#f8f8f8",
+    "#f8f8f8",
+    "#f8f8f8",
+    "#f8f8f8",
+    "#f8f8f8",
+    "#f8f8f8",
+    "#f8f8f8",
+    "#f8f8f8",
+    "#f8f8f8",
+    "#f8f8f8",
+    "#f8f8f8",
+    "#f8f8f8"
+  ]
+}

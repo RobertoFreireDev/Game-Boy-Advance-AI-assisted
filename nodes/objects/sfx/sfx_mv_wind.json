@@ -1,0 +1,31 @@
+{
+  "id": "sfx_mv_wind",
+  "kind": "object",
+  "type": "sfx",
+  "name": "Wind move",
+  "notes": "A breezy rising hiss.",
+  "channel": "noise",
+  "priority": 1,
+  "steps": [
+    {
+      "pitch": 14,
+      "ticks": 4,
+      "volume": 6
+    },
+    {
+      "pitch": 13,
+      "ticks": 4,
+      "volume": 9
+    },
+    {
+      "pitch": 12,
+      "ticks": 6,
+      "volume": 10
+    },
+    {
+      "pitch": 13,
+      "ticks": 6,
+      "volume": 5
+    }
+  ]
+}

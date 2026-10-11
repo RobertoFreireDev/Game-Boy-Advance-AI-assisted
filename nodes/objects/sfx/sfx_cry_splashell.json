@@ -1,0 +1,32 @@
+{
+  "id": "sfx_cry_splashell",
+  "kind": "object",
+  "type": "sfx",
+  "name": "Splashell's cry",
+  "notes": "A soft bubbly warble on the wave channel. Plays when it is picked on the menu.",
+  "channel": "wave",
+  "duty": 2,
+  "priority": 1,
+  "steps": [
+    {
+      "note": "C5",
+      "ticks": 3,
+      "volume": 4
+    },
+    {
+      "note": "E5",
+      "ticks": 3,
+      "volume": 4
+    },
+    {
+      "note": "C5",
+      "ticks": 3,
+      "volume": 3
+    },
+    {
+      "note": "G5",
+      "ticks": 6,
+      "volume": 3
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "id": "anim_voltail_idle",
+  "kind": "object",
+  "type": "animation",
+  "name": "Voltail idle side",
+  "notes": "Voltail standing, facing sideways.",
+  "sprite": "spr_voltail",
+  "loop": true,
+  "frames": [
+    {
+      "frame": "side",
+      "ticks": 60
+    }
+  ],
+  "events": []
+}

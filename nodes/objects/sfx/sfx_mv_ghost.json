@@ -1,0 +1,32 @@
+{
+  "id": "sfx_mv_ghost",
+  "kind": "object",
+  "type": "sfx",
+  "name": "Ghost move",
+  "notes": "A spooky falling wobble.",
+  "channel": "wave",
+  "duty": 2,
+  "priority": 1,
+  "steps": [
+    {
+      "note": "B5",
+      "ticks": 3,
+      "volume": 4
+    },
+    {
+      "note": "A#5",
+      "ticks": 3,
+      "volume": 4
+    },
+    {
+      "note": "G5",
+      "ticks": 4,
+      "volume": 3
+    },
+    {
+      "note": "D5",
+      "ticks": 8,
+      "volume": 2
+    }
+  ]
+}

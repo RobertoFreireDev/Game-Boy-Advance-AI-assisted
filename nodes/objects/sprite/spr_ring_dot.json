@@ -1,0 +1,32 @@
+{
+  "id": "spr_ring_dot",
+  "kind": "object",
+  "type": "sprite",
+  "name": "Charge ring dot",
+  "notes": "One dot of the ring around the player while A is held: frame 0 unlit, frame 1 lit. 8 of them fill clockwise.",
+  "palette": "pal_fx",
+  "width": 8,
+  "height": 8,
+  "frames": {
+    "f0": [
+      "........",
+      "...11...",
+      "..1441..",
+      ".144441.",
+      ".144441.",
+      "..1441..",
+      "...11...",
+      "........"
+    ],
+    "f1": [
+      "...11...",
+      "..1331..",
+      ".133331.",
+      "13323331",
+      "13333331",
+      ".133331.",
+      "..1331..",
+      "...11..."
+    ]
+  }
+}

@@ -19,6 +19,9 @@ s32 bg_world_h(void);
 int bg_pal_bank(const PaletteData *pal);
 // Tell the layers where the camera is (top-left world pixel).
 void bg_set_camera(s32 x, s32 y);
+// Draw layer n (1-3) moved by (dx, dy) pixels (a logo dropping in). Takes effect on the next
+// camera update; scene changes reset it.
+void bg_set_offset(int n, s32 dx, s32 dy);
 // VBlank: write scroll registers and draw newly visible map columns/rows.
 void bg_vblank(void);
 // Redraw the visible part of every layer (after a scene load).

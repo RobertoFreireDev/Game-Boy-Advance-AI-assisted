@@ -1,0 +1,28 @@
+{
+  "id": "anim_venomole_walk",
+  "kind": "object",
+  "type": "animation",
+  "name": "Venomole walk side",
+  "notes": "Venomole walking facing sideways: a 4-step waddle.",
+  "sprite": "spr_venomole",
+  "loop": true,
+  "frames": [
+    {
+      "frame": "side",
+      "ticks": 8
+    },
+    {
+      "frame": "side_a",
+      "ticks": 8
+    },
+    {
+      "frame": "side",
+      "ticks": 8
+    },
+    {
+      "frame": "side_b",
+      "ticks": 8
+    }
+  ],
+  "events": []
+}

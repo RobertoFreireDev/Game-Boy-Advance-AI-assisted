@@ -1,0 +1,21 @@
+{
+  "id": "mov_water_gun",
+  "kind": "object",
+  "type": "move",
+  "name": "Water Gun",
+  "notes": "Splashell's move 1 (A). Squirts water at the nearest monster up to 2 tiles away. Charge: 3 s. Wild Splashells use it every 4 s.",
+  "title": "WATER GUN",
+  "monster_type": "water",
+  "shape": "single",
+  "range": 2,
+  "power": 10,
+  "accuracy": 95,
+  "charge": 180,
+  "effect": "ptc_fx_droplet",
+  "effect_at": "line",
+  "sfx": "sfx_mv_water",
+  "children": [
+    "spr_fx_droplet",
+    "ptc_fx_droplet"
+  ]
+}

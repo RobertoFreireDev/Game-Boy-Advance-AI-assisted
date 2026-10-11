@@ -1,0 +1,53 @@
+{
+  "id": "scn_menu",
+  "kind": "scene",
+  "type": "title",
+  "name": "Menu",
+  "notes": "The first screen. The MONSTER SURVIVAL logo drops in over the meadow and bounces twice, a white flash, then the monster picker appears: Left / Right choose one of the 9 monsters (it slides in and cries), START begins the run with it. Coming back from a run, the last pick is still selected.",
+  "backdrop": "#58a8f0",
+  "music": "mus_menu",
+  "camera": {
+    "x": 0,
+    "y": 0,
+    "bounds": "none"
+  },
+  "instances": [
+    {
+      "id": "sky",
+      "object": "map_sky"
+    },
+    {
+      "id": "logo",
+      "object": "map_logo"
+    },
+    {
+      "id": "drop",
+      "object": "prop_logo_drop"
+    }
+  ],
+  "on_start": [
+    {
+      "do": "fade_in",
+      "ticks": 16
+    },
+    {
+      "do": "wait",
+      "ticks": 64
+    },
+    {
+      "do": "flash_screen",
+      "ticks": 18
+    },
+    {
+      "do": "show_hud",
+      "hud": "hud_select"
+    },
+    {
+      "do": "spawn",
+      "object": "prop_picker",
+      "x": 120,
+      "y": 96,
+      "relative": false
+    }
+  ]
+}

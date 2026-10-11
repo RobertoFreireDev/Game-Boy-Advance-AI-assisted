@@ -1,0 +1,16 @@
+{
+  "id": "anim_emberpup_attack",
+  "kind": "object",
+  "type": "animation",
+  "name": "Emberpup attack side",
+  "notes": "Emberpup lunges facing sideways as it uses a move.",
+  "sprite": "spr_emberpup",
+  "loop": false,
+  "frames": [
+    {
+      "frame": "atk_side",
+      "ticks": 12
+    }
+  ],
+  "events": []
+}

@@ -1,0 +1,25 @@
+{
+  "id": "pal_alpha_venomole",
+  "kind": "object",
+  "type": "palette",
+  "name": "Venomole Alpha colors",
+  "notes": "The rare colors Venomole wears when it is the Alpha (the boss of the run): the same slots as its sprite's palette, with Venomole's own colors changed.",
+  "colors": [
+    "#000000",
+    "#282830",
+    "#f8f8f8",
+    "#c0f080",
+    "#78c848",
+    "#408830",
+    "#e0b070",
+    "#a87038",
+    "#684820",
+    "#98e8c8",
+    "#40b890",
+    "#207060",
+    "#f8a0e0",
+    "#e050b0",
+    "#f8f070",
+    "#f888a0"
+  ]
+}

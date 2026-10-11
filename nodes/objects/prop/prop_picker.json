@@ -1,0 +1,38 @@
+{
+  "id": "prop_picker",
+  "kind": "object",
+  "type": "prop",
+  "name": "Monster picker",
+  "notes": "Invisible: shows the chosen monster's big portrait, bobbing. Left / Right pick another (it slides and cries). START resets the run's variables and starts the run.",
+  "logic": [
+    {
+      "behavior": "species_select",
+      "params": {
+        "var": "chosen",
+        "browse": true,
+        "button": "START",
+        "slide": 40,
+        "slide_ticks": 6,
+        "bob": 2,
+        "move_sound": "sfx_select",
+        "on_pick": [
+          {
+            "do": "reset_vars"
+          },
+          {
+            "do": "play_sfx",
+            "sfx": "sfx_confirm"
+          },
+          {
+            "do": "fade_out",
+            "ticks": 20
+          },
+          {
+            "do": "goto_scene",
+            "scene": "scn_run"
+          }
+        ]
+      }
+    }
+  ]
+}

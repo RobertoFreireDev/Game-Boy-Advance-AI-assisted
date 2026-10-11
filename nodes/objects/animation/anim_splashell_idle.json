@@ -1,0 +1,16 @@
+{
+  "id": "anim_splashell_idle",
+  "kind": "object",
+  "type": "animation",
+  "name": "Splashell idle side",
+  "notes": "Splashell standing, facing sideways.",
+  "sprite": "spr_splashell",
+  "loop": true,
+  "frames": [
+    {
+      "frame": "side",
+      "ticks": 60
+    }
+  ],
+  "events": []
+}

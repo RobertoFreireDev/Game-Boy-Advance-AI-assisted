@@ -1,0 +1,31 @@
+{
+  "id": "sfx_mv_rock",
+  "kind": "object",
+  "type": "sfx",
+  "name": "Rock move",
+  "notes": "A heavy crunch of stone.",
+  "channel": "noise",
+  "priority": 1,
+  "steps": [
+    {
+      "pitch": 1,
+      "ticks": 3,
+      "volume": 14
+    },
+    {
+      "pitch": 3,
+      "ticks": 4,
+      "volume": 12
+    },
+    {
+      "pitch": 2,
+      "ticks": 6,
+      "volume": 8
+    },
+    {
+      "pitch": 1,
+      "ticks": 6,
+      "volume": 5
+    }
+  ]
+}

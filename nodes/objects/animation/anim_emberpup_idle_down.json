@@ -1,0 +1,16 @@
+{
+  "id": "anim_emberpup_idle_down",
+  "kind": "object",
+  "type": "animation",
+  "name": "Emberpup idle down",
+  "notes": "Emberpup standing, facing down (its front).",
+  "sprite": "spr_emberpup",
+  "loop": true,
+  "frames": [
+    {
+      "frame": "down",
+      "ticks": 60
+    }
+  ],
+  "events": []
+}

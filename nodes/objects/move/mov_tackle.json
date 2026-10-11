@@ -1,0 +1,21 @@
+{
+  "id": "mov_tackle",
+  "kind": "object",
+  "type": "move",
+  "name": "Tackle",
+  "notes": "Furrbit's move 1 (A). Slams into the nearest monster next to the user (1 tile). Charge: 3 s. Wild Furrbits use it every 4 s.",
+  "title": "TACKLE",
+  "monster_type": "normal",
+  "shape": "single",
+  "range": 1,
+  "power": 10,
+  "accuracy": 95,
+  "charge": 180,
+  "effect": "ptc_fx_tackle",
+  "effect_at": "target",
+  "sfx": "sfx_mv_normal",
+  "children": [
+    "spr_fx_tackle",
+    "ptc_fx_tackle"
+  ]
+}

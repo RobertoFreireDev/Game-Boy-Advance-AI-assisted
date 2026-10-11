@@ -1,0 +1,32 @@
+{
+  "id": "sfx_cry_wispook",
+  "kind": "object",
+  "type": "sfx",
+  "name": "Wispook's cry",
+  "notes": "An eerie wobbling wail on the wave channel. Plays when it is picked on the menu.",
+  "channel": "wave",
+  "duty": 2,
+  "priority": 1,
+  "steps": [
+    {
+      "note": "E5",
+      "ticks": 4,
+      "volume": 4
+    },
+    {
+      "note": "D#5",
+      "ticks": 4,
+      "volume": 3
+    },
+    {
+      "note": "E5",
+      "ticks": 4,
+      "volume": 4
+    },
+    {
+      "note": "C5",
+      "ticks": 10,
+      "volume": 2
+    }
+  ]
+}

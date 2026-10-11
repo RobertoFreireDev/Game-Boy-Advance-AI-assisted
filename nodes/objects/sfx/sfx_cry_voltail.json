@@ -1,0 +1,37 @@
+{
+  "id": "sfx_cry_voltail",
+  "kind": "object",
+  "type": "sfx",
+  "name": "Voltail's cry",
+  "notes": "A zippy electric chirp. Plays when it is picked on the menu.",
+  "channel": "square2",
+  "duty": 0,
+  "priority": 1,
+  "steps": [
+    {
+      "note": "C6",
+      "ticks": 2,
+      "volume": 12
+    },
+    {
+      "note": "G6",
+      "ticks": 2,
+      "volume": 10
+    },
+    {
+      "note": "C7",
+      "ticks": 2,
+      "volume": 9
+    },
+    {
+      "note": "G6",
+      "ticks": 2,
+      "volume": 8
+    },
+    {
+      "note": "C7",
+      "ticks": 6,
+      "volume": 6
+    }
+  ]
+}

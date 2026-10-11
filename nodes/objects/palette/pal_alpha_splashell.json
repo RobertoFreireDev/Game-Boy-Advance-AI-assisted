@@ -1,0 +1,25 @@
+{
+  "id": "pal_alpha_splashell",
+  "kind": "object",
+  "type": "palette",
+  "name": "Splashell Alpha colors",
+  "notes": "The rare colors Splashell wears when it is the Alpha (the boss of the run): the same slots as its sprite's palette, with Splashell's own colors changed.",
+  "colors": [
+    "#000000",
+    "#282830",
+    "#f8f8f8",
+    "#f8c8e0",
+    "#f080b0",
+    "#b04078",
+    "#f8e070",
+    "#e0a030",
+    "#905818",
+    "#f8fcff",
+    "#a8d8f8",
+    "#6898e0",
+    "#3860b0",
+    "#f8b848",
+    "#c87028",
+    "#f888a0"
+  ]
+}

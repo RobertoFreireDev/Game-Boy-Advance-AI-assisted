@@ -1,0 +1,28 @@
+{
+  "id": "anim_splashell_walk_up",
+  "kind": "object",
+  "type": "animation",
+  "name": "Splashell walk up",
+  "notes": "Splashell walking facing up (its back): a gentle slide (it has no legs).",
+  "sprite": "spr_splashell",
+  "loop": true,
+  "frames": [
+    {
+      "frame": "up",
+      "ticks": 8
+    },
+    {
+      "frame": "up_a",
+      "ticks": 8
+    },
+    {
+      "frame": "up",
+      "ticks": 8
+    },
+    {
+      "frame": "up_b",
+      "ticks": 8
+    }
+  ],
+  "events": []
+}

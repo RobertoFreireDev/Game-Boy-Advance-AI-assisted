@@ -1,0 +1,48 @@
+{
+  "id": "hud_select",
+  "kind": "object",
+  "type": "hud",
+  "name": "Monster picker text",
+  "notes": "Shown once the logo has landed: arrows on both sides of the monster, its name and type centered under it, and a blinking PRESS START.",
+  "font": "font_default",
+  "elements": [
+    {
+      "kind": "icon",
+      "x": 32,
+      "y": 88,
+      "icon": "icon_arrow_l"
+    },
+    {
+      "kind": "icon",
+      "x": 192,
+      "y": 88,
+      "icon": "icon_arrow_r"
+    },
+    {
+      "kind": "text",
+      "x": 120,
+      "y": 128,
+      "text": "{chosen.name}",
+      "align": "center"
+    },
+    {
+      "kind": "text",
+      "x": 120,
+      "y": 136,
+      "text": "TYPE: {chosen.type}",
+      "align": "center"
+    },
+    {
+      "kind": "text",
+      "x": 120,
+      "y": 152,
+      "text": "PRESS START",
+      "align": "center",
+      "blink": 30
+    }
+  ],
+  "children": [
+    "icon_arrow_l",
+    "icon_arrow_r"
+  ]
+}

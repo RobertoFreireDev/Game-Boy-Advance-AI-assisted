@@ -1,0 +1,34 @@
+{
+  "id": "mov_sandstorm",
+  "kind": "object",
+  "type": "move",
+  "name": "Sandstorm",
+  "notes": "Pebbulk's move 2 (B). A sandstorm for 5 s: every monster in view freezes (no moving, no attacking), but sand covers the screen so the player can't see either. Charge: 10 s.",
+  "title": "SANDSTORM",
+  "monster_type": "rock",
+  "shape": "screen",
+  "power": 0,
+  "charge": 600,
+  "status": {
+    "kind": "freeze",
+    "chance": 100,
+    "ticks": [
+      300,
+      300
+    ]
+  },
+  "on_use": [
+    {
+      "do": "cover_screen",
+      "icon": "icon_sand",
+      "ticks": 300
+    }
+  ],
+  "effect": "ptc_fx_sand",
+  "effect_at": "user",
+  "sfx": "sfx_mv_sandstorm",
+  "children": [
+    "spr_fx_sand",
+    "ptc_fx_sand"
+  ]
+}

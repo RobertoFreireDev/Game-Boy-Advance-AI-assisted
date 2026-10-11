@@ -210,7 +210,7 @@ const ICONS = {
   intro: "🎬", title: "🏷️", level: "🗺️", inventory: "🎒", cutscene: "🎞️", game_over: "💀", credits: "📜",
   palette: "🎨", sprite: "👾", tileset: "🧱", tilemap: "🗾", font: "🔤", icon: "🖼️", sfx: "🔊", music: "🎵",
   animation: "🎞", particle: "✨", body: "🧍", player: "🕹️", enemy: "👹", npc: "🧙", prop: "🌳", platform: "🛗",
-  pickup: "🪙", trigger: "⚑", hud: "📊", menu: "📋", dialog: "💬", upgrade: "⬆️"
+  pickup: "🪙", trigger: "⚑", hud: "📊", menu: "📋", dialog: "💬", upgrade: "⬆️", species: "🐾", move: "💥"
 };
 const typeOf = id => (IDX[id] || {}).type;
 const kindOf = id => (IDX[id] || {}).kind;
@@ -272,10 +272,10 @@ function pixelsCanvas(rows, palId, paper) {
   _pixCache.set(key, c);
   return c;
 }
-function frameCanvas(spriteId, frame) {
+function frameCanvas(spriteId, frame, palOverride) {
   const s = NODES[spriteId];
   if (!s || !s.frames || !s.frames[frame]) return null;
-  return pixelsCanvas(s.frames[frame], s.palette);
+  return pixelsCanvas(s.frames[frame], palOverride || s.palette);
 }
 // Draw a (1x) canvas at x,y with flips; ctx already scaled by zoom if needed.
 function blit(ctx, src, x, y, flipX, flipY) {
@@ -335,7 +335,7 @@ function bodyAnim(bodyId, slot) {
 // Slots seen from above / below (*_up, *_down) are never mirrored, like sprites.c.
 const isVerticalSlot = slot => /_(up|down)$/.test(slot || "");
 // Draw an actor body like sprites.c: the origin mirrors with the art when flipped.
-function drawBody(ctx, bodyId, slot, wx, wy, tick, facingLeft) {
+function drawBody(ctx, bodyId, slot, wx, wy, tick, facingLeft, palOverride) {
   const b = NODES[bodyId];
   const an = bodyAnim(bodyId, slot);
   const st = an && animAt(an, tick);
@@ -345,8 +345,27 @@ function drawBody(ctx, bodyId, slot, wx, wy, tick, facingLeft) {
   const fx = !!st.frame.flip_x !== (!!facingLeft && !isVerticalSlot(slot)), fy = !!st.frame.flip_y;
   const o = b.origin || [0, 0];
   const ox = fx ? spr.width - o[0] : o[0], oy = fy ? spr.height - o[1] : o[1];
-  blit(ctx, frameCanvas(st.sprite, st.frame.frame), wx - ox, wy - oy, fx, fy);
+  blit(ctx, frameCanvas(st.sprite, st.frame.frame, palOverride), wx - ox, wy - oy, fx, fy);
   return { x: wx - ox, y: wy - oy, w: spr.width, h: spr.height };
+}
+// A monster (monster behavior) takes its body from its species, and an Alpha its Alpha colors.
+// Random species show the first one the player can't be (the engine picks at run start).
+function monsterLook(node, overrides) {
+  const e = ((node || {}).logic || []).find(l => l.behavior === "monster");
+  if (!e) return null;
+  const p = Object.assign({}, e.params || {}, (overrides || {}).monster || {});
+  const avoid = p.avoid_var ? SPECIES[varInitial(p.avoid_var)] : null;
+  let sp = p.species || null;
+  if (!sp && p.species_var) sp = SPECIES[varInitial(p.species_var)];
+  if (!sp && p.random) sp = SPECIES.find(s => s !== avoid);
+  const spn = NODES[sp];
+  if (!spn) return null;
+  return { species: sp, body: spn.body, pal: p.alpha ? spn.alpha_palette : null, crown: p.crown, params: p,
+           absent: !!(avoid && p.species && p.species === avoid) };
+}
+function bodyOf(node, overrides) {
+  const m = monsterLook(node, overrides);
+  return m ? m : { body: (node || {}).body, pal: null };
 }
 
 // Global clock: one shared 60 Hz tick for every live preview. Space = play / pause.
@@ -419,10 +438,25 @@ function drawIcon(ctx, iconId, tx, ty, paper, paperPal) {
   ctx.drawImage(pixelsCanvas(ic.pixels, ic.palette, usePaper ? paper : undefined), tx * 8, ty * 8);
 }
 function varInitial(name) { const v = VARS.find(v => v.name === name); return v ? (v.initial === true ? 1 : v.initial === false ? 0 : v.initial) : 0; }
-// {var} -> its value, {var:02} -> at least 2 digits (like ui.c). get(name) returns the value.
+// Species in nodes.json order: their number is what species variables hold.
+const SPECIES = INDEX.filter(e => e.type === "species").map(e => e.id);
+function speciesField(index, field) {
+  const sp = NODES[SPECIES[index]];
+  if (!sp) return "";
+  if (field === "name") return sp.title || "";
+  if (field === "type") return String(sp.monster_type || "").toUpperCase();
+  const m = /^move([123])$/.exec(field);
+  return m ? ((NODES[(sp.moves || [])[m[1] - 1]] || {}).title || "") : "";
+}
+// Placeholders like ui.c: {var}, {var:02} (at least 2 digits), {var.field} (a species' name, type or
+// move), {var|a|b|c} (one word picked by the value). get(name) returns a variable's value.
 function fillText(text, get) {
   get = get || varInitial;
-  return String(text || "").replace(/\{(\w+)(:02)?\}/g, (m, v, pad) => { const s = String(get(v)); return pad && s.length < 2 ? "0" + s : s; });
+  return String(text || "").replace(/\{(\w+)(?:(:02)|\.(\w+)|\|([^{}]*))?\}/g, (m, v, pad, field, pick) => {
+    if (field) return speciesField(get(v), field);
+    if (pick !== undefined) { const o = pick.split("|"); return o[Math.max(0, Math.min(o.length - 1, get(v)))]; }
+    const s = String(get(v)); return pad && s.length < 2 ? "0" + s : s;
+  });
 }
 function drawHud(ctx, hudId, values) {
   const hd = NODES[hudId];
@@ -430,8 +464,15 @@ function drawHud(ctx, hudId, values) {
   const get = n => (values && n in values) ? values[n] : varInitial(n);
   for (const e of hd.elements) {
     const x = e.x >> 3, y = e.y >> 3;
-    if (e.kind === "text") drawText(ctx, hd.font, fillText(e.text, get), x, y);
+    if (e.kind === "text") {
+      const s = fillText(e.text, get);
+      drawText(ctx, hd.font, s, e.align === "center" ? x - (s.length >> 1) : x, y);   // centered on x, like ui.c
+    }
     else if (e.kind === "icon") drawIcon(ctx, e.icon, x, y);
+    else if (e.kind === "gauge") {
+      const icons = e.icons || [];
+      drawIcon(ctx, icons[Math.max(0, Math.min(icons.length - 1, get(e.var)))], x, y);
+    }
     else if (e.kind === "icon_repeat") {
       const ic = NODES[e.icon]; const size = ic ? ic.pixels.length / 8 : 1;
       const sp = (e.spacing || size * 8) >> 3, v = get(e.var);
@@ -442,9 +483,13 @@ function drawHud(ctx, hudId, values) {
       }
     } else if (e.kind === "bar") {
       const f = NODES[hd.font], cols = palColors(f && f.palette);
-      const v = Math.max(0, Math.min(e.max, get(e.var))), px = Math.floor(v * e.length * 8 / e.max);
-      if (e.back) { ctx.fillStyle = rgbCss(cols[e.back]); ctx.fillRect(x * 8, y * 8 + 1, e.length * 8, 6); }
-      ctx.fillStyle = rgbCss(cols[e.color]); ctx.fillRect(x * 8, y * 8 + 1, px, 6);
+      const mx = Math.max(1, e.max_var ? get(e.max_var) : e.max);
+      const v = Math.max(0, Math.min(mx, get(e.var))), px = Math.floor(v * e.length * 8 / mx);
+      // like ui.c: a dark rim above and below; low / mid colors when it runs low
+      const color = e.low_color && v * 4 <= mx ? e.low_color : e.mid_color && v * 2 <= mx ? e.mid_color : e.color;
+      ctx.fillStyle = rgbCss(cols[1]); ctx.fillRect(x * 8, y * 8, e.length * 8, 8);
+      ctx.fillStyle = rgbCss(cols[e.back || 0]); ctx.fillRect(x * 8, y * 8 + 1, e.length * 8, 6);
+      ctx.fillStyle = rgbCss(cols[color]); ctx.fillRect(x * 8, y * 8 + 1, px, 6);
     }
   }
 }
@@ -454,6 +499,7 @@ function drawMenu(ctx, menuId, cursor) {
   const paper = m.box ? (m.box.paper === undefined ? 1 : m.box.paper) : undefined;
   if (m.box) drawBox(ctx, m.font, m.box);
   if (m.title) drawText(ctx, m.font, fillText(m.title), lay.title_x, lay.title_y, paper);
+  for (const t of m.texts || []) drawText(ctx, m.font, fillText(t.text), t.x >> 3, t.y >> 3, paper);
   const f = NODES[m.font];
   const cw = NODES[m.cursor] ? NODES[m.cursor].pixels.length / 8 : 1;
   if (m.upgrades) {                          // card slots, filled with sample upgrades
@@ -630,15 +676,20 @@ function playSfx(id) {
 }
 function musicRows(m) {
   const ch = ["square1", "square2", "wave", "noise"], rows = [];
-  for (const pname of (m.order || [])) {
+  (m.order || []).forEach((pname, ord) => {
     const pat = (m.patterns || {})[pname] || {};
     const first = Object.values(pat)[0];
     const len = typeof first === "string" ? first.split(/\s+/).filter(t => t && t !== "|").length : 0;
     const toks = {};
     ch.forEach(c => { toks[c] = typeof pat[c] === "string" ? pat[c].split(/\s+/).filter(t => t && t !== "|") : null; });
-    for (let i = 0; i < len; i++) rows.push({ pattern: pname, row: i, cells: ch.map(c => toks[c] ? toks[c][i] : null) });
-  }
+    for (let i = 0; i < len; i++) rows.push({ pattern: pname, ord, row: i, cells: ch.map(c => toks[c] ? toks[c][i] : null) });
+  });
   return rows;
+}
+// Where a looping song starts again (after an intro that plays once), like audio.c.
+function loopRow(m, rows) {
+  const k = rows.findIndex(r => r.ord === (m.loop_from || 0));
+  return k < 0 ? 0 : k;
 }
 // Plays like audio.c: one row every 3600 / (bpm * rows_per_beat) ticks.
 function playMusic(id, loop, onRow) {
@@ -657,7 +708,7 @@ function playMusic(id, loop, onRow) {
     while (next < ctx.currentTime + 0.12) {
       if (r >= rows.length) {
         if (!shouldLoop) { cur.forEach(v => v && v.stop(next)); clearInterval(audio.timer); audio.timer = null; return; }
-        r = 0;
+        r = loopRow(m, rows);
       }
       rows[r].cells.forEach((tok, i) => {
         if (tok === null || tok === "--" || tok === undefined) return;
@@ -740,7 +791,7 @@ function genericValue(k, v) {
   if (/^(on_|actions$|then$|else$)/.test(k) && Array.isArray(v)) return actionList(v);
   if (typeof v === "string") return valueNode("", v);
   if (Array.isArray(v)) {
-    if (v.every(x => typeof x !== "object")) return h("span", { class: "mono" }, v.map(x => typeof x === "string" && IDX[x] ? "" : JSON.stringify(x)).join(", "), v.filter(x => IDX[x]).map(x => [nodeLink(x), " "]));
+    if (v.every(x => typeof x !== "object")) return h("span", { class: "mono" }, v.filter(x => !(typeof x === "string" && IDX[x])).map(x => JSON.stringify(x)).join(", "), v.filter(x => IDX[x]).map(x => [nodeLink(x), " "]));
     return h("div", {}, v.map((x, i) => h("div", { style: "margin:2px 0 4px 0" }, h("span", { class: "small" }, "#" + i + " "), genericValue(k, x))));
   }
   if (v && typeof v === "object") {
@@ -897,7 +948,7 @@ PREVIEW.tilemap = (id, n) => {
     stage.innerHTML = ""; stage.append(c);
   };
   draw();
-  return card(`Map — ${src.width / 8}×${src.height / 8} tiles (${src.width}×${src.height} px), layer ${n.layer}, parallax ${n.parallax === undefined ? 1 : n.parallax}${n.repeat_x ? ", repeats sideways" : ""}`,
+  return card(`Map — ${src.width / 8}×${src.height / 8} tiles (${src.width}×${src.height} px), layer ${n.layer}, parallax ${n.parallax === undefined ? 1 : n.parallax}${n.repeat_x ? ", repeats sideways" : ""}${n.over ? ", drawn over the sprites" : ""}`,
     h("div", { class: "toolbar" }, zoomSelect(st.zoom, z => { st.zoom = z; draw(); }), toggle("Collision overlay", st, "coll", draw), toggle("Tile grid", st, "grid", draw),
       h("span", { class: "small" }, h("span", { class: "badge solid" }, "solid"), h("span", { class: "badge one_way" }, "one-way"), h("span", { class: "badge hazard" }, "hazard"), h("span", { class: "badge ladder" }, "ladder"))),
     stage);
@@ -958,7 +1009,7 @@ PREVIEW.particle = (id, n) => {
       blit(ctx, frameCanvas(st.sprite, st.frame.frame), Math.floor(p.x) - spr.width / 2, Math.floor(p.y) - spr.height / 2, st.frame.flip_x, st.frame.flip_y);
     }
   });
-  return card(`Live emitter — ${n.mode}, ${n.mode === "burst" ? (n.count || 1) + " per burst" : "one every " + n.rate + " ticks"}, lives ${n.lifetime} ticks`,
+  return card(`Live emitter — ${n.mode}, ${n.mode === "burst" ? (n.count || 1) + " per burst" : "one every " + n.rate + " ticks"}, lives ${n.lifetime} ticks${n.on_top ? ", drawn in front of the actors" : ""}`,
     h("div", { class: "toolbar" }, playButtons(h("button", { onclick: restart }, "↺ Restart"))), h("div", { class: "stage" }, c),
     h("div", { class: "small" }, "The cross marks the emit point. Angle 0 = right, 90 = up."));
 };
@@ -974,7 +1025,7 @@ function bodyStage(bodyId, slotGetter, opts) {
   live(tick => {
     if (!c.isConnected) return;
     ctx.fillStyle = "#1a1d24"; ctx.fillRect(0, 0, W, H);
-    drawBody(ctx, bodyId, slotGetter(), wx, wy, tick, opts.facingLeft && opts.facingLeft());
+    drawBody(ctx, bodyId, slotGetter(), wx, wy, tick, opts.facingLeft && opts.facingLeft(), opts.pal && opts.pal());
     if (!opts.state || opts.state.hitbox) {
       const hb = b.hitbox || {}; ctx.strokeStyle = "#ff4d6d"; ctx.lineWidth = 1 / z;
       ctx.strokeRect(wx + (hb.x | 0) + 0.5 / z, wy + (hb.y | 0) + 0.5 / z, (hb.w | 0) - 1 / z, (hb.h | 0) - 1 / z);
@@ -1032,17 +1083,21 @@ function actorPreview(id, n) {
     ctx.fillStyle = "rgba(255,207,92,.25)"; ctx.fillRect(8, 8, z.w, z.h);
     ctx.strokeStyle = "#ffcf5c"; ctx.lineWidth = 1 / sc; ctx.strokeRect(8, 8, z.w, z.h);
     out.push(card(`Invisible zone — ${z.w}×${z.h} px (top-left corner is the instance x, y)`, c));
-  } else if (!n.body) {
+  } else if (!n.body && !monsterLook(n)) {
     out.push(card("Invisible", h("div", { class: "small" }, "No body: nothing is drawn and nothing touches it. It only runs its logic (below) every tick.")));
-  } else if (n.body) {
-    let slot = (NODES[n.body] || {}).default_animation || "idle";
+  } else {
+    const look = bodyOf(n), bodyId = look.body;
+    let slot = (NODES[bodyId] || {}).default_animation || "idle";
     const st = { hitbox: true, origin: true };
-    const b = NODES[n.body] || {};
+    const b = NODES[bodyId] || {};
     const tabs = h("div", { class: "toolbar" });
     const redraw = () => { tabs.innerHTML = ""; Object.keys(b.animations || {}).forEach(s => tabs.append(h("button", { class: s === slot ? "on" : "", onclick: () => { slot = s; redraw(); } }, s))); };
     redraw();
-    out.push(card("Body ", h("div", { class: "toolbar" }, "Body: ", nodeLink(n.body)), tabs, h("div", { class: "toolbar" }, playButtons(), toggle("Hitbox", st, "hitbox", () => {}), toggle("Origin", st, "origin", () => {})),
-      h("div", { class: "stage" }, bodyStage(n.body, () => slot, { state: st }))));
+    const from = look.species ? h("span", { class: "small" }, " — taken from its species ", nodeLink(look.species),
+      look.params.species_var ? " (the one in '" + look.params.species_var + "'; shown: its starting value)" : look.params.random ? " (picked at random when the run starts; shown: one of them)" : "",
+      look.pal ? ", in its Alpha colors" : "") : null;
+    out.push(card("Body ", h("div", { class: "toolbar" }, "Body: ", nodeLink(bodyId), from), tabs, h("div", { class: "toolbar" }, playButtons(), toggle("Hitbox", st, "hitbox", () => {}), toggle("Origin", st, "origin", () => {})),
+      h("div", { class: "stage" }, bodyStage(bodyId, () => slot, { state: st, pal: () => look.pal }))));
   }
   const logic = n.logic || [];
   out.push(card("Logic — what it does (behaviors run every tick, top to bottom)", logic.length ? logic.map(e => behaviorCard(e)) : h("div", { class: "small" }, "No behaviors: it is decoration.")));
@@ -1183,10 +1238,135 @@ PREVIEW.music = (id, n) => {
   let loop = n.loop !== false;
   const lb = h("button", { class: loop ? "on" : "", onclick: () => { loop = !loop; lb.className = loop ? "on" : ""; } }, "🔁 Loop");
   const secs = rows.length * 60 / ((n.bpm || 120) * (n.rows_per_beat || 4));
-  return [card(`Song — ${n.bpm} bpm, ${n.rows_per_beat} rows per beat, ${rows.length} rows (${secs.toFixed(1)} s), order: ${(n.order || []).join(" ")}`,
+  const intro = n.loop_from ? `, intro (${(n.order || []).slice(0, n.loop_from).join(" ")}) plays once, then loops from ${(n.order || [])[n.loop_from]}` : "";
+  return [card(`Song — ${n.bpm} bpm, ${n.rows_per_beat} rows per beat, ${rows.length} rows (${secs.toFixed(1)} s), order: ${(n.order || []).join(" ")}${intro}`,
     h("div", { class: "toolbar" }, h("button", { onclick: () => playMusic(id, loop, onRow) }, "▶ Play"), h("button", { onclick: stopAllAudio }, "■ Stop"), lb, volumeControl()),
     h("div", { class: "small", style: "margin-bottom:6px" }, "-- = keep holding the note, .. = silence. The highlighted row is playing."), wrap),
   card("Instruments", h("div", { class: "kv" }, Object.entries(n.instruments || {}).map(([c, ins]) => [h("div", { class: "k" }, c), h("div", { class: "mono" }, JSON.stringify(ins))])))];
+};
+
+// ---- monster battles: species, moves, the type chart (nodes.json game.battle) ------
+const BATTLE = (D.game || {}).battle || {};
+const TYPES = BATTLE.types || [];
+const chartMult = (att, dfn) => (((BATTLE.chart || {})[att] || {})[dfn] === undefined ? 1 : BATTLE.chart[att][dfn]);
+function typeChartCard(highlightAtt, highlightDef) {
+  const tb = h("table", { class: "grid" });
+  tb.append(h("tr", {}, h("th", {}, "attack ↓ / defend →"), TYPES.map(t => h("th", {}, t.slice(0, 3).toUpperCase()))));
+  for (const a of TYPES) tb.append(h("tr", {}, h("th", {}, a), TYPES.map(d => {
+    const m = chartMult(a, d);
+    const style = (m > 1 ? "color:#5fd38d;font-weight:700;" : m < 1 ? "color:#ff8a8a;" : "color:#4a5060;") +
+      ((a === highlightAtt || d === highlightDef) ? "background:#2d3a52;" : "");
+    return h("td", { style }, m === 1 ? "·" : "×" + m);
+  })));
+  return card("Type chart (game.battle) — damage multiplier of an attack on a defender", tb,
+    h("div", { class: "small" }, "Damage = power × (1 + 0.15 × (level − 1)) × type multiplier × the user's power %, rounded, at least 1. A super effective hit shows its word in yellow; a weak one in grey."));
+}
+function matchups(type) {
+  const strong = TYPES.filter(d => chartMult(type, d) > 1), weak = TYPES.filter(d => chartMult(type, d) < 1);
+  const hurtBy = TYPES.filter(a => chartMult(a, type) > 1), resists = TYPES.filter(a => chartMult(a, type) < 1);
+  const L = arr => arr.length ? arr.map(t => t.toUpperCase()).join(", ") : "—";
+  return h("div", { class: "kv" },
+    h("div", { class: "k" }, "its moves hit hard on"), h("div", {}, L(strong)),
+    h("div", { class: "k" }, "its moves are weak on"), h("div", {}, L(weak)),
+    h("div", { class: "k" }, "takes extra damage from"), h("div", {}, L(hurtBy)),
+    h("div", { class: "k" }, "shrugs off"), h("div", {}, L(resists)));
+}
+const SLOT_KEYS = ["A", "B", "hold A"];
+PREVIEW.species = (id, n) => {
+  const out = [];
+  const port = NODES[n.portrait];
+  const pc = port ? bigImage(frameCanvas(n.portrait, Object.keys(port.frames || {})[0]), 3) : h("span", { class: "small" }, "(no portrait)");
+  const st = { hitbox: false, origin: false, alpha: false, left: false };
+  const b = NODES[n.body] || {};
+  let slot = b.default_animation || "idle";
+  const tabs = h("div", { class: "toolbar" });
+  const redraw = () => { tabs.innerHTML = ""; Object.keys(b.animations || {}).forEach(s => tabs.append(h("button", { class: s === slot ? "on" : "", onclick: () => { slot = s; redraw(); } }, s))); };
+  redraw();
+  out.push(card(`${n.title || id} — ${String(n.monster_type || "").toUpperCase()} type`,
+    h("div", { style: "display:flex;gap:18px;flex-wrap:wrap;align-items:flex-start" },
+      h("div", { class: "frame" }, pc, h("div", { class: "cap" }, "menu portrait")),
+      h("div", {}, tabs, h("div", { class: "toolbar" }, playButtons(), toggle("Alpha colors", st, "alpha", () => {}), toggle("Face left", st, "left", () => {}), toggle("Hitbox", st, "hitbox", () => {})),
+        h("div", { class: "stage" }, bodyStage(n.body, () => slot, { state: st, facingLeft: () => st.left, pal: () => st.alpha ? n.alpha_palette : null })),
+        h("div", { class: "small" }, "In the world (body ", nodeLink(n.body), "). 'Alpha colors' shows how it looks as the Alpha.")))));
+  out.push(card("Moves", (n.moves || []).map((m, i) => {
+    const mv = NODES[m] || {};
+    return h("div", { class: "bhv" }, h("div", { class: "bn" }, SLOT_KEYS[i] + " · ", nodeLink(m)),
+      h("div", { class: "bd" }, `${mv.shape || "?"}${mv.range !== undefined ? ", " + mv.range + " tiles" : ""}, power ${mv.power || 0}, charge ${((mv.charge || 0) / 60).toFixed(0)} s`));
+  }), h("div", { class: "small" }, "Move 2 and move 3 unlock with the player's level (move_buttons). Wild monsters only use move 1.")));
+  out.push(card("Cry", h("div", { class: "toolbar" }, h("button", { onclick: () => playSfx(n.cry) }, "▶ Play"), nodeLink(n.cry))));
+  out.push(card("Type matchups", matchups(n.monster_type)));
+  out.push(typeChartCard(n.monster_type, n.monster_type));
+  return out;
+};
+// The tiles a move covers, around a user facing right: 2 = hit, 1 = possible target area, 3 = zone.
+function moveTiles(n) {
+  const r = n.range || 0, cells = new Map();
+  const put = (x, y, v) => cells.set(x + "," + y, Math.max(v, cells.get(x + "," + y) || 0));
+  const shape = n.shape;
+  if (shape === "single" || shape === "dash") {
+    const R = r + (shape === "dash" ? (n.dash || 0) : 0);
+    for (let y = -R; y <= R; y++) for (let x = -R; x <= R; x++) if (x || y) put(x, y, 1);
+  } else if (shape === "circle") {
+    for (let y = -r; y <= r; y++) for (let x = -r; x <= r; x++) if (x || y) put(x, y, 2);
+  } else if (shape === "cone") {
+    for (let a = 1; a <= r; a++) for (let s = -(a - 1); s <= a - 1; s++) put(a, s, 2);
+  } else if (shape === "zone" && (n.zone || {}).place === "front") {
+    const z = n.zone, ahead = 1 + Math.floor(z.w / 2);
+    for (let y = 0; y < z.h; y++) for (let x = 0; x < z.w; x++) put(ahead - Math.floor(z.w / 2) + x, y - Math.floor(z.h / 2), 3);
+    for (let y = -r; y <= r; y++) for (let x = -r; x <= r; x++) if ((x || y) && !cells.has(x + "," + y)) put(x, y, 1);
+  }
+  return cells;
+}
+PREVIEW.move = (id, n) => {
+  const out = [];
+  const st = n.status || {}, z = n.zone || {}, bf = n.buff || {};
+  const shapeText = {
+    single: `the nearest monster up to ${n.range} tile(s) away`,
+    dash: `rushes ${n.dash} tile(s) toward the nearest monster within ${(n.range || 0) + (n.dash || 0)} tiles, then hits it (${n.range} tile)`,
+    cone: `everything in a cone ${n.range} tiles long in front (1 tile wide next to the user, 2 wider every tile)`,
+    circle: `every monster up to ${n.range} tiles around the user`,
+    screen: "every monster on the screen",
+    zone: z.place === "screen" ? `${z.count || 1} spot(s) of ${z.w}×${z.h} tiles on the screen` : `the ${z.w}×${z.h} tiles in front of the user`,
+    self: "only the user",
+  }[n.shape] || n.shape;
+  const kv = h("div", { class: "kv" },
+    h("div", { class: "k" }, "type"), h("div", {}, String(n.monster_type || "").toUpperCase()),
+    h("div", { class: "k" }, "hits"), h("div", {}, shapeText),
+    h("div", { class: "k" }, "power"), h("div", {}, n.power ? String(n.power) + (n.shape === "zone" && z.every ? ` every ${(z.every / 60).toFixed(1)} s` : "") : "none (status only)"),
+    h("div", { class: "k" }, "accuracy"), h("div", {}, n.power ? (n.accuracy ? n.accuracy + "% (a miss shows MISS)" : "never misses") : "—"),
+    h("div", { class: "k" }, "charge (player)"), h("div", {}, `${n.charge} ticks (${(n.charge / 60).toFixed(1)} s)`),
+    n.status ? h("div", { class: "k" }, "status") : null,
+    n.status ? h("div", {}, `${st.chance}% chance: ${{ par: "paralyzed (can't move or attack, flashes yellow)", psn: "poisoned (1 damage a second)", tox: "badly poisoned (1, 2, 3... damage a second)", freeze: "frozen (can't move or attack)" }[st.kind] || st.kind} for ${(st.ticks || [0, 0]).map(t => (t / 60).toFixed(1)).join("-")} s`) : null,
+    n.zone ? h("div", { class: "k" }, "zone") : null,
+    n.zone ? h("div", {}, `${z.w}×${z.h} tiles${z.place === "screen" ? ", on screen spots (each near a monster in view)" : ", in front"}${z.delay ? `, lands after ${(z.delay / 60).toFixed(1)} s` : ""}, lasts ${(z.ticks || [0, 0]).map(t => (t / 60).toFixed(1)).join("-")} s${z.every ? `, hurts every ${(z.every / 60).toFixed(1)} s` : ", one hit"}`) : null,
+    n.buff ? h("div", { class: "k" }, "buff") : null,
+    n.buff ? h("div", {}, `${bf.kind === "fly" ? "Fly: only a shadow shows, it can't be hit and passes over monsters" : "Phase: passes through monsters"} for ${(bf.ticks / 60).toFixed(1)} s`) : null,
+    h("div", { class: "k" }, "sound"), h("div", {}, n.sfx ? [h("button", { onclick: () => playSfx(n.sfx) }, "▶"), " ", nodeLink(n.sfx)] : "silent"));
+  out.push(card(`${n.title} — what it does`, kv, n.on_use && n.on_use.length ? h("div", {}, h("b", {}, "Also, each use: "), actionList(n.on_use)) : null));
+  // Shape diagram
+  const cells = moveTiles(n);
+  if (n.shape === "screen" || (n.shape === "zone" && z.place === "screen") || n.shape === "self") {
+    out.push(card("Area", h("div", { class: "small" }, n.shape === "self" ? "No area: it changes the user." : "The whole 240×160 screen (30×20 tiles) the camera shows.")));
+  } else {
+    const R = Math.max(3, ...[...cells.keys()].map(k => Math.max(...k.split(",").map(v => Math.abs(+v))))) + 1;
+    const N = R * 2 + 1, T = 14;
+    const [c, ctx] = zoomCanvas(N * T, N * T, 1);
+    ctx.fillStyle = "#1a1d24"; ctx.fillRect(0, 0, N * T, N * T);
+    for (let y = -R; y <= R; y++) for (let x = -R; x <= R; x++) {
+      const v = cells.get(x + "," + y) || 0;
+      ctx.fillStyle = v === 2 ? "#e07a3a" : v === 3 ? "#c0503a" : v === 1 ? "#4a3a2a" : "#232731";
+      ctx.fillRect((x + R) * T + 1, (y + R) * T + 1, T - 2, T - 2);
+    }
+    ctx.fillStyle = "#6cb4ff"; ctx.fillRect(R * T + 2, R * T + 2, T - 4, T - 4);
+    ctx.fillStyle = "#fff"; ctx.beginPath(); ctx.moveTo(R * T + T - 3, R * T + T / 2); ctx.lineTo(R * T + 5, R * T + 4); ctx.lineTo(R * T + 5, R * T + T - 4); ctx.fill();
+    out.push(card("Area (tiles; blue = the user, facing right)", c, h("div", { class: "small" },
+      { single: "Brown = where a target can be; the nearest monster in it is hit.", dash: "Brown = where a target can be; the user rushes to the nearest one and hits it.",
+        cone: "Orange = hit. Diagonal facing covers the quarter between the two directions.", circle: "Orange = hit.",
+        zone: "Red = the zone on the ground; brown = a monster must be this close for the move to be used." }[n.shape] || "")));
+  }
+  if (n.effect && PREVIEW.particle) out.push(...[].concat(PREVIEW.particle(n.effect, NODES[n.effect] || {})).map(cd => { cd.querySelector("h3").textContent = "Effect (" + (n.effect_at || "target") + ") — " + cd.querySelector("h3").textContent; return cd; }));
+  out.push(card("Against each type", h("div", { class: "kv" }, TYPES.map(t => [h("div", { class: "k" }, t.toUpperCase()), h("div", {}, "×" + chartMult(n.monster_type, t))]))));
+  return out;
 };
 
 // ---- scenes ------------------------------------------------------------------------
@@ -1205,16 +1385,18 @@ function sceneLayout(sc) {
   if (cam.bounds !== "none") { cx = Math.max(0, Math.min(cx, W - 240)); cy = Math.max(0, Math.min(cy, H - 160)); }
   return { insts, maps, W, H, cx, cy };
 }
+function drawSceneMap(ctx, m, L, ov) {
+  const src = mapCanvas(m.object), par = m.node.parallax === undefined ? 1 : m.node.parallax;
+  // Parallax layers are drawn where they appear when the camera is at its start position.
+  const offx = Math.floor(L.cx - L.cx * par), offy = Math.floor(L.cy - L.cy * par);
+  if (m.node.repeat_x) for (let x = offx - src.width * Math.ceil((offx + 1) / src.width); x < L.W; x += src.width) ctx.drawImage(src, x, offy);
+  else ctx.drawImage(src, offx, offy);
+  if (ov.coll && m.node.layer === 1) collisionOverlay(ctx, m.object, 0, 0);
+}
 function drawScene(ctx, sc, L, tick, ov, layersOnScreen) {
   ctx.fillStyle = rgbCss(q15(sc.backdrop || "#000000")); ctx.fillRect(0, 0, L.W, L.H);
-  [...L.maps].sort((a, b) => (b.node.layer || 1) - (a.node.layer || 1)).forEach(m => {
-    const src = mapCanvas(m.object), par = m.node.parallax === undefined ? 1 : m.node.parallax;
-    // Parallax layers are drawn where they appear when the camera is at its start position.
-    const offx = Math.floor(L.cx - L.cx * par), offy = Math.floor(L.cy - L.cy * par);
-    if (m.node.repeat_x) for (let x = offx - src.width * Math.ceil((offx + 1) / src.width); x < L.W; x += src.width) ctx.drawImage(src, x, offy);
-    else ctx.drawImage(src, offx, offy);
-    if (ov.coll && m.node.layer === 1) collisionOverlay(ctx, m.object, 0, 0);
-  });
+  // 'over' layers (tree tops) are drawn after the actors, like the GBA (priority 0).
+  [...L.maps].filter(m => !m.node.over).sort((a, b) => (b.node.layer || 1) - (a.node.layer || 1)).forEach(m => drawSceneMap(ctx, m, L, ov));
   if (ov.grid) drawGrid(ctx, L.W, L.H, 8, ov.zoom, "rgba(255,255,255,.12)");
   const hits = [];
   const actors = L.insts.filter(i => i.type && ACTOR_TYPES.includes(i.type) && i.node);
@@ -1227,9 +1409,16 @@ function drawScene(ctx, sc, L, tick, ov, layersOnScreen) {
       hits.push({ inst: i, x, y, w: z.w, h: z.h });
       continue;
     }
-    const r = drawBody(ctx, i.node.body, (NODES[i.node.body] || {}).default_animation || "idle", x, y, tick, false);
+    const look = bodyOf(i.node, i.overrides);
+    if (look.absent) ctx.globalAlpha = 0.35;      // the player's own species: it never appears
+    const r = drawBody(ctx, look.body, (NODES[look.body] || {}).default_animation || "idle", x, y, tick, false, look.pal);
+    ctx.globalAlpha = 1;
+    if (r && look.crown && NODES[look.crown]) {
+      const cs = NODES[look.crown], o = (NODES[look.body] || {}).origin || [0, 0];
+      blit(ctx, frameCanvas(look.crown, Object.keys(cs.frames || {})[(tick >> 4) & 1] || "f0"), x - cs.width / 2, y - o[1] - cs.height + 3);
+    }
     if (r) hits.push({ inst: i, ...r });
-    const b = NODES[i.node.body] || {};
+    const b = NODES[look.body] || {};
     if (ov.hitbox && b.hitbox) { ctx.strokeStyle = "#ff4d6d"; ctx.lineWidth = 1 / ov.zoom; ctx.strokeRect(x + b.hitbox.x, y + b.hitbox.y, b.hitbox.w, b.hitbox.h); }
     if (ov.origin) { ctx.fillStyle = "#ffe14d"; ctx.fillRect(x - 1, y - 1, 2, 2); }
     if (ov.paths) {
@@ -1241,6 +1430,7 @@ function drawScene(ctx, sc, L, tick, ov, layersOnScreen) {
       }
     }
   }
+  [...L.maps].filter(m => m.node.over).forEach(m => drawSceneMap(ctx, m, L, ov));
   if (ov.labels) {
     ctx.font = `${Math.max(4, 9 / ov.zoom * 1.4)}px sans-serif`; ctx.fillStyle = "#fff"; ctx.strokeStyle = "#000"; ctx.lineWidth = 2 / ov.zoom;
     for (const ht of hits) { ctx.strokeText(ht.inst.id, ht.x, ht.y - 1); ctx.fillText(ht.inst.id, ht.x, ht.y - 1); }

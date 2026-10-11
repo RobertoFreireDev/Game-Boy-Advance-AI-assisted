@@ -1,0 +1,25 @@
+{
+  "id": "pal_alpha_voltail",
+  "kind": "object",
+  "type": "palette",
+  "name": "Voltail Alpha colors",
+  "notes": "The rare colors Voltail wears when it is the Alpha (the boss of the run): the same slots as its sprite's palette, with Voltail's own colors changed.",
+  "colors": [
+    "#000000",
+    "#282830",
+    "#f8f8f8",
+    "#f88858",
+    "#e04838",
+    "#a02830",
+    "#f8e868",
+    "#f8a038",
+    "#f8e0c0",
+    "#f8f8f8",
+    "#c8c8d8",
+    "#8888a0",
+    "#5078e8",
+    "#283890",
+    "#fff0a0",
+    "#f888a0"
+  ]
+}

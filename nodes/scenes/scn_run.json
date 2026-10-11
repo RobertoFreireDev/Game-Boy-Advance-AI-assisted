@@ -1,0 +1,396 @@
+{
+  "id": "scn_run",
+  "kind": "scene",
+  "type": "level",
+  "name": "Run",
+  "notes": "The run. The player's monster starts in the middle of the 3x3-screen world; 27 wild monsters live around it (3 per screen: levels 2 near the center, 4 and 6 farther out), but the player's own species stays away, leaving 24, plus the sleeping Alpha in the south-east clearing. Defeat all 25 to win; if HP runs out it's game over.",
+  "backdrop": "#78c050",
+  "music": "mus_run",
+  "camera": {
+    "follow": "player",
+    "bounds": "map"
+  },
+  "instances": [
+    {
+      "id": "ground",
+      "object": "map_ground"
+    },
+    {
+      "id": "treetops",
+      "object": "map_canopy"
+    },
+    {
+      "id": "player",
+      "object": "plr_monster",
+      "x": 360,
+      "y": 244
+    },
+    {
+      "id": "furrbit_1",
+      "object": "enm_wild",
+      "x": 268,
+      "y": 247,
+      "overrides": {
+        "monster": {
+          "species": "mon_furrbit",
+          "level": 2,
+          "hp": 30
+        }
+      }
+    },
+    {
+      "id": "emberpup_1",
+      "object": "enm_wild",
+      "x": 452,
+      "y": 231,
+      "overrides": {
+        "monster": {
+          "species": "mon_emberpup",
+          "level": 2,
+          "hp": 30
+        }
+      }
+    },
+    {
+      "id": "gustling_1",
+      "object": "enm_wild",
+      "x": 452,
+      "y": 279,
+      "overrides": {
+        "monster": {
+          "species": "mon_gustling",
+          "level": 2,
+          "hp": 30
+        }
+      }
+    },
+    {
+      "id": "splashell_1",
+      "object": "enm_wild",
+      "x": 148,
+      "y": 191,
+      "overrides": {
+        "monster": {
+          "species": "mon_splashell",
+          "level": 2,
+          "hp": 30
+        }
+      }
+    },
+    {
+      "id": "sproutle_1",
+      "object": "enm_wild",
+      "x": 92,
+      "y": 207,
+      "overrides": {
+        "monster": {
+          "species": "mon_sproutle",
+          "level": 2,
+          "hp": 30
+        }
+      }
+    },
+    {
+      "id": "voltail_1",
+      "object": "enm_wild",
+      "x": 60,
+      "y": 255,
+      "overrides": {
+        "monster": {
+          "species": "mon_voltail",
+          "level": 2,
+          "hp": 30
+        }
+      }
+    },
+    {
+      "id": "venomole_1",
+      "object": "enm_wild",
+      "x": 652,
+      "y": 223,
+      "overrides": {
+        "monster": {
+          "species": "mon_venomole",
+          "level": 2,
+          "hp": 30
+        }
+      }
+    },
+    {
+      "id": "wispook_1",
+      "object": "enm_wild",
+      "x": 540,
+      "y": 287,
+      "overrides": {
+        "monster": {
+          "species": "mon_wispook",
+          "level": 2,
+          "hp": 30
+        }
+      }
+    },
+    {
+      "id": "pebbulk_1",
+      "object": "enm_wild",
+      "x": 604,
+      "y": 287,
+      "overrides": {
+        "monster": {
+          "species": "mon_pebbulk",
+          "level": 2,
+          "hp": 30
+        }
+      }
+    },
+    {
+      "id": "pebbulk_2",
+      "object": "enm_wild",
+      "x": 428,
+      "y": 87,
+      "overrides": {
+        "monster": {
+          "species": "mon_pebbulk",
+          "level": 4,
+          "hp": 45
+        }
+      }
+    },
+    {
+      "id": "gustling_2",
+      "object": "enm_wild",
+      "x": 348,
+      "y": 79,
+      "overrides": {
+        "monster": {
+          "species": "mon_gustling",
+          "level": 4,
+          "hp": 45
+        }
+      }
+    },
+    {
+      "id": "voltail_2",
+      "object": "enm_wild",
+      "x": 284,
+      "y": 79,
+      "overrides": {
+        "monster": {
+          "species": "mon_voltail",
+          "level": 4,
+          "hp": 45
+        }
+      }
+    },
+    {
+      "id": "sproutle_2",
+      "object": "enm_wild",
+      "x": 412,
+      "y": 367,
+      "overrides": {
+        "monster": {
+          "species": "mon_sproutle",
+          "level": 4,
+          "hp": 45
+        }
+      }
+    },
+    {
+      "id": "furrbit_2",
+      "object": "enm_wild",
+      "x": 300,
+      "y": 383,
+      "overrides": {
+        "monster": {
+          "species": "mon_furrbit",
+          "level": 4,
+          "hp": 45
+        }
+      }
+    },
+    {
+      "id": "venomole_2",
+      "object": "enm_wild",
+      "x": 396,
+      "y": 447,
+      "overrides": {
+        "monster": {
+          "species": "mon_venomole",
+          "level": 4,
+          "hp": 45
+        }
+      }
+    },
+    {
+      "id": "wispook_2",
+      "object": "enm_wild",
+      "x": 164,
+      "y": 87,
+      "overrides": {
+        "monster": {
+          "species": "mon_wispook",
+          "level": 4,
+          "hp": 45
+        }
+      }
+    },
+    {
+      "id": "emberpup_2",
+      "object": "enm_wild",
+      "x": 84,
+      "y": 79,
+      "overrides": {
+        "monster": {
+          "species": "mon_emberpup",
+          "level": 4,
+          "hp": 45
+        }
+      }
+    },
+    {
+      "id": "splashell_2",
+      "object": "enm_wild",
+      "x": 76,
+      "y": 127,
+      "overrides": {
+        "monster": {
+          "species": "mon_splashell",
+          "level": 4,
+          "hp": 45
+        }
+      }
+    },
+    {
+      "id": "pebbulk_3",
+      "object": "enm_wild",
+      "x": 676,
+      "y": 63,
+      "overrides": {
+        "monster": {
+          "species": "mon_pebbulk",
+          "level": 6,
+          "hp": 60
+        }
+      }
+    },
+    {
+      "id": "emberpup_3",
+      "object": "enm_wild",
+      "x": 564,
+      "y": 87,
+      "overrides": {
+        "monster": {
+          "species": "mon_emberpup",
+          "level": 6,
+          "hp": 60
+        }
+      }
+    },
+    {
+      "id": "voltail_3",
+      "object": "enm_wild",
+      "x": 604,
+      "y": 135,
+      "overrides": {
+        "monster": {
+          "species": "mon_voltail",
+          "level": 6,
+          "hp": 60
+        }
+      }
+    },
+    {
+      "id": "wispook_3",
+      "object": "enm_wild",
+      "x": 44,
+      "y": 415,
+      "overrides": {
+        "monster": {
+          "species": "mon_wispook",
+          "level": 6,
+          "hp": 60
+        }
+      }
+    },
+    {
+      "id": "venomole_3",
+      "object": "enm_wild",
+      "x": 180,
+      "y": 399,
+      "overrides": {
+        "monster": {
+          "species": "mon_venomole",
+          "level": 6,
+          "hp": 60
+        }
+      }
+    },
+    {
+      "id": "furrbit_3",
+      "object": "enm_wild",
+      "x": 212,
+      "y": 439,
+      "overrides": {
+        "monster": {
+          "species": "mon_furrbit",
+          "level": 6,
+          "hp": 60
+        }
+      }
+    },
+    {
+      "id": "splashell_3",
+      "object": "enm_wild",
+      "x": 676,
+      "y": 391,
+      "overrides": {
+        "monster": {
+          "species": "mon_splashell",
+          "level": 6,
+          "hp": 60
+        }
+      }
+    },
+    {
+      "id": "sproutle_3",
+      "object": "enm_wild",
+      "x": 652,
+      "y": 431,
+      "overrides": {
+        "monster": {
+          "species": "mon_sproutle",
+          "level": 6,
+          "hp": 60
+        }
+      }
+    },
+    {
+      "id": "gustling_3",
+      "object": "enm_wild",
+      "x": 572,
+      "y": 359,
+      "overrides": {
+        "monster": {
+          "species": "mon_gustling",
+          "level": 6,
+          "hp": 60
+        }
+      }
+    },
+    {
+      "id": "alpha",
+      "object": "enm_alpha",
+      "x": 576,
+      "y": 404
+    },
+    {
+      "id": "hud",
+      "object": "hud_run"
+    }
+  ],
+  "on_start": [
+    {
+      "do": "fade_in",
+      "ticks": 20
+    }
+  ]
+}

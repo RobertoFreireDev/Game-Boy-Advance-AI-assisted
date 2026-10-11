@@ -1,0 +1,21 @@
+{
+  "id": "mov_rock_throw",
+  "kind": "object",
+  "type": "move",
+  "name": "Rock Throw",
+  "notes": "Pebbulk's move 1 (A). Throws a rock at the nearest monster up to 3 tiles away. Charge: 3 s. Wild Pebbulks use it every 4 s.",
+  "title": "ROCK THROW",
+  "monster_type": "rock",
+  "shape": "single",
+  "range": 3,
+  "power": 10,
+  "accuracy": 95,
+  "charge": 180,
+  "effect": "ptc_fx_rock",
+  "effect_at": "target",
+  "sfx": "sfx_mv_rock",
+  "children": [
+    "spr_fx_rock",
+    "ptc_fx_rock"
+  ]
+}

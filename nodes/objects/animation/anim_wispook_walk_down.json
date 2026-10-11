@@ -1,0 +1,28 @@
+{
+  "id": "anim_wispook_walk_down",
+  "kind": "object",
+  "type": "animation",
+  "name": "Wispook walk down",
+  "notes": "Wispook walking facing down (its front): a soft float up and down.",
+  "sprite": "spr_wispook",
+  "loop": true,
+  "frames": [
+    {
+      "frame": "down",
+      "ticks": 8
+    },
+    {
+      "frame": "down_a",
+      "ticks": 8
+    },
+    {
+      "frame": "down",
+      "ticks": 8
+    },
+    {
+      "frame": "down_b",
+      "ticks": 8
+    }
+  ],
+  "events": []
+}

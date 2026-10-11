@@ -1,0 +1,37 @@
+{
+  "id": "sfx_mv_status",
+  "kind": "object",
+  "type": "sfx",
+  "name": "Status move",
+  "notes": "A wobbly warble for moves that only cause a status.",
+  "channel": "square2",
+  "duty": 1,
+  "priority": 1,
+  "steps": [
+    {
+      "note": "E5",
+      "ticks": 3,
+      "volume": 10
+    },
+    {
+      "note": "G5",
+      "ticks": 3,
+      "volume": 10
+    },
+    {
+      "note": "E5",
+      "ticks": 3,
+      "volume": 9
+    },
+    {
+      "note": "G5",
+      "ticks": 3,
+      "volume": 8
+    },
+    {
+      "note": "E5",
+      "ticks": 6,
+      "volume": 6
+    }
+  ]
+}

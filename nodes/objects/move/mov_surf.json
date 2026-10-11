@@ -1,0 +1,20 @@
+{
+  "id": "mov_surf",
+  "kind": "object",
+  "type": "move",
+  "name": "Surf",
+  "notes": "Splashell's move 3 (hold A). A great wave sweeps across the screen and hits every monster in view. Charge: 60 s.",
+  "title": "SURF",
+  "monster_type": "water",
+  "shape": "screen",
+  "power": 40,
+  "accuracy": 100,
+  "charge": 3600,
+  "effect": "ptc_fx_wave",
+  "effect_at": "screen",
+  "sfx": "sfx_mv_water",
+  "children": [
+    "spr_fx_wave",
+    "ptc_fx_wave"
+  ]
+}

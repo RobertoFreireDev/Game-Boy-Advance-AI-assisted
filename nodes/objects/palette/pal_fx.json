@@ -1,0 +1,25 @@
+{
+  "id": "pal_fx",
+  "kind": "object",
+  "type": "palette",
+  "name": "Effect colors",
+  "notes": "Shared colors of every move effect, the charge ring, the Alpha's crown and the flying shadow: outline, white, yellow, orange, red, light blue, blue, light green, green, light purple, purple, light grey, grey-brown, dark violet and sand.",
+  "colors": [
+    "#000000",
+    "#282830",
+    "#f8f8f8",
+    "#f8e858",
+    "#f8a030",
+    "#e04030",
+    "#a8e0f8",
+    "#4890e8",
+    "#b8f070",
+    "#58b030",
+    "#d8a8f8",
+    "#8848c0",
+    "#d0d0c8",
+    "#8c8070",
+    "#403058",
+    "#e8d090"
+  ]
+}

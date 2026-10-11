@@ -7,8 +7,11 @@
 
 // Clear BG0 and close everything (scene change).
 void ui_reset(void);
-// Show a HUD; it redraws itself whenever a game variable changes.
+// Show a HUD (replacing the one on screen); it redraws itself whenever a game variable changes.
 void ui_show_hud(const HudData *h);
+// Cover the screen behind the UI with a drifting pattern (an 8x8 or 16x16 icon) for `ticks`
+// (a sandstorm). The HUD stays readable on top. NULL or 0 ticks removes the cover.
+void ui_cover(const IconData *icon, int ticks);
 // Open a menu (closes any open dialog).
 void ui_open_menu(const MenuData *m);
 // Close the open menu.

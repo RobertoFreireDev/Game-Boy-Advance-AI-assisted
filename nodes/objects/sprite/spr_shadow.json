@@ -1,0 +1,22 @@
+{
+  "id": "spr_shadow",
+  "kind": "object",
+  "type": "sprite",
+  "name": "Flying shadow",
+  "notes": "The shadow on the ground while Gustling flies (FLY).",
+  "palette": "pal_fx",
+  "width": 16,
+  "height": 8,
+  "frames": {
+    "f0": [
+      "................",
+      "......eeee......",
+      "...eeeeeeeeee...",
+      "..eeeeeeeeeeee..",
+      "..eeeeeeeeeeee..",
+      "...eeeeeeeeee...",
+      "......eeee......",
+      "................"
+    ]
+  }
+}

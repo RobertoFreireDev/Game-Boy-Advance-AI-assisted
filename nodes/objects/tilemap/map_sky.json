@@ -1,0 +1,35 @@
+{
+  "id": "map_sky",
+  "kind": "object",
+  "type": "tilemap",
+  "name": "Title backdrop",
+  "notes": "A bright sky with clouds over rolling hills and a meadow: the background of the menu and the victory screen.",
+  "tileset": "ts_sky",
+  "layer": 3,
+  "parallax": 0,
+  "rows": [
+    "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "aaaaaaaaaaaaaaaaaaaaaaabcaaaaa",
+    "dddefghddddddddddddddijkklmddd",
+    "nnokkkkpnnnnnnnnnnnnnqrsstunnn",
+    "nnvwwwwxnnnnnnnnnnnnnnnnnnnnnn",
+    "yyyzABCyyyyyyyDEFGHyyyyyyyyyyy",
+    "IIIIIIIIIIIIIIJKLMNIIIIIIIIIII",
+    "IIIIIIIIIIIIIIIIIIIIIIIIIIIIII",
+    "OOOOOOOOOOOOOOOOOOOOOOOOOOOOOO",
+    "PPPPPPPPPPPPPPPPPPPPPPPPPPPPPP",
+    "QQQQQQQQQQQQQQQQQQQQQQQQQQQQQQ",
+    "RRRRRRRRRRRRRRRRRRRRRRRRRRRRRR",
+    "RRRRRRSTUVRRRRRRSTUVRRRRRRSWUV",
+    "XYZ0123445XYZ0123445XYZ0123445",
+    "6789#4444$6789#4444$6789#4444$",
+    "%&*&+-=@^~%&*&+-=@^~%&*&+-=@^~",
+    "!*!*!*!?:*!*!*!*!?:*!*!*!*!?:*",
+    ";!;!;!;!;!;!;!;!;!;!;!;!;!;!;!",
+    "!<!<!<!<!<!<!<!<!<!<!<!<!<!<!<",
+    ";!;!;!;!;!;!;!;!;!;!;!;!;!;!;!"
+  ],
+  "children": [
+    "ts_sky"
+  ]
+}

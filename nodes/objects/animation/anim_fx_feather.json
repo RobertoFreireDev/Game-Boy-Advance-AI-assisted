@@ -1,0 +1,20 @@
+{
+  "id": "anim_fx_feather",
+  "kind": "object",
+  "type": "animation",
+  "name": "Fly effect",
+  "notes": "Plays feathers bursting out.",
+  "sprite": "spr_fx_feather",
+  "loop": false,
+  "frames": [
+    {
+      "frame": "f0",
+      "ticks": 8
+    },
+    {
+      "frame": "f1",
+      "ticks": 8
+    }
+  ],
+  "events": []
+}

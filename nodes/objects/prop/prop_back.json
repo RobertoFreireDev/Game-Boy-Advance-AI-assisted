@@ -1,0 +1,25 @@
+{
+  "id": "prop_back",
+  "kind": "object",
+  "type": "prop",
+  "name": "Back to menu",
+  "notes": "Invisible: START goes back to the menu.",
+  "logic": [
+    {
+      "behavior": "button_actions",
+      "params": {
+        "button": "START",
+        "on_press": [
+          {
+            "do": "fade_out",
+            "ticks": 15
+          },
+          {
+            "do": "goto_scene",
+            "scene": "scn_menu"
+          }
+        ]
+      }
+    }
+  ]
+}

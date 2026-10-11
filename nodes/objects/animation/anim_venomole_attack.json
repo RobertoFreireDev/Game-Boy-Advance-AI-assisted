@@ -1,0 +1,16 @@
+{
+  "id": "anim_venomole_attack",
+  "kind": "object",
+  "type": "animation",
+  "name": "Venomole attack side",
+  "notes": "Venomole lunges facing sideways as it uses a move.",
+  "sprite": "spr_venomole",
+  "loop": false,
+  "frames": [
+    {
+      "frame": "atk_side",
+      "ticks": 12
+    }
+  ],
+  "events": []
+}

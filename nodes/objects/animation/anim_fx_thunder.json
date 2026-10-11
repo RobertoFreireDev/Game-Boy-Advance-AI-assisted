@@ -1,0 +1,28 @@
+{
+  "id": "anim_fx_thunder",
+  "kind": "object",
+  "type": "animation",
+  "name": "Thunder Shock effect",
+  "notes": "Plays a lightning bolt striking from above.",
+  "sprite": "spr_fx_thunder",
+  "loop": false,
+  "frames": [
+    {
+      "frame": "f0",
+      "ticks": 4
+    },
+    {
+      "frame": "f1",
+      "ticks": 4
+    },
+    {
+      "frame": "f2",
+      "ticks": 4
+    },
+    {
+      "frame": "f3",
+      "ticks": 4
+    }
+  ],
+  "events": []
+}

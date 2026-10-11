@@ -1,0 +1,22 @@
+{
+  "id": "sfx_cry_sproutle",
+  "kind": "object",
+  "type": "sfx",
+  "name": "Sproutle's cry",
+  "notes": "A gentle, low two-note hum. Plays when it is picked on the menu.",
+  "channel": "square2",
+  "duty": 2,
+  "priority": 1,
+  "steps": [
+    {
+      "note": "G4",
+      "ticks": 6,
+      "volume": 10
+    },
+    {
+      "note": "C5",
+      "ticks": 10,
+      "volume": 7
+    }
+  ]
+}

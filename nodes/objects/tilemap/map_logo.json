@@ -1,0 +1,35 @@
+{
+  "id": "map_logo",
+  "kind": "object",
+  "type": "tilemap",
+  "name": "Title logo",
+  "notes": "MONSTER / SURVIVAL in big chunky letters: yellow-to-orange fill, a cream highlight on top, blue rims and a dark outline with a drop shadow (original lettering). It drops in and bounces when the menu opens.",
+  "tileset": "ts_logo",
+  "layer": 2,
+  "parallax": 0,
+  "rows": [
+    "..............................",
+    "........abcdaefghijgjk........",
+    "........lmnopqrstuvwxy........",
+    "........zzABzzCBDECFzz........",
+    ".......fgGGjkGGHIGGfkG........",
+    ".......rsnoxyJKLMJKNqOP.......",
+    ".......CBABzzQRCFQRzzCF.......",
+    "..............................",
+    "..............................",
+    "..............................",
+    "..............................",
+    "..............................",
+    "..............................",
+    "..............................",
+    "..............................",
+    "..............................",
+    "..............................",
+    "..............................",
+    "..............................",
+    ".............................."
+  ],
+  "children": [
+    "ts_logo"
+  ]
+}

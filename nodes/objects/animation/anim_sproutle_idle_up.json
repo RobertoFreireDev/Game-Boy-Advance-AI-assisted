@@ -1,0 +1,16 @@
+{
+  "id": "anim_sproutle_idle_up",
+  "kind": "object",
+  "type": "animation",
+  "name": "Sproutle idle up",
+  "notes": "Sproutle standing, facing up (its back).",
+  "sprite": "spr_sproutle",
+  "loop": true,
+  "frames": [
+    {
+      "frame": "up",
+      "ticks": 60
+    }
+  ],
+  "events": []
+}

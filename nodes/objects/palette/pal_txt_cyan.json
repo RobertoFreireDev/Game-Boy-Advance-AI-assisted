@@ -1,0 +1,13 @@
+{
+  "id": "pal_txt_cyan",
+  "kind": "object",
+  "type": "palette",
+  "name": "Floating text: cyan",
+  "notes": "Colors of the floating words for NEW MOVE!: 1 = outline, 2 = letters, 3 = their lower half.",
+  "colors": [
+    "#000000",
+    "#082030",
+    "#d0f8f8",
+    "#58c8f0"
+  ]
+}

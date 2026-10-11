@@ -1,0 +1,28 @@
+{
+  "id": "anim_gustling_walk_up",
+  "kind": "object",
+  "type": "animation",
+  "name": "Gustling walk up",
+  "notes": "Gustling walking facing up (its back): a little hop.",
+  "sprite": "spr_gustling",
+  "loop": true,
+  "frames": [
+    {
+      "frame": "up",
+      "ticks": 8
+    },
+    {
+      "frame": "up_a",
+      "ticks": 8
+    },
+    {
+      "frame": "up",
+      "ticks": 8
+    },
+    {
+      "frame": "up_b",
+      "ticks": 8
+    }
+  ],
+  "events": []
+}

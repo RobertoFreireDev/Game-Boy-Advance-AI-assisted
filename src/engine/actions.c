@@ -8,6 +8,7 @@
 #include "camera.h"
 #include "ui.h"
 #include "save.h"
+#include "floattext.h"
 
 typedef struct {
     const Action *items;
@@ -22,7 +23,7 @@ typedef struct {
     Frame stack[SCRIPT_DEPTH];
 } Script;
 
-static Script s_scripts[MAX_SCRIPTS];
+EWRAM_BSS static Script s_scripts[MAX_SCRIPTS];      // EWRAM (IWRAM is full); cleared on scene load
 
 void scripts_clear(void) {
     for (int i = 0; i < MAX_SCRIPTS; i++) s_scripts[i].active = 0;
@@ -140,6 +141,20 @@ static int run(Script *s) {
             break;
         case ACT_CALL:
             if (a->fn) a->fn(self);
+            break;
+        case ACT_SHOW_HUD:
+            if (a->node >= 0) ui_show_hud((const HudData *)g_nodes[a->node].data);
+            break;
+        case ACT_FLASH_SCREEN:
+            scene_flash(a->a);
+            break;
+        case ACT_COVER_SCREEN:
+            ui_cover(a->node >= 0 ? (const IconData *)g_nodes[a->node].data : NULL, a->a);
+            break;
+        case ACT_FLOAT_TEXT:
+            if (self && g_game.battle)
+                ftext_show(fx_to_int(self->x), fx_to_int(self->y) - a->a, a->text, g_game.battle->font,
+                           a->node >= 0 ? (const PaletteData *)g_nodes[a->node].data : NULL);
             break;
         }
     }

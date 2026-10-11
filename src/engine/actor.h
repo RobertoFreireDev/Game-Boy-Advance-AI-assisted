@@ -29,6 +29,10 @@ typedef struct Actor {
     u8 logic_count;
     u8 facing_left;                 // last horizontal direction (mirrors the side-view art)
     u8 facing;                      // DIR_*: which way it looks (picks *_up / *_down animations)
+    s8 look_x, look_y;              // last 8-way direction it faced (-1..1 each; starts down)
+    u8 flash;                       // > 0: drawn with flash_pal for this many more ticks
+    const PaletteData *pal;         // drawn with these colors instead of its sprite's (NULL = own)
+    const PaletteData *flash_pal;   // colors of a short flash (a hit)
     u8 on_ground, was_on_ground;    // standing on something now / last frame
     u8 hit_wall;                    // bumped into a wall this frame
     u8 gravity;                     // falls (behaviors may turn it off, e.g. on ladders)
@@ -54,6 +58,9 @@ extern Actor g_actors[MAX_ACTORS];
 
 // Create an actor from an object node at world position (x, y). Returns NULL if the pool is full.
 Actor *actor_spawn(s16 node, s32 x, s32 y, const LogicEntry *logic, u8 logic_count, s16 inst);
+// Give an actor a (new) body: its look, hitbox and physics. Used at spawn, and by behaviors
+// that pick the body at run time (a monster takes its species' body).
+void actor_set_body(Actor *a, const BodyData *body);
 // Remove an actor at once.
 void actor_destroy(Actor *a);
 // Remove every actor (scene change).
@@ -65,7 +72,8 @@ void actor_touch(Actor *a, Actor *other);
 // Play a body animation slot, falling back to similar slots, then the default one.
 void actor_play_slot(Actor *a, u8 slot);
 // Turn to face a movement direction (dx, dy in -1..1); keeps the current facing on diagonals
-// when it is one of the two directions, otherwise prefers left/right.
+// when it is one of the two directions, otherwise prefers left/right. look_x / look_y keep
+// the full 8-way direction.
 void actor_face(Actor *a, int dx, int dy);
 // True for the slots drawn as seen from above/below (*_up, *_down): never mirrored.
 static inline int actor_slot_vertical(u8 slot) {

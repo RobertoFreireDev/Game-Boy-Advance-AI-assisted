@@ -1,0 +1,25 @@
+{
+  "id": "pal_mon_3",
+  "kind": "object",
+  "type": "palette",
+  "name": "Monster colors: Splashell and Gustling",
+  "notes": "Shared colors of Splashell and Gustling's sprites and portraits: 1 = dark outline, 2 = white, 3-8 = Splashell's light / mid / dark body colors and accents, 9-14 = Gustling's, 15 = pink blush.",
+  "colors": [
+    "#000000",
+    "#282830",
+    "#f8f8f8",
+    "#a8e0f8",
+    "#60a0e8",
+    "#3860b8",
+    "#98f0d8",
+    "#40b0a0",
+    "#287080",
+    "#f8fcff",
+    "#a8d8f8",
+    "#6898e0",
+    "#3860b0",
+    "#f8b848",
+    "#c87028",
+    "#f888a0"
+  ]
+}

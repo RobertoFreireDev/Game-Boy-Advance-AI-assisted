@@ -1,0 +1,16 @@
+{
+  "id": "anim_gustling_idle_up",
+  "kind": "object",
+  "type": "animation",
+  "name": "Gustling idle up",
+  "notes": "Gustling standing, facing up (its back).",
+  "sprite": "spr_gustling",
+  "loop": true,
+  "frames": [
+    {
+      "frame": "up",
+      "ticks": 60
+    }
+  ],
+  "events": []
+}

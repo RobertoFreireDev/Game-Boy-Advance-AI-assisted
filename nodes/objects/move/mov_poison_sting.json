@@ -1,0 +1,29 @@
+{
+  "id": "mov_poison_sting",
+  "kind": "object",
+  "type": "move",
+  "name": "Poison Sting",
+  "notes": "Venomole's move 1 (A). Stings the monster next to the user; half the time it is poisoned (1 damage a second for 5 s). Charge: 3 s. Wild Venomoles use it every 4 s.",
+  "title": "POISON STING",
+  "monster_type": "poison",
+  "shape": "single",
+  "range": 1,
+  "power": 10,
+  "accuracy": 95,
+  "charge": 180,
+  "status": {
+    "kind": "psn",
+    "chance": 50,
+    "ticks": [
+      300,
+      300
+    ]
+  },
+  "effect": "ptc_fx_sting",
+  "effect_at": "target",
+  "sfx": "sfx_mv_poison",
+  "children": [
+    "spr_fx_sting",
+    "ptc_fx_sting"
+  ]
+}

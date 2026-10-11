@@ -1,0 +1,21 @@
+{
+  "id": "mov_flamethrower",
+  "kind": "object",
+  "type": "move",
+  "name": "Flamethrower",
+  "notes": "Emberpup's move 3 (hold A). A stream of flame scorches the nearest monster up to 6 tiles away. Charge: 60 s.",
+  "title": "FLAMETHROWER",
+  "monster_type": "fire",
+  "shape": "single",
+  "range": 6,
+  "power": 40,
+  "accuracy": 100,
+  "charge": 3600,
+  "effect": "ptc_fx_flame",
+  "effect_at": "line",
+  "sfx": "sfx_mv_fire",
+  "children": [
+    "spr_fx_flame",
+    "ptc_fx_flame"
+  ]
+}

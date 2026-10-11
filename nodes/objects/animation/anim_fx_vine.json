@@ -1,0 +1,24 @@
+{
+  "id": "anim_fx_vine",
+  "kind": "object",
+  "type": "animation",
+  "name": "Vine Whip effect",
+  "notes": "Plays a whipping vine.",
+  "sprite": "spr_fx_vine",
+  "loop": false,
+  "frames": [
+    {
+      "frame": "f0",
+      "ticks": 4
+    },
+    {
+      "frame": "f1",
+      "ticks": 4
+    },
+    {
+      "frame": "f2",
+      "ticks": 4
+    }
+  ],
+  "events": []
+}

@@ -1,0 +1,16 @@
+{
+  "id": "anim_splashell_attack_up",
+  "kind": "object",
+  "type": "animation",
+  "name": "Splashell attack up",
+  "notes": "Splashell lunges facing up (its back) as it uses a move.",
+  "sprite": "spr_splashell",
+  "loop": false,
+  "frames": [
+    {
+      "frame": "atk_up",
+      "ticks": 12
+    }
+  ],
+  "events": []
+}
