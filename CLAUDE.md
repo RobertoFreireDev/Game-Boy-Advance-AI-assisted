@@ -347,7 +347,8 @@ groups them for humans. **What an actor does comes only from its `logic` list.**
   tiles to the nearest foe within range + dash, then hit it; `cone` = in front, 1 tile wide next to the
   user and 2 wider every tile (diagonal = the quarter between two directions); `circle` = all in range;
   `screen` = all in the camera view; `zone` = `zone {w, h, place: front|screen, count, delay, ticks
-  [min,max], every}` tiles on the ground that hurt every `every` ticks (0 = once, after `delay`; screen
+  [min,max], every}` tiles on the ground that hurt each foe the moment it steps on them, then again
+  every `every` ticks while it stays (each foe has its own timer; 0 = once, after `delay`; screen
   spots aim near foes in view; `range` = how close a foe must be to use it); `self` = `buff {kind: fly|
   phase, ticks}` (fly: only a `shadow` shows, can't be hit, passes over monsters; phase: passes through
   them). `status {kind: par|psn|tox|freeze, chance %, ticks [min,max]}` (paralysis: no moving or
@@ -356,11 +357,12 @@ groups them for humans. **What an actor does comes only from its `logic` list.**
   fire); the player's moves always go off (aiming is their job): with no foe the effect plays straight ahead
   at full range (`target` / `line`), nothing is hit and the charge is used.
   `effect` (particle) appears at `effect_at`: `target` (each one hit), `line` (from the user to it),
-  `user`, `axis` (each tile along the facing, `range` long), `tiles` (each zone tile, at every hit),
-  `center` (each zone's center when placed), `screen` (down the left edge of the view). `on_use[]` runs
-  as the user each time (e.g. `cover_screen` for a sandstorm). `sfx` plays when it goes off, except
-  the player's damaging moves that hit at once (not zone / self): they play only the result sound.
-  Each use plays one result sound for the best result over its targets (zones: per hurt).
+  `user`, `axis` (each tile along the facing, `range` long), `tiles` (each zone tile, flickering every
+  `every` ticks), `center` (each zone's center when placed), `screen` (down the left edge of the view).
+  `on_use[]` runs as the user each time (e.g. `cover_screen` for a sandstorm). `sfx` plays when it goes
+  off, except the player's damaging moves that hit at once (not zone / self): they play only the result
+  sound. Each use plays one result sound for the best result over its targets (zones: one per frame in
+  which they hurt someone).
 - **game.battle** (nodes.json): `types[]` (names, in order), `chart {attacker: {defender: multiplier}}`
   (missing = 1, 0–2.55), `font` (floating words, drawn as sprites; needs the digits), `texts {damage,
   miss, super, weak, par, psn, tox: {text, palette}}` (damage has only a palette), `flash_palette`

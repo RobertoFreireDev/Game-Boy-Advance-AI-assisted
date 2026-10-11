@@ -142,7 +142,7 @@ Moves unlock one at a time, in order, by level (section 7). Tuned so a normal ru
 - **Single target (`<= N tiles`):** auto-aims at the **nearest** enemy within N tiles. If none is in range, it fires straight ahead in the facing direction, N tiles long, and hits nothing.
 - **Triangular (cone):** fires in the facing direction. Starts 1 tile wide next to the player and widens by 1 tile on each side every tile of distance, up to N tiles. Hits every enemy inside.
 - **Circular:** hits every enemy within N tiles around the player.
-- **Ground zone:** places a hazard on tiles; damages enemies standing on it every 0.5 s while it lasts.
+- **Ground zone:** places a hazard on tiles while it lasts; it damages an enemy the moment the enemy steps on it, then again every 0.5 s while that enemy stays on it (each enemy has its own timer).
 - **Whole screen:** hits every enemy visible on the current camera view.
 
 **A player's move always counts as used.** If the player fires a move and it reaches no enemy, that was the player's mistake: the move still plays its animation and its charge restarts. No damage, no XP. (Enemies are different: they only attack when the player is within their move's reach.)
@@ -168,7 +168,7 @@ Moves unlock one at a time, in order, by level (section 7). Tuned so a normal ru
 | Move 1 | 10 | 95% |
 | Move 2 | 18 | 90% |
 | Move 3 (damaging) | 40 | 100% |
-| Ground zones (Ember, Acid) | 4 per tick (every 0.5 s) | 100% |
+| Ground zones (Ember, Acid) | 4 per hit (on touch, then every 0.5 s per enemy) | 100% |
 | Status-only moves (Growl, Fly, Phase, Sandstorm) | 0 | — |
 
 Accuracy roll fails → "MISS" over the target, no damage, no XP.

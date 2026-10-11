@@ -16,10 +16,15 @@ typedef struct {
     u8 active, team, level, pad;
     u16 power;
     s16 x, y, w, h;             // world pixels (top-left, size)
-    u16 delay, ticks, clock;
+    u16 delay, ticks;
+    u16 clock;                  // ticks to the next flicker of its effect
+    u16 age;                    // ticks since it landed
 } Zone;
 
 EWRAM_BSS static Zone s_zones[MAX_ZONES];        // cleared when a scene starts
+// Per zone and actor: the zone's age + 1 when it last hurt that actor (0 = not yet). Each
+// monster has its own timer: hurt the moment it steps on, then every `every` ticks while it stays.
+EWRAM_BSS static u16 s_zone_hurt_at[MAX_ZONES][MAX_ACTORS];
 static u32 s_zone_frame;
 static s16 s_zone_scene = -1;
 
@@ -236,6 +241,8 @@ static void zone_add(Actor *user, const MoveData *m, s32 tx, s32 ty) {
         z->ticks = (u16)rng_range(m->ticks_min, m->ticks_max);
         if (z->ticks == 0) z->ticks = 1;
         z->clock = 0;
+        z->age = 0;
+        for (int k = 0; k < MAX_ACTORS; k++) s_zone_hurt_at[i][k] = 0;
         if (m->effect_at == FX_AT_CENTER) fx(m, z->x + z->w / 2, z->y + z->h / 2);
         return;
     }
@@ -272,32 +279,23 @@ static void zones_place(Actor *user, const MoveData *m) {
     }
 }
 
-static void zone_hurt(Zone *z) {
+// The hit a zone deals: the ground never misses, and pushes away from the zone's middle.
+static void zone_hit_info(const Zone *z, MonsterHit *h) {
+    h->move = z->move;
+    h->team = z->team;
+    h->level = z->level;
+    h->roll = 0;
+    h->power = z->power;
+    h->from_x = z->x + z->w / 2;
+    h->from_y = z->y + z->h / 2;
+}
+
+// The zone's effect on each of its tiles (it flickers every `every` ticks while it lasts).
+static void zone_fx(const Zone *z) {
     const MoveData *m = z->move;
-    MonsterHit h;
-    h.move = m;
-    h.team = z->team;
-    h.level = z->level;
-    h.roll = 0;                     // the ground never misses
-    h.power = z->power;
-    h.from_x = z->x + z->w / 2;
-    h.from_y = z->y + z->h / 2;
-    if (m->effect_at == FX_AT_TILES)
-        for (int y = 0; y < z->h; y += 8)
-            for (int x = 0; x < z->w; x += 8) fx(m, z->x + x + 4, z->y + y + 4);
-    int best = HIT_NONE;
-    for (int i = 0; i < MAX_ACTORS; i++) {
-        Actor *t = &g_actors[i];
-        if (!t->active || !monster_targetable(t) || monster_team(t) == z->team) continue;
-        s32 l, tp, r, b;
-        actor_rect(t, &l, &tp, &r, &b);
-        if (tp < b - 7) tp = b - 7;                 // the ground hurts the feet: the body's bottom 8 px
-        if (l < z->x + z->w && r >= z->x && tp < z->y + z->h && b >= z->y) {
-            int res = monster_hit(t, &h);
-            if (res > best) best = res;
-        }
-    }
-    monster_hit_sound(&h, best);
+    if (m->effect_at != FX_AT_TILES) return;
+    for (int y = 0; y < z->h; y += 8)
+        for (int x = 0; x < z->w; x += 8) fx(m, z->x + x + 4, z->y + y + 4);
 }
 
 void moves_tick(void) {
@@ -309,16 +307,63 @@ void moves_tick(void) {
         s_zone_scene = scene;
         for (int i = 0; i < MAX_ZONES; i++) s_zones[i].active = 0;
     }
+    // 1. The zones on the ground this frame (landed, not waiting out their delay), and the box
+    //    around all of them: most monsters are far from every zone and one test skips them.
+    u8 live[MAX_ZONES];
+    s8 best[MAX_ZONES];
+    s32 zr[MAX_ZONES][4];                       // left, top, right, bottom (right / bottom excluded)
+    s32 bl = 0x7fffffff, bt = 0x7fffffff, br = -0x7fffffff, bb = -0x7fffffff;
+    int n = 0;
     for (int i = 0; i < MAX_ZONES; i++) {
         Zone *z = &s_zones[i];
         if (!z->active) continue;
         if (z->delay) { z->delay--; continue; }
         if (z->clock == 0) {
-            zone_hurt(z);
-            if (z->move->zone_every == 0) { z->active = 0; continue; }
+            zone_fx(z);
             z->clock = z->move->zone_every;
         }
+        s32 *e = zr[n];
+        e[0] = z->x; e[1] = z->y; e[2] = z->x + z->w; e[3] = z->y + z->h;
+        if (e[0] < bl) bl = e[0];
+        if (e[1] < bt) bt = e[1];
+        if (e[2] > br) br = e[2];
+        if (e[3] > bb) bb = e[3];
+        best[n] = HIT_NONE;
+        live[n++] = (u8)i;
+    }
+    if (!n) return;
+    // 2. Each monster standing on a zone is hurt, unless that zone hurt it less than `every` ago.
+    for (int k = 0; k < MAX_ACTORS; k++) {
+        Actor *t = &g_actors[k];
+        if (!t->active) continue;
+        s32 l = fx_to_int(t->x) + t->hb_x, r = l + t->hb_w - 1;      // like actor_rect, inline
+        if (l >= br || r < bl) continue;
+        s32 tp = fx_to_int(t->y) + t->hb_y, b = tp + t->hb_h - 1;
+        if (tp < b - 7) tp = b - 7;                 // the ground hurts the feet: the body's bottom 8 px
+        if (tp >= bb || b < bt) continue;
+        for (int j = 0; j < n; j++) {
+            const s32 *e = zr[j];
+            if (l >= e[2] || r < e[0] || tp >= e[3] || b < e[1]) continue;
+            Zone *z = &s_zones[live[j]];
+            u16 *at = &s_zone_hurt_at[live[j]][k];
+            if (*at && z->age + 1 - *at < z->move->zone_every) continue;   // still cooling down
+            if (!monster_targetable(t) || monster_team(t) == z->team) continue;
+            *at = (u16)(z->age + 1);
+            MonsterHit h;
+            zone_hit_info(z, &h);
+            int res = monster_hit(t, &h);
+            if (res > best[j]) best[j] = (s8)res;
+        }
+    }
+    // 3. One result sound per zone that hurt someone; then its clocks run on.
+    for (int j = 0; j < n; j++) {
+        Zone *z = &s_zones[live[j]];
+        MonsterHit h;
+        zone_hit_info(z, &h);
+        monster_hit_sound(&h, best[j]);
+        if (z->move->zone_every == 0) { z->active = 0; continue; }       // one hit, then gone
         z->clock--;
+        z->age++;
         if (--z->ticks == 0) z->active = 0;
     }
 }

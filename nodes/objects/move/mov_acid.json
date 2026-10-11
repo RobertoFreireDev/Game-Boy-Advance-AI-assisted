@@ -3,7 +3,7 @@
   "kind": "object",
   "type": "move",
   "name": "Acid",
-  "notes": "Venomole's move 2 (B). Spills acid on the 3x3 tiles in front of the user for 3 s; whatever stands in it is hurt every half second. Wild monsters only use it when the player is within 3 tiles; the player's goes off anyway. Charge: 10 s.",
+  "notes": "Venomole's move 2 (B). Spills acid on the 3x3 tiles in front of the user for 3 s; whatever steps in is hurt at once, then every half second while it stays (each monster has its own timer). Wild monsters only use it when the player is within 3 tiles; the player's goes off anyway. Charge: 10 s.",
   "title": "ACID",
   "monster_type": "poison",
   "shape": "zone",

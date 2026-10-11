@@ -3,7 +3,7 @@
   "kind": "object",
   "type": "move",
   "name": "Ember",
-  "notes": "Emberpup's move 1 (A). Sets the tile in front of the user on fire for 1-3 s; whatever stands in it burns every half second. Wild monsters only use it when the player is within 2 tiles; the player's goes off anyway. Charge: 3 s. Wild Emberpups use it every 4 s.",
+  "notes": "Emberpup's move 1 (A). Sets the tile in front of the user on fire for 1-3 s; whatever steps in burns at once, then every half second while it stays (each monster has its own timer). Wild monsters only use it when the player is within 2 tiles; the player's goes off anyway. Charge: 3 s. Wild Emberpups use it every 4 s.",
   "title": "EMBER",
   "monster_type": "fire",
   "shape": "zone",

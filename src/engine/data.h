@@ -238,7 +238,7 @@ typedef struct {
     u16 ticks_min, ticks_max;           // how long a zone or buff lasts (ticks)
     u8 dash;                            // dash: tiles moved toward the target first
     u8 zone_w, zone_h, zone_place;      // zone: size in tiles; ZONE_FRONT / ZONE_SCREEN
-    u8 zone_count, zone_every;          // zones placed; ticks between hits (0 = one hit)
+    u8 zone_count, zone_every;          // zones placed; ticks before a zone hurts the same monster again (0 = one hit)
     u16 zone_delay;                     // ticks before a zone hurts (a rock falling)
     u8 effect_at, pad;                  // FX_AT_*: where the effect particles appear
     const ParticleData *effect;         // NULL = none
