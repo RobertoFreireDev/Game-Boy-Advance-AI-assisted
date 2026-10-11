@@ -1,0 +1,52 @@
+{
+  "id": "sfx_hit_electric",
+  "kind": "object",
+  "type": "sfx",
+  "name": "Electric hit",
+  "notes": "The player's ELECTRIC move lands: a sharp jolt, a buzzing zap jumping high and low that crackles out.",
+  "channel": "square2",
+  "duty": 0,
+  "priority": 2,
+  "steps": [
+    {
+      "note": "C7",
+      "ticks": 1,
+      "volume": 14
+    },
+    {
+      "note": "F5",
+      "ticks": 1,
+      "volume": 14
+    },
+    {
+      "note": "A#6",
+      "ticks": 1,
+      "volume": 13
+    },
+    {
+      "note": "E5",
+      "ticks": 1,
+      "volume": 13
+    },
+    {
+      "note": "G#6",
+      "ticks": 1,
+      "volume": 12
+    },
+    {
+      "note": "D5",
+      "ticks": 1,
+      "volume": 11
+    },
+    {
+      "note": "F#6",
+      "ticks": 2,
+      "volume": 9
+    },
+    {
+      "note": "C5",
+      "ticks": 3,
+      "volume": 6
+    }
+  ]
+}

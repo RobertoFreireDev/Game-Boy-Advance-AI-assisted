@@ -1,0 +1,41 @@
+{
+  "id": "sfx_hit_ghost",
+  "kind": "object",
+  "type": "sfx",
+  "name": "Ghost hit",
+  "notes": "The player's GHOST move lands: an eerie shiver, a wobbly tone that sinks away (wave channel).",
+  "channel": "wave",
+  "priority": 2,
+  "steps": [
+    {
+      "note": "C#6",
+      "ticks": 2,
+      "volume": 4
+    },
+    {
+      "note": "G5",
+      "ticks": 2,
+      "volume": 4
+    },
+    {
+      "note": "C6",
+      "ticks": 2,
+      "volume": 3
+    },
+    {
+      "note": "F#5",
+      "ticks": 3,
+      "volume": 3
+    },
+    {
+      "note": "B5",
+      "ticks": 3,
+      "volume": 2
+    },
+    {
+      "note": "F5",
+      "ticks": 6,
+      "volume": 1
+    }
+  ]
+}

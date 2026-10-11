@@ -129,9 +129,15 @@ static void fx_area(Actor *user, const MoveData *m) {
     }
 }
 
+// Does the move's result make its sound? The player's damaging moves that hit at once play the
+// hit (by type) or miss sound instead of their own.
+static int result_sound_only(const Actor *user, const MoveData *m) {
+    return monster_team(user) == TEAM_PLAYER && m->power > 0 && m->shape != SHAPE_ZONE && m->shape != SHAPE_SELF;
+}
+
 // The move goes off: sound, attack pose, its actions.
 static void begin(Actor *user, const MoveData *m) {
-    if (m->sfx) audio_play_sfx(m->sfx);
+    if (m->sfx && !result_sound_only(user, m)) audio_play_sfx(m->sfx);
     actor_play_slot(user, ANIM_ATTACK);
     user->anim_lock = 10;
     scripts_start(m->on_use, user);
@@ -241,13 +247,18 @@ static void zone_hurt(Zone *z) {
     if (m->effect_at == FX_AT_TILES)
         for (int y = 0; y < z->h; y += 8)
             for (int x = 0; x < z->w; x += 8) fx(m, z->x + x + 4, z->y + y + 4);
+    int best = HIT_NONE;
     for (int i = 0; i < MAX_ACTORS; i++) {
         Actor *t = &g_actors[i];
         if (!t->active || !monster_targetable(t) || monster_team(t) == z->team) continue;
         s32 l, tp, r, b;
         actor_rect(t, &l, &tp, &r, &b);
-        if (l < z->x + z->w && r >= z->x && tp < z->y + z->h && b >= z->y) monster_hit(t, &h);
+        if (l < z->x + z->w && r >= z->x && tp < z->y + z->h && b >= z->y) {
+            int res = monster_hit(t, &h);
+            if (res > best) best = res;
+        }
     }
+    monster_hit_sound(&h, best);
 }
 
 void moves_tick(void) {
@@ -287,11 +298,14 @@ int moves_use(Actor *user, const MoveData *m) {
         if (m->shape == SHAPE_DASH) {
             dash(user, fx_to_int(f->x), fx_to_int(f->y), m->dash * 8);
             h = hit_from(user, m);
-            if (moves_tiles(user, f) > m->range) return 1;      // rushed in, but it got away
+            if (moves_tiles(user, f) > m->range) {              // rushed in, but it got away
+                monster_hit_sound(&h, HIT_MISS);
+                return 1;
+            }
         }
         t[0] = f;
         fx_targets(user, m, t, 1);
-        monster_hit(f, &h);
+        monster_hit_sound(&h, monster_hit(f, &h));
         return 1;
     }
     case SHAPE_CONE:
@@ -302,7 +316,12 @@ int moves_use(Actor *user, const MoveData *m) {
         begin(user, m);
         fx_area(user, m);
         fx_targets(user, m, t, n);
-        for (int k = 0; k < n; k++) monster_hit(t[k], &h);
+        int best = HIT_NONE;
+        for (int k = 0; k < n; k++) {
+            int res = monster_hit(t[k], &h);
+            if (res > best) best = res;
+        }
+        monster_hit_sound(&h, best);
         return 1;
     }
     case SHAPE_ZONE:

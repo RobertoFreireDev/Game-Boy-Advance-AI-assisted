@@ -1337,7 +1337,7 @@ def check_battle(p, r, b):
         r.err(where, "game.battle must be an object")
         return
     for k in b:
-        if k not in ("types", "chart", "font", "texts", "flash_palette", "par_palette", "sounds"):
+        if k not in ("types", "chart", "font", "texts", "flash_palette", "par_palette", "sounds", "player_hit_sounds"):
             r.err(where, "game.battle has unknown field '%s'" % k)
     types = b.get("types")
     if not isinstance(types, list) or not 1 <= len(types) <= 32 or not all(isinstance(t, str) and C.ID_RE.match(t) for t in types):
@@ -1408,6 +1408,15 @@ def check_battle(p, r, b):
             r.err(where, "game.battle.sounds has unknown event '%s' (use %s)" % (k, ", ".join(C.BATTLE_SOUNDS)))
         else:
             ref(v, "sfx", "sounds.%s" % k)
+    hits = b.get("player_hit_sounds", {})
+    if not isinstance(hits, dict):
+        r.err(where, "game.battle.player_hit_sounds must be {type: sfx}")
+        hits = {}
+    for k, v in hits.items():
+        if k not in types:
+            r.err(where, "game.battle.player_hit_sounds: '%s' is not one of the types" % k)
+        else:
+            ref(v, "sfx", "player_hit_sounds.%s" % k)
     if not species_nodes(p):
         r.warn(where, "game.battle is set but there are no species nodes")
 

@@ -1,0 +1,36 @@
+{
+  "id": "sfx_hit_rock",
+  "kind": "object",
+  "type": "sfx",
+  "name": "Rock hit",
+  "notes": "The player's ROCK move lands: a heavy stone smash, a deep crunch that rumbles.",
+  "channel": "noise",
+  "priority": 2,
+  "steps": [
+    {
+      "pitch": 3,
+      "ticks": 1,
+      "volume": 15
+    },
+    {
+      "pitch": 0,
+      "ticks": 3,
+      "volume": 15
+    },
+    {
+      "pitch": 2,
+      "ticks": 2,
+      "volume": 12
+    },
+    {
+      "pitch": 0,
+      "ticks": 4,
+      "volume": 10
+    },
+    {
+      "pitch": 1,
+      "ticks": 6,
+      "volume": 5
+    }
+  ]
+}

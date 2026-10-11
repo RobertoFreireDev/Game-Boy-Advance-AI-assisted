@@ -300,7 +300,7 @@
     }
   },
   "move_buttons": {
-    "description": "The player's 3 moves (from its species) on buttons. Each move recharges on its own timer (the move node's charge) from the moment it is unlocked: move 2 and move 3 unlock at a level. A fires move 1 when charged, B fires move 2, and holding A without touching the D-pad fills a ring of dots around the player: when it is full, move 3 fires (grey dots = move 3 is locked or still charging, nothing fires). A move with nothing in reach keeps its charge. HUD gauges read the charges through variables.",
+    "description": "The player's 3 moves (from its species) on buttons. Each move recharges on its own timer (the move node's charge) from the moment it is unlocked: move 2 and move 3 unlock at a level. A fires move 1 when charged, B fires move 2, and holding A without touching the D-pad fills a ring of dots around the player: when it is full, move 3 fires (grey dots = move 3 is locked or still charging, nothing fires). A move with nothing in reach keeps its charge. HUD gauges read the charges through variables. Sounds: a button whose move is still locked plays 'locked_sfx'; a ready move with nothing in reach plays 'miss_sfx' (and keeps its charge); what a move hits sounds by its type (game.battle.player_hit_sounds).",
     "params": {
       "level_var":         {"type": "var", "required": true, "description": "Game variable with the player's level."},
       "unlock_2":          {"type": "int", "default": 4, "description": "Level that unlocks move 2."},
@@ -315,7 +315,9 @@
       "ring":              {"type": "node:sprite", "default": "", "description": "One dot of the hold ring (frame 0 = unlit, frame 1 = lit); 8 dots go around the player. Empty = no ring."},
       "ring_off_palette":  {"type": "node:palette", "default": "", "description": "Colors of the ring when move 3 is locked or not charged (grey)."},
       "ring_radius":       {"type": "int", "default": 14, "description": "Distance of the ring dots from the player's middle (pixels)."},
-      "on_unlock":         {"type": "actions", "default": [], "description": "What happens when a move unlocks (NEW MOVE!)."}
+      "on_unlock":         {"type": "actions", "default": [], "description": "What happens when a move unlocks (NEW MOVE!)."},
+      "locked_sfx":        {"type": "node:sfx", "default": "", "description": "Sound when A or B is pressed but its move is still locked (an error buzz). Empty = silent."},
+      "miss_sfx":          {"type": "node:sfx", "default": "", "description": "Sound when a charged move is used but nothing is in reach (it doesn't fire and keeps its charge). Empty = silent."}
     }
   },
   "species_select": {

@@ -235,6 +235,13 @@ def build():
     if problem:
         print(problem)
         return 1
+    try:                                    # an emulator holding the old ROM blocks the write
+        if os.path.exists(os.path.join(C.ROOT, gba)):
+            with open(os.path.join(C.ROOT, gba), "r+b"):
+                pass
+    except OSError:
+        print("✖ %s is open in the emulator (mGBA). Close mGBA and build again." % gba)
+        return 1
     rc, out = run([tools.objcopy, "-O", "binary", elf, gba])
     if rc != 0:
         print(out.strip())

@@ -3,8 +3,8 @@
   "kind": "object",
   "type": "sfx",
   "name": "Super effective hit",
-  "notes": "A crunchy thud and a rising ping.",
-  "channel": "square2",
+  "notes": "A bright rising ping when a move is super effective. On square1, so for the player's hits it rings on top of the type's hit sound.",
+  "channel": "square1",
   "duty": 1,
   "priority": 2,
   "steps": [

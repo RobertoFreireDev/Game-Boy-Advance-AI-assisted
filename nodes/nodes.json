@@ -202,6 +202,17 @@
         "weak": "sfx_weak",
         "miss": "sfx_miss",
         "faint": "sfx_faint"
+      },
+      "player_hit_sounds": {
+        "normal": "sfx_hit_normal",
+        "fire": "sfx_hit_fire",
+        "water": "sfx_hit_water",
+        "electric": "sfx_hit_electric",
+        "grass": "sfx_hit_grass",
+        "poison": "sfx_hit_poison",
+        "flying": "sfx_hit_flying",
+        "ghost": "sfx_hit_ghost",
+        "rock": "sfx_hit_rock"
       }
     }
   },
@@ -499,6 +510,16 @@
     {"id": "sfx_mv_rock", "kind": "object", "type": "sfx", "path": "objects/sfx/sfx_mv_rock.json", "parent": null},
     {"id": "sfx_mv_sandstorm", "kind": "object", "type": "sfx", "path": "objects/sfx/sfx_mv_sandstorm.json", "parent": null},
     {"id": "sfx_mv_status", "kind": "object", "type": "sfx", "path": "objects/sfx/sfx_mv_status.json", "parent": null},
+    {"id": "sfx_error", "kind": "object", "type": "sfx", "path": "objects/sfx/sfx_error.json", "parent": null},
+    {"id": "sfx_hit_normal", "kind": "object", "type": "sfx", "path": "objects/sfx/sfx_hit_normal.json", "parent": null},
+    {"id": "sfx_hit_fire", "kind": "object", "type": "sfx", "path": "objects/sfx/sfx_hit_fire.json", "parent": null},
+    {"id": "sfx_hit_water", "kind": "object", "type": "sfx", "path": "objects/sfx/sfx_hit_water.json", "parent": null},
+    {"id": "sfx_hit_electric", "kind": "object", "type": "sfx", "path": "objects/sfx/sfx_hit_electric.json", "parent": null},
+    {"id": "sfx_hit_grass", "kind": "object", "type": "sfx", "path": "objects/sfx/sfx_hit_grass.json", "parent": null},
+    {"id": "sfx_hit_poison", "kind": "object", "type": "sfx", "path": "objects/sfx/sfx_hit_poison.json", "parent": null},
+    {"id": "sfx_hit_flying", "kind": "object", "type": "sfx", "path": "objects/sfx/sfx_hit_flying.json", "parent": null},
+    {"id": "sfx_hit_ghost", "kind": "object", "type": "sfx", "path": "objects/sfx/sfx_hit_ghost.json", "parent": null},
+    {"id": "sfx_hit_rock", "kind": "object", "type": "sfx", "path": "objects/sfx/sfx_hit_rock.json", "parent": null},
     {"id": "mus_menu", "kind": "object", "type": "music", "path": "objects/music/mus_menu.json", "parent": null},
     {"id": "mus_run", "kind": "object", "type": "music", "path": "objects/music/mus_run.json", "parent": null},
     {"id": "mus_victory", "kind": "object", "type": "music", "path": "objects/music/mus_victory.json", "parent": null},

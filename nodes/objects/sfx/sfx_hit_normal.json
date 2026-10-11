@@ -1,0 +1,31 @@
+{
+  "id": "sfx_hit_normal",
+  "kind": "object",
+  "type": "sfx",
+  "name": "Normal hit",
+  "notes": "The player's NORMAL move lands: a solid punch, a sharp smack that thumps down.",
+  "channel": "noise",
+  "priority": 2,
+  "steps": [
+    {
+      "pitch": 7,
+      "ticks": 1,
+      "volume": 15
+    },
+    {
+      "pitch": 4,
+      "ticks": 2,
+      "volume": 13
+    },
+    {
+      "pitch": 2,
+      "ticks": 3,
+      "volume": 9
+    },
+    {
+      "pitch": 1,
+      "ticks": 4,
+      "volume": 5
+    }
+  ]
+}

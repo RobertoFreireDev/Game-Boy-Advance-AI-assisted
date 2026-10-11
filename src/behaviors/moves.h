@@ -1,6 +1,7 @@
 // moves - what happens when a monster uses a move node: it finds its targets by the move's
 // shape (single, dash, cone, circle, screen, zone, self), plays its sound, effect and on_use
-// actions, and hits them (monster_hit). Zones stay on the ground and hurt over time.
+// actions, and hits them (monster_hit), then plays one sound for the best result (hit / miss).
+// Zones stay on the ground and hurt over time.
 // Distances are in tiles (8 px), measured as max(|dx|, |dy|) between the monsters' feet.
 #ifndef BHV_MOVES_H
 #define BHV_MOVES_H

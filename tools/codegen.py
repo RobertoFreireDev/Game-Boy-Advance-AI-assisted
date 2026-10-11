@@ -584,9 +584,14 @@ class Gen:
         words = ", ".join("{ %s, %s }" % (cstr(texts.get(k, {}).get("text")) if k != "damage" else "NULL",
                                           self.ptr(texts.get(k, {}).get("palette"))) for k in C.BATTLE_TEXTS)
         snd = b.get("sounds", {})
-        self.emit("const BattleData g_battle = { %d, %d, %s, %s, %s, %s, { %s }, %s, %s, { %s } };" % (
+        hits = b.get("player_hit_sounds") or {}
+        ph = "NULL"
+        if hits:
+            ph = self.sym("battle_player_hits")
+            self.emit("static const SfxData *const %s[] = { %s };" % (ph, ", ".join(self.ptr(hits.get(t)) for t in types)))
+        self.emit("const BattleData g_battle = { %d, %d, %s, %s, %s, %s, { %s }, %s, %s, { %s }, %s };" % (
             len(types), len(species), names, cs, ss, self.ptr(b["font"]), words, self.ptr(b.get("flash_palette")),
-            self.ptr(b.get("par_palette")), ", ".join(self.ptr(snd.get(k)) for k in C.BATTLE_SOUNDS)))
+            self.ptr(b.get("par_palette")), ", ".join(self.ptr(snd.get(k)) for k in C.BATTLE_SOUNDS), ph))
         return "&g_battle"
 
     def E_dialog(self, nid, n):

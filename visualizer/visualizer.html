@@ -230,6 +230,12 @@ const USED_BY = {};
     for (const t of seen) (USED_BY[t] = USED_BY[t] || []).push(id);
   }
 })();
+// Where game settings (nodes.json game.battle) name a node: id -> ["game.battle.sounds.hit", …].
+const GAME_USES = {};
+(function walk(v, path) {
+  if (typeof v === "string") { if (IDX[v]) (GAME_USES[v] = GAME_USES[v] || []).push(path); }
+  else if (v && typeof v === "object" && !Array.isArray(v)) for (const [k, x] of Object.entries(v)) walk(x, path + "." + k);
+})((D.game || {}).battle, "game.battle");
 
 // ======================================================================================
 // Pixels: palettes are quantized to 15-bit color exactly like the GBA.
@@ -841,9 +847,10 @@ function renderProps(id) {
   const kids = n.children || [];
   right.append(h("div", { class: "prop-sec" }, h("h4", {}, "Children (owned parts)"),
     kids.length ? h("div", {}, kids.map(k => h("div", {}, nodeLink(k)))) : h("div", { class: "small" }, "none")));
-  const used = USED_BY[id] || [];
+  const used = USED_BY[id] || [], gameUses = GAME_USES[id] || [];
   right.append(h("div", { class: "prop-sec" }, h("h4", {}, "Used by"),
-    used.length ? h("div", {}, used.map(k => h("div", {}, nodeLink(k)))) : h("div", { class: "small" }, id === (D.game || {}).start_scene ? "the game (start scene)" : "nothing")));
+    used.length || gameUses.length ? h("div", {}, used.map(k => h("div", {}, nodeLink(k))), gameUses.map(g => h("div", { class: "mono small" }, g + " (nodes.json)")))
+      : h("div", { class: "small" }, id === (D.game || {}).start_scene ? "the game (start scene)" : "nothing")));
   right.append(h("details", { class: "prop-sec" }, h("summary", {}, "Raw JSON"), h("pre", { class: "raw" }, JSON.stringify(n, null, 2))));
 }
 function copy(text) {
@@ -1320,6 +1327,9 @@ function moveTiles(n) {
 PREVIEW.move = (id, n) => {
   const out = [];
   const st = n.status || {}, z = n.zone || {}, bf = n.buff || {};
+  // Like moves.c: the player's damaging moves that hit at once play only their result sound.
+  const resultOnly = n.power > 0 && n.shape !== "zone" && n.shape !== "self";
+  const typeHit = (BATTLE.player_hit_sounds || {})[n.monster_type], hitSfx = typeHit || (BATTLE.sounds || {}).hit;
   const shapeText = {
     single: `the nearest monster up to ${n.range} tile(s) away`,
     dash: `rushes ${n.dash} tile(s) toward the nearest monster within ${(n.range || 0) + (n.dash || 0)} tiles, then hits it (${n.range} tile)`,
@@ -1341,7 +1351,11 @@ PREVIEW.move = (id, n) => {
     n.zone ? h("div", {}, `${z.w}×${z.h} tiles${z.place === "screen" ? ", on screen spots (each near a monster in view)" : ", in front"}${z.delay ? `, lands after ${(z.delay / 60).toFixed(1)} s` : ""}, lasts ${(z.ticks || [0, 0]).map(t => (t / 60).toFixed(1)).join("-")} s${z.every ? `, hurts every ${(z.every / 60).toFixed(1)} s` : ", one hit"}`) : null,
     n.buff ? h("div", { class: "k" }, "buff") : null,
     n.buff ? h("div", {}, `${bf.kind === "fly" ? "Fly: only a shadow shows, it can't be hit and passes over monsters" : "Phase: passes through monsters"} for ${(bf.ticks / 60).toFixed(1)} s`) : null,
-    h("div", { class: "k" }, "sound"), h("div", {}, n.sfx ? [h("button", { onclick: () => playSfx(n.sfx) }, "▶"), " ", nodeLink(n.sfx)] : "silent"));
+    h("div", { class: "k" }, "sound"), h("div", {}, n.sfx ? [h("button", { onclick: () => playSfx(n.sfx) }, "▶"), " ", nodeLink(n.sfx),
+      resultOnly ? h("span", { class: "small" }, " — wild monsters only: the player's use plays just the hit or miss sound") : null] : "silent"),
+    n.power ? h("div", { class: "k" }, "hit sound (player)") : null,
+    n.power ? h("div", {}, hitSfx ? [h("button", { onclick: () => playSfx(hitSfx) }, "▶"), " ", nodeLink(hitSfx),
+      h("span", { class: "small" }, typeHit ? ` — every ${String(n.monster_type).toUpperCase()} hit by the player (a miss: ${(BATTLE.sounds || {}).miss || "silent"})` : " — the battle hit sound")] : "silent") : null);
   out.push(card(`${n.title} — what it does`, kv, n.on_use && n.on_use.length ? h("div", {}, h("b", {}, "Also, each use: "), actionList(n.on_use)) : null));
   // Shape diagram
   const cells = moveTiles(n);

@@ -8,6 +8,9 @@
 
 enum { TEAM_PLAYER, TEAM_WILD };
 
+// What a hit did, from least to most (a move that hits several keeps the best for its sound).
+enum { HIT_NONE, HIT_MISS, HIT_WEAK, HIT_NORMAL, HIT_SUPER };
+
 // What one hit carries (a move used by a monster, or a zone it left on the ground).
 typedef struct {
     const MoveData *move;
@@ -36,7 +39,10 @@ int monster_targetable(const Actor *a);
 // True if b is a monster that a's moves can hit (the other team, and targetable).
 int monster_is_foe(const Actor *a, const Actor *b);
 // A move hits monster t: accuracy, damage, words, flash, push, status, XP, fainting.
-void monster_hit(Actor *t, const MonsterHit *h);
+// Returns HIT_*; it plays no sound (the caller plays one per use with monster_hit_sound).
+int monster_hit(Actor *t, const MonsterHit *h);
+// The sound of a hit result: MISS, or the player's type hit (+ the super ping), or hit / super / weak.
+void monster_hit_sound(const MonsterHit *h, int result);
 // Start a buff (BUFF_FLY / BUFF_PHASE) on a monster for `ticks`.
 void monster_buff(Actor *a, int buff, int ticks);
 

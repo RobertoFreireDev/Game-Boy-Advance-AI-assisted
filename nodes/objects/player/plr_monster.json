@@ -3,7 +3,7 @@
   "kind": "object",
   "type": "player",
   "name": "Player monster",
-  "notes": "The monster the human picked on the menu (its species comes from 'chosen'). The D-pad walks in 8 directions (diagonals as fast as straight). A = move 1, B = move 2, hold A with the D-pad untouched for 3 s = move 3 (a ring of dots fills; grey = not ready). Moves recharge on their own timers; move 2 unlocks at level 4 and move 3 at level 7. HP starts at 60; each level adds 8 to the max and to the current HP. START pauses. When its HP runs out it blinks away and the run ends.",
+  "notes": "The monster the human picked on the menu (its species comes from 'chosen'). The D-pad walks in 8 directions (diagonals as fast as straight). A = move 1, B = move 2, hold A with the D-pad untouched for 3 s = move 3 (a ring of dots fills; grey = not ready). Moves recharge on their own timers; move 2 unlocks at level 4 and move 3 at level 7. HP starts at 60; each level adds 8 to the max and to the current HP. Sounds: B before move 2 unlocks buzzes (sfx_error); a charged move with nothing in reach, or one that misses, whiffs (sfx_miss); a hit plays its type's hit sound (game.battle.player_hit_sounds), plus a ping when it is super effective. START pauses. When its HP runs out it blinks away and the run ends.",
   "logic": [
     {
       "behavior": "monster",
@@ -69,6 +69,8 @@
         "unlocked_var": "moves",
         "ring": "spr_ring_dot",
         "ring_off_palette": "pal_fx_off",
+        "locked_sfx": "sfx_error",
+        "miss_sfx": "sfx_miss",
         "on_unlock": [
           {
             "do": "wait",

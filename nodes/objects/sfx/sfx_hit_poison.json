@@ -1,0 +1,42 @@
+{
+  "id": "sfx_hit_poison",
+  "kind": "object",
+  "type": "sfx",
+  "name": "Poison hit",
+  "notes": "The player's POISON move lands: a gooey splat, a low sour squelch that bubbles down.",
+  "channel": "square2",
+  "duty": 3,
+  "priority": 2,
+  "steps": [
+    {
+      "note": "D#4",
+      "ticks": 2,
+      "volume": 12
+    },
+    {
+      "note": "A3",
+      "ticks": 2,
+      "volume": 12
+    },
+    {
+      "note": "C4",
+      "ticks": 2,
+      "volume": 10
+    },
+    {
+      "note": "F#3",
+      "ticks": 3,
+      "volume": 9
+    },
+    {
+      "note": "G3",
+      "ticks": 2,
+      "volume": 7
+    },
+    {
+      "note": "D#3",
+      "ticks": 5,
+      "volume": 5
+    }
+  ]
+}

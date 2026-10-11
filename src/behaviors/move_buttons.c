@@ -1,7 +1,8 @@
 // move_buttons - the player's moves on buttons. Each of the monster's 3 moves recharges on its
 // own timer once it is unlocked (by level). A fires move 1, B fires move 2, and holding A
 // without the D-pad fills a ring around the player: when it is full, move 3 fires. The HUD
-// gauges show each charge through game variables.
+// gauges show each charge through game variables. A button whose move is still locked buzzes;
+// a ready move with nothing in reach plays the miss sound (the hit sounds come from the move).
 #include "move_buttons.h"
 #include "monster.h"
 #include "moves.h"
@@ -10,6 +11,7 @@
 #include "engine/input.h"
 #include "engine/vars.h"
 #include "engine/actions.h"
+#include "engine/audio.h"
 #include "engine/sprites.h"
 
 enum { ST_C1, ST_C2, ST_C3, ST_HOLD, ST_MISC };     // misc: unlocked | blink timers << 8, 16, 24
@@ -26,6 +28,17 @@ static s32 gauge(u32 charge, u32 full, int unlocked, int blink) {
 
 static int unlocked_at(const Params_move_buttons *p, s32 level) {
     return 1 + (level >= p->unlock_2) + (level >= p->unlock_3);
+}
+
+static void sound(const SfxData *s) {
+    if (s) audio_play_sfx(s);
+}
+
+// Fire a ready move; nothing in reach = the miss sound. Returns 1 if it fired.
+static int fire(Actor *a, const Params_move_buttons *p, const MoveData *m) {
+    if (moves_use(a, m)) return 1;
+    sound(p->miss_sfx);
+    return 0;
 }
 
 void bhv_move_buttons_init(Actor *a, const void *params) {
@@ -70,8 +83,9 @@ void bhv_move_buttons_update(Actor *a, const void *params) {
     int can = monster_can_act(a);
     for (int i = 0; i < 2; i++) {                       // A = move 1, B = move 2
         const MoveData *m = sp->moves[i];
-        if (!input_pressed(i == 0 ? p->button_1 : p->button_2) || !can || i >= unlocked || !m) continue;
-        if (st[ST_C1 + i] >= m->charge && moves_use(a, m)) st[ST_C1 + i] = 0;
+        if (!input_pressed(i == 0 ? p->button_1 : p->button_2) || !can) continue;
+        if (i >= unlocked || !m) sound(p->locked_sfx);
+        else if (st[ST_C1 + i] >= m->charge && fire(a, p, m)) st[ST_C1 + i] = 0;
     }
 
     // Hold A, D-pad untouched: the ring fills; when full, move 3 (if it is ready).
@@ -81,7 +95,7 @@ void bhv_move_buttons_update(Actor *a, const void *params) {
     const MoveData *m3 = sp->moves[2];
     int ready = unlocked >= 3 && m3 && st[ST_C3] >= m3->charge;
     if (st[ST_HOLD] >= (u32)p->hold_ticks) {
-        if (ready && moves_use(a, m3)) st[ST_C3] = 0;
+        if (ready && fire(a, p, m3)) st[ST_C3] = 0;
         st[ST_HOLD] = 0;
     }
     if (st[ST_HOLD] && p->ring) {

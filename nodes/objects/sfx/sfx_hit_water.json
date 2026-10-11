@@ -1,0 +1,36 @@
+{
+  "id": "sfx_hit_water",
+  "kind": "object",
+  "type": "sfx",
+  "name": "Water hit",
+  "notes": "The player's WATER move lands: a wet splash that drops away (wave channel).",
+  "channel": "wave",
+  "priority": 2,
+  "steps": [
+    {
+      "note": "E6",
+      "ticks": 1,
+      "volume": 4
+    },
+    {
+      "note": "A5",
+      "ticks": 2,
+      "volume": 4
+    },
+    {
+      "note": "D5",
+      "ticks": 2,
+      "volume": 4
+    },
+    {
+      "note": "A4",
+      "ticks": 3,
+      "volume": 3
+    },
+    {
+      "note": "E4",
+      "ticks": 5,
+      "volume": 2
+    }
+  ]
+}

@@ -197,16 +197,16 @@ static void set_status(Actor *t, Monster *m, int status, int ticks) {
     else if (status == STATUS_TOX) say(t, BT_TOX, NULL, 1);
 }
 
-void monster_hit(Actor *t, const MonsterHit *h) {
+int monster_hit(Actor *t, const MonsterHit *h) {
     Monster *m = mon(t);
     const BattleData *b = g_game.battle;
     const MoveData *mv = h->move;
-    if (!m || !b || !actor_alive(t)) return;
+    int result = HIT_NONE;
+    if (!m || !b || !actor_alive(t)) return HIT_NONE;
     if (mv->power > 0) {
         if (h->roll && mv->accuracy < 100 && rng_range(1, 100) > mv->accuracy) {
             say(t, BT_MISS, NULL, 0);
-            battle_sound(BS_MISS);
-            return;
+            return HIT_MISS;
         }
         // damage = power x (1 + 0.15 x (level - 1)) x type x user power, rounded, at least 1
         int pct = b->chart[mv->type * b->type_count + m->species->type];
@@ -215,17 +215,32 @@ void monster_hit(Actor *t, const MonsterHit *h) {
         d = (d + 50) / 100;
         if (d < 1) d = 1;
         say_number(t, BT_DAMAGE, d);
-        if (pct > 100) { say(t, BT_SUPER, NULL, 1); battle_sound(BS_SUPER); }
-        else if (pct < 100) { say(t, BT_WEAK, NULL, 1); battle_sound(BS_WEAK); }
-        else battle_sound(BS_HIT);
+        if (pct > 100) { say(t, BT_SUPER, NULL, 1); result = HIT_SUPER; }
+        else if (pct < 100) { say(t, BT_WEAK, NULL, 1); result = HIT_WEAK; }
+        else result = HIT_NORMAL;
         t->flash_pal = b->flash_palette;
         t->flash = FLASH_TICKS;
         push(t, h->from_x, h->from_y, PUSH_PX);
         hurt(t, d);
-        if (!actor_alive(t)) return;
+        if (!actor_alive(t)) return result;
     }
     if (mv->status != STATUS_NONE && rng_range(1, 100) <= mv->status_chance)
         set_status(t, m, mv->status, rng_range(mv->status_min, mv->status_max));
+    return result;
+}
+
+void monster_hit_sound(const MonsterHit *h, int result) {
+    const BattleData *b = g_game.battle;
+    if (!b || result == HIT_NONE) return;
+    if (result == HIT_MISS) { battle_sound(BS_MISS); return; }
+    if (h->team == TEAM_PLAYER && b->player_hits) {     // the player's hits sound like their type
+        const SfxData *s = b->player_hits[h->move->type];
+        if (s) audio_play_sfx(s);
+        else battle_sound(BS_HIT);
+        if (result == HIT_SUPER) battle_sound(BS_SUPER);
+        return;
+    }
+    battle_sound(result == HIT_SUPER ? BS_SUPER : result == HIT_WEAK ? BS_WEAK : BS_HIT);
 }
 
 // ---- buffs (Fly, Phase) ----------------------------------------------------------------

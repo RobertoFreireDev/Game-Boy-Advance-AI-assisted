@@ -1,0 +1,36 @@
+{
+  "id": "sfx_hit_flying",
+  "kind": "object",
+  "type": "sfx",
+  "name": "Flying hit",
+  "notes": "The player's FLYING move lands: a rush of wind that ends in a slap.",
+  "channel": "noise",
+  "priority": 2,
+  "steps": [
+    {
+      "pitch": 13,
+      "ticks": 2,
+      "volume": 7
+    },
+    {
+      "pitch": 12,
+      "ticks": 2,
+      "volume": 11
+    },
+    {
+      "pitch": 9,
+      "ticks": 1,
+      "volume": 14
+    },
+    {
+      "pitch": 11,
+      "ticks": 3,
+      "volume": 9
+    },
+    {
+      "pitch": 13,
+      "ticks": 5,
+      "volume": 4
+    }
+  ]
+}
