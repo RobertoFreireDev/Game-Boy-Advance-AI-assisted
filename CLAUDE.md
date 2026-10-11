@@ -796,3 +796,5 @@ The AI runs the Python scripts directly; the `.bat` files exist for the human.
 - **SFX**: short (≤ 30 ticks), distinct per event.
 - **Music**: melody on square1, harmony on square2, bass on wave, drums on noise; melodies in C3–C7;
   build songs from short patterns reused in `order`.
+- **Music sits under the sound effects**: about half their volume (melody ≤ 6, harmony and drums ≤ 3,
+  wave ≤ 2), so every hit, miss and menu sound is heard over the song.
