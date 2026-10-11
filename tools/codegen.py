@@ -267,8 +267,9 @@ class Gen:
             words.extend(image_tiles(rows))
         s = self.sym(nid + "_tiles")
         self.emit("static const u32 %s[] = {\n%s\n};" % (s, u32_array(words)))
-        self.emit("const SpriteData node_%s = { %s, %d, %d, %d, %d, %d, %d, %s };" % (
-            nid, self.ptr(n["palette"]), w, h, shape, size, (w // 8) * (h // 8), len(n["frames"]), s))
+        self.emit("const SpriteData node_%s = { %s, %d, %d, %d, %d, %d, %d, %s, %d };" % (
+            nid, self.ptr(n["palette"]), w, h, shape, size, (w // 8) * (h // 8), len(n["frames"]), s,
+            1 if C.sprite_streams(n) else 0))
 
     def E_tileset(self, nid, n):
         words = [0] * 8
@@ -705,6 +706,9 @@ def gen_node_ids(p):
     enum("Floating battle words", ["BT_%s" % up(s) for s in C.BATTLE_TEXTS], "BT_COUNT")
     enum("Battle sounds", ["BS_%s" % up(s) for s in C.BATTLE_SOUNDS], "BS_COUNT")
     out.append("#define SPECIES_COUNT %d\n" % sum(1 for e in p.index if e.get("type") == "species"))
+    sprites = [n for n in p.nodes.values() if n.get("type") == "sprite"]
+    out.append("// OBJ tiles of a streaming slot: the largest frame of a sheet that streams (0 = none)")
+    out.append("#define STREAM_SLOT_TILES %d\n" % C.stream_slot_tiles(sprites))
     out.append("#define GAME_SAVE %d\n" % (1 if p.game.get("save") else 0))
     out.append("#endif\n")
     return "\n".join(out)

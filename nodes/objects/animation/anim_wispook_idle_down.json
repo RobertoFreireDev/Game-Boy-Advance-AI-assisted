@@ -3,13 +3,49 @@
   "kind": "object",
   "type": "animation",
   "name": "Wispook idle down",
-  "notes": "Wispook standing, facing down (its front).",
+  "notes": "Wispook hovering facing down (its front): it bobs slowly up and down and blinks now and then. Loops.",
   "sprite": "spr_wispook",
   "loop": true,
   "frames": [
     {
       "frame": "down",
-      "ticks": 60
+      "ticks": 14
+    },
+    {
+      "frame": "down_float_u",
+      "ticks": 18
+    },
+    {
+      "frame": "down",
+      "ticks": 14
+    },
+    {
+      "frame": "down_float_d",
+      "ticks": 18
+    },
+    {
+      "frame": "down",
+      "ticks": 14
+    },
+    {
+      "frame": "down_float_u",
+      "ticks": 18
+    },
+    {
+      "frame": "down",
+      "ticks": 8
+    },
+    {
+      "frame": "down_blink",
+      "ticks": 6
+    },
+    {
+      "frame": "down",
+      "ticks": 8
+    },
+    {
+      "frame": "down_float_d",
+      "ticks": 18
     }
   ],
   "events": []

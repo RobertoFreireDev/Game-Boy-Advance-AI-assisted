@@ -3,10 +3,10 @@
   "kind": "object",
   "type": "palette",
   "name": "Emberpup Alpha colors",
-  "notes": "The rare colors Emberpup wears when it is the Alpha (the boss of the run): the same slots as its sprite's palette, with Emberpup's own colors changed.",
+  "notes": "The rare colors Emberpup wears when it is the Alpha (the boss of the run): the same slots as its sprite's palette, with Emberpup's own 6 colors changed.",
   "colors": [
     "#000000",
-    "#282830",
+    "#202030",
     "#f8f8f8",
     "#88c8f8",
     "#3878e0",
@@ -14,12 +14,12 @@
     "#f8f8f8",
     "#98e0f8",
     "#e8f0ff",
-    "#f8f090",
-    "#f0d038",
-    "#c09020",
-    "#a86030",
-    "#683818",
-    "#fff8e0",
-    "#f888a0"
+    "#f8f080",
+    "#f0d030",
+    "#c08820",
+    "#c07038",
+    "#784020",
+    "#fff8d8",
+    "#f88898"
   ]
 }

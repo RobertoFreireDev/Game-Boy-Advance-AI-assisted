@@ -3,7 +3,7 @@
   "kind": "object",
   "type": "sprite",
   "name": "Charge ring dot",
-  "notes": "One dot of the ring around the player while A is held: frame 0 unlit, frame 1 lit. 8 of them fill clockwise.",
+  "notes": "One dot of the ring around the player while R is held: frame 0 unlit (small orange), frame 1 lit (big yellow with a glint). 8 of them fill clockwise. Every frame keeps a 1 px empty border, so the picture is never cut at the edge of its sprite.",
   "palette": "pal_fx",
   "width": 8,
   "height": 8,
@@ -19,14 +19,14 @@
       "........"
     ],
     "f1": [
-      "...11...",
-      "..1331..",
+      "........",
+      "..1111..",
       ".133331.",
-      "13323331",
-      "13333331",
+      ".132231.",
+      ".132231.",
       ".133331.",
-      "..1331..",
-      "...11..."
+      "..1111..",
+      "........"
     ]
   }
 }

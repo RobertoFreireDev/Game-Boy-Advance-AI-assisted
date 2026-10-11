@@ -505,11 +505,12 @@ def scene_budget(c, insts):
             add_object(inst["object"], inst)
     for a in re.findall(r"'do': 'spawn', [^}]*'object': '(\w+)'", str(c.n.get("on_start", []))):
         add_object(a)                                   # things the scene spawns when it starts
-    tiles = 0
-    for s in sprites:
-        sp = p.nodes[s]
-        if isinstance(sp.get("width"), int) and isinstance(sp.get("height"), int):
-            tiles += (sp["width"] // 8) * (sp["height"] // 8) * len(sp.get("frames", {}) or {})
+    # Sheets kept whole, plus the slots streamed sheets load their frames into (reserved by the
+    # engine whenever the game has one: src/engine/sprites.iwram.c).
+    limits = C.read_engine_limits()
+    tiles = sum(C.sprite_tiles(p.nodes[s]) for s in sprites if not C.sprite_streams(p.nodes[s], limits))
+    all_sprites = [n for n in p.nodes.values() if n.get("type") == "sprite"]
+    tiles += limits.get("STREAM_SLOTS", 0) * C.stream_slot_tiles(all_sprites, limits)
     if tiles > 1024:
         c.err("sprites in this scene need %d OBJ tiles; the GBA has 1024" % tiles)
     obj_pals.discard(None)
@@ -553,8 +554,8 @@ def V_sprite(c):
         if not C.ID_RE.match(name):
             c.err("frame name '%s' must be snake_case" % name)
         c.pixels(rows, w, h, pal, "frames.%s" % name)
-    if w and h and len(frames) * (w // 8) * (h // 8) > 1024:
-        c.err("this sheet needs more than the 1024 OBJ tiles the GBA has")
+    if w and h and len(frames) > 0xFFFF:
+        c.err("this sheet has more than 65535 frames")   # a sheet bigger than VRAM streams (C.sprite_streams)
 
 
 def V_tileset(c):

@@ -3,7 +3,7 @@
   "kind": "object",
   "type": "particle",
   "name": "Surf effect",
-  "notes": "A wave rolling across the screen from the left edge, drawn in front of the monsters.",
+  "notes": "A wall of water rolling across the screen from the left edge (spray behind, a foam crest in front), drawn in front of the monsters.",
   "animation": "anim_fx_wave",
   "mode": "burst",
   "count": 1,

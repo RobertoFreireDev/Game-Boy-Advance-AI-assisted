@@ -3,7 +3,7 @@
   "kind": "object",
   "type": "particle",
   "name": "Lick effect",
-  "notes": "A pink tongue swipe, drawn in front of the monsters.",
+  "notes": "A purple tongue swipe, drawn in front of the monsters.",
   "animation": "anim_fx_lick",
   "mode": "burst",
   "count": 1,

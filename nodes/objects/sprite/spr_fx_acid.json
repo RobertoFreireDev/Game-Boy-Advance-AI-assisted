@@ -3,50 +3,50 @@
   "kind": "object",
   "type": "sprite",
   "name": "Acid effect",
-  "notes": "Frames of bubbling acid on the ground.",
+  "notes": "Acid's puddle on one tile of the ground: purple acid with a green bubble that swells and pops. Every frame keeps a 1 px empty border, so the picture is never cut at the edge of its sprite.",
   "palette": "pal_fx",
   "width": 8,
   "height": 8,
   "frames": {
     "f0": [
       "........",
-      ".11.....",
-      "18811...",
-      "182bb11.",
-      "1b8888b1",
-      "b888888b",
-      "1bb88bb1",
-      ".11bb11."
+      "........",
+      "...ee...",
+      "..ebbe..",
+      ".eb8abe.",
+      "..ebbe..",
+      "...ee...",
+      "........"
     ],
     "f1": [
-      "....11..",
-      "...1881.",
-      "...1821.",
-      ".11bb11.",
-      "1b8888b1",
-      "b888888b",
-      "1bb88bb1",
-      ".11bb11."
+      "........",
+      "........",
+      "...ee...",
+      "..e8be..",
+      ".eb8abe.",
+      "..ebbe..",
+      "...ee...",
+      "........"
     ],
     "f2": [
-      ".1881...",
-      ".1821...",
-      "..111...",
-      ".11bb11.",
-      "1b8888b1",
-      "b888888b",
-      "1bb88bb1",
-      ".11bb11."
+      "........",
+      "..e.e...",
+      ".e8e8e..",
+      "..ebbe..",
+      ".ebaabe.",
+      "..ebbe..",
+      "...ee...",
+      "........"
     ],
     "f3": [
       "........",
-      ".....11.",
-      "...11881",
-      ".11bb821",
-      "1b8888b1",
-      "b888888b",
-      "1bb88bb1",
-      ".11bb11."
+      "........",
+      "...ee...",
+      "..ebbe..",
+      ".ebaa8e.",
+      "..ebbe..",
+      "...ee...",
+      "........"
     ]
   }
 }

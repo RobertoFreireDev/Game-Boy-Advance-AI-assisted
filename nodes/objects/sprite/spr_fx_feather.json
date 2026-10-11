@@ -3,30 +3,30 @@
   "kind": "object",
   "type": "sprite",
   "name": "Fly effect",
-  "notes": "Frames of feathers bursting out.",
+  "notes": "Fly's feathers floating away: a white feather at 2 angles. Every frame keeps a 1 px empty border, so the picture is never cut at the edge of its sprite.",
   "palette": "pal_fx",
   "width": 8,
   "height": 8,
   "frames": {
     "f0": [
-      "......1.",
-      ".....121",
-      "....1221",
-      "...12c1.",
-      "..12c1..",
+      "........",
+      "....11..",
+      "...1221.",
+      "..122c1.",
+      ".122c1..",
       ".12c1...",
-      "1cc1....",
-      ".1......"
+      "..11....",
+      "........"
     ],
     "f1": [
-      ".1......",
-      "121.....",
-      "1221....",
-      ".1c21...",
-      "..1c21..",
+      "........",
+      "..11....",
+      ".1221...",
+      ".1c221..",
+      "..1c221.",
       "...1c21.",
-      "....1cc1",
-      "......1."
+      "....11..",
+      "........"
     ]
   }
 }

@@ -3,7 +3,7 @@
   "kind": "object",
   "type": "species",
   "name": "Venomole",
-  "notes": "Venomole: a round purple mole with a pink snout and toxic-green claws. Type POISON. Moves: Poison Sting (A), Acid (B) and Toxic (hold R). It can be the player, and the 8 species that aren't picked live on the map.",
+  "notes": "Venomole: a plump purple mole with a pink snout and big lime digging claws. Type POISON. Moves: Poison Sting (A), Acid (B) and Toxic (hold R). It can be the player, and the 8 species that aren't picked live on the map.",
   "title": "VENOMOLE",
   "monster_type": "poison",
   "body": "body_venomole",

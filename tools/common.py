@@ -300,12 +300,32 @@ def read_engine_limits():
     try:
         with open(path, "r", encoding="utf-8") as f:
             for line in f:
-                m = re.match(r"\s*#define\s+(MAX_\w+|BSTATE_\w+|MOVE_\w+)\s+(\d+)", line)
+                m = re.match(r"\s*#define\s+(MAX_\w+|BSTATE_\w+|MOVE_\w+|STREAM_\w+)\s+(\d+)", line)
                 if m:
                     limits[m.group(1)] = int(m.group(2))
     except OSError:
         pass
     return limits
+
+
+def sprite_tiles(n):
+    """OBJ tiles a sprite sheet takes when kept whole in VRAM (every frame)."""
+    w, h, frames = n.get("width"), n.get("height"), n.get("frames") or {}
+    if not isinstance(w, int) or not isinstance(h, int):
+        return 0
+    return (w // 8) * (h // 8) * len(frames)
+
+
+def sprite_streams(n, limits=None):
+    """Does this sheet stream (too many tiles to keep whole: only the frames on screen sit in VRAM)?"""
+    limits = limits if limits is not None else read_engine_limits()
+    return sprite_tiles(n) > limits.get("STREAM_MIN_TILES", 1 << 30)
+
+
+def stream_slot_tiles(sprites, limits=None):
+    """OBJ tiles of one streaming slot: the largest frame of a streamed sheet (0 = none streams)."""
+    limits = limits if limits is not None else read_engine_limits()
+    return max([(n["width"] // 8) * (n["height"] // 8) for n in sprites if sprite_streams(n, limits)] or [0])
 
 
 # ---- what a move's effect draws (codegen bakes it in, the visualizer gets it from bundle.py) ----

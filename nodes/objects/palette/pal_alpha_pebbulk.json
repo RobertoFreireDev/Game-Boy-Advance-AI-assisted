@@ -3,23 +3,23 @@
   "kind": "object",
   "type": "palette",
   "name": "Pebbulk Alpha colors",
-  "notes": "The rare colors Pebbulk wears when it is the Alpha (the boss of the run): the same slots as its sprite's palette, with Pebbulk's own colors changed.",
+  "notes": "The rare colors Pebbulk wears when it is the Alpha (the boss of the run): the same slots as its sprite's palette, with Pebbulk's own 6 colors changed.",
   "colors": [
     "#000000",
-    "#282830",
+    "#202030",
     "#f8f8f8",
-    "#fff4d0",
-    "#f0d098",
-    "#c09060",
-    "#f8b0b8",
-    "#b07050",
+    "#fff8e8",
+    "#f0d8a8",
+    "#c89c68",
+    "#f8a8b8",
+    "#b07848",
     "#704830",
     "#f0d898",
     "#d0a850",
     "#906820",
     "#f8f8a8",
     "#e8b830",
-    "#604010",
-    "#f888a0"
+    "#a07010",
+    "#f88898"
   ]
 }

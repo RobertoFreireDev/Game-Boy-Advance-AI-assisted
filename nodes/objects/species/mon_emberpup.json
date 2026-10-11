@@ -3,7 +3,7 @@
   "kind": "object",
   "type": "species",
   "name": "Emberpup",
-  "notes": "Emberpup: a small red puppy with a cream muzzle and a flame for a tail tip. Type FIRE. Moves: Ember (A), Fire Spin (B) and Flamethrower (hold R). It can be the player, and the 8 species that aren't picked live on the map.",
+  "notes": "Emberpup: a red fox-puppy with a cream muzzle and chest and a flame at the tip of its tail. Type FIRE. Moves: Ember (A), Fire Spin (B) and Flamethrower (hold R). It can be the player, and the 8 species that aren't picked live on the map.",
   "title": "EMBERPUP",
   "monster_type": "fire",
   "body": "body_emberpup",

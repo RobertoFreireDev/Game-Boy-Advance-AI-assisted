@@ -3,7 +3,7 @@
   "kind": "object",
   "type": "particle",
   "name": "Night Shade effect",
-  "notes": "Dark wisps rising, drawn in front of the monsters.",
+  "notes": "A dark shadow that grows spikes and glowing eyes, then breaks into wisps, drawn in front of the monsters.",
   "animation": "anim_fx_shade",
   "mode": "burst",
   "count": 1,

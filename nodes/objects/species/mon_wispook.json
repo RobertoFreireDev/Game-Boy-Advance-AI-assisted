@@ -3,7 +3,7 @@
   "kind": "object",
   "type": "species",
   "name": "Wispook",
-  "notes": "Wispook: a floating violet wisp with a little cloth tail. Type GHOST. Moves: Lick (A), Night Shade (B) and Phase (hold R). It can be the player, and the 8 species that aren't picked live on the map.",
+  "notes": "Wispook: a floating lilac ghost with big dark eyes, little arms and a scalloped wispy hem. Type GHOST. Moves: Lick (A), Night Shade (B) and Phase (hold R). It can be the player, and the 8 species that aren't picked live on the map.",
   "title": "WISPOOK",
   "monster_type": "ghost",
   "body": "body_wispook",

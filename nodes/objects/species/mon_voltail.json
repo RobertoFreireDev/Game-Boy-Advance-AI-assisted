@@ -3,7 +3,7 @@
   "kind": "object",
   "type": "species",
   "name": "Voltail",
-  "notes": "Voltail: a yellow ferret with a brown eye mask and a zigzag lightning tail. Type ELECTRIC. Moves: Thunder Shock (A), Spark (B) and Thunderbolt (hold R). It can be the player, and the 8 species that aren't picked live on the map.",
+  "notes": "Voltail: a yellow ferret with a brown bandit mask and a lightning-bolt tail. Type ELECTRIC. Moves: Thunder Shock (A), Spark (B) and Thunderbolt (hold R). It can be the player, and the 8 species that aren't picked live on the map.",
   "title": "VOLTAIL",
   "monster_type": "electric",
   "body": "body_voltail",

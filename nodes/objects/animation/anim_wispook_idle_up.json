@@ -3,13 +3,45 @@
   "kind": "object",
   "type": "animation",
   "name": "Wispook idle up",
-  "notes": "Wispook standing, facing up (its back).",
+  "notes": "Wispook hovering facing up (its back): it bobs slowly up and down. Loops.",
   "sprite": "spr_wispook",
   "loop": true,
   "frames": [
     {
       "frame": "up",
-      "ticks": 60
+      "ticks": 14
+    },
+    {
+      "frame": "up_float_u",
+      "ticks": 18
+    },
+    {
+      "frame": "up",
+      "ticks": 14
+    },
+    {
+      "frame": "up_float_d",
+      "ticks": 18
+    },
+    {
+      "frame": "up",
+      "ticks": 14
+    },
+    {
+      "frame": "up_float_u",
+      "ticks": 18
+    },
+    {
+      "frame": "up",
+      "ticks": 8
+    },
+    {
+      "frame": "up",
+      "ticks": 8
+    },
+    {
+      "frame": "up_float_d",
+      "ticks": 18
     }
   ],
   "events": []

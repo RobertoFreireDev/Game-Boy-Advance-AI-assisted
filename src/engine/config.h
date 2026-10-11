@@ -12,6 +12,8 @@
 #define SCRIPT_DEPTH    6       // nested if_var / if_chance levels inside one action list
 #define MAX_SPRITE_SHEETS 32    // different sprite sheets in OBJ VRAM at once
 #define MAX_OBJ_TILES   1024    // OBJ VRAM tiles (32 KB, 4bpp)
+#define STREAM_MIN_TILES 64     // a sprite sheet with more OBJ tiles than this streams: only the frames on screen sit in VRAM
+#define STREAM_SLOTS    48      // frames of streamed sheets in OBJ VRAM at once (each slot = the largest streamed frame)
 #define MAX_ICONS       24      // different icons in UI VRAM at once
 #define MAX_UPGRADE_CHOICES 3   // cards on a level-up (upgrade) menu
 #define MAX_QUEUED_SPRITES 24  // extra sprites behaviors draw each frame (portraits, rings, crowns)

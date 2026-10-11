@@ -3,7 +3,7 @@
   "kind": "object",
   "type": "particle",
   "name": "Flamethrower effect",
-  "notes": "Puffs of flame along the way, drawn in front of the monsters.",
+  "notes": "Flames flaring up along the way, drawn in front of the monsters.",
   "animation": "anim_fx_flame",
   "mode": "burst",
   "count": 1,

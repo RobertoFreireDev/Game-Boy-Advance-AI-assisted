@@ -46,6 +46,7 @@ typedef struct {
     u8 width, height, shape, size;      // pixels; OBJ shape/size bits
     u16 tiles_per_frame, frame_count;
     const u32 *tiles;                   // 4bpp, 8 words per tile, frames back to back
+    u8 stream;                          // 1: too big to keep whole in VRAM, frames load as they show
 } SpriteData;
 
 #define TILE_SOLID   1

@@ -646,7 +646,8 @@ src/engine/
 ├── camera.c/.h    follow target, clamp to bounds, shake
 ├── bg.c/.h        tiles/palettes upload, tilemap scrolling, streaming for big maps, layer offsets
 ├── sprites.iwram.c/.h OAM shadow buffer and OBJ VRAM allocation, per-actor colors (flash, Alpha),
-│                      a queue of extra sprites behaviors draw (portraits, rings, crowns)
+│                      a queue of extra sprites behaviors draw (portraits, rings, crowns); big
+│                      sheets stream (only the frames on screen sit in VRAM, see the VRAM plan)
 ├── audio.c/.h     PSG driver: music sequencer + sfx
 ├── ui.c/.h        text, hud, menus (incl. upgrade cards), dialogs
 ├── actions.c/.h   action list interpreter
@@ -673,6 +674,13 @@ flashes).
 = charblock *n* / screenblock 31−*n*, priority *n*; big maps stream into the 32×32 hardware map as
 the camera moves. Sprites use priority 1 (above every map, below the UI); players draw on top.
 Palette banks are handed out per scene in first-use order (BG and OBJ separately).
+OBJ VRAM: a sprite sheet is uploaded whole the first time it shows. A sheet with more than
+`STREAM_MIN_TILES` (config.h) tiles **streams** instead (codegen sets `SpriteData.stream`): its frames
+are loaded one by one into `STREAM_SLOTS` slots at the top of OBJ VRAM (a slot = the largest streamed
+frame, `STREAM_SLOT_TILES` in node_ids.h), each new frame taking the slot used longest ago and copied in
+at the next VBlank together with the sprite list that shows it. So monsters can have many animation
+frames (idle, walk, attack in 3 directions) at no VRAM cost; the validator counts the slots, not the
+frames.
 
 **Code rules:**
 - The engine is game-agnostic: it never mentions a specific node id. Game-specific code lives in `src/game/`.
@@ -702,7 +710,7 @@ Palette banks are handed out per scene in first-use order (BG and OBJ separately
   BG1 = main tilemap (collision), BG2 = background, BG3 = far background.
 - **Sprites (OBJ)**: max 128 on screen, per-scanline limits apply. Valid sizes:
   8×8, 16×16, 32×32, 64×64, 16×8, 32×8, 32×16, 64×32, 8×16, 8×32, 16×32, 32×64.
-  OBJ VRAM 32 KB = 1024 4bpp tiles.
+  OBJ VRAM 32 KB = 1024 4bpp tiles (a big sheet streams: only its frames on screen count, §8).
 - **Palettes**: 16 BG + 16 OBJ palettes, 16 colors each (4bpp), 15-bit color, index 0 transparent.
 - **BG VRAM** 64 KB shared by tiles and maps. Regular BGs max 512×512 px; bigger maps are
   streamed by `bg.c`. One char per tile limits a tileset to ~90 tiles.

@@ -91,6 +91,12 @@ pause screen `menu_pause` (texts with `{chosen.move2}` / `{moves|...}`); `game.b
 nodes.json. Its art, map and audio came from a scratchpad generator (session a013694e,
 `scratchpad/ms/`: `main.py` writes every node; `monsters.py`, `effects.py`, `tiles.py`,
 `mapgen.py`, `title.py`, `ui_art.py`, `audio.py`; `sheet_*.py` / `render_map.py` draw PNG previews).
+The monster sprites, portraits and move effects were redrawn later (session 464f6e56, `scratchpad/art/`):
+`base.py` (each species' front / back / side pose, semantic chars), `frames.py` (breathe, blink, walk,
+lunge frames derived from them + a closed-outline check), `portrait.py` (32x32 cel-shaded portraits
+from shapes), `fx.py` (every effect, with a no-edge check), `gen_mons.py` / `gen_fx.py` (write the
+nodes), `bench.py` / `fxview.py` / `pview.py` (PNG previews). Harness additions in `scratchpad/t/`:
+`test_move3.py <species>` (hold R, screenshot move 3 every 10 frames).
 
 **Generic nodes kept across games** (on `main` too; reuse, recolor if needed, don't delete):
 `font_default`, `pal_ui`, `icon_cursor`, `icon_heart`, `sfx_select`, `sfx_confirm`.
@@ -105,6 +111,8 @@ nodes.json. Its art, map and audio came from a scratchpad generator (session a01
 2. **Plan the node list** before writing files: scenes → actors → bodies/sprites/animations →
    maps/tilesets → UI → audio → variables. Check it against `config.h` limits and GBA limits
    (CLAUDE.md §9): palettes (16 OBJ + 16 BG banks), OBJ VRAM 1024 tiles, ≤ 32 sprite sheets.
+   Sheets with more than 64 tiles stream (only their frames on screen use VRAM), so give actors
+   generous animations (idle breathing + blink, 4-step walks, a wind-up + lunge attack).
 3. **Start from the template**: work on `main` (empty template) or a new `games/<name>` branch
    made from it. When replacing a game, delete its node files *and* their `nodes.json` entries in
    the same change; delete `src/game/*` that only the old game used. Keep engine behaviors —

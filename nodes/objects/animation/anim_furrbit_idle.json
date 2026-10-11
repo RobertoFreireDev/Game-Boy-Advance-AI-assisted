@@ -3,13 +3,41 @@
   "kind": "object",
   "type": "animation",
   "name": "Furrbit idle side",
-  "notes": "Furrbit standing, facing sideways.",
+  "notes": "Furrbit standing still facing sideways: it breathes (sinks 1 px and back) and blinks now and then. Loops.",
   "sprite": "spr_furrbit",
   "loop": true,
   "frames": [
     {
       "frame": "side",
-      "ticks": 60
+      "ticks": 24
+    },
+    {
+      "frame": "side_breathe",
+      "ticks": 20
+    },
+    {
+      "frame": "side",
+      "ticks": 24
+    },
+    {
+      "frame": "side_breathe",
+      "ticks": 20
+    },
+    {
+      "frame": "side",
+      "ticks": 12
+    },
+    {
+      "frame": "side_blink",
+      "ticks": 6
+    },
+    {
+      "frame": "side",
+      "ticks": 10
+    },
+    {
+      "frame": "side_breathe",
+      "ticks": 20
     }
   ],
   "events": []

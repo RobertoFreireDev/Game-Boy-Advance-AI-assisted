@@ -1,4 +1,8 @@
 // sprites.iwram.c - (hot code: ARM in IWRAM) OAM shadow buffer and OBJ VRAM allocation.
+// Small sheets are uploaded whole on first use. A sheet with more tiles than STREAM_MIN_TILES
+// (many animation frames) streams instead: only the frames on screen sit in OBJ VRAM, each in
+// one of STREAM_SLOTS slots at the top of it. A frame shown for the first time takes the slot
+// used longest ago and is copied in at the next VBlank, together with the sprite list showing it.
 #include <tonc_memmap.h>
 #include <tonc_memdef.h>
 #include <tonc_core.h>
@@ -9,12 +13,13 @@
 #include "particles.h"
 #include "floattext.h"
 #include "camera.h"
+#include "node_ids.h"
 
 // An uploaded sheet, with the numbers every sprite of it needs copied from ROM (slow to read)
 // into IWRAM: a horde draws ~100 sprites a frame from a handful of sheets.
 typedef struct {
     const SpriteData *sprite;
-    s16 base;                   // first OBJ tile
+    s16 base;                   // first OBJ tile (-1: the sheet streams)
     u16 attr2;                  // palette bank + priority
     u16 shape, size;            // attr0 / attr1 shape and size bits
     u8 w, h, tpf;               // pixels, tiles per frame
@@ -41,6 +46,19 @@ static const Sheet *s_last;       // sheet of the previous sprite (hordes share 
 EWRAM_BSS static Queued s_queue[MAX_QUEUED_SPRITES];     // (EWRAM: a few a frame)
 static int s_queued;
 
+#if STREAM_SLOT_TILES
+#define STREAM_BASE (MAX_OBJ_TILES - STREAM_SLOTS * STREAM_SLOT_TILES)   // first tile of the slots
+typedef struct { const SpriteData *sprite; u16 frame, used; } Slot;     // used: build that last showed it
+typedef struct { const u32 *src; u16 tile, words; } Copy;
+EWRAM_BSS static Slot s_slots[STREAM_SLOTS];
+EWRAM_BSS static Copy s_copies[STREAM_SLOTS];         // frames to copy in at the next VBlank
+EWRAM_BSS static u8 s_hint[MAX_ACTORS];               // each actor's last slot (checked before use)
+static int s_copy_count;
+static u16 s_build;                                    // sprite lists built so far
+#else
+#define STREAM_BASE MAX_OBJ_TILES
+#endif
+
 void sprites_reset(void) {
     s_sheet_count = 0;
     s_next_tile = 0;
@@ -49,6 +67,13 @@ void sprites_reset(void) {
     s_last = NULL;
     s_queued = 0;
     for (int i = 0; i < 128; i++) s_oam[i].attr0 = ATTR0_HIDE;
+#if STREAM_SLOT_TILES
+    for (int i = 0; i < STREAM_SLOTS; i++) {
+        s_slots[i].sprite = NULL;
+        s_slots[i].used = (u16)(s_build - 0x8000);     // long unused
+    }
+    s_copy_count = 0;
+#endif
 }
 
 int sprites_palette(const PaletteData *p) {
@@ -62,7 +87,7 @@ int sprites_palette(const PaletteData *p) {
 }
 
 int sprites_upload(const u32 *tiles, int count) {
-    if (s_next_tile + count > MAX_OBJ_TILES) return -1;
+    if (s_next_tile + count > STREAM_BASE) return -1;
     int base = s_next_tile;
     memcpy32((u32 *)MEM_VRAM_OBJ + base * 8, tiles, count * 8);
     s_next_tile += count;
@@ -74,11 +99,11 @@ static const Sheet *sheet_of(const SpriteData *s) {
     if (s_last && s_last->sprite == s) return s_last;
     for (int i = 0; i < s_sheet_count; i++)
         if (s_sheets[i].sprite == s) return s_last = &s_sheets[i];
-    int size = s->tiles_per_frame * s->frame_count;
-    if (s_sheet_count >= MAX_SPRITE_SHEETS || s_next_tile + size > MAX_OBJ_TILES) return NULL;
+    int size = s->stream ? 0 : s->tiles_per_frame * s->frame_count;
+    if (s_sheet_count >= MAX_SPRITE_SHEETS || s_next_tile + size > STREAM_BASE) return NULL;
     Sheet *sh = &s_sheets[s_sheet_count++];
     sh->sprite = s;
-    sh->base = (s16)sprites_upload(s->tiles, size);
+    sh->base = (s16)(s->stream ? -1 : sprites_upload(s->tiles, size));
     sh->attr2 = (u16)(ATTR2_PALBANK(sprites_palette(s->palette)) | ATTR2_PRIO(1));
     sh->shape = (u16)(s->shape << 14);
     sh->size = (u16)(s->size << 14);
@@ -94,22 +119,62 @@ static u16 colors_of(const Sheet *sh, const PaletteData *pal) {
     return (u16)(ATTR2_PALBANK(sprites_palette(pal)) | ATTR2_PRIO(1));
 }
 
+#if STREAM_SLOT_TILES
+// The slot holding a frame of a streamed sheet, loading it into the slot used longest ago when
+// no slot has it (-1: every slot shows something this frame). hint = the actor's last slot.
+static int stream_slot(const SpriteData *s, u16 frame, u8 *hint) {
+    int k = hint ? *hint : STREAM_SLOTS;
+    if (k >= STREAM_SLOTS || s_slots[k].sprite != s || s_slots[k].frame != frame) {
+        for (k = 0; k < STREAM_SLOTS; k++)
+            if (s_slots[k].sprite == s && s_slots[k].frame == frame) break;
+        if (k == STREAM_SLOTS) {
+            int age = 0;
+            for (int i = 0; i < STREAM_SLOTS; i++) {
+                int d = (u16)(s_build - s_slots[i].used);
+                if (d > age) { age = d; k = i; }
+            }
+            if (!age) return -1;
+            s_slots[k].sprite = s;
+            s_slots[k].frame = frame;
+            Copy *c = &s_copies[s_copy_count++];         // at most one per slot per build
+            c->src = s->tiles + frame * s->tiles_per_frame * 8;
+            c->tile = (u16)(STREAM_BASE + k * STREAM_SLOT_TILES);
+            c->words = (u16)(s->tiles_per_frame * 8);
+        }
+    }
+    s_slots[k].used = s_build;
+    if (hint) *hint = (u8)k;
+    return k;
+}
+#endif
+
 // Add one hardware sprite of an uploaded sheet (skipped when off screen or OAM is full).
-static void put_obj(const Sheet *sh, u16 frame, s32 sx, s32 sy, u8 flip, u16 attr2) {
+// hint: the drawn actor's last streaming slot (NULL for other sprites).
+static void put_obj(const Sheet *sh, u16 frame, s32 sx, s32 sy, u8 flip, u16 attr2, u8 *hint) {
     if (s_count >= 128) return;
     if (sx <= -(s32)sh->w || sx >= 240 || sy <= -(s32)sh->h || sy >= 160) return;
+    int tile = sh->base + frame * sh->tpf;
+#if STREAM_SLOT_TILES
+    if (sh->base < 0) {
+        int k = stream_slot(sh->sprite, frame, hint);
+        if (k < 0) return;
+        tile = STREAM_BASE + k * STREAM_SLOT_TILES;
+    }
+#else
+    (void)hint;
+#endif
     OBJ_ATTR *o = &s_oam[s_count++];
     o->attr0 = (u16)((sy & 0xFF) | sh->shape);
     o->attr1 = (u16)((sx & 0x1FF) | sh->size |
                      ((flip & FLIP_X) ? ATTR1_HFLIP : 0) | ((flip & FLIP_Y) ? ATTR1_VFLIP : 0));
-    o->attr2 = (u16)((sh->base + frame * sh->tpf) | attr2);
+    o->attr2 = (u16)(tile | attr2);
 }
 
 void sprites_draw(const SpriteData *s, u16 frame, s32 sx, s32 sy, u8 flip) {
     if (s_count >= 128) return;
     if (sx <= -(s32)s->width || sx >= 240 || sy <= -(s32)s->height || sy >= 160) return;
     const Sheet *sh = sheet_of(s);
-    if (sh) put_obj(sh, frame, sx, sy, flip, sh->attr2);
+    if (sh) put_obj(sh, frame, sx, sy, flip, sh->attr2, NULL);
 }
 
 void sprites_tile(int tile, int bank, s32 sx, s32 sy) {
@@ -146,7 +211,7 @@ static void draw_queued(s32 cx, s32 cy) {
             y += fx_to_int(q->anchor->y);
         }
         const Sheet *sh = sheet_of(q->sprite);
-        if (sh) put_obj(sh, q->frame, x, y, q->flip, colors_of(sh, q->pal));
+        if (sh) put_obj(sh, q->frame, x, y, q->flip, colors_of(sh, q->pal), NULL);
     }
 }
 
@@ -169,12 +234,19 @@ static void draw_actor(const Actor *a, s32 cx, s32 cy) {
     u16 attr2 = sh->attr2;
     if (a->flash && a->flash_pal) attr2 = colors_of(sh, a->flash_pal);
     else if (a->pal) attr2 = colors_of(sh, a->pal);
-    put_obj(sh, f->frame, x - ox, y - oy, flip, attr2);
+#if STREAM_SLOT_TILES
+    put_obj(sh, f->frame, x - ox, y - oy, flip, attr2, &s_hint[a - g_actors]);
+#else
+    put_obj(sh, f->frame, x - ox, y - oy, flip, attr2, NULL);
+#endif
 }
 
 void sprites_build(void) {
     s32 cx = camera_x(), cy = camera_y();
     s_count = 0;
+#if STREAM_SLOT_TILES
+    s_build++;
+#endif
     // Front to back: floating text, queued sprites, attack effects, players, everyone else,
     // other particles (dust, sparks) behind them.
     ftext_draw(cx, cy);
@@ -195,4 +267,10 @@ void sprites_build(void) {
 
 void sprites_vblank(void) {
     oam_copy(oam_mem, s_oam, 128);
+#if STREAM_SLOT_TILES
+    // The streamed frames the new sprite list shows (slots it no longer uses are free to change).
+    for (int i = 0; i < s_copy_count; i++)
+        memcpy32((u32 *)MEM_VRAM_OBJ + s_copies[i].tile * 8, s_copies[i].src, s_copies[i].words);
+    s_copy_count = 0;
+#endif
 }

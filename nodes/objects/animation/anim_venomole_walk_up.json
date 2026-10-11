@@ -3,25 +3,25 @@
   "kind": "object",
   "type": "animation",
   "name": "Venomole walk up",
-  "notes": "Venomole walking facing up (its back): a 4-step waddle.",
+  "notes": "Venomole moving facing up (its back): it steps (back or left foot up, passing pose 1 px higher, other foot up, passing pose), 7 ticks a frame. Loops.",
   "sprite": "spr_venomole",
   "loop": true,
   "frames": [
     {
-      "frame": "up",
-      "ticks": 8
+      "frame": "up_step_l",
+      "ticks": 7
     },
     {
-      "frame": "up_a",
-      "ticks": 8
+      "frame": "up_pass",
+      "ticks": 7
     },
     {
-      "frame": "up",
-      "ticks": 8
+      "frame": "up_step_r",
+      "ticks": 7
     },
     {
-      "frame": "up_b",
-      "ticks": 8
+      "frame": "up_pass",
+      "ticks": 7
     }
   ],
   "events": []

@@ -3,13 +3,21 @@
   "kind": "object",
   "type": "animation",
   "name": "Furrbit attack side",
-  "notes": "Furrbit lunges facing sideways as it uses a move.",
+  "notes": "Furrbit using a move facing sideways: it winds up (sinks 1 px) for 3 ticks, lunges 1 px forward for 8, then stands.",
   "sprite": "spr_furrbit",
   "loop": false,
   "frames": [
     {
-      "frame": "atk_side",
-      "ticks": 12
+      "frame": "side_breathe",
+      "ticks": 3
+    },
+    {
+      "frame": "side_lunge",
+      "ticks": 8
+    },
+    {
+      "frame": "side",
+      "ticks": 4
     }
   ],
   "events": []

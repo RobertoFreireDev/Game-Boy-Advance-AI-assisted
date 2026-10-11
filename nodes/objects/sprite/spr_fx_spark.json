@@ -3,7 +3,7 @@
   "kind": "object",
   "type": "sprite",
   "name": "Spark effect",
-  "notes": "Frames of sparks flying outward.",
+  "notes": "Spark's sparks flying out of the target: a small 4-point spark, then a smaller one. Every frame keeps a 1 px empty border, so the picture is never cut at the edge of its sprite.",
   "palette": "pal_fx",
   "width": 8,
   "height": 8,
@@ -13,7 +13,7 @@
       "...11...",
       "..1331..",
       ".133331.",
-      ".133231.",
+      ".133331.",
       "..1331..",
       "...11...",
       "........"
@@ -23,7 +23,7 @@
       "........",
       "...11...",
       "..1331..",
-      "..1321..",
+      "..1331..",
       "...11...",
       "........",
       "........"

@@ -3,7 +3,7 @@
   "kind": "object",
   "type": "particle",
   "name": "Peck effect",
-  "notes": "Beak slash marks, drawn in front of the monsters.",
+  "notes": "A beak jab: white-and-yellow impact stars, drawn in front of the monsters.",
   "animation": "anim_fx_peck",
   "mode": "burst",
   "count": 1,

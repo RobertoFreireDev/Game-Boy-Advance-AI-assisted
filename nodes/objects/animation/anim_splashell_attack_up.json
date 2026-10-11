@@ -3,13 +3,21 @@
   "kind": "object",
   "type": "animation",
   "name": "Splashell attack up",
-  "notes": "Splashell lunges facing up (its back) as it uses a move.",
+  "notes": "Splashell using a move facing up (its back): it winds up (sinks 1 px) for 3 ticks, lunges (stretches 1 px) for 8, then stands.",
   "sprite": "spr_splashell",
   "loop": false,
   "frames": [
     {
-      "frame": "atk_up",
-      "ticks": 12
+      "frame": "up_breathe",
+      "ticks": 3
+    },
+    {
+      "frame": "up_lunge",
+      "ticks": 8
+    },
+    {
+      "frame": "up",
+      "ticks": 4
     }
   ],
   "events": []
