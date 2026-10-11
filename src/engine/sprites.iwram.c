@@ -25,7 +25,7 @@ typedef struct {
     u8 w, h, tpf;               // pixels, tiles per frame
 } Sheet;
 
-// A sprite a behavior asked for this frame (a portrait, a charge ring, a crown...).
+// A sprite a behavior asked for this frame (a portrait, a crown, a shadow...).
 typedef struct {
     const SpriteData *sprite;
     const PaletteData *pal;     // NULL = the sprite's own colors

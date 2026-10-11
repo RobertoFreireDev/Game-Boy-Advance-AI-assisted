@@ -67,6 +67,11 @@ int monster_power(const Actor *a) {
     return m ? m->power : 100;
 }
 
+fixed monster_speed(const Actor *a, fixed speed) {
+    const Monster *m = mon(a);
+    return m && m->species ? (speed * m->species->speed) >> 8 : speed;
+}
+
 int monster_can_act(const Actor *a) {
     const Monster *m = mon(a);
     return m && actor_alive(a) && m->status != STATUS_PAR && m->status != STATUS_FREEZE;

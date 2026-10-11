@@ -154,7 +154,7 @@ static void face_point(Actor *a, s32 x, s32 y) {
     actor_face(a, ax * 2 >= ay ? fx_sign(dx) : 0, ay * 2 >= ax ? fx_sign(dy) : 0);
 }
 
-static void wander(Actor *a, const Params_monster_ai *p, u32 *st) {
+static void wander(Actor *a, const Params_monster_ai *p, u32 *st, fixed speed) {
     if (st[ST_TIMER] == 0 || a->hit_wall) {
         if (st[ST_DIR] != DIR_REST) {               // rest often
             st[ST_DIR] = DIR_REST;
@@ -173,10 +173,10 @@ static void wander(Actor *a, const Params_monster_ai *p, u32 *st) {
         st[ST_TIMER]--;
     }
     int d = (int)st[ST_DIR];
-    if (d == DIR_REST) { stand(a, p->speed); return; }
+    if (d == DIR_REST) { stand(a, speed); return; }
     int sx = s_dx[d], sy = s_dy[d];
     steer(&sx, &sy);
-    go(a, sx, sy, p->speed);
+    go(a, sx, sy, speed);
     actor_face(a, sx, sy);
     actor_play_slot(a, ANIM_WALK);
 }
@@ -222,6 +222,7 @@ void bhv_monster_ai_update(Actor *a, const void *params) {
     }
     const SpeciesData *sp = monster_species(a);
     const MoveData *m = sp ? sp->moves[0] : NULL;
+    fixed walk = monster_speed(a, p->speed), chase = monster_speed(a, p->chase_speed);   // its species' pace
     Actor *pl = actor_player();
     int seen = pl && monster_targetable(pl);
     int dist = 999;
@@ -236,7 +237,7 @@ void bhv_monster_ai_update(Actor *a, const void *params) {
             st[ST_CHARGE] = (u32)p->charge / 2;     // first attack comes a bit sooner
             break;
         }
-        wander(a, p, st);
+        wander(a, p, st, walk);
         break;
     case MODE_HOSTILE: {
         if (!pl || !actor_alive(pl) || dist > p->give_up) {
@@ -244,23 +245,23 @@ void bhv_monster_ai_update(Actor *a, const void *params) {
             break;
         }
         if (st[ST_CHARGE] < (u32)p->charge) st[ST_CHARGE]++;
-        if (!seen) { stand(a, p->speed); break; }   // it flew out of reach: wait
+        if (!seen) { stand(a, walk); break; }       // it flew out of reach: wait
         int reach = m ? moves_reach(m) : 1;
         if (dist > reach) {
             s32 px = fx_to_int(a->x), py = fx_to_int(a->y);
             // Stuck on a wall for a while: try sideways for a moment.
             if (st[ST_STUCK] > 30) {
                 if (st[ST_STUCK]++ > 60) st[ST_STUCK] = 0;
-                walk_to(a, px + (fx_to_int(pl->y) - py), py - (fx_to_int(pl->x) - px), p->chase_speed);
+                walk_to(a, px + (fx_to_int(pl->y) - py), py - (fx_to_int(pl->x) - px), chase);
                 break;
             }
-            walk_to(a, fx_to_int(pl->x), fx_to_int(pl->y), p->chase_speed);
+            walk_to(a, fx_to_int(pl->x), fx_to_int(pl->y), chase);
             if (a->x == a->prev_x && a->y == a->prev_y) st[ST_STUCK]++;
             else st[ST_STUCK] = 0;
             break;
         }
-        if (s_away[s_me][0] || s_away[s_me][1]) slide_around(a, pl, p->speed);
-        else stand(a, p->speed);
+        if (s_away[s_me][0] || s_away[s_me][1]) slide_around(a, pl, walk);
+        else stand(a, walk);
         face_point(a, fx_to_int(pl->x), fx_to_int(pl->y));
         if (st[ST_CHARGE] >= (u32)p->charge && m && moves_use(a, m, 0)) st[ST_CHARGE] = 0;
         break;
@@ -270,7 +271,7 @@ void bhv_monster_ai_update(Actor *a, const void *params) {
             turn_hostile(st);
             break;
         }
-        if (walk_to(a, a->home_x, a->home_y, p->speed) || a->hit_wall) {
+        if (walk_to(a, a->home_x, a->home_y, walk) || a->hit_wall) {
             if (a->hit_wall && (core_frame() & 31)) break;      // keep trying a little
             st[ST_MODE] = MODE_WANDER;
             st[ST_TIMER] = 0;

@@ -3,7 +3,7 @@
   "kind": "object",
   "type": "move",
   "name": "Flamethrower",
-  "notes": "Emberpup's move 3 (hold R). A stream of flame shoots at the nearest monster up to 6 tiles away and scorches every monster it passes over on the way. Charge: 60 s.",
+  "notes": "Emberpup's move 3 (R). A stream of flame shoots at the nearest monster up to 6 tiles away and scorches every monster it passes over on the way. Charge: 60 s.",
   "title": "FLAMETHROWER",
   "monster_type": "fire",
   "shape": "single",

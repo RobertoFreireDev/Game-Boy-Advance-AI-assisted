@@ -111,17 +111,11 @@ All monsters, names, sprites, tiles and music are **original**. The style may ev
 | D-pad (8 directions, incl. diagonals) | Move. Facing direction = last movement direction |
 | **A** (press) | Move 1 (if charged) |
 | **B** (press) | Move 2 (if unlocked and charged) |
-| **Hold R, no D-pad input, for 2 s** | Move 3 (if unlocked and charged) |
+| **R** (press) | Move 3 (if unlocked and charged) |
 | Start | Menu: start run. Run: pause |
 | Left/Right | Menu: change monster |
 
-**Rule for hold-R (Move 3):**
-- Each move has its own button: A is only Move 1 (holding A does nothing more), B is Move 2, R is Move 3.
-- While R is held and the D-pad is untouched, a "hold" counter runs. **At 0 s (no delay)** a small ring appears around the player:
-  - If Move 3 is unlocked and charged, the ring fills up over **2 s**, and when it is full Move 3 fires.
-  - If Move 3 is locked or still charging, the ring shows in grey and nothing fires. Pressing R while Move 3 is still locked also buzzes (like B before Move 2 unlocks).
-- Touching the D-pad or releasing R resets the hold counter and hides the ring.
-- After Move 3 fires, the ring stays hidden until R is released (holding R on does not start a new grey ring).
+**Move buttons:** each move has its own button and fires on a single press, the same way for all three: A is Move 1, B is Move 2, R is Move 3. Pressing a button whose move is still charging does nothing; pressing it while the move is still locked buzzes.
 
 ---
 
@@ -273,6 +267,17 @@ All original designs.
 
 Any of the 9 can be the player. Enemies use the same species.
 
+### 6.1b Walking speed
+
+**The farther a monster's Move 1 reaches, the slower it walks** — a long-range attacker pays for its safety with speed. The speed applies wherever the species walks: as the player and as a wild monster (wander and chase speeds alike).
+
+| Move 1 reaches | Speed | Species |
+|---|---|---|
+| 1 tile (melee) | 100 % | Furrbit (Tackle), Emberpup (Ember, the tile in front), Venomole (Poison Sting), Wispook (Lick) |
+| 2 tiles | 90 % | Splashell (Water Gun) |
+| 3 tiles | 80 % | Sproutle (Vine Whip), Gustling (Gust), Pebbulk (Rock Throw) |
+| 4 tiles or more | 70 % | Voltail (Thunder Shock, 5 tiles) |
+
 ### 6.2 Enemy population — 25 total
 
 When the player picks a type, the other **8 types** populate the map:
@@ -341,7 +346,7 @@ These numbers are the tuning knobs for hitting the minute 3 / minute 6 targets; 
 | Stat | Value |
 |---|---|
 | Max HP | 60 at level 1, +8 per level |
-| Speed | 1 px per frame (diagonals normalized) |
+| Speed | 1 px per frame (diagonals normalized) × its species' walking speed (section 6.1b) |
 
 Level-up raises max HP by 8 **and refills current HP to the new max** (a full heal). This is the only way HP goes up, so fighting for XP is how the player recovers, not running away.
 
@@ -389,7 +394,7 @@ XP ████████░░░░               TIME 06:12
 
                 [ map ]
 
-[A ●]  [B ◔]  [HOLD R ○]
+[A ●]  [B ◔]  [R ○]
 ```
 
 - HP bar (green → yellow → red), current level, XP bar to next level.
@@ -449,3 +454,4 @@ These points weren't specified, so this doc picks a value:
 10. Ghost's Move 3 is named **Phase** in this doc to avoid confusion with the Ghost type name.
 11. **A move hits exactly what its animation draws** (+2 px). Cones became straight beams, because that is what their animations draw.
 12. **Unlocks follow the roster order** (Normal first, Rock last), one per won run, so every player sees the same order. Locked monsters stay visible as silhouettes with their name and type. Clearing the save is on Select, behind a NO/YES question.
+13. **Long reach costs speed**: each species walks at 100 / 90 / 80 / 70 % for a Move 1 that reaches 1 / 2 / 3 / 4+ tiles (section 6.1b), as the player and as a wild monster.

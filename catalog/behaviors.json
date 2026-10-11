@@ -11,7 +11,7 @@
     }
   },
   "topdown_controller": {
-    "description": "Top-down control: walk in any direction with the D-pad (no gravity). Faces up, down, left or right and picks the matching idle / walk animations (idle_up, walk_down...).",
+    "description": "Top-down control: walk in any direction with the D-pad (no gravity). Faces up, down, left or right and picks the matching idle / walk animations (idle_up, walk_down...). A monster (monster behavior) walks at its species' speed: speed x the species' speed percent.",
     "params": {
       "speed":      {"type": "fixed", "default": 1.0, "description": "Walking speed (pixels per tick)."},
       "eight_way":  {"type": "bool", "default": true, "description": "Allow diagonal movement."},
@@ -287,8 +287,8 @@
   "monster_ai": {
     "description": "A wild monster's mind (top-down): it wanders and rests around where it was placed. When the player comes within sight it turns hostile (only a few at once), walks up to it and uses its species' first move whenever that is charged. If the player gets far away it walks back home. It keeps at least `spread` tiles from the other wild monsters: it steers away from closer ones and walks around one in its way, and next to the player it slides sideways around it, so a pack spreads out instead of queueing. It holds still while paralyzed or frozen. With wake_var it sleeps until that variable reaches wake_at.",
     "params": {
-      "speed":        {"type": "fixed", "default": 0.5, "description": "Walking speed while wandering or going home (pixels per tick)."},
-      "chase_speed":  {"type": "fixed", "default": 0.75, "description": "Speed while chasing the player (pixels per tick)."},
+      "speed":        {"type": "fixed", "default": 0.5, "description": "Walking speed while wandering or going home (pixels per tick), times its species' speed percent."},
+      "chase_speed":  {"type": "fixed", "default": 0.75, "description": "Speed while chasing the player (pixels per tick), times its species' speed percent."},
       "roam":         {"type": "int", "default": 32, "description": "Wanders up to this many pixels from home."},
       "sight":        {"type": "int", "default": 5, "description": "Turns hostile when the player is this many tiles away or closer."},
       "give_up":      {"type": "int", "default": 10, "description": "Goes home when the player is farther than this many tiles."},
@@ -302,22 +302,18 @@
     }
   },
   "move_buttons": {
-    "description": "The player's 3 moves (from its species) on buttons. Each move recharges on its own timer (the move node's charge) from the moment it is unlocked: move 2 and move 3 unlock at a level. A fires move 1 when charged, B fires move 2, and holding R without touching the D-pad shows a ring of dots around the player at once that fills up: when it is full, move 3 fires (grey dots = move 3 is locked or still charging, nothing fires). After move 3 fires, R must be let go before the ring shows again. A ready move always goes off and uses its charge, even with nothing in reach (aiming is the player's job): its effect plays straight ahead. HUD gauges read the charges through variables. Sounds: a button whose move is still locked plays 'locked_sfx'; a move that went off at nothing plays 'miss_sfx'; what a move hits sounds by its type (game.battle.player_hit_sounds).",
+    "description": "The player's 3 moves (from its species) on buttons. Each move recharges on its own timer (the move node's charge) from the moment it is unlocked: move 2 and move 3 unlock at a level. A fires move 1 when charged, B fires move 2 and R fires move 3, each on a single press (pressing a button whose move is still charging does nothing). A ready move always goes off and uses its charge, even with nothing in reach (aiming is the player's job): its effect plays straight ahead. HUD gauges read the charges through variables. Sounds: a button whose move is still locked plays 'locked_sfx'; a move that went off at nothing plays 'miss_sfx'; what a move hits sounds by its type (game.battle.player_hit_sounds).",
     "params": {
       "level_var":         {"type": "var", "required": true, "description": "Game variable with the player's level."},
       "unlock_2":          {"type": "int", "default": 4, "description": "Level that unlocks move 2."},
       "unlock_3":          {"type": "int", "default": 7, "description": "Level that unlocks move 3."},
       "button_1":          {"type": "button", "default": "A", "description": "Button for move 1."},
       "button_2":          {"type": "button", "default": "B", "description": "Button for move 2."},
-      "button_3":          {"type": "button", "default": "R", "description": "Button held for move 3. Use one no other move uses."},
-      "hold_ticks":        {"type": "ticks", "default": 120, "description": "How long button_3 is held (D-pad untouched) to fire move 3: the ring fills over this time."},
+      "button_3":          {"type": "button", "default": "R", "description": "Button for move 3."},
       "gauge_1":           {"type": "var", "default": "", "description": "Game variable showing move 1's charge: 0 locked, 1 empty .. 5 full, 6 = the flash when it just became full."},
       "gauge_2":           {"type": "var", "default": "", "description": "Same for move 2."},
       "gauge_3":           {"type": "var", "default": "", "description": "Same for move 3."},
       "unlocked_var":      {"type": "var", "default": "", "description": "Game variable set to how many moves are unlocked (1-3). Empty = none."},
-      "ring":              {"type": "node:sprite", "default": "", "description": "One dot of the hold ring (frame 0 = unlit, frame 1 = lit); 8 dots go around the player. Empty = no ring."},
-      "ring_off_palette":  {"type": "node:palette", "default": "", "description": "Colors of the ring when move 3 is locked or not charged (grey)."},
-      "ring_radius":       {"type": "int", "default": 14, "description": "Distance of the ring dots from the player's middle (pixels)."},
       "on_unlock":         {"type": "actions", "default": [], "description": "What happens when a move unlocks (NEW MOVE!)."},
       "locked_sfx":        {"type": "node:sfx", "default": "", "description": "Sound when a move's button is pressed but the move is still locked (an error buzz). Empty = silent."},
       "miss_sfx":          {"type": "node:sfx", "default": "", "description": "Sound when a charged move goes off but reaches nothing (it still uses its charge). Empty = silent."}

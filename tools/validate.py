@@ -49,7 +49,7 @@ TYPE_FIELDS = {
     "menu": {"font", "title", "options", "upgrades", "cursor", "layout", "on_cancel", "box", "sounds", "texts"},
     "dialog": {"font", "box", "lines", "choices", "on_end", "ticks_per_char"},
     "upgrade": {"category", "title", "icon", "var", "max_level", "descriptions", "requires", "replaces", "on_pick"},
-    "species": {"title", "monster_type", "body", "alpha_palette", "portrait", "cry", "moves"},
+    "species": {"title", "monster_type", "speed", "body", "alpha_palette", "portrait", "cry", "moves"},
     "move": {"title", "monster_type", "shape", "range", "power", "accuracy", "charge", "status", "dash", "zone", "buff",
              "effect", "effect_at", "travel", "sfx", "on_use"},
 }
@@ -1232,6 +1232,7 @@ def V_species(c):
         c.err("'title' must be 1 to %d characters (the name shown on screen)" % C.SPECIES_TITLE_W)
     if n.get("monster_type") not in battle_types(c.p):
         c.err("'monster_type' must be one of game.battle.types (%s)" % ", ".join(battle_types(c.p)))
+    c.get(n, "speed", "int", required=False, lo=C.SPECIES_SPEED[0], hi=C.SPECIES_SPEED[1])
     body = c.ref(n.get("body"), ["body"], "body")
     if body:
         if c.p.nodes[body].get("physics", {}).get("gravity"):
@@ -1249,9 +1250,28 @@ def V_species(c):
     c.ref(n.get("cry"), ["sfx"], "cry")
     moves = c.get(n, "moves", "list", default=[])
     if len(moves) != 3:
-        c.err("'moves' must list exactly 3 moves (A, B, hold R)")
+        c.err("'moves' must list exactly 3 moves (A, B, R)")
     for i, m in enumerate(moves):
         c.ref(m, ["move"], "moves[%d]" % i)
+    # Balance: a species whose move 1 reaches farther must not walk faster.
+    mine = species_pace(c.p, n)
+    if mine:
+        for sid, other in species_nodes(c.p).items():
+            theirs = species_pace(c.p, other)
+            if theirs and mine[0] > theirs[0] and mine[1] > theirs[1]:
+                c.warn("its move 1 reaches %d tiles, farther than '%s' (%d), but it walks faster (speed %d > %d)"
+                       % (mine[0], sid, theirs[0], mine[1], theirs[1]))
+
+
+def species_pace(p, n):
+    """(tiles its move 1 reaches, its speed %), or None when move 1 or speed are not valid."""
+    moves = n.get("moves")
+    move = p.nodes.get(moves[0]) if isinstance(moves, list) and moves and isinstance(moves[0], str) else None
+    speed = n.get("speed", 100)
+    if not isinstance(move, dict) or not is_int(speed):
+        return None
+    reach = C.move_reach(move)
+    return (reach, speed) if is_int(reach) else None      # a broken move: its own errors say why
 
 
 def V_move(c):

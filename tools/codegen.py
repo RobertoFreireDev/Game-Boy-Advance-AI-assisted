@@ -563,8 +563,9 @@ class Gen:
             self.ptr(n.get("effect")), self.ptr(n.get("travel")), self.ptr(n.get("sfx")), on_use))
 
     def E_species(self, nid, n):
-        self.emit("const SpeciesData node_%s = { %s, %s, 0, %s, %s, %s, %s, { %s } };" % (
-            nid, cstr(n["title"]), self.type_enum(n["monster_type"]), self.ptr(n["body"]), self.ptr(n.get("alpha_palette")),
+        speed = (n.get("speed", 100) * 256 + 50) // 100        # percent -> x/256
+        self.emit("const SpeciesData node_%s = { %s, %s, 0, %d, %s, %s, %s, %s, { %s } };" % (
+            nid, cstr(n["title"]), self.type_enum(n["monster_type"]), speed, self.ptr(n["body"]), self.ptr(n.get("alpha_palette")),
             self.ptr(n.get("portrait")), self.ptr(n.get("cry")), ", ".join(self.ptr(m) for m in n["moves"])))
 
     def battle(self):

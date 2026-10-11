@@ -1279,7 +1279,28 @@ function matchups(type) {
     h("div", { class: "k" }, "takes extra damage from"), h("div", {}, L(hurtBy)),
     h("div", { class: "k" }, "shrugs off"), h("div", {}, L(resists)));
 }
-const SLOT_KEYS = ["A", "B", "hold R"];
+const SLOT_KEYS = ["A", "B", "R"];
+// Tiles a move reaches (moves.c moves_reach): how close a wild monster walks before using it.
+function moveReach(m) {
+  if (m.shape === "dash") return (m.range || 0) + (m.dash || 0);
+  if (m.shape === "zone") return ((m.zone || {}).place || "front") === "front" ? 1 : 8;
+  if (m.shape === "screen") return 8;
+  if (m.shape === "self") return 0;
+  return m.range || 0;
+}
+// Every species' walking speed next to how far its move 1 reaches (this one highlighted).
+function speedCard(id) {
+  const rows = SPECIES.map(s => {
+    const sn = NODES[s] || {}, m1 = NODES[(sn.moves || [])[0]] || {};
+    return { s, m1, reach: moveReach(m1), speed: sn.speed === undefined ? 100 : sn.speed };
+  });
+  const me = rows.find(r => r.s === id) || { speed: 100 };
+  const tb = h("table", { class: "grid" }, h("tr", {}, h("th", {}, "species"), h("th", {}, "move 1"), h("th", {}, "reaches"), h("th", {}, "speed")),
+    rows.map(r => h("tr", { style: r.s === id ? "background:#2d3a52;font-weight:700;" : "" },
+      h("td", {}, nodeLink(r.s)), h("td", {}, r.m1.title || "?"), h("td", {}, r.reach + (r.reach === 1 ? " tile" : " tiles")), h("td", {}, r.speed + " %"))));
+  return card(`Walking speed — ${me.speed} %`, tb,
+    h("div", { class: "small" }, "The farther a species' move 1 reaches, the slower it walks. The percent scales the walker's own speed: the player's (topdown_controller speed) and a wild monster's (monster_ai speed and chase_speed)."));
+}
 PREVIEW.species = (id, n) => {
   const out = [];
   const port = NODES[n.portrait];
@@ -1301,6 +1322,7 @@ PREVIEW.species = (id, n) => {
     return h("div", { class: "bhv" }, h("div", { class: "bn" }, SLOT_KEYS[i] + " · ", nodeLink(m)),
       h("div", { class: "bd" }, `${mv.shape || "?"}${mv.range !== undefined ? ", " + mv.range + " tiles" : ""}, power ${mv.power || 0}, charge ${((mv.charge || 0) / 60).toFixed(0)} s`));
   }), h("div", { class: "small" }, "Move 2 and move 3 unlock with the player's level (move_buttons). Wild monsters only use move 1.")));
+  out.push(speedCard(id));
   out.push(card("Cry", h("div", { class: "toolbar" }, h("button", { onclick: () => playSfx(n.cry) }, "▶ Play"), nodeLink(n.cry))));
   out.push(card("Type matchups", matchups(n.monster_type)));
   out.push(typeChartCard(n.monster_type, n.monster_type));

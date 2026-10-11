@@ -1,5 +1,7 @@
-// topdown_controller - walk in any direction with the D-pad (no gravity).
+// topdown_controller - walk in any direction with the D-pad (no gravity). A monster walks at
+// its species' pace.
 #include "topdown_controller.h"
+#include "monster.h"
 #include "behavior_params.h"
 #include "engine/input.h"
 #include "engine/vars.h"
@@ -11,6 +13,7 @@ void bhv_topdown_controller_update(Actor *a, const void *params) {
     if (a->anim_lock) return;                   // being knocked back
     fixed speed = p->speed;
     if (p->speed_var >= 0) speed = speed * (10 + vars_get(p->speed_var)) / 10;   // +10% per point
+    speed = monster_speed(a, speed);
     a->vx = dx * speed;
     a->vy = dy * speed;
     if (dx && dy) {                             // diagonal: same speed as straight (x 0.707)

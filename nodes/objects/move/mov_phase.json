@@ -3,7 +3,7 @@
   "kind": "object",
   "type": "move",
   "name": "Phase",
-  "notes": "Wispook's move 3 (hold R). Turns ghostly for 3 s: the user passes through monsters (they still can hit it). Charge: 60 s.",
+  "notes": "Wispook's move 3 (R). Turns ghostly for 3 s: the user passes through monsters (they still can hit it). Charge: 60 s.",
   "title": "PHASE",
   "monster_type": "ghost",
   "shape": "self",

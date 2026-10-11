@@ -3,7 +3,7 @@
   "kind": "object",
   "type": "move",
   "name": "Surf",
-  "notes": "Splashell's move 3 (hold R). A great wave sweeps across the screen and hits every monster in view. Charge: 60 s.",
+  "notes": "Splashell's move 3 (R). A great wave sweeps across the screen and hits every monster in view. Charge: 60 s.",
   "title": "SURF",
   "monster_type": "water",
   "shape": "screen",

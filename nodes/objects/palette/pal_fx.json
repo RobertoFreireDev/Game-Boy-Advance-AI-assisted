@@ -3,7 +3,7 @@
   "kind": "object",
   "type": "palette",
   "name": "Effect colors",
-  "notes": "Shared colors of every move effect, the charge ring, the Alpha's crown and the flying shadow: outline, white, yellow, orange, red, light blue, blue, light green, green, light purple, purple, light grey, grey-brown, dark violet and sand.",
+  "notes": "Shared colors of every move effect, the Alpha's crown and the flying shadow: outline, white, yellow, orange, red, light blue, blue, light green, green, light purple, purple, light grey, grey-brown, dark violet and sand.",
   "colors": [
     "#000000",
     "#282830",

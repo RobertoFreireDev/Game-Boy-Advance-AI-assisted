@@ -32,6 +32,8 @@ int monster_team(const Actor *a);
 int monster_level(const Actor *a);
 // Damage percent of its moves (100, Alpha 150).
 int monster_power(const Actor *a);
+// A walking speed at its species' pace (a slower species, e.g. a long-range one); others: as is.
+fixed monster_speed(const Actor *a, fixed speed);
 // True if it is a monster that can move and attack now (not paralyzed, frozen or fainted).
 int monster_can_act(const Actor *a);
 // True if moves can hit it (a fainted or flying monster can't be hit).

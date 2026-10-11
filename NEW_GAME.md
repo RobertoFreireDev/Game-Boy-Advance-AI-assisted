@@ -96,7 +96,7 @@ The monster sprites, portraits and move effects were redrawn later (session 464f
 lunge frames derived from them + a closed-outline check), `portrait.py` (32x32 cel-shaded portraits
 from shapes), `fx.py` (every effect, with a no-edge check), `gen_mons.py` / `gen_fx.py` (write the
 nodes), `bench.py` / `fxview.py` / `pview.py` (PNG previews). Harness additions in `scratchpad/t/`:
-`test_move3.py <species>` (hold R, screenshot move 3 every 10 frames).
+`test_move3.py <species>` (R, screenshot move 3 every 10 frames).
 
 **Generic nodes kept across games** (on `main` too; reuse, recolor if needed, don't delete):
 `font_default`, `pal_ui`, `icon_cursor`, `icon_heart`, `sfx_select`, `sfx_confirm`.

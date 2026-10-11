@@ -3,7 +3,7 @@
   "kind": "object",
   "type": "hud",
   "name": "Run HUD",
-  "notes": "Top: HP bar (green, yellow at half, red at a quarter; its length follows the max HP), level and kills; the XP bar to the next level and the run timer. Bottom: the 3 moves with their charge circles (a padlock while locked, a white blink when one becomes ready).",
+  "notes": "Top: HP bar (green, yellow at half, red at a quarter; its length follows the max HP), level and kills; the XP bar to the next level and the run timer. Bottom: the 3 moves (A, B, R) with their charge circles (a padlock while locked, a white blink when one becomes ready).",
   "font": "font_default",
   "elements": [
     {
@@ -104,11 +104,11 @@
       "kind": "text",
       "x": 72,
       "y": 152,
-      "text": "HOLD R"
+      "text": "R"
     },
     {
       "kind": "gauge",
-      "x": 128,
+      "x": 80,
       "y": 152,
       "var": "g3",
       "icons": [

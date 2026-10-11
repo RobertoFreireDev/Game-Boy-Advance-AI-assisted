@@ -266,7 +266,7 @@ Structural rules (enforced by `validate.py`):
 | **Progression** | | | | |
 | `upgrade` | `upg_` | One card of the level-up menu: a weapon, a passive item, an evolution or a bonus filler. | `category`, `title`, `icon`, `var`, `max_level`, `descriptions[]`, `requires[]`, `replaces`, `on_pick[]` | `icon` |
 | **Monster battles** | | | | |
-| `species` | `mon_` | A kind of monster: its look, type and 3 moves. Actors with the `monster` behavior take their body from it. | `title`, `monster_type`, `body`, `alpha_palette`, `portrait`, `cry`, `moves[3]` | `body`, `sprite`, `sfx`, `move`, `palette` |
+| `species` | `mon_` | A kind of monster: its look, type and 3 moves. Actors with the `monster` behavior take their body from it. | `title`, `monster_type`, `speed`, `body`, `alpha_palette`, `portrait`, `cry`, `moves[3]` | `body`, `sprite`, `sfx`, `move`, `palette` |
 | `move` | `mov_` | One move a monster uses: what it hits, how hard, how often, what status and effect. | `title`, `monster_type`, `shape`, `range`, `power`, `accuracy`, `charge`, `status`, `dash`, `zone`, `buff`, `effect`, `effect_at`, `travel`, `sfx`, `on_use[]` | `particle`, `animation`, `sprite`, `sfx` |
 
 Actor types (`player` … `pickup`) share one structure; the type gives sensible defaults and
@@ -337,9 +337,12 @@ groups them for humans. **What an actor does comes only from its `logic` list.**
   a palette color equal to the box paper.
 - A menu or dialog **pauses the world** (actor logic, physics, animations) until it closes.
 - Use **one font per scene** for the HUD and box-less menus (BG0 has one transparent-font slot).
-- **species**: `title` ≤ 10 chars, `monster_type` one of `game.battle.types`, `body` (its look in the
+- **species**: `title` ≤ 10 chars, `monster_type` one of `game.battle.types`, `speed` (10-200, default
+  100: percent of the walker's own speed, the player's `topdown_controller` `speed` or a wild monster's
+  `monster_ai` `speed` / `chase_speed`; the farther its move 1 reaches, the slower it walks, and the
+  validator warns when a species reaches farther than another yet walks faster), `body` (its look in the
   world), `alpha_palette` (the same color slots recolored: the Alpha boss), `portrait` (a sprite for
-  the picker), `cry` (sfx), exactly 3 `moves` (A, B, hold R). Its number for `species_var` and
+  the picker), `cry` (sfx), exactly 3 `moves` (A, B, R). Its number for `species_var` and
   `{var.name}` is its order among the species in nodes.json, from 0.
 - **move**: `title` ≤ 13 chars, `monster_type`, `power` (0 = status only), `accuracy` % (a miss shows
   MISS; zones never miss), `charge` (ticks to recharge for the player). **A move hurts exactly what its
@@ -589,8 +592,8 @@ Every channel in a pattern has the same number of rows. Missing channels are sil
   levels for the player, fainting; the shared combat code is `src/behaviors/monster.c` + `moves.c`),
   `monster_ai` (wander at home, hostile near the player with a cap, attack with move 1, go home; a
   sleeping boss; keeps `spread` tiles from other wild monsters, walking around them and sliding
-  sideways around the player, so a pack spreads out), `move_buttons` (the player's 3 moves on A, B, hold R, with charge gauges, a
-  locked-move buzz and a miss sound when a move reaches no one; the hold-R ring shows at once and fills),
+  sideways around the player, so a pack spreads out), `move_buttons` (the player's 3 moves on A, B and R, one press each, with charge
+  gauges, a locked-move buzz and a miss sound when a move reaches no one),
   `species_select` (the picker's bobbing portrait, Left / Right; species past `unlocked_var` show as a
   silhouette and can't be picked), `drop_in` (a logo or layer that
   falls in and bounces). Add more as games need them.
@@ -648,7 +651,7 @@ src/engine/
 ├── camera.c/.h    follow target, clamp to bounds, shake
 ├── bg.c/.h        tiles/palettes upload, tilemap scrolling, streaming for big maps, layer offsets
 ├── sprites.iwram.c/.h OAM shadow buffer and OBJ VRAM allocation, per-actor colors (flash, Alpha),
-│                      a queue of extra sprites behaviors draw (portraits, rings, crowns); big
+│                      a queue of extra sprites behaviors draw (portraits, crowns, shadows); big
 │                      sheets stream (only the frames on screen sit in VRAM, see the VRAM plan)
 ├── audio.c/.h     PSG driver: music sequencer + sfx
 ├── ui.c/.h        text, hud, menus (incl. upgrade cards), dialogs

@@ -86,6 +86,22 @@ BATTLE_SOUNDS = ["hit", "super", "weak", "miss", "faint"]
 SPECIES_FIELDS = ["name", "type", "move1", "move2", "move3"]    # {var.field} placeholders
 SPECIES_TITLE_W = 10     # chars of a species name
 MOVE_TITLE_W = 13        # chars of a move name
+SPECIES_SPEED = (10, 200)    # a species' walking speed, percent of the walker's own (default 100)
+
+
+def move_reach(move):
+    """Tiles a move reaches (like moves.c moves_reach): how close a wild monster walks before using it."""
+    shape = move.get("shape")
+    if shape == "dash":
+        r, d = move.get("range", 0), move.get("dash", 0)
+        return r + d if isinstance(r, int) and isinstance(d, int) else None
+    if shape == "zone":
+        return 1 if (move.get("zone") or {}).get("place", "front") == "front" else 8
+    if shape == "screen":
+        return 8
+    if shape == "self":
+        return 0
+    return move.get("range", 0)
 
 # Valid OBJ sizes (w, h) -> (shape, size) as the hardware encodes them.
 OBJ_SIZES = {

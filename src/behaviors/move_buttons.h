@@ -1,4 +1,4 @@
-// move_buttons - the player's 3 moves on A, B and hold-R, with charge timers (see the .c).
+// move_buttons - the player's 3 moves on A, B and R, with charge timers (see the .c).
 #ifndef BHV_MOVE_BUTTONS_H
 #define BHV_MOVE_BUTTONS_H
 

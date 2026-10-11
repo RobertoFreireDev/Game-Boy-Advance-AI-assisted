@@ -29,17 +29,17 @@
     {
       "x": 16,
       "y": 64,
-      "text": "A      {chosen.move1}"
+      "text": "A  {chosen.move1}"
     },
     {
       "x": 16,
       "y": 72,
-      "text": "B      {chosen.move2} {moves|LOCKED|LOCKED||}"
+      "text": "B  {chosen.move2} {moves|LOCKED|LOCKED||}"
     },
     {
       "x": 16,
       "y": 80,
-      "text": "HOLD R {chosen.move3} {moves|LOCKED|LOCKED|LOCKED|}"
+      "text": "R  {chosen.move3} {moves|LOCKED|LOCKED|LOCKED|}"
     }
   ],
   "layout": {

@@ -3,7 +3,7 @@
   "kind": "object",
   "type": "move",
   "name": "Toxic",
-  "notes": "Venomole's move 3 (hold R). Hurls toxic goo at the nearest monster up to 4 tiles away; half the time it is badly poisoned (1, 2, 3... damage a second for 8 s). Charge: 60 s.",
+  "notes": "Venomole's move 3 (R). Hurls toxic goo at the nearest monster up to 4 tiles away; half the time it is badly poisoned (1, 2, 3... damage a second for 8 s). Charge: 60 s.",
   "title": "TOXIC",
   "monster_type": "poison",
   "shape": "single",

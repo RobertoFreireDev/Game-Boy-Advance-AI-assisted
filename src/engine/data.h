@@ -254,6 +254,7 @@ typedef struct {
 typedef struct {
     const char *title;
     u8 type, pad;
+    u16 speed;                          // walking speed, x/256 of the walker's own (256 = 100 %)
     const BodyData *body;
     const PaletteData *alpha_palette;   // the Alpha's colors (same slots as the sprite's palette)
     const SpriteData *portrait;
