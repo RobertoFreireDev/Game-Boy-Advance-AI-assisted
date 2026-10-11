@@ -179,17 +179,20 @@ static void hurt(Actor *a, s32 amount) {
     if (hp == 0) faint(a, p, m);
 }
 
-// Push a monster `px` pixels away from (fx, fy), unless a wall is in the way.
+// Push a monster up to `px` pixels away from (fx, fy), stopping at walls and other monsters.
 static void push(Actor *a, s32 fx, s32 fy, int px) {
     s32 dx = fx_to_int(a->x) - fx, dy = fx_to_int(a->y) - fy;
     s32 ax = fx_abs(dx), ay = fx_abs(dy);
-    int sx = ax * 2 >= ay ? fx_sign(dx) : 0, sy = ay * 2 >= ax ? fx_sign(dy) : 0;
-    s32 nx = fx_to_int(a->x) + sx * px, ny = fx_to_int(a->y) + sy * px;
-    s32 l = nx + a->hb_x, t = ny + a->hb_y, r = l + a->hb_w - 1, b = t + a->hb_h - 1;
-    if ((physics_tile_at(l, t) | physics_tile_at(r, t) | physics_tile_at(l, b) | physics_tile_at(r, b)) & TILE_SOLID)
+    fixed sx = ax * 2 >= ay ? fx_from_int(fx_sign(dx)) : 0, sy = ay * 2 >= ax ? fx_from_int(fx_sign(dy)) : 0;
+    if (physics_free_at(a, a->x + sx * px, a->y + sy * px)) {   // nothing in the way (the usual case)
+        a->x += sx * px;
+        a->y += sy * px;
         return;
-    a->x = fx_from_int(nx);
-    a->y = fx_from_int(ny);
+    }
+    for (int i = 1; i < px && physics_free_at(a, a->x + sx, a->y + sy); i++) {
+        a->x += sx;
+        a->y += sy;
+    }
 }
 
 static void set_status(Actor *t, Monster *m, int status, int ticks) {

@@ -3,16 +3,16 @@
   "kind": "object",
   "type": "body",
   "name": "Emberpup body",
-  "notes": "How Emberpup looks in the world and the box that bumps into walls and other monsters. Its feet stand on the origin; the hitbox is a small 10x8 box at the feet so monsters can stand side by side, and being solid, monsters never walk through each other.",
+  "notes": "How Emberpup looks in the world and the box that bumps into walls and other monsters. Its feet stand on the origin; the box covers the whole 16x16 picture, and being solid, monsters never walk through each other or overlap: their pictures stay side by side.",
   "origin": [
     8,
     15
   ],
   "hitbox": {
-    "x": -5,
-    "y": -7,
-    "w": 10,
-    "h": 8
+    "x": -8,
+    "y": -15,
+    "w": 16,
+    "h": 16
   },
   "physics": {
     "gravity": false,

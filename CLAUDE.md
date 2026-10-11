@@ -341,8 +341,9 @@ groups them for humans. **What an actor does comes only from its `logic` list.**
   the picker), `cry` (sfx), exactly 3 `moves` (A, B, hold A). Its number for `species_var` and
   `{var.name}` is its order among the species in nodes.json, from 0.
 - **move**: `title` ≤ 13 chars, `monster_type`, `power` (0 = status only), `accuracy` % (a miss shows
-  MISS; zones never miss), `charge` (ticks to recharge for the player). `shape` and `range` (tiles,
-  measured as max(|dx|, |dy|) between feet): `single` = the nearest foe in range; `dash` = rush `dash`
+  MISS; zones never miss), `charge` (ticks to recharge for the player). `shape` and `range` (tiles
+  between the two bodies' hitboxes: 1 = touching, then 1 more every 8 px of gap, half a tile rounding
+  up; the larger of across and down): `single` = the nearest foe in range; `dash` = rush `dash`
   tiles to the nearest foe within range + dash, then hit it; `cone` = in front, 1 tile wide next to the
   user and 2 wider every tile (diagonal = the quarter between two directions); `circle` = all in range;
   `screen` = all in the camera view; `zone` = `zone {w, h, place: front|screen, count, delay, ticks
@@ -369,7 +370,7 @@ groups them for humans. **What an actor does comes only from its `logic` list.**
   `hit`; wild monsters' hits use `hit` / `super` / `weak`). Damage =
   power × (1 + 0.15 × (level − 1)) × multiplier × user power %, rounded, at least 1; a hit flashes the
   target for 4 frames (`flash_palette`, white, or the monster behavior's own `flash_palette`: wild monsters
-  blink red) and pushes it 2 px away.
+  blink red) and pushes it 2 px away (less when a wall or another solid monster is in the way).
 
 ### 6.2 Examples
 
@@ -549,7 +550,10 @@ Every channel in a pattern has the same number of rows. Missing channels are sil
   down) and dies in place; with gravity it knocks sideways and falls off the screen.
 - **Solid actors, top-down**: a body without gravity is blocked by fully solid actors on every side
   (like walls) and never rides them; with gravity it lands on them (platforms, crates). So top-down
-  monsters with `physics.solid` and each other's categories in `collides_with` never overlap.
+  monsters with `physics.solid` and each other's categories in `collides_with` never overlap: a
+  top-down body already inside another (a spawn, a buff that ended) can only move away from it, and
+  the two drift apart 1 px a frame. Knockback and dashes stop at them too (`physics_free_at`).
+  Monster bodies use a hitbox the size of the whole picture, so their pictures never overlap either.
 - Starter set: `platformer_controller`, `topdown_controller`, `patrol`, `chase_player`,
   `follow_path`, `solid_platform`, `health`, `damage_on_touch`, `stompable`, `collectible`,
   `trigger_zone`, `talk`, `camera_target`, `spawn_particles`, `button_actions` (a button press runs
@@ -560,7 +564,8 @@ Every channel in a pattern has the same number of rows. Missing channels are sil
   Monster-battle set: `monster` (species, level, HP, statuses, damage by the type chart, XP and
   levels for the player, fainting; the shared combat code is `src/behaviors/monster.c` + `moves.c`),
   `monster_ai` (wander at home, hostile near the player with a cap, attack with move 1, go home; a
-  sleeping boss), `move_buttons` (the player's 3 moves on A, B, hold A, with charge gauges, a
+  sleeping boss; keeps `spread` tiles from other wild monsters, walking around them and sliding
+  sideways around the player, so a pack spreads out), `move_buttons` (the player's 3 moves on A, B, hold A, with charge gauges, a
   locked-move buzz and a miss sound when a move reaches no one; the hold-A ring shows only after `ring_delay`),
   `species_select` (the picker's bobbing portrait, Left / Right), `drop_in` (a logo or layer that
   falls in and bounces). Add more as games need them.
@@ -608,7 +613,9 @@ src/engine/
 ├── actor.iwram.c/.h   actor pool (in EWRAM), runs each actor's logic list every tick
 ├── physics.iwram.c/.h gravity, tile collision (solid/one_way/hazard/ladder), actor overlaps
 │                      (contacts only test the categories an actor lists, via per-frame buckets;
-│                       big buckets many actors look into are binned in a 32 px grid)
+│                       big buckets many actors look into are binned in a 32 px grid); top-down
+│                       solid bodies found inside each other are pushed apart
+├── physics.c          physics questions asked now and then, kept in ROM (can an actor stand here?)
 ├── anim.iwram.c/.h    animation players and frame events
 ├── particles.c/.h particle pool (front / back of the actors)
 ├── floattext.c/.h floating words (damage numbers, MISS, LV UP!) drawn as 8x8 sprites
@@ -654,7 +661,7 @@ Palette banks are handed out per scene in first-use order (BG and OBJ separately
 - Move hot code to IWRAM (ARM mode) only when a measured slowdown requires it: rename the file
   `*.iwram.c` (done for actor, physics, anim, sprites and the `swarm`, `projectile` and `health`
   behaviors after profiling hordes of 60+ monsters). IWRAM is 32 KB shared with the `*.iwram.c` code,
-  **every plain `static` variable** and the stack (~26 KB used, ~5.9 KB stack); keep it lean. The
+  **every plain `static` variable** and the stack (~27.5 KB used, ~4.4 KB stack); keep it lean. The
   linker doesn't count the stack: `build.py` fails when less than 2 KB is left. Pools that aren't hot
   go in EWRAM (`EWRAM_BSS`).
 - Thumb code (everything not `*.iwram.c`) has no fast divide or 64-bit multiply: in code that

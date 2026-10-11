@@ -254,7 +254,7 @@
     }
   },
   "monster": {
-    "description": "A creature of a monster-battle game. It takes its look, type and 3 moves from a species node, and has a level and hit points. Moves that hit it use the type chart (game.battle) for damage, can MISS, flash it (white, or its own flash_palette), push it back 2 px and may paralyze or poison it; floating words show what happened. When its hit points run out it faints (flashes and blinks out). The player's version keeps hit points, level and XP in game variables and levels up.",
+    "description": "A creature of a monster-battle game. It takes its look, type and 3 moves from a species node, and has a level and hit points. Moves that hit it use the type chart (game.battle) for damage, can MISS, flash it (white, or its own flash_palette), push it back 2 px (not into a wall or another monster) and may paralyze or poison it; floating words show what happened. When its hit points run out it faints (flashes and blinks out). The player's version keeps hit points, level and XP in game variables and levels up.",
     "params": {
       "species":      {"type": "node:species", "default": "", "description": "Its species. Empty = use species_var or random."},
       "species_var":  {"type": "var", "default": "", "description": "Game variable holding the species number (order of the species nodes, from 0): the player's pick. Empty = use 'species'."},
@@ -285,7 +285,7 @@
     }
   },
   "monster_ai": {
-    "description": "A wild monster's mind (top-down): it wanders and rests around where it was placed. When the player comes within sight it turns hostile (only a few at once), walks up to it and uses its species' first move whenever that is charged. If the player gets far away it walks back home. It holds still while paralyzed or frozen. With wake_var it sleeps until that variable reaches wake_at.",
+    "description": "A wild monster's mind (top-down): it wanders and rests around where it was placed. When the player comes within sight it turns hostile (only a few at once), walks up to it and uses its species' first move whenever that is charged. If the player gets far away it walks back home. It keeps at least `spread` tiles from the other wild monsters: it steers away from closer ones and walks around one in its way, and next to the player it slides sideways around it, so a pack spreads out instead of queueing. It holds still while paralyzed or frozen. With wake_var it sleeps until that variable reaches wake_at.",
     "params": {
       "speed":        {"type": "fixed", "default": 0.5, "description": "Walking speed while wandering or going home (pixels per tick)."},
       "chase_speed":  {"type": "fixed", "default": 0.75, "description": "Speed while chasing the player (pixels per tick)."},
@@ -294,6 +294,7 @@
       "give_up":      {"type": "int", "default": 10, "description": "Goes home when the player is farther than this many tiles."},
       "max_hostile":  {"type": "int", "default": 3, "description": "At most this many monsters are hostile at the same time; others keep wandering until one faints or gives up."},
       "charge":       {"type": "ticks", "default": 240, "description": "Ticks to recharge its move (the first attack comes after half of it)."},
+      "spread":       {"type": "int", "default": 1, "description": "Tiles of room it keeps between its body and other wild monsters' bodies (0 = off)."},
       "wake_var":     {"type": "var", "default": "", "description": "Sleeps until this game variable reaches wake_at (a boss waiting for the others to fall). Empty = always awake."},
       "wake_at":      {"type": "int", "default": 0, "description": "Value of wake_var that wakes it."},
       "sleep_effect": {"type": "node:particle", "default": "", "description": "Particles shown now and then while it sleeps (a Z). Empty = none."},

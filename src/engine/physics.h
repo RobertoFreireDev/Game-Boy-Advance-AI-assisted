@@ -11,6 +11,8 @@ void physics_update(void);
 u8 physics_tile_at(s32 px, s32 py);
 // True if something can be stood on at this world pixel (solid or one-way tile).
 int physics_ground_at(s32 px, s32 py);
+// True if the actor's hitbox could stand at (x, y): no solid tile, no fully solid actor it collides with.
+int physics_free_at(const Actor *a, fixed x, fixed y);
 // True if the two actors' hitboxes overlap.
 int physics_overlap(const Actor *a, const Actor *b);
 // True if `top` is landing on `bottom` from above (a stomp).

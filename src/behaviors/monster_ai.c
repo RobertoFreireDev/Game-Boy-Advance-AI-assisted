@@ -1,6 +1,7 @@
 // monster_ai - a wild monster's mind: it wanders around its home, turns hostile when the player
 // comes close (only a few at once), walks up and uses its first move on a timer, and walks
-// home when the player gets away. Can sleep until a variable reaches a value (a boss).
+// home when the player gets away. It keeps some room from the other wild monsters, so a pack
+// spreads out. Can sleep until a variable reaches a value (a boss).
 #include "monster_ai.h"
 #include "monster.h"
 #include "moves.h"
@@ -14,49 +15,136 @@ enum { ST_MODE, ST_TIMER, ST_DIR, ST_CHARGE, ST_STUCK };
 enum { MODE_SLEEP, MODE_WANDER, MODE_HOSTILE, MODE_RETURN };
 
 #define DIR_REST 8
+#define SPREAD_HOSTILE 3        // looks at its neighbors every 4th frame while hostile (a power of 2, minus 1)
+#define SPREAD_CALM 15          // and every 16th while wandering or going home (each monster on its own frame)
 
 static const s8 s_dx[9] = { 1, 1, 0, -1, -1, -1, 0, 1, 0 };
 static const s8 s_dy[9] = { 0, 1, 1, 1, 0, -1, -1, -1, 0 };
 
 static u32 s_count_frame = 0xFFFFFFFF;
-static int s_hostile;
+static int s_hostile;           // hostile right now: last frame's count + those that turned this frame
+static int s_hostile_next;      // counted this frame, for the next one
+// The crowd: each solid monster with this behavior writes its pool index and hitbox here when
+// it updates; everyone reads the list of the frame before (complete, a frame old at most).
+typedef struct { s16 l, t, r, b; u8 who; } Spot;
+EWRAM_BSS static Spot s_crowd[2][MAX_ACTORS];
+static u8 s_crowd_n[2], s_fill;                 // s_crowd[s_fill] is being written this frame
+EWRAM_BSS static s8 s_away[MAX_ACTORS][2];      // per pool index: its way out of the crowd (-1..1 each)
+static int s_me;                                // pool index of the monster updating now
 
-// How many monsters are hostile right now (counted once per frame).
-static int hostile_count(void) {
+// A new frame: last frame's list and hostile count become the ones everybody reads.
+static void new_frame(void) {
     u32 f = core_frame();
-    if (f == s_count_frame) return s_hostile;
+    if (f == s_count_frame) return;
     s_count_frame = f;
-    s_hostile = 0;
-    for (int i = 0; i < MAX_ACTORS; i++) {
-        Actor *o = &g_actors[i];
-        if (!actor_alive(o)) continue;
-        int k = actor_logic_index(o, BHV_MONSTER_AI);
-        if (k >= 0 && actor_state_of(o, k)[ST_MODE] == MODE_HOSTILE) s_hostile++;
-    }
-    return s_hostile;
+    s_fill ^= 1;
+    s_crowd_n[s_fill] = 0;
+    s_hostile = s_hostile_next;
+    s_hostile_next = 0;
 }
 
-// Walk toward a point in 8 directions; returns 1 when there (within 2 px).
+// This monster joins the crowd list of this frame (and the hostile count).
+static void join(const Actor *a, u32 mode) {
+    if (mode == MODE_HOSTILE) s_hostile_next++;
+    if (a->solid_mode == SOLID_NONE) return;     // flying or phasing: passes over the others
+    Spot *o = &s_crowd[s_fill][s_crowd_n[s_fill]++];
+    o->l = (s16)(fx_to_int(a->x) + a->hb_x);
+    o->t = (s16)(fx_to_int(a->y) + a->hb_y);
+    o->r = (s16)(o->l + a->hb_w - 1);
+    o->b = (s16)(o->t + a->hb_h - 1);
+    o->who = (u8)s_me;
+}
+
+// A monster turns hostile: count it now and in the next frame's count.
+static void turn_hostile(u32 *st) {
+    st[ST_MODE] = MODE_HOSTILE;
+    s_hostile++;
+    s_hostile_next++;
+}
+
+// Which way (8 directions) leads away from the monsters whose bodies are less than `gap`
+// pixels from this one's; 0, 0 when none is that close.
+static void find_away(const Actor *a, int gap, s8 *out) {
+    s32 l = fx_to_int(a->x) + a->hb_x, t = fx_to_int(a->y) + a->hb_y;
+    s32 r = l + a->hb_w - 1, b = t + a->hb_h - 1;
+    s32 sx = 0, sy = 0;
+    const Spot *o = s_crowd[s_fill ^ 1];
+    for (int k = s_crowd_n[s_fill ^ 1]; k > 0; k--, o++) {
+        if (o->l > r + gap || l > o->r + gap || o->t > b + gap || t > o->b + gap || o->who == s_me) continue;
+        s32 dx = (l + r) - (o->l + o->r), dy = (t + b) - (o->t + o->b);
+        if (!dx && !dy) dx = s_me < o->who ? -1 : 1;    // right on top of each other: split by index
+        s32 ax = fx_abs(dx), ay = fx_abs(dy);
+        if (ax * 2 >= ay) sx += fx_sign(dx);
+        if (ay * 2 >= ax) sy += fx_sign(dy);
+    }
+    out[0] = (s8)fx_sign(sx);
+    out[1] = (s8)fx_sign(sy);
+}
+
+// Bend a step (sx, sy) out of the crowd: add the way away from the close ones; when the two
+// cancel out (a monster right in the way) go around it, each monster to its own side.
+static void steer(int *sx, int *sy) {
+    const s8 *w = s_away[s_me];
+    if (!w[0] && !w[1]) return;
+    int x = fx_sign(*sx + w[0]), y = fx_sign(*sy + w[1]);
+    if (!x && !y) {
+        int side = (s_me & 1) ? 1 : -1;
+        x = -*sy * side;
+        y = *sx * side;
+    }
+    *sx = x;
+    *sy = y;
+}
+
+// Set the speed for a step in 8 directions (same speed on diagonals).
+static void go(Actor *a, int sx, int sy, fixed speed) {
+    a->vx = sx * speed;
+    a->vy = sy * speed;
+    if (sx && sy) {
+        a->vx = a->vx * 181 / 256;
+        a->vy = a->vy * 181 / 256;
+    }
+}
+
+// Walk toward a point in 8 directions, around the crowd; returns 1 when there (within 2 px).
 static int walk_to(Actor *a, s32 x, s32 y, fixed speed) {
     s32 dx = x - fx_to_int(a->x), dy = y - fx_to_int(a->y);
     s32 ax = fx_abs(dx), ay = fx_abs(dy);
     if (ax <= 2 && ay <= 2) return 1;
     int sx = ax * 2 >= ay && ax > 1 ? fx_sign(dx) : 0;
     int sy = ay * 2 >= ax && ay > 1 ? fx_sign(dy) : 0;
-    a->vx = sx * speed;
-    a->vy = sy * speed;
-    if (sx && sy) {                             // same speed on diagonals
-        a->vx = a->vx * 181 / 256;
-        a->vy = a->vy * 181 / 256;
-    }
+    steer(&sx, &sy);
+    go(a, sx, sy, speed);
     actor_face(a, sx, sy);
     actor_play_slot(a, ANIM_WALK);
     return 0;
 }
 
-static void stand(Actor *a) {
+// Hold still, or step out of the crowd when another monster stands too close.
+static void stand(Actor *a, fixed speed) {
+    const s8 *w = s_away[s_me];
+    if ((w[0] || w[1]) && !a->anim_lock) {
+        go(a, w[0], w[1], speed);
+        actor_face(a, w[0], w[1]);
+        actor_play_slot(a, ANIM_WALK);
+        return;
+    }
     a->vx = a->vy = 0;
     if (!a->anim_lock) actor_play_slot(a, ANIM_IDLE);
+}
+
+// In reach of the player and another monster too close: slide sideways around the player
+// (across the line to it, toward the free side), so the pack rings it instead of piling up.
+static void slide_around(Actor *a, const Actor *pl, fixed speed) {
+    const s8 *w = s_away[s_me];
+    s32 dx = fx_to_int(pl->x) - fx_to_int(a->x), dy = fx_to_int(pl->y) - fx_to_int(a->y);
+    s32 ax = fx_abs(dx), ay = fx_abs(dy);
+    int cx = ax * 2 >= ay ? fx_sign(dx) : 0, cy = ay * 2 >= ax ? fx_sign(dy) : 0;
+    int tx = -cy, ty = cx;                          // one of the two ways across
+    int dot = tx * w[0] + ty * w[1];
+    if (dot < 0 || (dot == 0 && (s_me & 1))) { tx = -tx; ty = -ty; }
+    go(a, tx, ty, speed);
+    actor_play_slot(a, ANIM_WALK);
 }
 
 // Look at a point (8 directions), without moving.
@@ -85,14 +173,11 @@ static void wander(Actor *a, const Params_monster_ai *p, u32 *st) {
         st[ST_TIMER]--;
     }
     int d = (int)st[ST_DIR];
-    if (d == DIR_REST) { stand(a); return; }
-    a->vx = s_dx[d] * p->speed;
-    a->vy = s_dy[d] * p->speed;
-    if (s_dx[d] && s_dy[d]) {
-        a->vx = a->vx * 181 / 256;
-        a->vy = a->vy * 181 / 256;
-    }
-    actor_face(a, s_dx[d], s_dy[d]);
+    if (d == DIR_REST) { stand(a, p->speed); return; }
+    int sx = s_dx[d], sy = s_dy[d];
+    steer(&sx, &sy);
+    go(a, sx, sy, p->speed);
+    actor_face(a, sx, sy);
     actor_play_slot(a, ANIM_WALK);
 }
 
@@ -109,13 +194,20 @@ void bhv_monster_ai_init(Actor *a, const void *params) {
     st[ST_DIR] = DIR_REST;
     st[ST_CHARGE] = 0;
     st[ST_STUCK] = 0;
+    s_away[actor_index(a)][0] = s_away[actor_index(a)][1] = 0;
 }
 
 void bhv_monster_ai_update(Actor *a, const void *params) {
     const Params_monster_ai *p = params;
     u32 *st = bhv_state(a);
+    s_me = actor_index(a);
+    new_frame();
+    join(a, st[ST_MODE]);
+    if (p->spread > 0 && ((s_count_frame + (u32)s_me) & (st[ST_MODE] == MODE_HOSTILE ? SPREAD_HOSTILE : SPREAD_CALM)) == 0)
+        find_away(a, p->spread * 8, s_away[s_me]);
     if (st[ST_MODE] == MODE_SLEEP) {
-        stand(a);
+        a->vx = a->vy = 0;                          // asleep: it doesn't make room
+        if (!a->anim_lock) actor_play_slot(a, ANIM_IDLE);
         if (vars_get(p->wake_var) >= p->wake_at) {
             st[ST_MODE] = MODE_WANDER;
             scripts_start(p->on_wake, a);
@@ -132,13 +224,16 @@ void bhv_monster_ai_update(Actor *a, const void *params) {
     const MoveData *m = sp ? sp->moves[0] : NULL;
     Actor *pl = actor_player();
     int seen = pl && monster_targetable(pl);
-    int dist = seen ? moves_tiles(a, pl) : 999;
+    int dist = 999;
+    if (seen) {                                     // far away (most of them): no need to measure
+        s32 fx = fx_abs(fx_to_int(pl->x) - fx_to_int(a->x)), fy = fx_abs(fx_to_int(pl->y) - fx_to_int(a->y));
+        dist = (fx > fy ? fx : fy) > (p->give_up + p->sight + 4) * 8 ? 999 : moves_tiles(a, pl);
+    }
     switch (st[ST_MODE]) {
     case MODE_WANDER:
-        if (seen && dist <= p->sight && hostile_count() < p->max_hostile) {
-            st[ST_MODE] = MODE_HOSTILE;
+        if (seen && dist <= p->sight && s_hostile < p->max_hostile) {
+            turn_hostile(st);
             st[ST_CHARGE] = (u32)p->charge / 2;     // first attack comes a bit sooner
-            s_hostile++;
             break;
         }
         wander(a, p, st);
@@ -149,7 +244,7 @@ void bhv_monster_ai_update(Actor *a, const void *params) {
             break;
         }
         if (st[ST_CHARGE] < (u32)p->charge) st[ST_CHARGE]++;
-        if (!seen) { stand(a); break; }             // it flew out of reach: wait
+        if (!seen) { stand(a, p->speed); break; }   // it flew out of reach: wait
         int reach = m ? moves_reach(m) : 1;
         if (dist > reach) {
             s32 px = fx_to_int(a->x), py = fx_to_int(a->y);
@@ -164,15 +259,15 @@ void bhv_monster_ai_update(Actor *a, const void *params) {
             else st[ST_STUCK] = 0;
             break;
         }
-        stand(a);
+        if (s_away[s_me][0] || s_away[s_me][1]) slide_around(a, pl, p->speed);
+        else stand(a, p->speed);
         face_point(a, fx_to_int(pl->x), fx_to_int(pl->y));
         if (st[ST_CHARGE] >= (u32)p->charge && m && moves_use(a, m, 0)) st[ST_CHARGE] = 0;
         break;
     }
     case MODE_RETURN:
-        if (seen && dist <= p->sight && hostile_count() < p->max_hostile) {
-            st[ST_MODE] = MODE_HOSTILE;
-            s_hostile++;
+        if (seen && dist <= p->sight && s_hostile < p->max_hostile) {
+            turn_hostile(st);
             break;
         }
         if (walk_to(a, a->home_x, a->home_y, p->speed) || a->hit_wall) {

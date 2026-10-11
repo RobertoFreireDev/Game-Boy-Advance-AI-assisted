@@ -126,13 +126,14 @@ static void move_x(Actor *a) {
         if (sr[0] > r || sr[2] < l || sr[1] > b || sr[3] < t) continue;
         Actor *s = &g_actors[s_solid[k]];
         if (!blocks(a, s) || s->solid_mode != SOLID_FULL) continue;
-        if (!a->gravity) {
-            // Top-down: already inside it before this step (it just became solid again):
-            // let it walk out instead of jumping to one side.
-            s32 ol = fx_to_int(old_x) + a->hb_x;
-            if (ol <= sr[2] && sr[0] <= ol + a->hb_w - 1) continue;
-        }
-        if (nx > old_x) a->x = fx_from_int(sr[0] - a->hb_x - a->hb_w);
+        s32 ol = fx_to_int(old_x) + a->hb_x;
+        if (!a->gravity && ol <= sr[2] && sr[0] <= ol + a->hb_w - 1) {
+            // Top-down: already inside it before this step (a buff ended, a push): it may walk
+            // out, away from its middle, but never deeper in.
+            s32 side = (ol * 2 + a->hb_w - 1) - (sr[0] + sr[2]);
+            if (nx > old_x ? side >= 0 : side <= 0) continue;
+            a->x = old_x;
+        } else if (nx > old_x) a->x = fx_from_int(sr[0] - a->hb_x - a->hb_w);
         else a->x = fx_from_int(sr[2] + 1 - a->hb_x);
         a->vx = 0;
         a->hit_wall = 1;
@@ -168,16 +169,19 @@ static void move_y(Actor *a) {
         // only blocked by fully solid ones, like by a wall, and never ride them.
         for (int k = 0; k < s_solid_n; k++) {
             const s16 *rc = s_srect[k];
-            s32 sl = rc[0], st = rc[1], sr = rc[2];
+            s32 sl = rc[0], st = rc[1], sr = rc[2], sb = rc[3];
             if (r < sl || l > sr) continue;
             s32 new_b = fx_to_int(ny) + a->hb_y + a->hb_h - 1;
-            if (!a->gravity && (old_b >= st || new_b < st)) continue;
+            // Top-down: only stepping onto its top edge, or deeper in when already inside it
+            // (above its middle), is blocked; walking out of it is not.
+            if (!a->gravity && (new_b < st || (old_b >= st && (old_t > sb || old_t + old_b >= st + sb))))
+                continue;
             int i = s_solid[k];
             Actor *s = &g_actors[i];
             if (!blocks(a, s)) continue;
             if (!a->gravity) {
-                if (s->solid_mode == SOLID_FULL && old_b < st && new_b >= st) {
-                    ny = fx_from_int(st - a->hb_y - a->hb_h);
+                if (s->solid_mode == SOLID_FULL) {
+                    ny = old_b < st ? fx_from_int(st - a->hb_y - a->hb_h) : a->y;
                     a->vy = 0;
                     a->hit_wall = 1;
                 }
@@ -205,19 +209,62 @@ static void move_y(Actor *a) {
         }
         for (int k = 0; k < s_solid_n; k++) {       // bump the head on fully solid actors
             const s16 *rc = s_srect[k];
-            s32 sl = rc[0], sr = rc[2], sb = rc[3];
+            s32 sl = rc[0], st = rc[1], sr = rc[2], sb = rc[3];
             new_t = fx_to_int(ny) + a->hb_y;
-            if (!(r >= sl && l <= sr && old_t > sb && new_t <= sb)) continue;
+            if (r < sl || l > sr) continue;
+            // Top-down and already inside it, below its middle: going up would go deeper.
+            int deeper = !a->gravity && old_t <= sb && old_b >= st && old_t + old_b > st + sb;
+            if (!deeper && !(old_t > sb && new_t <= sb)) continue;
             Actor *s = &g_actors[s_solid[k]];
             if (!blocks(a, s) || s->solid_mode != SOLID_FULL) continue;
-            {
-                ny = fx_from_int(sb + 1 - a->hb_y);
-                a->vy = 0;
-                if (!a->gravity) a->hit_wall = 1;
-            }
+            ny = deeper ? a->y : fx_from_int(sb + 1 - a->hb_y);
+            a->vy = 0;
+            if (!a->gravity) a->hit_wall = 1;
         }
     }
     a->y = ny;
+}
+
+// Move a top-down solid body 1 px along x or y (dir -1 / +1) unless a solid tile is there;
+// its cached hitbox rc follows it.
+static void nudge(Actor *a, s16 *rc, int along_x, int dir) {
+    s32 l = rc[0], t = rc[1], r = rc[2], b = rc[3];
+    if (along_x) { l += dir; r += dir; } else { t += dir; b += dir; }
+    if ((a->collides & CAT_BIT(CAT_TILES)) &&
+        (along_x ? column_hits((dir > 0 ? r : l) >> 3, t, b, TILE_SOLID)
+                 : row_hits((dir > 0 ? b : t) >> 3, l, r, TILE_SOLID))) return;
+    if (along_x) a->x += fx_from_int(dir);
+    else a->y += fx_from_int(dir);
+    rc[0] = (s16)l; rc[1] = (s16)t; rc[2] = (s16)r; rc[3] = (s16)b;
+}
+
+// Top-down solid bodies that ended up inside each other (a spawn, a buff that ended) drift
+// apart 1 px a frame each, along the axis they overlap least, so they never stay merged. It is
+// a safety net (walking never lets them overlap): with nothing to undo it looks every 8th frame.
+static void separate(void) {
+    static u8 tick, busy;
+    if (!busy && (++tick & 7)) return;
+    busy = 0;
+    for (int k = 0; k < s_solid_n; k++) {
+        Actor *a = &g_actors[s_solid[k]];
+        if (a->gravity || a->solid_mode != SOLID_FULL || (a->flags & ACTOR_DYING)) continue;
+        s16 *ra = s_srect[k];
+        s32 l = ra[0], t = ra[1], r = ra[2], b = ra[3];
+        for (int j = k + 1; j < s_solid_n; j++) {
+            const s16 *rb = s_srect[j];
+            if (rb[0] > r || l > rb[2] || rb[1] > b || t > rb[3]) continue;
+            Actor *o = &g_actors[s_solid[j]];
+            if (o->gravity || o->solid_mode != SOLID_FULL || (o->flags & ACTOR_DYING)) continue;
+            if (!(a->collides & CAT_BIT(o->category)) && !(o->collides & CAT_BIT(a->category))) continue;
+            int along_x = (r < rb[2] ? r : rb[2]) - (l > rb[0] ? l : rb[0]) <=
+                          (b < rb[3] ? b : rb[3]) - (t > rb[1] ? t : rb[1]);
+            int dir = along_x ? (l + r > rb[0] + rb[2] ? 1 : -1) : (t + b > rb[1] + rb[3] ? 1 : -1);
+            nudge(a, ra, along_x, dir);                 // a goes this way, o the other
+            nudge(o, s_srect[j], along_x, -dir);
+            busy = 1;
+            l = ra[0]; t = ra[1]; r = ra[2]; b = ra[3];
+        }
+    }
 }
 
 static void touch_tiles(Actor *a) {
@@ -323,6 +370,7 @@ void physics_update(void) {
         rc[3] = (s16)(rc[1] + a->hb_h - 1);
         s_solid[s_solid_n++] = (u8)i;
     }
+    separate();
     // Platforms move first so riders can follow them; each one's cached hitbox follows it.
     for (int k = 0; k < s_solid_n; k++) {
         Actor *a = &g_actors[s_solid[k]];

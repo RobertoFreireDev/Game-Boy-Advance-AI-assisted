@@ -26,9 +26,29 @@ static s16 s_zone_scene = -1;
 // Round a pixel distance to tiles (half a tile rounds up).
 static s32 tiles(s32 px) { return (px + 4) >> 3; }
 
+// Tiles from a's body to b's along one axis (a spans a0..a1, b spans b0..b1): 0 while they
+// overlap on it, 1 when they touch, then 1 more every 8 pixels of gap. Negative when b is
+// on the low side (left / above).
+static s32 axis_tiles(s32 a0, s32 a1, s32 b0, s32 b1) {
+    if (b0 > a1) return tiles(b0 - a1 - 1) + 1;
+    if (a0 > b1) return -tiles(a0 - b1 - 1) - 1;
+    return 0;
+}
+
+// Where b's body is from a's, in tiles across (tx: + = right) and down (ty: + = below).
+static void body_tiles(const Actor *a, const Actor *b, s32 *tx, s32 *ty) {
+    s32 al = fx_to_int(a->x) + a->hb_x, at = fx_to_int(a->y) + a->hb_y;
+    s32 bl = fx_to_int(b->x) + b->hb_x, bt = fx_to_int(b->y) + b->hb_y;
+    *tx = axis_tiles(al, al + a->hb_w - 1, bl, bl + b->hb_w - 1);
+    *ty = axis_tiles(at, at + a->hb_h - 1, bt, bt + b->hb_h - 1);
+}
+
 int moves_tiles(const Actor *a, const Actor *b) {
-    s32 dx = fx_abs(fx_to_int(b->x) - fx_to_int(a->x)), dy = fx_abs(fx_to_int(b->y) - fx_to_int(a->y));
-    return tiles(dx > dy ? dx : dy);
+    s32 tx, ty;
+    body_tiles(a, b, &tx, &ty);
+    tx = fx_abs(tx);
+    ty = fx_abs(ty);
+    return tx > ty ? tx : ty;
 }
 
 int moves_reach(const MoveData *m) {
@@ -43,6 +63,12 @@ int moves_reach(const MoveData *m) {
 
 // The middle of a monster's body (its art stands on the origin).
 static s32 mid_y(const Actor *a) { return fx_to_int(a->y) - 7; }
+
+// The middle of the tile k tiles out from the user's body, along its facing.
+static void ahead(const Actor *u, int k, s32 *x, s32 *y) {
+    *x = fx_to_int(u->x) + u->look_x * (u->hb_w / 2 + 8 * k - 4);
+    *y = mid_y(u) + u->look_y * (u->hb_h / 2 + 8 * k - 4);
+}
 
 static int on_screen(const Actor *t) {
     s32 x = fx_to_int(t->x) - camera_x(), y = fx_to_int(t->y) - camera_y();
@@ -66,11 +92,11 @@ static int in_cone(s32 tx, s32 ty, int lx, int ly, int range) {
 // Every foe of `user` that the move's area covers (up to MAX_TARGETS). Returns how many.
 static int area_targets(Actor *user, const MoveData *m, Actor **out) {
     int n = 0;
-    s32 ux = fx_to_int(user->x), uy = fx_to_int(user->y);
     for (int i = 0; i < MAX_ACTORS && n < MAX_TARGETS; i++) {
         Actor *t = &g_actors[i];
         if (!t->active || !monster_is_foe(user, t)) continue;
-        s32 tx = tiles(fx_to_int(t->x) - ux), ty = tiles(fx_to_int(t->y) - uy);
+        s32 tx, ty;
+        body_tiles(user, t, &tx, &ty);
         int hit = 0;
         if (m->shape == SHAPE_CONE) hit = in_cone(tx, ty, user->look_x, user->look_y, m->range);
         else if (m->shape == SHAPE_CIRCLE) hit = moves_tiles(user, t) <= m->range;
@@ -123,7 +149,11 @@ static void fx_area(Actor *user, const MoveData *m) {
     if (m->effect_at == FX_AT_USER) {
         fx(m, ux, uy);
     } else if (m->effect_at == FX_AT_AXIS) {
-        for (int k = 1; k <= m->range; k++) fx(m, ux + user->look_x * 8 * k, uy + user->look_y * 8 * k);
+        for (int k = 1; k <= m->range; k++) {
+            s32 x, y;
+            ahead(user, k, &x, &y);
+            fx(m, x, y);
+        }
     } else if (m->effect_at == FX_AT_SCREEN) {
         for (int k = 0; k < 5; k++) fx(m, camera_x() + 8, camera_y() + 20 + 32 * k);
     }
@@ -131,12 +161,16 @@ static void fx_area(Actor *user, const MoveData *m) {
 
 // Effects of a move that reached no one: where its target would be, straight ahead at full range.
 static void fx_ahead(Actor *user, const MoveData *m) {
-    s32 ux = fx_to_int(user->x), uy = mid_y(user);
     int range = m->range > 0 ? m->range : 1;
+    s32 x, y;
     if (m->effect_at == FX_AT_LINE) {
-        for (int s = 1; s <= range; s++) fx(m, ux + user->look_x * 8 * s, uy + user->look_y * 8 * s);
+        for (int s = 1; s <= range; s++) {
+            ahead(user, s, &x, &y);
+            fx(m, x, y);
+        }
     } else if (m->effect_at == FX_AT_TARGET) {
-        fx(m, ux + user->look_x * 8 * range, uy + user->look_y * 8 * range);
+        ahead(user, range, &x, &y);
+        fx(m, x, y);
     }
 }
 
@@ -166,30 +200,19 @@ static MonsterHit hit_from(Actor *user, const MoveData *m) {
     return h;
 }
 
-// Can the user's hitbox stand at (x, y)? (not in a wall, not inside a solid monster)
-static int free_at(const Actor *u, fixed x, fixed y) {
-    s32 l = fx_to_int(x) + u->hb_x, t = fx_to_int(y) + u->hb_y;
-    s32 r = l + u->hb_w - 1, b = t + u->hb_h - 1, mx = (l + r) >> 1;
-    if ((physics_tile_at(l, t) | physics_tile_at(mx, t) | physics_tile_at(r, t) |
-         physics_tile_at(l, b) | physics_tile_at(mx, b) | physics_tile_at(r, b)) & TILE_SOLID) return 0;
-    for (int i = 0; i < MAX_ACTORS; i++) {
-        const Actor *o = &g_actors[i];
-        if (o == u || !actor_alive(o) || o->solid_mode == SOLID_NONE) continue;
-        s32 ol, ot, orr, ob;
-        actor_rect(o, &ol, &ot, &orr, &ob);
-        if (l <= orr && ol <= r && t <= ob && ot <= b) return 0;
-    }
-    return 1;
-}
-
 // Rush up to `px` pixels toward a point, stopping at walls and monsters.
 static void dash(Actor *u, s32 tx, s32 ty, int px) {
     s32 dx = tx - fx_to_int(u->x), dy = ty - fx_to_int(u->y);
     s32 len = (s32)fx_isqrt((u32)(dx * dx + dy * dy));
     if (len == 0) return;
     fixed sx = dx * FX_ONE / len, sy = dy * FX_ONE / len;
+    if (physics_free_at(u, u->x + sx * px, u->y + sy * px)) {      // the whole way is free
+        u->x += sx * px;
+        u->y += sy * px;
+        return;
+    }
     for (int i = 0; i < px; i++) {
-        if (!free_at(u, u->x + sx, u->y + sy)) break;
+        if (!physics_free_at(u, u->x + sx, u->y + sy)) break;
         u->x += sx;
         u->y += sy;
     }
@@ -222,7 +245,11 @@ static void zone_add(Actor *user, const MoveData *m, s32 tx, s32 ty) {
 // (each one on a monster in view when there is one, else anywhere in view).
 static void zones_place(Actor *user, const MoveData *m) {
     s32 ux = fx_to_int(user->x) >> 3, uy = (fx_to_int(user->y) - 4) >> 3;
-    if (m->zone_place == ZONE_FRONT) {
+    if (m->zone_place == ZONE_FRONT) {              // starts just past the body's edge it faces
+        s32 l, t, r, b;
+        actor_rect(user, &l, &t, &r, &b);
+        if (user->look_x) ux = (user->look_x > 0 ? r : l) >> 3;
+        if (user->look_y) uy = (user->look_y > 0 ? b : t) >> 3;
         int ahead = 1 + m->zone_w / 2;
         zone_add(user, m, ux + user->look_x * ahead, uy + user->look_y * ahead);
         return;
@@ -264,6 +291,7 @@ static void zone_hurt(Zone *z) {
         if (!t->active || !monster_targetable(t) || monster_team(t) == z->team) continue;
         s32 l, tp, r, b;
         actor_rect(t, &l, &tp, &r, &b);
+        if (tp < b - 7) tp = b - 7;                 // the ground hurts the feet: the body's bottom 8 px
         if (l < z->x + z->w && r >= z->x && tp < z->y + z->h && b >= z->y) {
             int res = monster_hit(t, &h);
             if (res > best) best = res;

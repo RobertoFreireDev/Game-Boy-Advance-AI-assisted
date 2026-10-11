@@ -1374,7 +1374,7 @@ PREVIEW.move = (id, n) => {
     }
     ctx.fillStyle = "#6cb4ff"; ctx.fillRect(R * T + 2, R * T + 2, T - 4, T - 4);
     ctx.fillStyle = "#fff"; ctx.beginPath(); ctx.moveTo(R * T + T - 3, R * T + T / 2); ctx.lineTo(R * T + 5, R * T + 4); ctx.lineTo(R * T + 5, R * T + T - 4); ctx.fill();
-    out.push(card("Area (tiles; blue = the user, facing right)", c, h("div", { class: "small" },
+    out.push(card("Area (tiles counted from the edge of the user's body; blue = the user, facing right)", c, h("div", { class: "small" },
       { single: "Brown = where a target can be; the nearest monster in it is hit.", dash: "Brown = where a target can be; the user rushes to the nearest one and hits it.",
         cone: "Orange = hit. Diagonal facing covers the quarter between the two directions.", circle: "Orange = hit.",
         zone: "Red = the zone on the ground; brown = a monster must be this close for the move to be used." }[n.shape] || "")));
