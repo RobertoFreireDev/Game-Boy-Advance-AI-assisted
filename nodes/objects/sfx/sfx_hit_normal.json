@@ -8,24 +8,24 @@
   "priority": 2,
   "steps": [
     {
-      "pitch": 7,
+      "pitch": 8,
       "ticks": 1,
       "volume": 15
     },
     {
-      "pitch": 4,
-      "ticks": 2,
+      "pitch": 5,
+      "ticks": 3,
+      "volume": 15
+    },
+    {
+      "pitch": 3,
+      "ticks": 3,
       "volume": 13
     },
     {
       "pitch": 2,
-      "ticks": 3,
-      "volume": 9
-    },
-    {
-      "pitch": 1,
       "ticks": 4,
-      "volume": 5
+      "volume": 9
     }
   ]
 }

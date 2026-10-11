@@ -21,8 +21,9 @@ static const u8 s_noise_reg[16] = {
     0xD1, 0xC1, 0xB1, 0xA1, 0x91, 0x81, 0x71, 0x61,
     0x51, 0x41, 0x31, 0x21, 0x11, 0x01, 0x00, 0x08 };
 
-// A soft square-ish wave, used by wave-channel sound effects when no song set one.
-static const u32 s_default_wave[4] = { 0xFFFFFFFF, 0xFFFFFFFF, 0x00000000, 0x00000000 };
+// A full square: the waveform of every wave-channel sound effect (the loudest one), whatever the
+// song uses. The song's own waveform comes back with its next wave note (music_row loads it).
+static const u32 s_sfx_wave[4] = { 0xFFFFFFFF, 0xFFFFFFFF, 0x00000000, 0x00000000 };
 
 static void wave_load(const u32 *w) {
     if (s_wave == w) return;
@@ -63,7 +64,7 @@ static void ch_note(int ch, u8 note, u8 vol, u8 duty, u8 decay) {
         REG_SND2FREQ = g_square_rate[note] | TRIGGER;
         break;
     case CH_WAVE:
-        if (!s_wave) wave_load(s_default_wave);
+        if (!s_wave) wave_load(s_sfx_wave);
         REG_SND3CNT = wave_volume(vol);
         REG_SND3FREQ = g_wave_rate[note] | TRIGGER;
         break;
@@ -109,6 +110,7 @@ void audio_play_sfx(const SfxData *s) {
     st->sfx = s;
     st->step = 0;
     st->ticks = s->steps[0].ticks;
+    if (s->channel == CH_WAVE) wave_load(s_sfx_wave);
     sfx_step(s->channel);
 }
 

@@ -25,12 +25,12 @@
     {
       "note": "A4",
       "ticks": 3,
-      "volume": 3
+      "volume": 4
     },
     {
       "note": "E4",
       "ticks": 5,
-      "volume": 2
+      "volume": 3
     }
   ]
 }

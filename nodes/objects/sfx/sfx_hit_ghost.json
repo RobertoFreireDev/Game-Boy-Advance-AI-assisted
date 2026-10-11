@@ -20,22 +20,22 @@
     {
       "note": "C6",
       "ticks": 2,
-      "volume": 3
+      "volume": 4
     },
     {
       "note": "F#5",
       "ticks": 3,
-      "volume": 3
+      "volume": 4
     },
     {
       "note": "B5",
       "ticks": 3,
-      "volume": 2
+      "volume": 4
     },
     {
       "note": "F5",
       "ticks": 6,
-      "volume": 1
+      "volume": 3
     }
   ]
 }

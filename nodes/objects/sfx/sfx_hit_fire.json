@@ -8,39 +8,39 @@
   "priority": 2,
   "steps": [
     {
-      "pitch": 8,
+      "pitch": 9,
       "ticks": 1,
-      "volume": 14
+      "volume": 15
     },
     {
-      "pitch": 5,
+      "pitch": 6,
       "ticks": 2,
-      "volume": 13
+      "volume": 15
+    },
+    {
+      "pitch": 10,
+      "ticks": 1,
+      "volume": 15
+    },
+    {
+      "pitch": 6,
+      "ticks": 2,
+      "volume": 15
     },
     {
       "pitch": 9,
       "ticks": 1,
-      "volume": 11
+      "volume": 15
     },
     {
       "pitch": 5,
-      "ticks": 2,
-      "volume": 11
-    },
-    {
-      "pitch": 8,
-      "ticks": 1,
-      "volume": 9
+      "ticks": 4,
+      "volume": 13
     },
     {
       "pitch": 4,
-      "ticks": 4,
-      "volume": 7
-    },
-    {
-      "pitch": 3,
       "ticks": 5,
-      "volume": 4
+      "volume": 9
     }
   ]
 }

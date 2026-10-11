@@ -9,34 +9,34 @@
   "priority": 2,
   "steps": [
     {
-      "note": "D#4",
+      "note": "G#4",
       "ticks": 2,
-      "volume": 12
+      "volume": 15
     },
     {
-      "note": "A3",
+      "note": "D4",
       "ticks": 2,
-      "volume": 12
+      "volume": 15
+    },
+    {
+      "note": "F4",
+      "ticks": 2,
+      "volume": 15
+    },
+    {
+      "note": "B3",
+      "ticks": 3,
+      "volume": 15
     },
     {
       "note": "C4",
       "ticks": 2,
-      "volume": 10
+      "volume": 14
     },
     {
-      "note": "F#3",
-      "ticks": 3,
-      "volume": 9
-    },
-    {
-      "note": "G3",
-      "ticks": 2,
-      "volume": 7
-    },
-    {
-      "note": "D#3",
+      "note": "G#3",
       "ticks": 5,
-      "volume": 5
+      "volume": 11
     }
   ]
 }

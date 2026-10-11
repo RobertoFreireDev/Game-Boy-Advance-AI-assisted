@@ -667,6 +667,7 @@ function stopAllAudio() {
   if (audio.timer) { clearInterval(audio.timer); audio.timer = null; }
   audio.onRow = null;
 }
+const SFX_WAVE = "ffffffffffffffff0000000000000000";   // like audio.c: wave-channel sfx play a full square
 function playSfx(id) {
   const s = NODES[id];
   if (!s || !Array.isArray(s.steps)) return;
@@ -676,7 +677,7 @@ function playSfx(id) {
     const dur = (st.ticks || 1) / 60;
     const vol = st.volume === undefined ? (s.channel === "wave" ? 4 : 12) : st.volume;
     if (s.channel === "noise") voice("noise", st.pitch | 0, vol, {}, t).stop(t + dur);
-    else if (st.note !== "..") { const f = noteFreq(st.note); if (f) voice(s.channel, f, vol, { duty: s.duty }, t).stop(t + dur); }
+    else if (st.note !== "..") { const f = noteFreq(st.note); if (f) voice(s.channel, f, vol, { duty: s.duty, wave: SFX_WAVE }, t).stop(t + dur); }
     t += dur;
   }
 }

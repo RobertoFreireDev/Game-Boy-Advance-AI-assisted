@@ -487,6 +487,7 @@ Instance ids are unique inside the scene; `camera.follow` uses an instance id.
 ```
 `channel`: `square1` `square2` `wave` `noise`. `duty`: 0=12.5% 1=25% 2=50% 3=75%.
 `volume`: 0–15 (wave channel: 0–4). Noise steps use `"pitch": 0–15` instead of `note`.
+Wave-channel sfx always play a full square waveform (not the song's), so they sound the same in every scene.
 
 **Music:**
 ```json
@@ -793,7 +794,9 @@ The AI runs the Python scripts directly; the `.bat` files exist for the human.
 - **Pixel art**: 4–8 colors per sprite, dark outline, one light source (top-left), readable
   silhouette at 1×, consistent style across the game. Animations 2–6 frames, 4–10 ticks each.
 - **Palettes**: share palettes across related objects to save palette slots.
-- **SFX**: short (≤ 30 ticks), distinct per event.
+- **SFX**: short (≤ 30 ticks), distinct per event, and loud: 12–15 for most steps (wave: 4), duty
+  25–50 % rather than 12.5 %, notes above C4 / noise pitch above 3 for the main part, so they cut
+  through the music.
 - **Music**: melody on square1, harmony on square2, bass on wave, drums on noise; melodies in C3–C7;
   build songs from short patterns reused in `order`.
 - **Music sits under the sound effects**: about half their volume (melody ≤ 6, harmony and drums ≤ 3,

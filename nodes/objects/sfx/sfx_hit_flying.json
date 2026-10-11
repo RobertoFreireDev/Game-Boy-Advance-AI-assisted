@@ -10,27 +10,27 @@
     {
       "pitch": 13,
       "ticks": 2,
-      "volume": 7
+      "volume": 12
     },
     {
       "pitch": 12,
       "ticks": 2,
-      "volume": 11
+      "volume": 15
     },
     {
       "pitch": 9,
       "ticks": 1,
-      "volume": 14
+      "volume": 15
     },
     {
       "pitch": 11,
       "ticks": 3,
-      "volume": 9
+      "volume": 15
     },
     {
       "pitch": 13,
       "ticks": 5,
-      "volume": 4
+      "volume": 10
     }
   ]
 }
