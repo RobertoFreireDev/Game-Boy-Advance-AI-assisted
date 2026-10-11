@@ -1,16 +1,22 @@
-1 - Fix use Hold A issue — DONE (move 3 is now hold R, ring shows at once; see monster-survival.md §4)
+1 - Each time, player gain level, it recover the full HP (purpose is to make the player engage more into fights instead of run) instead of Level-up raises max HP by 8
 
-Issue: when user hold A, it uses move 1 first if charged and then next, it start to charging the move 3
+2 - Remove completely the logic to need to hold R1 to use move 3. User/player press R1 and it uses like any other move.
 
-Requirement:
+3 - Add + 1 tile (from ≤X tiles to ≤(X+1) tiles) to all the distance values on 5.4 Move table.Only apply when tables has max distance description. 
 
-- Remove the logic to hold A to use move 3. Instead use button R1
-- Rule for A vs. hold-A. At zero seconds (no delay) a small ring appears around the player
+Some examples to apply: 
+- Normal	Tackle — single target ≤1 tile. 
+- Grass	Vine Whip — single target ≤3 tiles. 
+- Peck — single target ≤1 tile. 
 
-Update monster-survival.md
+Some examples to NOT apply: 	
+- Solar Beam — beam 6 tiles. 
+- Rock Slide — 3 random 2×2 tile spots on the visible screen get hit by falling rocks. 
+- Surf — whole screen. 
+- Sandstorm — 5 s: all enemies on screen freeze (no move, no attack); screen covered by a sand overlay so the player can't see. 
+- Acid — acid on a 3×3 tile area in front of the player for 3 s (ground zone)
 
-2 - Eletric monster move 1 makes too easy
+4 - Balance monsters
 
-- Add a penalty. When user uses move 1, Eletric monster doesn't move for 0.5 seconds
+- Monster, that intial move attack has bigger range/distance, must move slower and attacks must have less damage to enemy
 
-Update monster-survival.md
