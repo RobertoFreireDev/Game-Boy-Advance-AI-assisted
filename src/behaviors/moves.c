@@ -129,6 +129,17 @@ static void fx_area(Actor *user, const MoveData *m) {
     }
 }
 
+// Effects of a move that reached no one: where its target would be, straight ahead at full range.
+static void fx_ahead(Actor *user, const MoveData *m) {
+    s32 ux = fx_to_int(user->x), uy = mid_y(user);
+    int range = m->range > 0 ? m->range : 1;
+    if (m->effect_at == FX_AT_LINE) {
+        for (int s = 1; s <= range; s++) fx(m, ux + user->look_x * 8 * s, uy + user->look_y * 8 * s);
+    } else if (m->effect_at == FX_AT_TARGET) {
+        fx(m, ux + user->look_x * 8 * range, uy + user->look_y * 8 * range);
+    }
+}
+
 // Does the move's result make its sound? The player's damaging moves that hit at once play the
 // hit (by type) or miss sound instead of their own.
 static int result_sound_only(const Actor *user, const MoveData *m) {
@@ -285,36 +296,49 @@ void moves_tick(void) {
 }
 
 // ---- using a move -----------------------------------------------------------------------
-int moves_use(Actor *user, const MoveData *m) {
-    if (!m || !monster_can_act(user)) return 0;
+int moves_use(Actor *user, const MoveData *m, int always) {
+    if (!m || !monster_can_act(user)) return USE_NONE;
     MonsterHit h = hit_from(user, m);
     Actor *t[MAX_TARGETS];
+    int empty = result_sound_only(user, m) ? USE_WHIFF : USE_FIRED;    // went off at nothing
     switch (m->shape) {
     case SHAPE_SINGLE:
     case SHAPE_DASH: {
         Actor *f = nearest_foe(user, moves_reach(m));
-        if (!f) return 0;
+        if (!f && !always) return USE_NONE;
         begin(user, m);
-        if (m->shape == SHAPE_DASH) {
-            dash(user, fx_to_int(f->x), fx_to_int(f->y), m->dash * 8);
+        if (m->shape == SHAPE_DASH) {                           // rush at the foe, or straight ahead
+            s32 ux = fx_to_int(user->x), uy = fx_to_int(user->y);
+            dash(user, f ? fx_to_int(f->x) : ux + user->look_x * 64,
+                 f ? fx_to_int(f->y) : uy + user->look_y * 64, m->dash * 8);
             h = hit_from(user, m);
-            if (moves_tiles(user, f) > m->range) {              // rushed in, but it got away
+            if (f && moves_tiles(user, f) > m->range) {         // rushed in, but it got away
+                t[0] = f;
+                fx_targets(user, m, t, 1);
                 monster_hit_sound(&h, HIT_MISS);
-                return 1;
+                return USE_FIRED;
             }
+        }
+        if (!f) {
+            fx_ahead(user, m);
+            return empty;
         }
         t[0] = f;
         fx_targets(user, m, t, 1);
         monster_hit_sound(&h, monster_hit(f, &h));
-        return 1;
+        return USE_FIRED;
     }
     case SHAPE_CONE:
     case SHAPE_CIRCLE:
     case SHAPE_SCREEN: {
         int n = area_targets(user, m, t);
-        if (!n) return 0;
+        if (!n && !always) return USE_NONE;
         begin(user, m);
         fx_area(user, m);
+        if (!n) {
+            fx_ahead(user, m);
+            return empty;
+        }
         fx_targets(user, m, t, n);
         int best = HIT_NONE;
         for (int k = 0; k < n; k++) {
@@ -322,19 +346,20 @@ int moves_use(Actor *user, const MoveData *m) {
             if (res > best) best = res;
         }
         monster_hit_sound(&h, best);
-        return 1;
+        return USE_FIRED;
     }
     case SHAPE_ZONE:
-        if (m->zone_place == ZONE_FRONT ? !nearest_foe(user, m->range) : !any_foe_on_screen(user)) return 0;
+        if (!always && (m->zone_place == ZONE_FRONT ? !nearest_foe(user, m->range) : !any_foe_on_screen(user)))
+            return USE_NONE;
         begin(user, m);
         fx_area(user, m);
         zones_place(user, m);
-        return 1;
+        return USE_FIRED;
     case SHAPE_SELF:
         begin(user, m);
         fx_area(user, m);
         monster_buff(user, m->buff, rng_range(m->ticks_min, m->ticks_max));
-        return 1;
+        return USE_FIRED;
     }
-    return 0;
+    return USE_NONE;
 }

@@ -351,7 +351,9 @@ groups them for humans. **What an actor does comes only from its `logic` list.**
   phase, ticks}` (fly: only a `shadow` shows, can't be hit, passes over monsters; phase: passes through
   them). `status {kind: par|psn|tox|freeze, chance %, ticks [min,max]}` (paralysis: no moving or
   attacking, flashes yellow; poison: 1 damage a second; toxic: 1, 2, 3… a second; freeze: no moving or
-  attacking). A move with no foe in reach doesn't fire and keeps its charge (self moves always fire).
+  attacking). A wild monster's move with no foe in reach doesn't fire and keeps its charge (self moves always
+  fire); the player's moves always go off (aiming is their job): with no foe the effect plays straight ahead
+  at full range (`target` / `line`), nothing is hit and the charge is used.
   `effect` (particle) appears at `effect_at`: `target` (each one hit), `line` (from the user to it),
   `user`, `axis` (each tile along the facing, `range` long), `tiles` (each zone tile, at every hit),
   `center` (each zone's center when placed), `screen` (down the left edge of the view). `on_use[]` runs
@@ -366,7 +368,8 @@ groups them for humans. **What an actor does comes only from its `logic` list.**
   when super effective, so keep `super` on a channel the type sounds don't use; a missing type uses
   `hit`; wild monsters' hits use `hit` / `super` / `weak`). Damage =
   power × (1 + 0.15 × (level − 1)) × multiplier × user power %, rounded, at least 1; a hit flashes the
-  target white for 4 frames and pushes it 2 px away.
+  target for 4 frames (`flash_palette`, white, or the monster behavior's own `flash_palette`: wild monsters
+  blink red) and pushes it 2 px away.
 
 ### 6.2 Examples
 
@@ -558,7 +561,7 @@ Every channel in a pattern has the same number of rows. Missing channels are sil
   levels for the player, fainting; the shared combat code is `src/behaviors/monster.c` + `moves.c`),
   `monster_ai` (wander at home, hostile near the player with a cap, attack with move 1, go home; a
   sleeping boss), `move_buttons` (the player's 3 moves on A, B, hold A, with charge gauges, a
-  locked-move buzz and a miss sound when nothing is in reach),
+  locked-move buzz and a miss sound when a move reaches no one; the hold-A ring shows only after `ring_delay`),
   `species_select` (the picker's bobbing portrait, Left / Right), `drop_in` (a logo or layer that
   falls in and bounces). Add more as games need them.
 - Prefer a new reusable behavior over custom code.

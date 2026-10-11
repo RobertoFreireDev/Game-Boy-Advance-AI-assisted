@@ -8,8 +8,12 @@
 
 #include "engine/actor.h"
 
-// Use a move. Returns 1 if it fired, 0 if nothing was in reach (the charge is then kept).
-int moves_use(Actor *user, const MoveData *m);
+// What moves_use did: nothing (the charge is kept), went off, or went off at nothing without a
+// sound of its own (the caller plays a miss sound).
+enum { USE_NONE, USE_FIRED, USE_WHIFF };
+// Use a move. With nothing in reach it doesn't go off, unless `always` (the player's moves:
+// aiming is the player's job): then it goes off straight ahead, its effect shows and it hits nothing.
+int moves_use(Actor *user, const MoveData *m, int always);
 // How close (tiles) a monster should get to its target before using this move.
 int moves_reach(const MoveData *m);
 // Tiles between two actors' feet (max of across and down, rounded).

@@ -1,8 +1,10 @@
 // move_buttons - the player's moves on buttons. Each of the monster's 3 moves recharges on its
 // own timer once it is unlocked (by level). A fires move 1, B fires move 2, and holding A
-// without the D-pad fills a ring around the player: when it is full, move 3 fires. The HUD
-// gauges show each charge through game variables. A button whose move is still locked buzzes;
-// a ready move with nothing in reach plays the miss sound (the hit sounds come from the move).
+// without the D-pad shows a ring around the player (after ring_delay, so a quick press never
+// shows it) that fills up: when it is full, move 3 fires. A ready move always goes off and uses
+// its charge, even with nothing in reach (aiming is the player's job). The HUD gauges show each
+// charge through game variables. A button whose move is still locked buzzes; a move that went
+// off at nothing plays the miss sound (the hit sounds come from the move).
 #include "move_buttons.h"
 #include "monster.h"
 #include "moves.h"
@@ -34,11 +36,11 @@ static void sound(const SfxData *s) {
     if (s) audio_play_sfx(s);
 }
 
-// Fire a ready move; nothing in reach = the miss sound. Returns 1 if it fired.
+// Fire a ready move: it always goes off; at nothing, the miss sound. Returns 1 if it went off.
 static int fire(Actor *a, const Params_move_buttons *p, const MoveData *m) {
-    if (moves_use(a, m)) return 1;
-    sound(p->miss_sfx);
-    return 0;
+    int r = moves_use(a, m, 1);
+    if (r == USE_WHIFF) sound(p->miss_sfx);
+    return r != USE_NONE;
 }
 
 void bhv_move_buttons_init(Actor *a, const void *params) {
@@ -88,18 +90,24 @@ void bhv_move_buttons_update(Actor *a, const void *params) {
         else if (st[ST_C1 + i] >= m->charge && fire(a, p, m)) st[ST_C1 + i] = 0;
     }
 
-    // Hold A, D-pad untouched: the ring fills; when full, move 3 (if it is ready).
+    // Hold A, D-pad untouched: after ring_delay the ring shows and fills; when it is full, move 3
+    // fires if it is ready (else the grey ring stays full and nothing fires).
+    u32 full = p->hold_ticks ? (u32)p->hold_ticks : 1;
     int dpad = input_held(KEY_UP | KEY_DOWN | KEY_LEFT | KEY_RIGHT);
-    if (input_held(p->button_1) && !dpad && can) st[ST_HOLD]++;
-    else st[ST_HOLD] = 0;
-    const MoveData *m3 = sp->moves[2];
-    int ready = unlocked >= 3 && m3 && st[ST_C3] >= m3->charge;
-    if (st[ST_HOLD] >= (u32)p->hold_ticks) {
-        if (ready && fire(a, p, m3)) st[ST_C3] = 0;
+    if (input_held(p->button_1) && !dpad && can) {
+        if (st[ST_HOLD] < full) st[ST_HOLD]++;
+    } else {
         st[ST_HOLD] = 0;
     }
-    if (st[ST_HOLD] && p->ring) {
-        int lit = (int)(st[ST_HOLD] * RING_DOTS / (u32)(p->hold_ticks ? p->hold_ticks : 1));
+    const MoveData *m3 = sp->moves[2];
+    int ready = unlocked >= 3 && m3 && st[ST_C3] >= m3->charge;
+    if (st[ST_HOLD] >= full && ready) {
+        if (fire(a, p, m3)) st[ST_C3] = 0;
+        st[ST_HOLD] = 0;
+    }
+    u32 delay = (u32)p->ring_delay;
+    if (st[ST_HOLD] > delay && p->ring) {
+        int lit = (int)((st[ST_HOLD] - delay) * RING_DOTS / (full > delay ? full - delay : 1));
         for (int k = 0; k < RING_DOTS; k++) {           // clockwise from the top
             s32 ang = 90 - 45 * k;
             s32 x = (fx_cos_deg(ang) * p->ring_radius) >> FX_SHIFT;

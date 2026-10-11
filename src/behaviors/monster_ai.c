@@ -166,7 +166,7 @@ void bhv_monster_ai_update(Actor *a, const void *params) {
         }
         stand(a);
         face_point(a, fx_to_int(pl->x), fx_to_int(pl->y));
-        if (st[ST_CHARGE] >= (u32)p->charge && m && moves_use(a, m)) st[ST_CHARGE] = 0;
+        if (st[ST_CHARGE] >= (u32)p->charge && m && moves_use(a, m, 0)) st[ST_CHARGE] = 0;
         break;
     }
     case MODE_RETURN:

@@ -13,7 +13,7 @@
 #include "engine/particles.h"
 #include "engine/floattext.h"
 
-#define FLASH_TICKS   4         // white flash when hit
+#define FLASH_TICKS   4         // flash when hit (its flash_palette, else the game's white)
 #define PUSH_PX       2         // knockback when hit
 #define STATUS_EVERY  60        // poison hurts once a second
 #define FAINT_TICKS   30        // a wild monster flashes and blinks out
@@ -40,6 +40,11 @@ static const Params_monster *params_of(const Actor *a) {
 
 static Monster *mon(const Actor *a) {
     return (a && a->active && actor_logic_index(a, BHV_MONSTER) >= 0) ? &s_mon[actor_index(a)] : NULL;
+}
+
+// The colors it flashes when a move hits it: its own (wild monsters: red), else the game's (white).
+static const PaletteData *hit_palette(const Params_monster *p) {
+    return p && p->flash_palette ? p->flash_palette : g_game.battle->flash_palette;
 }
 
 const SpeciesData *monster_species(const Actor *a) {
@@ -218,7 +223,7 @@ int monster_hit(Actor *t, const MonsterHit *h) {
         if (pct > 100) { say(t, BT_SUPER, NULL, 1); result = HIT_SUPER; }
         else if (pct < 100) { say(t, BT_WEAK, NULL, 1); result = HIT_WEAK; }
         else result = HIT_NORMAL;
-        t->flash_pal = b->flash_palette;
+        t->flash_pal = hit_palette(params_of(t));
         t->flash = FLASH_TICKS;
         push(t, h->from_x, h->from_y, PUSH_PX);
         hurt(t, d);
@@ -311,7 +316,7 @@ void bhv_monster_init(Actor *a, const void *params) {
     m->power = (u16)p->power;
     actor_set_body(a, sp->body);
     if (p->alpha) a->pal = sp->alpha_palette;
-    a->flash_pal = g_game.battle->flash_palette;
+    a->flash_pal = hit_palette(p);
 }
 
 void bhv_monster_update(Actor *a, const void *params) {
@@ -337,7 +342,7 @@ void bhv_monster_update(Actor *a, const void *params) {
             a->flash_pal = g_game.battle->par_palette;
             a->flash = FLASH_TICKS;
         } else if (a->flash == 0) {
-            a->flash_pal = g_game.battle->flash_palette;
+            a->flash_pal = hit_palette(p);
         }
         if (m->status_ticks && --m->status_ticks == 0) m->status = STATUS_NONE;
     }

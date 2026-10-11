@@ -3,7 +3,7 @@
   "kind": "object",
   "type": "palette",
   "name": "Hit flash",
-  "notes": "All white: a monster flashes white for 4 frames when a move hits it.",
+  "notes": "All white: the player's monster flashes white for 4 frames when a move hits it (wild monsters blink red instead: pal_flash_red).",
   "colors": [
     "#000000",
     "#f8f8f8",

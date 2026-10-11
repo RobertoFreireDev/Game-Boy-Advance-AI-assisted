@@ -3,7 +3,7 @@
   "kind": "object",
   "type": "sfx",
   "name": "Miss",
-  "notes": "A clear whoosh of air: the move missed, or a charged move had nothing in reach.",
+  "notes": "A clear whoosh of air: the move missed, or the player's move reached no monster.",
   "channel": "noise",
   "priority": 2,
   "steps": [

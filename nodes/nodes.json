@@ -488,6 +488,7 @@
     {"id": "pal_txt_purple", "kind": "object", "type": "palette", "path": "objects/palette/pal_txt_purple.json", "parent": null},
     {"id": "pal_txt_cyan", "kind": "object", "type": "palette", "path": "objects/palette/pal_txt_cyan.json", "parent": null},
     {"id": "font_float", "kind": "object", "type": "font", "path": "objects/font/font_float.json", "parent": null},
+    {"id": "pal_flash_red", "kind": "object", "type": "palette", "path": "objects/palette/pal_flash_red.json", "parent": null},
     {"id": "pal_flash_white", "kind": "object", "type": "palette", "path": "objects/palette/pal_flash_white.json", "parent": null},
     {"id": "pal_flash_yellow", "kind": "object", "type": "palette", "path": "objects/palette/pal_flash_yellow.json", "parent": null},
     {"id": "sfx_hit", "kind": "object", "type": "sfx", "path": "objects/sfx/sfx_hit.json", "parent": null},

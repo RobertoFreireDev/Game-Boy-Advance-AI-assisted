@@ -3,7 +3,7 @@
   "kind": "object",
   "type": "enemy",
   "name": "Wild monster",
-  "notes": "A wild monster of the species set on each map instance (levels 2, 4 or 6 with 30, 45 or 60 HP). The player's own species stays away. It wanders near home, turns hostile within 5 tiles (at most 3 at once), walks up and uses its species' first move every 4 s, and goes home if the player gets more than 10 tiles away. Touching never hurts. Each one gives 20 XP when it faints (plus 2 XP per hit taken).",
+  "notes": "A wild monster of the species set on each map instance (levels 2, 4 or 6 with 30, 45 or 60 HP). The player's own species stays away. It wanders near home, turns hostile within 5 tiles (at most 3 at once), walks up and uses its species' first move every 4 s, and goes home if the player gets more than 10 tiles away. Touching never hurts. When the player's move hits it, it blinks red. Each one gives 20 XP when it faints (plus 2 XP per hit taken).",
   "logic": [
     {
       "behavior": "monster",
@@ -12,6 +12,7 @@
         "level": 2,
         "hp": 30,
         "avoid_var": "chosen",
+        "flash_palette": "pal_flash_red",
         "xp_reward": 20,
         "kills_var": "kills",
         "on_death": [

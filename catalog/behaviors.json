@@ -254,7 +254,7 @@
     }
   },
   "monster": {
-    "description": "A creature of a monster-battle game. It takes its look, type and 3 moves from a species node, and has a level and hit points. Moves that hit it use the type chart (game.battle) for damage, can MISS, flash it white, push it back 2 px and may paralyze or poison it; floating words show what happened. When its hit points run out it faints (flashes and blinks out). The player's version keeps hit points, level and XP in game variables and levels up.",
+    "description": "A creature of a monster-battle game. It takes its look, type and 3 moves from a species node, and has a level and hit points. Moves that hit it use the type chart (game.battle) for damage, can MISS, flash it (white, or its own flash_palette), push it back 2 px and may paralyze or poison it; floating words show what happened. When its hit points run out it faints (flashes and blinks out). The player's version keeps hit points, level and XP in game variables and levels up.",
     "params": {
       "species":      {"type": "node:species", "default": "", "description": "Its species. Empty = use species_var or random."},
       "species_var":  {"type": "var", "default": "", "description": "Game variable holding the species number (order of the species nodes, from 0): the player's pick. Empty = use 'species'."},
@@ -266,6 +266,7 @@
       "alpha":        {"type": "bool", "default": false, "description": "Draw it in its species' Alpha colors."},
       "crown":        {"type": "node:sprite", "default": "", "description": "Sprite drawn over its head, its 2 frames shimmering (the Alpha's crown). Empty = none."},
       "aura":         {"type": "node:particle", "default": "", "description": "Sparkles that keep rising around it. Empty = none."},
+      "flash_palette": {"type": "node:palette", "default": "", "description": "Colors it flashes for 4 frames when a move hits it (wild monsters blink red, so a hit is easy to see). Empty = game.battle.flash_palette."},
       "shadow":       {"type": "node:sprite", "default": "", "description": "Shown on the ground instead of its body while it flies. Empty = nothing shows."},
       "xp_reward":    {"type": "int", "default": 20, "description": "XP the player gets when this monster faints."},
       "kills_var":    {"type": "var", "default": "", "description": "Game variable that goes up by 1 when this monster faints. Empty = none."},
@@ -300,14 +301,15 @@
     }
   },
   "move_buttons": {
-    "description": "The player's 3 moves (from its species) on buttons. Each move recharges on its own timer (the move node's charge) from the moment it is unlocked: move 2 and move 3 unlock at a level. A fires move 1 when charged, B fires move 2, and holding A without touching the D-pad fills a ring of dots around the player: when it is full, move 3 fires (grey dots = move 3 is locked or still charging, nothing fires). A move with nothing in reach keeps its charge. HUD gauges read the charges through variables. Sounds: a button whose move is still locked plays 'locked_sfx'; a ready move with nothing in reach plays 'miss_sfx' (and keeps its charge); what a move hits sounds by its type (game.battle.player_hit_sounds).",
+    "description": "The player's 3 moves (from its species) on buttons. Each move recharges on its own timer (the move node's charge) from the moment it is unlocked: move 2 and move 3 unlock at a level. A fires move 1 when charged, B fires move 2, and holding A without touching the D-pad shows a ring of dots around the player (only after ring_delay, so a quick press for move 1 never shows it) that fills up: when it is full, move 3 fires (grey dots = move 3 is locked or still charging, nothing fires). A ready move always goes off and uses its charge, even with nothing in reach (aiming is the player's job): its effect plays straight ahead. HUD gauges read the charges through variables. Sounds: a button whose move is still locked plays 'locked_sfx'; a move that went off at nothing plays 'miss_sfx'; what a move hits sounds by its type (game.battle.player_hit_sounds).",
     "params": {
       "level_var":         {"type": "var", "required": true, "description": "Game variable with the player's level."},
       "unlock_2":          {"type": "int", "default": 4, "description": "Level that unlocks move 2."},
       "unlock_3":          {"type": "int", "default": 7, "description": "Level that unlocks move 3."},
       "button_1":          {"type": "button", "default": "A", "description": "Button for move 1 (held for move 3)."},
       "button_2":          {"type": "button", "default": "B", "description": "Button for move 2."},
-      "hold_ticks":        {"type": "ticks", "default": 180, "description": "How long the button is held (D-pad untouched) to fire move 3."},
+      "hold_ticks":        {"type": "ticks", "default": 120, "description": "How long the button is held (D-pad untouched) to fire move 3."},
+      "ring_delay":        {"type": "ticks", "default": 60, "description": "The ring only shows once the button has been held this long (a quick press for move 1 never shows it); it then fills until hold_ticks."},
       "gauge_1":           {"type": "var", "default": "", "description": "Game variable showing move 1's charge: 0 locked, 1 empty .. 5 full, 6 = the flash when it just became full."},
       "gauge_2":           {"type": "var", "default": "", "description": "Same for move 2."},
       "gauge_3":           {"type": "var", "default": "", "description": "Same for move 3."},
@@ -317,7 +319,7 @@
       "ring_radius":       {"type": "int", "default": 14, "description": "Distance of the ring dots from the player's middle (pixels)."},
       "on_unlock":         {"type": "actions", "default": [], "description": "What happens when a move unlocks (NEW MOVE!)."},
       "locked_sfx":        {"type": "node:sfx", "default": "", "description": "Sound when A or B is pressed but its move is still locked (an error buzz). Empty = silent."},
-      "miss_sfx":          {"type": "node:sfx", "default": "", "description": "Sound when a charged move is used but nothing is in reach (it doesn't fire and keeps its charge). Empty = silent."}
+      "miss_sfx":          {"type": "node:sfx", "default": "", "description": "Sound when a charged move goes off but reaches nothing (it still uses its charge). Empty = silent."}
     }
   },
   "species_select": {
