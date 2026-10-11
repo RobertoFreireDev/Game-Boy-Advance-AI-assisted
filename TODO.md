@@ -1,4 +1,4 @@
-1 - Fix use Hold A issue
+1 - Fix use Hold A issue — DONE (move 3 is now hold R, ring shows at once; see monster-survival.md §4)
 
 Issue: when user hold A, it uses move 1 first if charged and then next, it start to charging the move 3
 

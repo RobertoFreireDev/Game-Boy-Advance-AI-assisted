@@ -338,7 +338,7 @@ groups them for humans. **What an actor does comes only from its `logic` list.**
 - Use **one font per scene** for the HUD and box-less menus (BG0 has one transparent-font slot).
 - **species**: `title` ≤ 10 chars, `monster_type` one of `game.battle.types`, `body` (its look in the
   world), `alpha_palette` (the same color slots recolored: the Alpha boss), `portrait` (a sprite for
-  the picker), `cry` (sfx), exactly 3 `moves` (A, B, hold A). Its number for `species_var` and
+  the picker), `cry` (sfx), exactly 3 `moves` (A, B, hold R). Its number for `species_var` and
   `{var.name}` is its order among the species in nodes.json, from 0.
 - **move**: `title` ≤ 13 chars, `monster_type`, `power` (0 = status only), `accuracy` % (a miss shows
   MISS; zones never miss), `charge` (ticks to recharge for the player). **A move hurts exactly what its
@@ -588,8 +588,8 @@ Every channel in a pattern has the same number of rows. Missing channels are sil
   levels for the player, fainting; the shared combat code is `src/behaviors/monster.c` + `moves.c`),
   `monster_ai` (wander at home, hostile near the player with a cap, attack with move 1, go home; a
   sleeping boss; keeps `spread` tiles from other wild monsters, walking around them and sliding
-  sideways around the player, so a pack spreads out), `move_buttons` (the player's 3 moves on A, B, hold A, with charge gauges, a
-  locked-move buzz and a miss sound when a move reaches no one; the hold-A ring shows only after `ring_delay`),
+  sideways around the player, so a pack spreads out), `move_buttons` (the player's 3 moves on A, B, hold R, with charge gauges, a
+  locked-move buzz and a miss sound when a move reaches no one; the hold-R ring shows at once and fills),
   `species_select` (the picker's bobbing portrait, Left / Right), `drop_in` (a logo or layer that
   falls in and bounces). Add more as games need them.
 - Prefer a new reusable behavior over custom code.

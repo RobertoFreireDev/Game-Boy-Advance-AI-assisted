@@ -105,17 +105,17 @@ All monsters, names, sprites, tiles and music are **original**. The style may ev
 | D-pad (8 directions, incl. diagonals) | Move. Facing direction = last movement direction |
 | **A** (press) | Move 1 (if charged) |
 | **B** (press) | Move 2 (if unlocked and charged) |
-| **Hold A, no D-pad input, for 2 s** | Move 3 (if unlocked and charged) |
+| **Hold R, no D-pad input, for 2 s** | Move 3 (if unlocked and charged) |
 | Start | Menu: start run. Run: pause |
 | Left/Right | Menu: change monster |
 
-**Rule for A vs. hold-A:**
-- Pressing A fires Move 1 immediately if it's charged.
-- If A stays held and the D-pad is untouched, a "hold" counter runs. **Nothing shows during the first 1 s**, so a normal A press for Move 1 never shows the ring.
-- At 1 s a small ring appears around the player:
-  - If Move 3 is unlocked and charged, the ring fills up during the next second, and at **2 s** Move 3 fires.
-  - If Move 3 is locked or still charging, the ring shows in grey and nothing fires.
-- Touching the D-pad or releasing A resets the hold counter and hides the ring.
+**Rule for hold-R (Move 3):**
+- Each move has its own button: A is only Move 1 (holding A does nothing more), B is Move 2, R is Move 3.
+- While R is held and the D-pad is untouched, a "hold" counter runs. **At 0 s (no delay)** a small ring appears around the player:
+  - If Move 3 is unlocked and charged, the ring fills up over **2 s**, and when it is full Move 3 fires.
+  - If Move 3 is locked or still charging, the ring shows in grey and nothing fires. Pressing R while Move 3 is still locked also buzzes (like B before Move 2 unlocks).
+- Touching the D-pad or releasing R resets the hold counter and hides the ring.
+- After Move 3 fires, the ring stays hidden until R is released (holding R on does not start a new grey ring).
 
 ---
 
@@ -383,7 +383,7 @@ XP ████████░░░░               TIME 06:12
 
                 [ map ]
 
-[A ●]  [B ◔]  [HOLD A ○]
+[A ●]  [B ◔]  [HOLD R ○]
 ```
 
 - HP bar (green → yellow → red), current level, XP bar to next level.

@@ -1248,7 +1248,7 @@ def V_species(c):
     c.ref(n.get("cry"), ["sfx"], "cry")
     moves = c.get(n, "moves", "list", default=[])
     if len(moves) != 3:
-        c.err("'moves' must list exactly 3 moves (A, B, hold A)")
+        c.err("'moves' must list exactly 3 moves (A, B, hold R)")
     for i, m in enumerate(moves):
         c.ref(m, ["move"], "moves[%d]" % i)
 

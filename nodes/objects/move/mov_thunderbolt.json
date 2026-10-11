@@ -3,7 +3,7 @@
   "kind": "object",
   "type": "move",
   "name": "Thunderbolt",
-  "notes": "Voltail's move 3 (hold A). A blast of electricity shoots 10 tiles straight ahead of the user; every monster it touches is hurt. Charge: 60 s.",
+  "notes": "Voltail's move 3 (hold R). A blast of electricity shoots 10 tiles straight ahead of the user; every monster it touches is hurt. Charge: 60 s.",
   "title": "THUNDERBOLT",
   "monster_type": "electric",
   "shape": "beam",

@@ -3,7 +3,7 @@
   "kind": "object",
   "type": "move",
   "name": "Fly",
-  "notes": "Gustling's move 3 (hold A). Flies up for 3 s: only a shadow shows, nothing can hit the user and it passes over monsters. Charge: 60 s.",
+  "notes": "Gustling's move 3 (hold R). Flies up for 3 s: only a shadow shows, nothing can hit the user and it passes over monsters. Charge: 60 s.",
   "title": "FLY",
   "monster_type": "flying",
   "shape": "self",

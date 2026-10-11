@@ -3,7 +3,7 @@
   "kind": "object",
   "type": "species",
   "name": "Furrbit",
-  "notes": "Furrbit: a round cream-colored rabbit with big pink-lined ears and a fluffy tail. Type NORMAL. Moves: Tackle (A), Quick Attack (B) and Growl (hold A). It can be the player, and the 8 species that aren't picked live on the map.",
+  "notes": "Furrbit: a round cream-colored rabbit with big pink-lined ears and a fluffy tail. Type NORMAL. Moves: Tackle (A), Quick Attack (B) and Growl (hold R). It can be the player, and the 8 species that aren't picked live on the map.",
   "title": "FURRBIT",
   "monster_type": "normal",
   "body": "body_furrbit",

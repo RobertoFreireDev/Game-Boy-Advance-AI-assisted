@@ -39,7 +39,7 @@
     {
       "x": 16,
       "y": 80,
-      "text": "HOLD A {chosen.move3} {moves|LOCKED|LOCKED|LOCKED|}"
+      "text": "HOLD R {chosen.move3} {moves|LOCKED|LOCKED|LOCKED|}"
     }
   ],
   "layout": {
