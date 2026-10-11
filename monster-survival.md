@@ -337,7 +337,7 @@ These numbers are the tuning knobs for hitting the minute 3 / minute 6 targets; 
 | Max HP | 60 at level 1, +8 per level |
 | Speed | 1 px per frame (diagonals normalized) |
 
-Level-up raises max HP by 8 **and adds 8 to current HP** (only the gained amount — this is not a full heal). This is the only way HP goes up.
+Level-up raises max HP by 8 **and refills current HP to the new max** (a full heal). This is the only way HP goes up, so fighting for XP is how the player recovers, not running away.
 
 ---
 
@@ -437,7 +437,7 @@ These points weren't specified, so this doc picks a value:
 4. **Toxic** range = 4 tiles; **Sandstorm** lasts 5 s; **Acid** lasts 3 s.
 5. **Growl** rolls 33% for each enemy its notes touch.
 6. Enemies use only **Move 1**, with a 4 s charge; at most 3 hostile at once.
-7. Level-up adds the HP gained to current HP (not a full heal).
+7. Level-up is a full heal (to the new max HP), to reward fighting over running.
 8. A player's move always fires and uses its charge, even with no enemy in reach (aiming is the player's job). Enemies only attack when the player is in reach.
 9. Moves have accuracy, which is where "MISS" comes from.
 10. Ghost's Move 3 is named **Phase** in this doc to avoid confusion with the Ghost type name.

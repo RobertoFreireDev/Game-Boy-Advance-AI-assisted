@@ -129,8 +129,8 @@ static void player_progress(Actor *a, const Params_monster *p, Monster *m) {
     while (lv < p->max_level && xp >= xp_needed(p, lv)) {
         lv++;
         vars_set(p->level_var, lv);
-        vars_add(p->hp_max_var, p->hp_per_level);   // not a full heal: only the new points
-        vars_add(p->hp_var, p->hp_per_level);
+        vars_add(p->hp_max_var, p->hp_per_level);
+        if (p->hp_max_var >= 0) vars_set(p->hp_var, vars_get(p->hp_max_var));   // a full heal: fighting pays off
         scripts_start(p->on_level_up, a);
     }
     m->level = (u8)lv;

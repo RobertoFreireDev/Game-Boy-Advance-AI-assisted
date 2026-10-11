@@ -254,7 +254,7 @@
     }
   },
   "monster": {
-    "description": "A creature of a monster-battle game. It takes its look, type and 3 moves from a species node, and has a level and hit points. Moves that hit it use the type chart (game.battle) for damage, can MISS, flash it (white, or its own flash_palette), push it back 2 px (not into a wall or another monster) and may paralyze or poison it; floating words show what happened. When its hit points run out it faints (flashes and blinks out). The player's version keeps hit points, level and XP in game variables and levels up.",
+    "description": "A creature of a monster-battle game. It takes its look, type and 3 moves from a species node, and has a level and hit points. Moves that hit it use the type chart (game.battle) for damage, can MISS, flash it (white, or its own flash_palette), push it back 2 px (not into a wall or another monster) and may paralyze or poison it; floating words show what happened. When its hit points run out it faints (flashes and blinks out). The player's version keeps hit points, level and XP in game variables and levels up (each level up raises its maximum hit points and heals it to full).",
     "params": {
       "species":      {"type": "node:species", "default": "", "description": "Its species. Empty = use species_var or random."},
       "species_var":  {"type": "var", "default": "", "description": "Game variable holding the species number (order of the species nodes, from 0): the player's pick. Empty = use 'species'."},
@@ -271,7 +271,7 @@
       "xp_reward":    {"type": "int", "default": 20, "description": "XP the player gets when this monster faints."},
       "kills_var":    {"type": "var", "default": "", "description": "Game variable that goes up by 1 when this monster faints. Empty = none."},
       "hp_var":       {"type": "var", "default": "", "description": "Game variable holding its hit points (the player's, shown on the HUD). Empty = private hit points."},
-      "hp_max_var":   {"type": "var", "default": "", "description": "Game variable holding its maximum hit points (raised on level up)."},
+      "hp_max_var":   {"type": "var", "default": "", "description": "Game variable holding its maximum hit points (raised on level up, when the hit points are also refilled to it)."},
       "level_var":    {"type": "var", "default": "", "description": "Game variable holding its level. Empty = the 'level' param."},
       "xp_var":       {"type": "var", "default": "", "description": "Game variable collecting its XP (the player): reaching the next total levels it up. Empty = no leveling."},
       "xp_pct_var":   {"type": "var", "default": "", "description": "Game variable kept at 0-100 = progress to the next level (for an XP bar). Empty = none."},
@@ -279,7 +279,7 @@
       "xp_first":     {"type": "int", "default": 40, "description": "Total XP needed for level 2."},
       "xp_step":      {"type": "int", "default": 50, "description": "Extra total XP for each level after that (level 3 = first + step, ...)."},
       "max_level":    {"type": "int", "default": 10, "description": "Highest level."},
-      "hp_per_level": {"type": "int", "default": 8, "description": "Each level up adds this to the maximum hit points and to the current hit points (not a full heal)."},
+      "hp_per_level": {"type": "int", "default": 8, "description": "Each level up adds this to the maximum hit points, then refills the hit points to the new maximum (a full heal, so fighting pays off)."},
       "on_level_up":  {"type": "actions", "default": [], "description": "What happens on each level gained."},
       "on_death":     {"type": "actions", "default": [], "description": "What happens when it faints."}
     }
