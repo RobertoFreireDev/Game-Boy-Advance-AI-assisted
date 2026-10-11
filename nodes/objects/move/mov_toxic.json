@@ -21,9 +21,11 @@
   },
   "effect": "ptc_fx_toxic",
   "effect_at": "target",
+  "travel": "anim_travel_toxic",
   "sfx": "sfx_mv_poison",
   "children": [
     "spr_fx_toxic",
-    "ptc_fx_toxic"
+    "ptc_fx_toxic",
+    "anim_travel_toxic"
   ]
 }

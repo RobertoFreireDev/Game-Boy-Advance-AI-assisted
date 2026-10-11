@@ -51,7 +51,7 @@ OBJECT_TYPES = {
     "dialog":    ("dlg_",  ["icon"]),
     "upgrade":   ("upg_",  ["icon"]),
     "species":   ("mon_",  ["body", "sprite", "sfx", "move", "palette"]),
-    "move":      ("mov_",  ["particle", "sprite", "sfx"]),
+    "move":      ("mov_",  ["particle", "animation", "sprite", "sfx"]),
 }
 SCENE_PREFIX = "scn_"
 
@@ -367,6 +367,58 @@ def effect_box(p, move):
     if r < l:
         return None
     return [l - w // 2, t - h // 2, r - w // 2, b - h // 2]
+
+
+# ---- a move's effect in 3 steps (moves.c strike_show; only a picture: who is hurt and when stays) ----
+# Percent of the effect's time (its particle's lifetime) for step 1 (coming out of the user) and
+# step 2 (on its way to where the effect plays); step 3 (the effect there) is the other 60 %.
+MOVE_STEPS = (20, 20)
+
+
+def move_steps(p, move):
+    """[step 1, step 2] in frames for a move's effect, or None when it plays as it is: whole-screen
+    moves and zones placed on the screen (nothing comes from the user), zones whose effect plays at
+    their center (timed to when they land), and moves without an effect."""
+    shape = move.get("shape")
+    z = move.get("zone") if isinstance(move.get("zone"), dict) else {}
+    if shape == "screen" or (shape == "zone" and (z.get("place") == "screen" or move.get("effect_at") == "center")):
+        return None
+    life = (p.nodes.get(move.get("effect") or "") or {}).get("lifetime")
+    if not isinstance(life, int) or isinstance(life, bool) or life < 2:
+        return None
+    t1 = (life * MOVE_STEPS[0] + 50) // 100
+    t12 = (life * (MOVE_STEPS[0] + MOVE_STEPS[1]) + 50) // 100
+    return [t1, t12 - t1]
+
+
+def sped_up_frames(anim, steps, frames):
+    """Frame indices an animation shows when its `steps` steps play over `frames` frames, spread
+    evenly like particles.c does for a move's effect in step 3."""
+    acc = done = 0
+    shown = set()
+    for _ in range(frames):
+        acc += steps
+        done += acc // frames
+        acc %= frames
+        shown.add(anim_frame_at(anim, done))
+    return shown
+
+
+def frames_lost_in_step3(p, move):
+    """Frames of a move's effect animation that step 3 plays too fast to show (they would hurt
+    without ever being drawn). Empty when the move plays as it is or its effect plays at the user
+    (those keep their animation's pace)."""
+    steps = move_steps(p, move)
+    if not steps or move.get("effect_at") == "user":
+        return []
+    eff = p.nodes.get(move.get("effect") or "") or {}
+    anim = p.nodes.get(eff.get("animation") or "") or {}
+    if not anim.get("frames"):
+        return []
+    life = int(eff["lifetime"])
+    normal = {anim_frame_at(anim, k) for k in range(1, life)}
+    late = sped_up_frames(anim, life - 1, max(1, life - 1 - sum(steps)))     # the latest piece: at the destination
+    return sorted(normal - late)
 
 
 class Project:

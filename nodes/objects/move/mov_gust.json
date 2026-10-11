@@ -13,9 +13,11 @@
   "charge": 180,
   "effect": "ptc_fx_gust",
   "effect_at": "axis",
+  "travel": "anim_travel_gust",
   "sfx": "sfx_mv_wind",
   "children": [
     "spr_fx_gust",
-    "ptc_fx_gust"
+    "ptc_fx_gust",
+    "anim_travel_gust"
   ]
 }

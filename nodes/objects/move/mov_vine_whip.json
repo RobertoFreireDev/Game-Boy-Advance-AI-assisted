@@ -13,9 +13,11 @@
   "charge": 180,
   "effect": "ptc_fx_vine",
   "effect_at": "line",
+  "travel": "anim_travel_vine_whip",
   "sfx": "sfx_mv_grass",
   "children": [
     "spr_fx_vine",
-    "ptc_fx_vine"
+    "ptc_fx_vine",
+    "anim_travel_vine_whip"
   ]
 }

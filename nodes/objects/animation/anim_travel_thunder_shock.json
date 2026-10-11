@@ -1,0 +1,20 @@
+{
+  "id": "anim_travel_thunder_shock",
+  "kind": "object",
+  "type": "animation",
+  "name": "Thunder Shock travel",
+  "notes": "A yellow spark that zips from the user to the target before the bolt strikes. It comes out from behind the user (step 1), flies there (step 2), then the move's own effect plays (step 3).",
+  "sprite": "spr_fx_travel",
+  "loop": true,
+  "frames": [
+    {
+      "frame": "thunder_shock_a",
+      "ticks": 2
+    },
+    {
+      "frame": "thunder_shock_b",
+      "ticks": 2
+    }
+  ],
+  "events": []
+}

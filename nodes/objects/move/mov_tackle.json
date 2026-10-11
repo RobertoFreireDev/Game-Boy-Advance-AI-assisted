@@ -13,9 +13,11 @@
   "charge": 180,
   "effect": "ptc_fx_tackle",
   "effect_at": "target",
+  "travel": "anim_travel_tackle",
   "sfx": "sfx_mv_normal",
   "children": [
     "spr_fx_tackle",
-    "ptc_fx_tackle"
+    "ptc_fx_tackle",
+    "anim_travel_tackle"
   ]
 }

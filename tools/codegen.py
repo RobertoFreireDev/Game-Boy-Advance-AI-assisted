@@ -551,14 +551,15 @@ class Gen:
         ticks = z.get("ticks") or ([bf["ticks"], bf["ticks"]] if bf.get("ticks") else [0, 0])
         on_use = self.actions(n.get("on_use") or [], nid + "_use")
         box = C.effect_box(self.p, n) or [0, 0, -1, -1]     # what the effect draws: the move hurts that
+        steps = C.move_steps(self.p, n) or [0, 0]           # its effect's steps 1 and 2 (frames)
         self.emit(("const MoveData node_%s = { %s, %s, SHAPE_%s, %d, %d, %d, STATUS_%s, %d, BUFF_%s, %d, %d, %d, "
-                   "%d, %d, %d, %d, %d, ZONE_%s, %d, %d, %d, FX_AT_%s, 0, %d, %d, %d, %d, %s, %s, %s };") % (
+                   "%d, %d, %d, %d, %d, ZONE_%s, %d, %d, %d, FX_AT_%s, %d, %d, %d, %d, %d, %d, %s, %s, %s, %s };") % (
             nid, cstr(n["title"]), self.type_enum(n["monster_type"]), up(n["shape"]), n.get("range", 0), n.get("power", 0),
             n.get("accuracy", 100), up(st.get("kind", "none")), st.get("chance", 0), up(bf.get("kind", "none")),
             n["charge"], sticks[0], sticks[1], ticks[0], ticks[1], n.get("dash", 0), z.get("w", 0), z.get("h", 0),
             up(z.get("place", "front")), z.get("count", 1), z.get("every", 0), z.get("delay", 0),
-            up(n.get("effect_at", "target")), box[0], box[1], box[2], box[3],
-            self.ptr(n.get("effect")), self.ptr(n.get("sfx")), on_use))
+            up(n.get("effect_at", "target")), steps[0], steps[1], box[0], box[1], box[2], box[3],
+            self.ptr(n.get("effect")), self.ptr(n.get("travel")), self.ptr(n.get("sfx")), on_use))
 
     def E_species(self, nid, n):
         self.emit("const SpeciesData node_%s = { %s, %s, 0, %s, %s, %s, %s, { %s } };" % (

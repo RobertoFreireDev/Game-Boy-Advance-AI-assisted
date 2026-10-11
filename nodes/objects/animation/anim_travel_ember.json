@@ -1,0 +1,20 @@
+{
+  "id": "anim_travel_ember",
+  "kind": "object",
+  "type": "animation",
+  "name": "Ember travel",
+  "notes": "A small flickering ember that flies from the user to the tile it sets on fire. It comes out from behind the user (step 1), flies there (step 2), then the move's own effect plays (step 3).",
+  "sprite": "spr_fx_travel",
+  "loop": true,
+  "frames": [
+    {
+      "frame": "ember_a",
+      "ticks": 2
+    },
+    {
+      "frame": "ember_b",
+      "ticks": 2
+    }
+  ],
+  "events": []
+}

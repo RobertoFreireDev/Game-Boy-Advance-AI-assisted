@@ -57,7 +57,7 @@ nodes), but their engine features stayed, so all three genres are covered withou
 | Platformer | `platformer_controller`, `health`, `camera_target` | `patrol`, `chase_player`, `stompable`, `damage_on_touch` | `follow_path` + `solid_platform` lifts, `collectible`, `trigger_zone` exits, gravity bodies, one-way/ladder/hazard tiles |
 | Top-down adventure | `topdown_controller`, `sword_attack`, `health` | `wander`, `chase_player`, `damage_on_touch` | `talk` + dialogs, `locked_door`, `if_var` flags, `*_up`/`*_down` animation slots |
 | Survivors / bullet heaven | `topdown_controller` (`speed_var`), `weapon` ×N, `aura` | `swarm`, `spawn_wave` (on an invisible `prop` director) | `projectile` props, `magnet` gems, `level_up` + `upgrade` nodes + upgrade menu, `run_clock`, `persistent` vars + `save_game` shop |
-| Monster battler (**Monster Survival**, branch `games/monster_survival`) | `monster` (`species_var`, HP/XP/level vars), `topdown_controller`, `move_buttons` | `monster` (species per instance, `avoid_var`), `monster_ai`; a sleeping Alpha (`random`, `alpha`, `wake_var`) | `species` + `move` nodes, `game.battle` (type chart, floating words, the player's hit sound per type), solid top-down bodies, `species_select` picker, `drop_in` logo, `cover_screen` / `flash_screen` / `float_text`, gauges and `{var.name}` text |
+| Monster battler (**Monster Survival**, branch `games/monster_survival`) | `monster` (`species_var`, HP/XP/level vars), `topdown_controller`, `move_buttons` | `monster` (species per instance, `avoid_var`), `monster_ai`; a sleeping Alpha (`random`, `alpha`, `wake_var`) | `species` + `move` nodes (each move's `travel` picture flies from the user to its effect: one shared sheet `spr_fx_travel`), `game.battle` (type chart, floating words, the player's hit sound per type), solid top-down bodies, `species_select` picker, `drop_in` logo, `cover_screen` / `flash_screen` / `float_text`, gauges and `{var.name}` text |
 
 If the genre is new (shmup, puzzle, racing, RPG battles…), map it to these first, then list
 the **missing** behaviors/actions and ask the human before adding a node type or changing
@@ -85,7 +85,7 @@ These live on the `games/night_swarm` branch, not on `main`. Read them without s
 
 For a monster battler, copy from `games/monster_survival` instead: species `mon_emberpup` (owns
 its body, portrait, Alpha palette, cry and moves), moves `mov_ember` (zone), `mov_bubble_beam`
-(beam), `mov_rock_slide` (screen zone), `mov_fly` (self buff); actors `plr_monster`, `enm_wild`
+(beam), `mov_rock_slide` (screen zone), `mov_fly` (self buff), `anim_travel_*` + `spr_fx_travel` (travel pictures, 8×8, 2 frames each); actors `plr_monster`, `enm_wild`
 (species per instance), `enm_alpha`; the picker `prop_picker` + `hud_select` + `scn_menu`; the
 pause screen `menu_pause` (texts with `{chosen.move2}` / `{moves|...}`); `game.battle` in
 nodes.json. Its art, map and audio came from a scratchpad generator (session a013694e,

@@ -13,9 +13,11 @@
   "charge": 600,
   "effect": "ptc_fx_bubble",
   "effect_at": "axis",
+  "travel": "anim_travel_bubble_beam",
   "sfx": "sfx_mv_water",
   "children": [
     "spr_fx_bubble",
-    "ptc_fx_bubble"
+    "ptc_fx_bubble",
+    "anim_travel_bubble_beam"
   ]
 }

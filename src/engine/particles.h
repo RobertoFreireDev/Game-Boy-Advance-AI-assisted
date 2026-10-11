@@ -19,6 +19,17 @@ void particles_clear(void);
 void particles_aim(const ParticleData *p, s32 x, s32 y, ParticleShot *out);
 // Send off a particle picked by particles_aim.
 void particles_shoot(const ParticleShot *s);
+// Send it off late (a move's effect landing, step 3): hidden for `wait` frames, then it plays its
+// whole flight and animation sped up, so it still ends the frame it would have. behind = 1: drawn
+// behind the actors all along (it lies over its user's body).
+void particles_shoot_late(const ParticleShot *s, int wait, int behind);
+// Send it off out of its user (steps 1-2): drawn behind the actors while it flies its whole way in
+// `frames` frames, then it stays there in front of them; its animation keeps its own pace.
+void particles_shoot_out(const ParticleShot *s, int frames);
+// A move's travel picture (steps 1-2): animation `a` slides from (x0, y0) to (x1, y1) in t1 frames
+// behind the actors (coming out of its user), then flies on to (x2, y2) in t2 frames in front of
+// them, and is gone. With nowhere to fly ((x1, y1) = (x2, y2)) it stays behind them.
+void particles_travel(const AnimationData *a, s32 x0, s32 y0, s32 x1, s32 y1, s32 x2, s32 y2, int t1, int t2);
 // Emit one particle at a world position.
 void particles_emit_one(const ParticleData *p, s32 x, s32 y);
 // Emit a whole burst (count particles; one particle for stream emitters).

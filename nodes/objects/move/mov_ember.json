@@ -22,9 +22,11 @@
   },
   "effect": "ptc_fx_ember",
   "effect_at": "tiles",
+  "travel": "anim_travel_ember",
   "sfx": "sfx_mv_fire",
   "children": [
     "spr_fx_ember",
-    "ptc_fx_ember"
+    "ptc_fx_ember",
+    "anim_travel_ember"
   ]
 }

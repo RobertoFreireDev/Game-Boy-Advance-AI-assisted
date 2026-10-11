@@ -13,9 +13,11 @@
   "charge": 600,
   "effect": "ptc_fx_leaf",
   "effect_at": "axis",
+  "travel": "anim_travel_razor_leaf",
   "sfx": "sfx_mv_grass",
   "children": [
     "spr_fx_leaf",
-    "ptc_fx_leaf"
+    "ptc_fx_leaf",
+    "anim_travel_razor_leaf"
   ]
 }

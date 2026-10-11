@@ -1,0 +1,20 @@
+{
+  "id": "anim_travel_gust",
+  "kind": "object",
+  "type": "animation",
+  "name": "Gust travel",
+  "notes": "A little white whirl of wind that spins ahead; the wind swirls fill each tile as it passes. It comes out from behind the user (step 1), flies there (step 2), then the move's own effect plays (step 3).",
+  "sprite": "spr_fx_travel",
+  "loop": true,
+  "frames": [
+    {
+      "frame": "gust_a",
+      "ticks": 2
+    },
+    {
+      "frame": "gust_b",
+      "ticks": 2
+    }
+  ],
+  "events": []
+}

@@ -13,9 +13,11 @@
   "charge": 180,
   "effect": "ptc_fx_droplet",
   "effect_at": "line",
+  "travel": "anim_travel_water_gun",
   "sfx": "sfx_mv_water",
   "children": [
     "spr_fx_droplet",
-    "ptc_fx_droplet"
+    "ptc_fx_droplet",
+    "anim_travel_water_gun"
   ]
 }

@@ -21,6 +21,8 @@ typedef struct {
     u16 delay, ticks;
     u16 clock;                  // ticks to the next flicker of its effect
     u16 age;                    // ticks since it landed
+    u16 arrive;                 // frames from its use until the travel picture lands on it: its first flicker waits (0 = none)
+    u32 used;                   // core frame of its use
 } Zone;
 
 EWRAM_BSS static Zone s_zones[MAX_ZONES];        // cleared when a scene starts
@@ -233,6 +235,82 @@ static void strike_shoot(void) {
     for (int i = 0; i < s_piece_count; i++) particles_shoot(&s_pieces[i].shot);
 }
 
+// ---- the effect's 3 steps ----------------------------------------------------------------
+// Only a picture: who is hurt, and when, is decided above and stays the same. In the time its
+// effect lasted (its lifetime), a move plays: step 1 (m->step1 frames) its travel picture comes
+// out from behind the user, step 2 (m->step2) it flies to where the effect plays, step 3 (the
+// rest) the effect plays there, sped up so that it still ends when it did. Pieces of a trail or a
+// beam show up as the travel passes them; a piece whose picture crosses the user's body on its way
+// is drawn behind it, so the user stays in sight. An effect that plays at the user comes out from
+// behind it (drawn behind it while it flies its whole way in steps 1-2) and stays there in front
+// for step 3. Whole-screen moves (step1 = step2 = 0) play as they are.
+
+// The middle of an actor's body (its hitbox).
+static void body_mid(const Actor *a, s32 *x, s32 *y) {
+    *x = fx_to_int(a->x) + a->hb_x + a->hb_w / 2;
+    *y = fx_to_int(a->y) + a->hb_y + a->hb_h / 2;
+}
+
+// Where the travel picture has just come out of the user's body, on the way from the body's
+// middle (cx, cy) to (ex, ey): the first point where the whole picture is past the body's edge
+// (the destination itself when it is nearer).
+static void travel_out(const Actor *u, const MoveData *m, s32 cx, s32 cy, s32 ex, s32 ey, s32 *ox, s32 *oy) {
+    const SpriteData *s = m->travel->sprite;
+    s32 dx = ex - cx, dy = ey - cy, t = FX_ONE;         // how far along (24.8)
+    if (dx) {
+        s32 k = ((u->hb_w / 2 + s->width / 2) << FX_SHIFT) / fx_abs(dx);
+        if (k < t) t = k;
+    }
+    if (dy) {
+        s32 k = ((u->hb_h / 2 + s->height / 2) << FX_SHIFT) / fx_abs(dy);
+        if (k < t) t = k;
+    }
+    *ox = cx + ((dx * t) >> FX_SHIFT);
+    *oy = cy + ((dy * t) >> FX_SHIFT);
+}
+
+// Does the box l..b (world px, inclusive) cover any of the actor's body?
+static int over_body(const Actor *a, s32 l, s32 t, s32 r, s32 b) {
+    s32 al, at, ar, ab;
+    actor_rect(a, &al, &at, &ar, &ab);
+    return l <= r && r >= al && l <= ar && b >= at && t <= ab;
+}
+
+// Send off the planned particles in 3 steps (see above).
+static void strike_show(Actor *user, const MoveData *m) {
+    int t1 = m->step1, t2 = m->step2;
+    if (t1 + t2 == 0) { strike_shoot(); return; }
+    if (m->effect_at == FX_AT_USER) {
+        for (int i = 0; i < s_piece_count; i++) particles_shoot_out(&s_pieces[i].shot, t1 + t2);
+        return;
+    }
+    if (!m->travel || !s_piece_count) { strike_shoot(); return; }
+    // The travel goes from the user to the farthest piece (the target, a trail's or a beam's end).
+    s32 cx, cy, ex, ey, ox, oy, far = -1;
+    body_mid(user, &cx, &cy);
+    ex = cx;
+    ey = cy;
+    for (int i = 0; i < s_piece_count; i++) {
+        const ParticleShot *s = &s_pieces[i].shot;
+        s32 dx = s->x - cx, dy = s->y - cy;
+        if (dx * dx + dy * dy > far) { far = dx * dx + dy * dy; ex = s->x; ey = s->y; }
+    }
+    travel_out(user, m, cx, cy, ex, ey, &ox, &oy);
+    particles_travel(m->travel, cx, cy, ox, oy, ex, ey, t1, t2);
+    s32 wx = ex - ox, wy = ey - oy, len2 = wx * wx + wy * wy;
+    for (int i = 0; i < s_piece_count; i++) {
+        const Piece *p = &s_pieces[i];
+        const ParticleShot *s = &p->shot;
+        int wait = t1 + t2;                             // it shows once the travel has passed it
+        if (len2) {
+            s32 along = (s->x - ox) * wx + (s->y - oy) * wy;
+            if (along <= 0) wait = t1;
+            else if (along < len2) wait = t1 + (along * t2 + len2 - 1) / len2;
+        }
+        particles_shoot_late(s, wait, over_body(user, p->l, p->t, p->r, p->b));    // its flight crosses the user
+    }
+}
+
 // Does a piece's picture, somewhere along its flight, come into the box l..b?
 static int piece_touches(const Piece *p, const MoveData *m, s32 l, s32 t, s32 r, s32 b) {
     if (l > p->r || r < p->l || t > p->b || b < p->t) return 0;
@@ -336,7 +414,7 @@ static void dash(Actor *u, s32 tx, s32 ty, int px) {
 }
 
 // ---- zones -------------------------------------------------------------------------------
-static void zone_add(Actor *user, const MoveData *m, s32 tx, s32 ty) {
+static Zone *zone_add(Actor *user, const MoveData *m, s32 tx, s32 ty) {
     for (int i = 0; i < MAX_ZONES; i++) {
         Zone *z = &s_zones[i];
         if (z->active) continue;
@@ -375,10 +453,13 @@ static void zone_add(Actor *user, const MoveData *m, s32 tx, s32 ty) {
         if (z->ticks == 0) z->ticks = 1;
         z->clock = 0;
         z->age = 0;
+        z->arrive = 0;
+        z->used = core_frame();
         for (int k = 0; k < MAX_ACTORS; k++) s_zone_hurt_at[i][k] = 0;
         if (m->effect_at == FX_AT_CENTER) fx(m, z->x + z->w / 2, z->y + z->h / 2);
-        return;
+        return z;
     }
+    return NULL;
 }
 
 // Where the zones of a move go: the tiles in front of the user, or spots on the screen
@@ -391,7 +472,14 @@ static void zones_place(Actor *user, const MoveData *m) {
         if (user->look_x) ux = (user->look_x > 0 ? r : l) >> 3;
         if (user->look_y) uy = (user->look_y > 0 ? b : t) >> 3;
         int ahead = 1 + m->zone_w / 2;
-        zone_add(user, m, ux + user->look_x * ahead, uy + user->look_y * ahead);
+        Zone *z = zone_add(user, m, ux + user->look_x * ahead, uy + user->look_y * ahead);
+        if (z && m->travel && m->step1 + m->step2) {    // its travel picture lands on its middle
+            s32 cx, cy, ex = z->x + z->w / 2, ey = z->y + z->h / 2, ox, oy;
+            body_mid(user, &cx, &cy);
+            travel_out(user, m, cx, cy, ex, ey, &ox, &oy);
+            particles_travel(m->travel, cx, cy, ox, oy, ex, ey, m->step1, m->step2);
+            z->arrive = (u16)(m->step1 + m->step2);
+        }
         return;
     }
     Actor *seen[MAX_TARGETS];
@@ -426,19 +514,27 @@ static void zone_hit_info(const Zone *z, MonsterHit *h) {
 // The zone's effect on each of its tiles (it flickers every `every` ticks while it lasts). The
 // last flicker is cut short so that nothing is drawn once the zone stops hurting: it hurts this
 // frame and z->ticks - 1 more, and a particle is drawn until its life - 1 steps have run.
-// (A one-hit zone plays its whole effect.)
-static void zone_fx(const Zone *z) {
+// (A one-hit zone plays its whole effect.) The first flicker of a zone the move's travel picture
+// flies to waits until it lands, then plays sped up (step 3), ending when it would have.
+static void zone_fx(Zone *z) {
     const MoveData *m = z->move;
     const ParticleData *d = m->effect;
     if (m->effect_at != FX_AT_TILES || !d) return;
     int count = d->mode == PTC_BURST ? d->count : 1;
+    int wait = 0;
+    if (z->arrive) {
+        u32 gone = core_frame() - z->used;              // 0, or 1 when the zones already ran this frame
+        if (gone < z->arrive) wait = (int)(z->arrive - gone);
+        z->arrive = 0;
+    }
     for (int y = 0; y < z->h; y += 8)
         for (int x = 0; x < z->w; x += 8)
             for (int i = 0; i < count; i++) {
                 ParticleShot s;
                 particles_aim(d, z->x + x + 4, z->y + y + 4, &s);
                 if (m->zone_every && s.life > z->ticks + 1) s.life = (u16)(z->ticks + 1);
-                particles_shoot(&s);
+                if (wait) particles_shoot_late(&s, wait, 0);
+                else particles_shoot(&s);
             }
 }
 
@@ -554,13 +650,13 @@ int moves_use(Actor *user, const MoveData *m, int always) {
     case SHAPE_SELF:
         begin(user, m);
         plan_area(user, m);
-        strike_shoot();
+        strike_show(user, m);
         monster_buff(user, m->buff, rng_range(m->ticks_min, m->ticks_max));
         return USE_FIRED;
     default:
         return USE_NONE;
     }
-    strike_shoot();
+    strike_show(user, m);
     int n;
     int best = hurt(user, m, first, &h, &n);
     if (!n) return result_sound_only(user, m) ? USE_WHIFF : USE_FIRED;     // went off at nothing

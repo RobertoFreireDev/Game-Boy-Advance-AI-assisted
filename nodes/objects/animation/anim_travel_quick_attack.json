@@ -1,0 +1,20 @@
+{
+  "id": "anim_travel_quick_attack",
+  "kind": "object",
+  "type": "animation",
+  "name": "Quick Attack travel",
+  "notes": "A white flash that streaks from the user to the target as it rushes in: a white ball inside a flickering grey ring. It comes out from behind the user (step 1), flies there (step 2), then the move's own effect plays (step 3).",
+  "sprite": "spr_fx_travel",
+  "loop": true,
+  "frames": [
+    {
+      "frame": "quick_attack_a",
+      "ticks": 2
+    },
+    {
+      "frame": "quick_attack_b",
+      "ticks": 2
+    }
+  ],
+  "events": []
+}

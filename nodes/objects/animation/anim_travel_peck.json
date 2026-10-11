@@ -1,0 +1,20 @@
+{
+  "id": "anim_travel_peck",
+  "kind": "object",
+  "type": "animation",
+  "name": "Peck travel",
+  "notes": "An orange beak strike that darts from the user to the target, twinkling. It comes out from behind the user (step 1), flies there (step 2), then the move's own effect plays (step 3).",
+  "sprite": "spr_fx_travel",
+  "loop": true,
+  "frames": [
+    {
+      "frame": "peck_a",
+      "ticks": 2
+    },
+    {
+      "frame": "peck_b",
+      "ticks": 2
+    }
+  ],
+  "events": []
+}

@@ -13,9 +13,11 @@
   "charge": 3600,
   "effect": "ptc_fx_solar",
   "effect_at": "axis",
+  "travel": "anim_travel_solar_beam",
   "sfx": "sfx_mv_grass",
   "children": [
     "spr_fx_solar",
-    "ptc_fx_solar"
+    "ptc_fx_solar",
+    "anim_travel_solar_beam"
   ]
 }

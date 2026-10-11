@@ -14,9 +14,11 @@
   "dash": 1,
   "effect": "ptc_fx_quick",
   "effect_at": "target",
+  "travel": "anim_travel_quick_attack",
   "sfx": "sfx_mv_normal",
   "children": [
     "spr_fx_quick",
-    "ptc_fx_quick"
+    "ptc_fx_quick",
+    "anim_travel_quick_attack"
   ]
 }

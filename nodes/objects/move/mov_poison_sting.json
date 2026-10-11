@@ -21,9 +21,11 @@
   },
   "effect": "ptc_fx_sting",
   "effect_at": "target",
+  "travel": "anim_travel_poison_sting",
   "sfx": "sfx_mv_poison",
   "children": [
     "spr_fx_sting",
-    "ptc_fx_sting"
+    "ptc_fx_sting",
+    "anim_travel_poison_sting"
   ]
 }

@@ -13,9 +13,11 @@
   "charge": 600,
   "effect": "ptc_fx_peck",
   "effect_at": "target",
+  "travel": "anim_travel_peck",
   "sfx": "sfx_mv_normal",
   "children": [
     "spr_fx_peck",
-    "ptc_fx_peck"
+    "ptc_fx_peck",
+    "anim_travel_peck"
   ]
 }

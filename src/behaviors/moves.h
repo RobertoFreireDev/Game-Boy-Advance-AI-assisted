@@ -4,6 +4,9 @@
 // (a whole-screen move: every foe in view). It plays its sound, attack pose and on_use actions,
 // hits (monster_hit), then plays one sound for the best result (hit / miss).
 // Zones stay on the ground and hurt over time, also by what their effect draws.
+// The effect is shown in 3 steps over the time it lasts (a picture only, the hits don't wait):
+// its travel picture comes out of the user, flies to where the effect plays, then the effect plays
+// there (MoveData step1 / step2; whole-screen moves play as they are).
 // Distances are in tiles (8 px) between the monsters' bodies (hitboxes): 1 = touching, then
 // 1 more every 8 px of gap, the larger of across and down.
 #ifndef BHV_MOVES_H

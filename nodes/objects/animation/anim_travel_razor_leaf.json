@@ -1,0 +1,20 @@
+{
+  "id": "anim_travel_razor_leaf",
+  "kind": "object",
+  "type": "animation",
+  "name": "Razor Leaf travel",
+  "notes": "A spinning leaf that leads the volley; the leaves fill each tile as it passes. It comes out from behind the user (step 1), flies there (step 2), then the move's own effect plays (step 3).",
+  "sprite": "spr_fx_travel",
+  "loop": true,
+  "frames": [
+    {
+      "frame": "razor_leaf_a",
+      "ticks": 2
+    },
+    {
+      "frame": "razor_leaf_b",
+      "ticks": 2
+    }
+  ],
+  "events": []
+}

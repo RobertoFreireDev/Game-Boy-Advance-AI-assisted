@@ -51,7 +51,7 @@ TYPE_FIELDS = {
     "upgrade": {"category", "title", "icon", "var", "max_level", "descriptions", "requires", "replaces", "on_pick"},
     "species": {"title", "monster_type", "body", "alpha_palette", "portrait", "cry", "moves"},
     "move": {"title", "monster_type", "shape", "range", "power", "accuracy", "charge", "status", "dash", "zone", "buff",
-             "effect", "effect_at", "sfx", "on_use"},
+             "effect", "effect_at", "travel", "sfx", "on_use"},
 }
 for _t in C.ACTOR_TYPES:
     if _t != "trigger":
@@ -1348,6 +1348,27 @@ def V_move(c):
                 c.err("its effect (lifetime %d, so drawn %d frames) goes out before it flickers again "
                       "(every %d ticks): give the particle a lifetime of at least %d"
                       % (life, life - 1, z["every"], z["every"] + 1))
+    # Its effect plays in 3 steps (moves.c strike_show): out of the user, on its way, at the
+    # destination. What flies in steps 1-2 is `travel`, needed when the effect plays away from the user.
+    steps = C.move_steps(c.p, n) if eff else None
+    away = steps is not None and at != "user"
+    travel = c.ref(n.get("travel"), ["animation"], "travel", allow_empty=not away)
+    if n.get("travel") and not away:
+        c.err("'travel' is only for moves whose effect plays away from the user (not whole-screen moves, "
+              "screen or center zones, or effects at the user)")
+    elif travel:
+        spr = c.p.nodes.get(c.p.nodes.get(travel, {}).get("sprite") or "", {})
+        if is_int(spr.get("width")) and is_int(spr.get("height")) and (spr["width"] > 16 or spr["height"] > 16):
+            c.err("its travel picture is %dx%d: keep it at most 16x16 so it never hides the monsters it passes"
+                  % (spr["width"], spr["height"]))
+    if steps is not None and steps[1] < 1:
+        c.warn("its effect is too short (lifetime %d) to show it flying from the user: give it at least 4 ticks"
+               % c.p.nodes[n["effect"]]["lifetime"])
+    lost = C.frames_lost_in_step3(c.p, n) if eff else []
+    if lost:
+        c.err("step 3 plays its effect in %d%% of its time, too fast to show frame(s) %s of its animation "
+              "(it would hurt where nothing is drawn): give those frames more ticks"
+              % (100 - sum(C.MOVE_STEPS), ", ".join(str(i) for i in lost)))
     c.ref(n.get("sfx"), ["sfx"], "sfx", allow_empty=True)
     if "on_use" in n:
         c.actions(n["on_use"], "on_use")

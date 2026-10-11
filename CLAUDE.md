@@ -266,7 +266,7 @@ Structural rules (enforced by `validate.py`):
 | `upgrade` | `upg_` | One card of the level-up menu: a weapon, a passive item, an evolution or a bonus filler. | `category`, `title`, `icon`, `var`, `max_level`, `descriptions[]`, `requires[]`, `replaces`, `on_pick[]` | `icon` |
 | **Monster battles** | | | | |
 | `species` | `mon_` | A kind of monster: its look, type and 3 moves. Actors with the `monster` behavior take their body from it. | `title`, `monster_type`, `body`, `alpha_palette`, `portrait`, `cry`, `moves[3]` | `body`, `sprite`, `sfx`, `move`, `palette` |
-| `move` | `mov_` | One move a monster uses: what it hits, how hard, how often, what status and effect. | `title`, `monster_type`, `shape`, `range`, `power`, `accuracy`, `charge`, `status`, `dash`, `zone`, `buff`, `effect`, `effect_at`, `sfx`, `on_use[]` | `particle`, `sprite`, `sfx` |
+| `move` | `mov_` | One move a monster uses: what it hits, how hard, how often, what status and effect. | `title`, `monster_type`, `shape`, `range`, `power`, `accuracy`, `charge`, `status`, `dash`, `zone`, `buff`, `effect`, `effect_at`, `travel`, `sfx`, `on_use[]` | `particle`, `animation`, `sprite`, `sfx` |
 
 Actor types (`player` … `pickup`) share one structure; the type gives sensible defaults and
 groups them for humans. **What an actor does comes only from its `logic` list.**
@@ -369,6 +369,17 @@ groups them for humans. **What an actor does comes only from its `logic` list.**
   the shape: `target` / `line` (single, dash), `axis` (beam: the middle of each tile along the facing),
   `user` (circle, self, screen), `tiles` / `center` (zone: each tile, flickering every `every` ticks, or its
   center when placed), `screen` (down the left edge of the view).
+  **The effect plays in 3 steps** over the time it lasts (its particle's `lifetime` L; codegen bakes
+  step 1 = round(20 % L) and step 2 = round(40 % L) − step 1 frames, `common.move_steps`): 1. `travel` (an
+  animation, at most 16×16, required when the effect plays away from the user) comes out from behind the
+  user, 2. flies to the effect's farthest spot (a front zone: its middle), 3. the effect plays there in the
+  frames left, sped up so it ends when it did (the validator checks no frame of its animation is skipped).
+  Trail and beam pieces show up as the travel passes them; a piece whose picture crosses the user's body
+  is drawn behind the actors so the user stays in sight. An effect at the user (`circle`, `self`) is drawn
+  behind it while it flies its whole way in steps 1-2, then stays there for step 3. A front zone's first
+  flicker waits for its travel. **Only a picture**: who is hurt and when doesn't change (the hit lands the
+  moment the move is used; the travel hurts no one). Whole-screen moves, screen zones and center zones
+  (falling rocks, timed to land when they hurt) play as they are.
   `on_use[]` runs as the user each time (e.g. `cover_screen` for a sandstorm). `sfx` plays when it goes
   off, except the player's damaging moves that hit at once (not zone / self): they play only the result
   sound. Each use plays one result sound for the best result over its targets (zones: one per frame in
@@ -629,7 +640,8 @@ src/engine/
 │                       solid bodies found inside each other are pushed apart
 ├── physics.c          physics questions asked now and then, kept in ROM (can an actor stand here?)
 ├── anim.iwram.c/.h    animation players and frame events
-├── particles.c/.h particle pool (front / back of the actors); aim a particle first, shoot it later (moves see its flight)
+├── particles.c/.h particle pool (front / back of the actors); aim a particle first, shoot it later (moves see its flight);
+│                  staged shots for a move's 3 steps (wait hidden, drawn behind, sped-up flight, a two-leg travel picture)
 ├── floattext.c/.h floating words (damage numbers, MISS, LV UP!) drawn as 8x8 sprites
 ├── camera.c/.h    follow target, clamp to bounds, shake
 ├── bg.c/.h        tiles/palettes upload, tilemap scrolling, streaming for big maps, layer offsets
@@ -766,7 +778,7 @@ Palette banks are handed out per scene in first-use order (BG and OBJ separately
 | hud, menu, dialog | Rendered inside a 240×160 GBA screen with the real font and icons. HUD uses variables' initial values; dialog has prev/next line; menu shows the cursor on each option (upgrade menus show sample cards). |
 | upgrade | Its card on the level-up menu with prev/next level, the text per level as wrapped on the GBA, the evolution recipe and what picking it does. |
 | species | Portrait, the body's animations (with an Alpha-colors toggle), its 3 moves, cry player, type matchups and the full type chart. |
-| move | What it does in plain words, a live pixel diagram of what it hurts (the user facing right, the effect playing where the engine puts it, the orange area = its picture + the margin along each particle's real flight), its effect playing live, sound, and its multiplier against each type. |
+| move | What it does in plain words (with its 3 animation steps), a live pixel diagram of what it hurts (the user facing right, the travel picture and the effect playing in their 3 steps where the engine puts them, a caption naming the step, the orange area = its picture + the margin along each particle's real flight), its effect playing live, sound, and its multiplier against each type. |
 | sfx, music | **Audio player**: play/stop/loop + visual (step list for sfx; tracker grid per channel with playhead for music). Web Audio synth approximating the PSG: square with duty, 4-bit wave, noise, 0–15 volume. |
 
 ### 10.4 Fidelity and navigation

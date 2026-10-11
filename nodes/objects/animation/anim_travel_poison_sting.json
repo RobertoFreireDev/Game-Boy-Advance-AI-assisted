@@ -1,0 +1,20 @@
+{
+  "id": "anim_travel_poison_sting",
+  "kind": "object",
+  "type": "animation",
+  "name": "Poison Sting travel",
+  "notes": "A purple needle tip that darts from the user to the target. It comes out from behind the user (step 1), flies there (step 2), then the move's own effect plays (step 3).",
+  "sprite": "spr_fx_travel",
+  "loop": true,
+  "frames": [
+    {
+      "frame": "poison_sting_a",
+      "ticks": 2
+    },
+    {
+      "frame": "poison_sting_b",
+      "ticks": 2
+    }
+  ],
+  "events": []
+}

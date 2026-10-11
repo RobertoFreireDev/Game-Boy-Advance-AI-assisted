@@ -13,9 +13,11 @@
   "charge": 3600,
   "effect": "ptc_fx_flame",
   "effect_at": "line",
+  "travel": "anim_travel_flamethrower",
   "sfx": "sfx_mv_fire",
   "children": [
     "spr_fx_flame",
-    "ptc_fx_flame"
+    "ptc_fx_flame",
+    "anim_travel_flamethrower"
   ]
 }

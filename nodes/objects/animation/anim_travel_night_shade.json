@@ -1,0 +1,20 @@
+{
+  "id": "anim_travel_night_shade",
+  "kind": "object",
+  "type": "animation",
+  "name": "Night Shade travel",
+  "notes": "A dark wisp that drifts out of the user and flies ahead; the dark wisps rise on each tile as it passes. It comes out from behind the user (step 1), flies there (step 2), then the move's own effect plays (step 3).",
+  "sprite": "spr_fx_travel",
+  "loop": true,
+  "frames": [
+    {
+      "frame": "night_shade_a",
+      "ticks": 2
+    },
+    {
+      "frame": "night_shade_b",
+      "ticks": 2
+    }
+  ],
+  "events": []
+}

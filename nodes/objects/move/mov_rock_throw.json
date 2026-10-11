@@ -13,9 +13,11 @@
   "charge": 180,
   "effect": "ptc_fx_rock",
   "effect_at": "target",
+  "travel": "anim_travel_rock_throw",
   "sfx": "sfx_mv_rock",
   "children": [
     "spr_fx_rock",
-    "ptc_fx_rock"
+    "ptc_fx_rock",
+    "anim_travel_rock_throw"
   ]
 }

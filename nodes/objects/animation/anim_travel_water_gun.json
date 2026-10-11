@@ -1,0 +1,20 @@
+{
+  "id": "anim_travel_water_gun",
+  "kind": "object",
+  "type": "animation",
+  "name": "Water Gun travel",
+  "notes": "A blue water drop at the head of the jet; the droplets appear along the way as it passes. It comes out from behind the user (step 1), flies there (step 2), then the move's own effect plays (step 3).",
+  "sprite": "spr_fx_travel",
+  "loop": true,
+  "frames": [
+    {
+      "frame": "water_gun_a",
+      "ticks": 2
+    },
+    {
+      "frame": "water_gun_b",
+      "ticks": 2
+    }
+  ],
+  "events": []
+}

@@ -38,7 +38,8 @@ def derived(p):
                 out["upgrades"][nid] = [C.wrap_text(d, C.UPGRADE_TEXT_W)[0] for d in n.get("descriptions", [])]
             elif t == "move":       # what its effect draws around each particle: the move hurts that
                 out["moves"][nid] = {"box": C.effect_box(p, n),
-                                     "hurt_steps": list(C.zone_hurt_steps(n)) if n.get("shape") == "zone" else None}
+                                     "hurt_steps": list(C.zone_hurt_steps(n)) if n.get("shape") == "zone" else None,
+                                     "steps": C.move_steps(p, n)}       # its effect's steps 1 and 2 (frames)
         except (KeyError, TypeError, ValueError):
             pass
     return out

@@ -1,0 +1,20 @@
+{
+  "id": "anim_travel_thunderbolt",
+  "kind": "object",
+  "type": "animation",
+  "name": "Thunderbolt travel",
+  "notes": "A bright ball of lightning that shoots ahead; the crackling balls of the bolt light up on each tile as it passes. It comes out from behind the user (step 1), flies there (step 2), then the move's own effect plays (step 3).",
+  "sprite": "spr_fx_travel",
+  "loop": true,
+  "frames": [
+    {
+      "frame": "thunderbolt_a",
+      "ticks": 2
+    },
+    {
+      "frame": "thunderbolt_b",
+      "ticks": 2
+    }
+  ],
+  "events": []
+}

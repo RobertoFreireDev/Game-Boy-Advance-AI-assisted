@@ -215,6 +215,13 @@ A new status replaces the old one. Poison damage gives XP like a hit (section 7)
 
 Every move has its own animation (sprite effect, 4–8 frames): e.g. Ember = flickering flame tile, Bubble Beam = bubbles streaming ahead, Rock Slide = rock shadow growing then rock falling (it hurts where it lands, when it lands), Surf = wave sweeping across the screen. The animation is the move's hit area (section 5.3).
 
+**Every move animation plays in 3 steps**, so it is always clear who attacked whom. The animation keeps the length it had (its effect's time), split 20 % / 20 % / 60 %:
+1. **Out of the user** (20 %): the move's small travel picture (a spark, a fireball, a water drop, a leaf, a rock…, one per move) comes out from behind the monster, which stays fully visible.
+2. **On its way** (20 %): it flies to where the effect plays — the target, the end of a trail or beam (the trail or beam lights up as it passes), or the middle of a ground zone.
+3. **At the destination** (60 %): the move's effect plays there, sped up so it ends when it always did.
+
+Bursts and self moves (Fire Spin, Growl, Fly, Phase) come out from behind the monster and fly out (steps 1–2), then stay around it (step 3). Anything that would cover the user is drawn behind it. Whole-screen moves (Surf, Sandstorm) and Rock Slide (rocks falling from the sky on screen spots) play as before: nothing comes from the user. **This is only a picture**: what a move hits, and when, is unchanged — the hit (flash, number, push) lands the moment the move is used, and the travel picture hurts no one.
+
 **The animation plays every time the player uses a move**, not only when it hits: on a hit, on a MISS, and when it reaches no enemy at all.
 - Single target: on the target, or straight ahead at full range when no enemy is in range.
 - Beam, burst, whole screen: over the whole area (that is what they hit).

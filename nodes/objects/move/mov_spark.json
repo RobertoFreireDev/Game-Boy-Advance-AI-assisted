@@ -21,9 +21,11 @@
   },
   "effect": "ptc_fx_spark",
   "effect_at": "target",
+  "travel": "anim_travel_spark",
   "sfx": "sfx_mv_electric",
   "children": [
     "spr_fx_spark",
-    "ptc_fx_spark"
+    "ptc_fx_spark",
+    "anim_travel_spark"
   ]
 }

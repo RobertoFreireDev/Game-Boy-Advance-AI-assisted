@@ -1,0 +1,20 @@
+{
+  "id": "anim_travel_vine_whip",
+  "kind": "object",
+  "type": "animation",
+  "name": "Vine Whip travel",
+  "notes": "The green tip of the vine, a bud that sprouts a leaf as it flies; the vine grows behind it. It comes out from behind the user (step 1), flies there (step 2), then the move's own effect plays (step 3).",
+  "sprite": "spr_fx_travel",
+  "loop": true,
+  "frames": [
+    {
+      "frame": "vine_whip_a",
+      "ticks": 2
+    },
+    {
+      "frame": "vine_whip_b",
+      "ticks": 2
+    }
+  ],
+  "events": []
+}

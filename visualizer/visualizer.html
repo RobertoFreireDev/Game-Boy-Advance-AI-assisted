@@ -1344,11 +1344,17 @@ function moveLayout(n, hb) {
   return out;
 }
 // Live diagram of what a move hurts: the effect plays where the engine puts it and the orange fill is
-// what this very use hurts (each particle's picture + the margin, along its whole flight).
+// what this very use hurts (each particle's picture + the margin, along its whole flight). It plays in
+// the engine's 3 steps (moves.c strike_show): the travel picture comes out from behind the user, flies
+// to where the effect plays, then the effect plays there sped up. The hurt area doesn't wait: the hit
+// lands the moment the move is used. Returns [canvas, caption naming the step on screen].
 function moveHitStage(id, n) {
   const eff = NODES[n.effect] || {}, info = ((D.derived || {}).moves || {})[id] || {};
   const box = info.box, M = HIT_MARGIN, user = moveUser(id), hb = user.hb, L = moveLayout(n, hb);
   const z = n.zone || {}, life = eff.lifetime || 1, sp = eff.speed || [0, 0], ang = eff.angle || [0, 0];
+  const steps = info.steps, T1 = steps ? steps[0] : 0, T2 = steps ? steps[1] : 0;
+  const travelSpr = NODES[(NODES[n.travel] || {}).sprite] || null;
+  const atUser = n.effect_at === "user", staged = !!steps && (atUser || !!travelSpr);
   const travel = Math.ceil(Math.max(Math.abs(sp[0]), Math.abs(sp[1])) * life + Math.abs(eff.gravity || 0) * life * life);
   // World area to show: the user, every spot with its picture and travel, the zone, the pick area.
   let x0 = hb.x - 8, y0 = hb.y - 8, x1 = hb.x + hb.w + 8, y1 = hb.y + hb.h + 8;
@@ -1359,20 +1365,88 @@ function moveHitStage(id, n) {
   if (L.zone) grow(L.zone.x - 4, L.zone.y - 4, L.zone.x + L.zone.w + 4, L.zone.y + L.zone.h + 4);
   const W = x1 - x0, H = y1 - y0, zm = Math.max(2, Math.min(4, Math.floor(560 / Math.max(W, H))));
   const [c, ctx] = zoomCanvas(W, H, zm);
+  const caption = h("div", { class: "small" }, "");
   const mask = document.createElement("canvas"); mask.width = W; mask.height = H;
   const mctx = mask.getContext("2d");
   const rnd = (a, b) => a + Math.random() * (b - a);
   const tiles = n.shape === "zone" && n.effect_at !== "center", delay = z.delay || 0;
   const zoneTicks = n.shape === "zone" ? (z.every ? delay + ((z.ticks || [1, 1])[1] || 1) : delay + 1) : 0;
   const cycle = Math.max(life, zoneTicks + life) + 40;
+  // The user's body (after a dash) and its middle, where the travel picture starts.
+  const body = { l: L.ux + hb.x, t: hb.y, r: L.ux + hb.x + hb.w - 1, b: hb.y + hb.h - 1 };
+  const cx = L.ux + hb.x + Math.trunc(hb.w / 2), cy = hb.y + Math.trunc(hb.h / 2);
+  const overBody = (l, t, r, b) => l <= r && r >= body.l && l <= body.r && b >= body.t && t <= body.b;
   let t = 0, parts = [], img = null;
-  // One particle like particles_aim; its flight like particles_update (drawn after steps 1 .. life - 1).
+  // A particle like particles.c: a plain one shows after steps 1 .. life - 1; a staged one may wait
+  // hidden (wait = frames + 1), be drawn behind the user, and spread its S steps over F frames.
   const spawn = (x, y, lifeCut) => {
     const a = rnd(ang[0], ang[1]) * Math.PI / 180, s = rnd(sp[0], sp[1]);
-    parts.push({ x, y, vx: Math.cos(a) * s, vy: -Math.sin(a) * s, life: lifeCut || life, age: 0 });
+    const p = { x, y, vx: Math.cos(a) * s, vy: -Math.sin(a) * s, g: eff.gravity || 0, life: lifeCut || life, anim: eff.animation,
+      onTop: true, front: true, wait: 0, behind: 0, S: 0, F: 0, acc: 0, left: 0, turn: 0, withAnim: false, age: 0 };
+    parts.push(p);
+    return p;
   };
-  const burst = (x, y, lifeCut) => { for (let i = 0; i < (eff.mode === "burst" ? (eff.count || 1) : 1); i++) spawn(x, y, lifeCut); };
-  // The hurt area: union of the picture box + margin at every spot each particle is drawn.
+  const burst = (x, y, lifeCut) => { const out = []; for (let i = 0; i < (eff.mode === "burst" ? (eff.count || 1) : 1); i++) out.push(spawn(x, y, lifeCut)); return out; };
+  const late = (p, wait, behind) => {           // particles_shoot_late: step 3, sped up to end when it would have
+    const S = p.life - 1;
+    if (S < 1) return;
+    wait = Math.max(0, Math.min(wait, S - 1));
+    const F = S - wait;
+    Object.assign(p, { wait: wait ? wait + 1 : 0, life: F + 1, S, F, left: S, withAnim: true, behind: behind ? F : 0, front: !behind });
+  };
+  const comeOut = (p, frames) => {               // particles_shoot_out: steps 1-2 behind the user, its whole flight
+    const S = p.life - 1;
+    Object.assign(p, { behind: frames, front: false });
+    if (frames < S) Object.assign(p, { S, F: frames, left: S });
+  };
+  const travelOut = (ex, ey) => {               // moves.c travel_out: the picture just past the body's edge
+    const dx = ex - cx, dy = ey - cy;
+    let k = 1;
+    if (dx) k = Math.min(k, (Math.trunc(hb.w / 2) + Math.trunc(travelSpr.width / 2)) / Math.abs(dx));
+    if (dy) k = Math.min(k, (Math.trunc(hb.h / 2) + Math.trunc(travelSpr.height / 2)) / Math.abs(dy));
+    return [cx + Math.trunc(dx * k), cy + Math.trunc(dy * k)];
+  };
+  const addTravel = (ox, oy, ex, ey) => {        // particles_travel
+    const v2x = T2 ? (ex - ox) / T2 : 0, v2y = T2 ? (ey - oy) / T2 : 0;
+    const p = { travel: true, anim: n.travel, g: 0, onTop: true, wait: 0, S: 0, F: 0, acc: 0, left: 0, withAnim: false, age: 0 };
+    if (T1) Object.assign(p, { x: cx, y: cy, vx: (ox - cx) / T1, vy: (oy - cy) / T1, life: T1 + T2 + 1, turn: T1, vx2: v2x, vy2: v2y });
+    else Object.assign(p, { x: ox, y: oy, vx: v2x, vy: v2y, life: T2 + 1, turn: 0 });
+    p.behind = ox === ex && oy === ey ? T1 + T2 : T1;
+    p.front = !p.behind;
+    parts.push(p);
+  };
+  // What a particle's picture covers over its whole flight (moves.c plan), or null.
+  const flightBox = p => {
+    if (!box) return null;
+    let x = p.x, y = p.y, vy = p.vy, l = 1e9, tp = 1e9, r = -1e9, b = -1e9;
+    for (let k = 1; k < p.life; k++) {
+      vy += p.g; x += p.vx; y += vy;
+      const fx = Math.floor(x), fy = Math.floor(y);
+      l = Math.min(l, fx + box[0]); tp = Math.min(tp, fy + box[1]); r = Math.max(r, fx + box[2]); b = Math.max(b, fy + box[3]);
+      if (!p.vx && !vy && !p.g) break;
+    }
+    return l > r ? null : [l, tp, r, b];
+  };
+  const step = p => {                            // particles_update for one particle; false = gone
+    if (p.wait && --p.wait) return true;
+    if (--p.life === 0) return false;
+    p.front = p.behind ? false : p.onTop;
+    if (p.behind) p.behind--;
+    let k = 1;
+    if (p.F) {
+      k = 0;
+      if (p.left) { p.acc += p.S; while (p.acc >= p.F) { p.acc -= p.F; k++; } k = Math.min(k, p.left); p.left -= k; }
+    }
+    for (let i = 0; i < k; i++) {
+      p.vy += p.g; p.x += p.vx; p.y += p.vy;
+      if (p.turn && --p.turn === 0) { p.vx = p.vx2; p.vy = p.vy2; }
+      if (p.withAnim) p.age++;
+    }
+    if (!p.withAnim) p.age++;
+    return true;
+  };
+  // The hurt area: union of the picture box + margin at every spot each particle is drawn
+  // (its real flight, as moves.c plans it; the travel picture hurts no one).
   const paintHurt = () => {
     img = mctx.createImageData(W, H);
     const mark = (l, tp, r, b) => {
@@ -1385,34 +1459,72 @@ function moveHitStage(id, n) {
       return;
     }
     for (const p of parts) {
+      if (p.travel) continue;
       let x = p.x, y = p.y, vy = p.vy;
       for (let k = 1; k < p.life; k++) {
-        vy += eff.gravity || 0; x += p.vx; y += vy;
+        vy += p.g; x += p.vx; y += vy;
         const fx = Math.floor(x), fy = Math.floor(y);
         mark(fx + box[0] - M, fy + box[1] - M, fx + box[2] + M, fy + box[3] + M);
-        if (!p.vx && !vy && !eff.gravity) break;
+        if (!p.vx && !vy && !p.g) break;
       }
     }
   };
+  // Where the travel picture flies: to the farthest spot (a zone: its middle).
+  const travelEnd = () => {
+    if (L.zone) return [L.zone.x + Math.trunc(L.zone.w / 2), L.zone.y + Math.trunc(L.zone.h / 2)];
+    let best = -1, e = [cx, cy];
+    L.spots.forEach(([x, y]) => { const d = (x - cx) * (x - cx) + (y - cy) * (y - cy); if (d > best) { best = d; e = [x, y]; } });
+    return e;
+  };
   const start = () => {
     parts = []; t = 0;
-    if (n.shape !== "zone") L.spots.forEach(([x, y]) => burst(x, y));
-    else if (n.effect_at === "center") L.spots.forEach(([x, y]) => burst(x, y));
-    paintHurt();
+    const fresh = [];
+    if (n.shape !== "zone" || n.effect_at === "center") L.spots.forEach(([x, y]) => fresh.push(...burst(x, y)));
+    paintHurt();                              // before any staging changes the particles
     mctx.clearRect(0, 0, W, H);
     if (img) mctx.putImageData(img, 0, 0);
+    if (!staged) return;
+    if (atUser) { fresh.forEach(p => comeOut(p, T1 + T2)); return; }
+    const [ex, ey] = travelEnd(), [ox, oy] = travelOut(ex, ey);
+    addTravel(ox, oy, ex, ey);
+    const wx = ex - ox, wy = ey - oy, len2 = wx * wx + wy * wy;
+    fresh.forEach(p => {
+      let wait = T1 + T2;                       // it shows once the travel has passed it
+      if (len2) {
+        const along = (p.x - ox) * wx + (p.y - oy) * wy;
+        if (along <= 0) wait = T1;
+        else if (along < len2) wait = T1 + Math.floor((along * T2 + len2 - 1) / len2);
+      }
+      const fb = flightBox(p);
+      late(p, wait, fb && overBody(...fb));
+    });
+  };
+  const stepName = () => {
+    if (!staged) return "";
+    const first = tiles ? 1 + delay : 1;        // the frame the effect (a zone: its first flicker) starts
+    const j = t - first + 1;
+    if (j < 1 || j > life - 1) return "";
+    return j <= T1 ? `Step 1 of 3 — coming out of the user (frame ${j} of ${life - 1})`
+      : j <= T1 + T2 ? `Step 2 of 3 — on its way (frame ${j} of ${life - 1})`
+      : `Step 3 of 3 — at the destination (frame ${j} of ${life - 1})`;
   };
   start();
-  live((tick, steps) => {
+  let shown = null;
+  live((tick, ticks) => {
     if (!c.isConnected) return;
-    for (let s = 0; s < steps; s++) {
+    for (let s = 0; s < ticks; s++) {
       if (++t >= cycle) start();
-      // zone_fx: a flicker on each tile every `every` ticks, the last one cut at the zone's end
-      if (tiles && t > delay && t <= zoneTicks && (z.every ? (t - 1 - delay) % z.every === 0 : t === delay + 1))
-        L.spots.forEach(([x, y]) => burst(x, y, z.every ? Math.min(life, zoneTicks - t + 2) : life));
-      parts.forEach(p => { p.vy += eff.gravity || 0; p.x += p.vx; p.y += p.vy; p.age++; });
-      parts = parts.filter(p => p.age < p.life);
+      // zone_fx: a flicker on each tile every `every` ticks, the last one cut at the zone's end; the
+      // first one waits for the travel picture to land on the zone, then plays sped up.
+      if (tiles && t > delay && t <= zoneTicks && (z.every ? (t - 1 - delay) % z.every === 0 : t === delay + 1)) {
+        const fresh = [];
+        L.spots.forEach(([x, y]) => fresh.push(...burst(x, y, z.every ? Math.min(life, zoneTicks - t + 2) : life)));
+        if (staged && t === delay + 1) fresh.forEach(p => late(p, T1 + T2, false));
+      }
+      parts = parts.filter(step);
     }
+    const name = stepName();
+    if (name !== shown) { caption.textContent = name || " "; shown = name; }
     ctx.save();
     ctx.fillStyle = "#1a1d24"; ctx.fillRect(0, 0, W, H);
     ctx.translate(-x0, -y0);
@@ -1425,20 +1537,25 @@ function moveHitStage(id, n) {
     const hurting = n.shape !== "zone" || (n.effect_at === "center"
       ? (t >= (info.hurt_steps || [0, 0])[0] && t <= (info.hurt_steps || [0, 0])[1]) : t > delay && t <= zoneTicks);
     if (hurting) ctx.drawImage(mask, x0, y0);
+    const drawParts = front => {
+      for (const p of parts) {
+        if (p.wait || !!p.front !== front) continue;
+        const st = animAt(p.anim, p.age);
+        if (!st) continue;
+        const spr = NODES[st.sprite];
+        blit(ctx, frameCanvas(st.sprite, st.frame.frame), Math.floor(p.x) - spr.width / 2, Math.floor(p.y) - spr.height / 2, st.frame.flip_x, st.frame.flip_y);
+      }
+    };
+    drawParts(false);                           // behind the actors: coming out of the user
     if (user.body) {
       if (L.ux) { ctx.globalAlpha = 0.35; drawBody(ctx, user.body, "idle", 0, 0, tick, false); ctx.globalAlpha = 1; }
       drawBody(ctx, user.body, n.shape === "self" ? "idle" : "attack", L.ux, 0, tick, false);
     }
     ctx.strokeStyle = "#6cb4ff"; ctx.lineWidth = 1 / zm; ctx.strokeRect(L.ux + hb.x, hb.y, hb.w, hb.h);
-    for (const p of parts) {
-      const st = animAt(eff.animation, p.age);
-      if (!st) continue;
-      const spr = NODES[st.sprite];
-      blit(ctx, frameCanvas(st.sprite, st.frame.frame), Math.floor(p.x) - spr.width / 2, Math.floor(p.y) - spr.height / 2, st.frame.flip_x, st.frame.flip_y);
-    }
+    drawParts(true);
     ctx.restore();
   });
-  return c;
+  return [c, caption];
 }
 PREVIEW.move = (id, n) => {
   const out = [];
@@ -1457,12 +1574,21 @@ PREVIEW.move = (id, n) => {
       `: every monster its effect touches there (${HIT_MARGIN} px margin)`,
     self: "only the user",
   }[n.shape] || n.shape;
+  // Its animation in 3 steps (moves.c strike_show): only a picture, the hit lands at once.
+  const mvSteps = (((D.derived || {}).moves || {})[id] || {}).steps, effLife = (NODES[n.effect] || {}).lifetime || 0;
+  const stepsText = !n.effect ? "no effect" : !mvSteps
+    ? `plays as it is over ${effLife} ticks (${n.shape === "screen" ? "it covers the whole screen" : "its rocks fall from the sky"}: nothing comes from the user)`
+    : n.effect_at === "user"
+      ? `3 steps over ${effLife} ticks: its effect comes out from behind the user and flies its whole way (steps 1-2: ${mvSteps[0] + mvSteps[1]} frames, drawn behind the user), then stays there (step 3: ${effLife - mvSteps[0] - mvSteps[1]} frames)`
+      : [`3 steps over ${effLife} ticks${n.shape === "zone" ? " (its first flicker)" : ""}: `, nodeLink(n.travel),
+         ` comes out from behind the user (step 1: ${mvSteps[0]} frames), flies to ${n.shape === "zone" ? "the zone" : n.effect_at === "target" ? "the target" : n.effect_at === "line" ? "the target, lighting up the trail as it passes" : "the end of the line, lighting up each tile as it passes"} (step 2: ${mvSteps[1]} frames), then the effect plays there, sped up (step 3: ${effLife - mvSteps[0] - mvSteps[1]} frames)`];
   const kv = h("div", { class: "kv" },
     h("div", { class: "k" }, "type"), h("div", {}, String(n.monster_type || "").toUpperCase()),
     h("div", { class: "k" }, "hits"), h("div", {}, shapeText),
     h("div", { class: "k" }, "power"), h("div", {}, n.power ? String(n.power) + (n.shape === "zone" && z.every ? ` per hit (on touch, then every ${(z.every / 60).toFixed(1)} s per monster)` : "") : "none (status only)"),
     h("div", { class: "k" }, "accuracy"), h("div", {}, n.power ? (n.accuracy ? n.accuracy + "% (a miss shows MISS)" : "never misses") : "—"),
     h("div", { class: "k" }, "charge (player)"), h("div", {}, `${n.charge} ticks (${(n.charge / 60).toFixed(1)} s)`),
+    h("div", { class: "k" }, "animation"), h("div", {}, [].concat(stepsText, mvSteps ? h("span", { class: "small" }, " — only a picture: the hit lands the moment the move is used") : [])),
     n.status ? h("div", { class: "k" }, "status") : null,
     n.status ? h("div", {}, `${st.chance}% chance: ${{ par: "paralyzed (can't move or attack, flashes yellow)", psn: "poisoned (1 damage a second)", tox: "badly poisoned (1, 2, 3... damage a second)", freeze: "frozen (can't move or attack)" }[st.kind] || st.kind} for ${(st.ticks || [0, 0]).map(t => (t / 60).toFixed(1)).join("-")} s`) : null,
     n.zone ? h("div", { class: "k" }, "zone") : null,
@@ -1482,9 +1608,11 @@ PREVIEW.move = (id, n) => {
     out.push(card("Area", h("div", { class: "small" }, "Its effect draws nothing, so it hurts no one (the validator reports this).")));
   } else {
     const moving = ((NODES[n.effect] || {}).speed || [0, 0]).some(v => v);
-    out.push(card(`What it hurts (blue = the user's body, facing right; grid = 8 px tiles)`, h("div", { class: "stage" }, moveHitStage(id, n)),
+    const [stage, stepCaption] = moveHitStage(id, n);
+    out.push(card(`What it hurts (blue = the user's body, facing right; grid = 8 px tiles)`, h("div", { class: "stage" }, stage), stepCaption,
       h("div", { class: "small" }, [
         `Orange = what this use hurts: its effect's picture (every frame of the animation) wherever it is drawn, plus ${HIT_MARGIN} px. A monster whose body reaches into it is hit.`,
+        mvSteps ? " The orange is hurt the moment the move is used; the animation then plays its 3 steps (the travel picture hurts no one)." : "",
         moving ? " Its particles fly off in random directions and hurt only where they really go, so the area changes every use." : "",
         { single: ` Shown with no monster in range: straight ahead at full range. Brown dashes = where the nearest monster is picked (${n.range} tile(s) from the body); with one there, the effect plays ${n.effect_at === "line" ? "as a trail from the user to it" : "on it"} instead.`,
           dash: ` Shown with no monster in reach: the user rushes ${n.dash} tile(s) ahead (faded = where it started), then strikes in front. Brown dashes = where the nearest monster is picked.`,

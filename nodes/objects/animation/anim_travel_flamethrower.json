@@ -1,0 +1,20 @@
+{
+  "id": "anim_travel_flamethrower",
+  "kind": "object",
+  "type": "animation",
+  "name": "Flamethrower travel",
+  "notes": "The fireball at the head of the stream: the flames light up along the way as it passes. It comes out from behind the user (step 1), flies there (step 2), then the move's own effect plays (step 3).",
+  "sprite": "spr_fx_travel",
+  "loop": true,
+  "frames": [
+    {
+      "frame": "flamethrower_a",
+      "ticks": 2
+    },
+    {
+      "frame": "flamethrower_b",
+      "ticks": 2
+    }
+  ],
+  "events": []
+}

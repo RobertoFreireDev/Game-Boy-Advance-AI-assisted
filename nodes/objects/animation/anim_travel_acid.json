@@ -1,0 +1,20 @@
+{
+  "id": "anim_travel_acid",
+  "kind": "object",
+  "type": "animation",
+  "name": "Acid travel",
+  "notes": "A blob of green acid that flies from the user and splashes over the tiles in front of it. It comes out from behind the user (step 1), flies there (step 2), then the move's own effect plays (step 3).",
+  "sprite": "spr_fx_travel",
+  "loop": true,
+  "frames": [
+    {
+      "frame": "acid_a",
+      "ticks": 2
+    },
+    {
+      "frame": "acid_b",
+      "ticks": 2
+    }
+  ],
+  "events": []
+}

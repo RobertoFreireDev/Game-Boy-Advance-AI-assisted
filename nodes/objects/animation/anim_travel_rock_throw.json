@@ -1,0 +1,20 @@
+{
+  "id": "anim_travel_rock_throw",
+  "kind": "object",
+  "type": "animation",
+  "name": "Rock Throw travel",
+  "notes": "A tumbling rock that flies from the user to the target and crashes into pieces. It comes out from behind the user (step 1), flies there (step 2), then the move's own effect plays (step 3).",
+  "sprite": "spr_fx_travel",
+  "loop": true,
+  "frames": [
+    {
+      "frame": "rock_throw_a",
+      "ticks": 2
+    },
+    {
+      "frame": "rock_throw_b",
+      "ticks": 2
+    }
+  ],
+  "events": []
+}

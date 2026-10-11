@@ -240,9 +240,12 @@ typedef struct {
     u8 zone_w, zone_h, zone_place;      // zone: size in tiles; ZONE_FRONT / ZONE_SCREEN
     u8 zone_count, zone_every;          // zones placed; ticks before a zone hurts the same monster again (0 = one hit)
     u16 zone_delay;                     // ticks before a zone hurts (a rock falling)
-    u8 effect_at, pad;                  // FX_AT_*: where the effect particles appear
+    u8 effect_at;                       // FX_AT_*: where the effect particles appear
+    u8 step1, step2;                    // its effect's 3 steps (moves.c): frames coming out of the user, frames on
+                                        // its way; step 3 = the rest of its lifetime (0, 0 = it plays as it is)
     s8 fx_l, fx_t, fx_r, fx_b;          // what the effect draws around each particle (px, inclusive; l > r = nothing)
     const ParticleData *effect;         // NULL = none
+    const AnimationData *travel;        // steps 1-2: what flies from the user to the effect (NULL = none)
     const SfxData *sfx;                 // NULL = silent
     ActionList on_use;                  // runs (as the user) each time the move fires
 } MoveData;

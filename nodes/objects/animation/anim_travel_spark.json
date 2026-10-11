@@ -1,0 +1,20 @@
+{
+  "id": "anim_travel_spark",
+  "kind": "object",
+  "type": "animation",
+  "name": "Spark travel",
+  "notes": "A crackling ball of electricity (white core, yellow rim, little zaps) that flies to the target and bursts into sparks. It comes out from behind the user (step 1), flies there (step 2), then the move's own effect plays (step 3).",
+  "sprite": "spr_fx_travel",
+  "loop": true,
+  "frames": [
+    {
+      "frame": "spark_a",
+      "ticks": 2
+    },
+    {
+      "frame": "spark_b",
+      "ticks": 2
+    }
+  ],
+  "events": []
+}

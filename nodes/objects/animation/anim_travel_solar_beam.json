@@ -1,0 +1,20 @@
+{
+  "id": "anim_travel_solar_beam",
+  "kind": "object",
+  "type": "animation",
+  "name": "Solar Beam travel",
+  "notes": "A small sun (white core, yellow rays) that shoots ahead; the sun bursts light up on each tile as it passes. It comes out from behind the user (step 1), flies there (step 2), then the move's own effect plays (step 3).",
+  "sprite": "spr_fx_travel",
+  "loop": true,
+  "frames": [
+    {
+      "frame": "solar_beam_a",
+      "ticks": 2
+    },
+    {
+      "frame": "solar_beam_b",
+      "ticks": 2
+    }
+  ],
+  "events": []
+}

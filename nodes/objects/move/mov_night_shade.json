@@ -13,9 +13,11 @@
   "charge": 600,
   "effect": "ptc_fx_shade",
   "effect_at": "axis",
+  "travel": "anim_travel_night_shade",
   "sfx": "sfx_mv_ghost",
   "children": [
     "spr_fx_shade",
-    "ptc_fx_shade"
+    "ptc_fx_shade",
+    "anim_travel_night_shade"
   ]
 }

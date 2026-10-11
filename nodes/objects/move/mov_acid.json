@@ -22,9 +22,11 @@
   },
   "effect": "ptc_fx_acid",
   "effect_at": "tiles",
+  "travel": "anim_travel_acid",
   "sfx": "sfx_mv_poison",
   "children": [
     "spr_fx_acid",
-    "ptc_fx_acid"
+    "ptc_fx_acid",
+    "anim_travel_acid"
   ]
 }
