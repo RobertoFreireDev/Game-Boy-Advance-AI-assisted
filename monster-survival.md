@@ -105,15 +105,17 @@ All monsters, names, sprites, tiles and music are **original**. The style may ev
 | D-pad (8 directions, incl. diagonals) | Move. Facing direction = last movement direction |
 | **A** (press) | Move 1 (if charged) |
 | **B** (press) | Move 2 (if unlocked and charged) |
-| **Hold A, no D-pad input, for 3 s** | Move 3 (if unlocked and charged) |
+| **Hold A, no D-pad input, for 2 s** | Move 3 (if unlocked and charged) |
 | Start | Menu: start run. Run: pause |
 | Left/Right | Menu: change monster |
 
 **Rule for A vs. hold-A:**
 - Pressing A fires Move 1 immediately if it's charged.
-- If A stays held and the D-pad is untouched, a "hold" counter runs. A small ring fills around the player during the hold.
-- At 3 s, if Move 3 is unlocked and charged, Move 3 fires. Touching the D-pad or releasing A resets the hold counter.
-- If Move 3 is locked or still charging, the ring shows in grey and nothing fires.
+- If A stays held and the D-pad is untouched, a "hold" counter runs. **Nothing shows during the first 1 s**, so a normal A press for Move 1 never shows the ring.
+- At 1 s a small ring appears around the player:
+  - If Move 3 is unlocked and charged, the ring fills up during the next second, and at **2 s** Move 3 fires.
+  - If Move 3 is locked or still charging, the ring shows in grey and nothing fires.
+- Touching the D-pad or releasing A resets the hold counter and hides the ring.
 
 ---
 
@@ -121,7 +123,7 @@ All monsters, names, sprites, tiles and music are **original**. The style may ev
 
 ### 5.1 Charging
 
-Every move has its own charge timer that starts as soon as the move is unlocked. A move can be used only when fully charged; using it restarts its timer.
+Every move has its own charge timer that starts as soon as the move is unlocked. A move can be used only when fully charged; using it restarts its timer, **even if it hits nothing** (section 5.3).
 
 | Move | Charge time |
 |---|---|
@@ -137,11 +139,13 @@ Moves unlock one at a time, in order, by level (section 7). Tuned so a normal ru
 
 ### 5.3 Shapes / targeting
 
-- **Single target (`<= N tiles`):** auto-aims at the **nearest** enemy within N tiles. If none is in range, the move does not fire and does not consume its charge.
+- **Single target (`<= N tiles`):** auto-aims at the **nearest** enemy within N tiles. If none is in range, it fires straight ahead in the facing direction, N tiles long, and hits nothing.
 - **Triangular (cone):** fires in the facing direction. Starts 1 tile wide next to the player and widens by 1 tile on each side every tile of distance, up to N tiles. Hits every enemy inside.
 - **Circular:** hits every enemy within N tiles around the player.
 - **Ground zone:** places a hazard on tiles; damages enemies standing on it every 0.5 s while it lasts.
 - **Whole screen:** hits every enemy visible on the current camera view.
+
+**A player's move always counts as used.** If the player fires a move and it reaches no enemy, that was the player's mistake: the move still plays its animation and its charge restarts. No damage, no XP. (Enemies are different: they only attack when the player is within their move's reach.)
 
 ### 5.4 Move table
 
@@ -209,6 +213,12 @@ A new status replaces the old one. Poison damage gives XP like a hit (section 7)
 
 Every move has its own animation (sprite effect, 4–8 frames): e.g. Ember = flickering flame tile, Bubble Beam = bubbles expanding in a cone, Rock Slide = rock shadow growing then rock falling, Surf = wave sweeping across the screen.
 
+**The animation plays every time the player uses a move**, not only when it hits: on a hit, on a MISS, and when it reaches no enemy at all.
+- Single target: on the target, or straight ahead at full range when no enemy is in range.
+- Cone, circle, whole screen: over the whole area.
+- Ground zones: on their tiles, for as long as they last.
+- Status / self moves (Growl, Fly, Phase, Sandstorm): around the player or across the screen.
+
 Floating text appears over the target and rises for ~0.75 s:
 - Damage number (e.g. `12`)
 - `MISS`
@@ -216,7 +226,9 @@ Floating text appears over the target and rises for ~0.75 s:
 - `×1.5!` in a bright color when super effective, `×0.75` in grey when not very effective
 - Over the player: `LV UP!`, `NEW MOVE!`
 
-Hit feedback: target flashes white for 4 frames and gets knocked back 2 px.
+Hit feedback:
+- **Enemy hit by the player:** blinks **red** for 4 frames (clearer than white against the bright map) and gets knocked back 2 px.
+- **Player hit by an enemy:** flashes white for 4 frames and gets knocked back 2 px.
 
 ### 5.10 Collisions
 
@@ -417,6 +429,6 @@ These points weren't specified, so this doc picks a value:
 5. **Growl** rolls 33% for each enemy within 2 tiles.
 6. Enemies use only **Move 1**, with a 4 s charge; at most 3 hostile at once.
 7. Level-up adds the HP gained to current HP (not a full heal).
-8. Moves don't fire (and keep their charge) if no enemy is in range.
+8. A player's move always fires and uses its charge, even with no enemy in reach (aiming is the player's job). Enemies only attack when the player is in reach.
 9. Moves have accuracy, which is where "MISS" comes from.
 10. Ghost's Move 3 is named **Phase** in this doc to avoid confusion with the Ghost type name.
