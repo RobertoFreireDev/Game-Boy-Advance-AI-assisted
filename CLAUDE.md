@@ -351,11 +351,13 @@ groups them for humans. **What an actor does comes only from its `logic` list.**
   spot each particle is drawn in its flight (particles flying off at random angles hurt only where they
   really go). The shape decides where the effect goes; `screen` hurts everything in view and `self` no
   one. `shape` and `range` (tiles between the two bodies' hitboxes: 1 = touching, then 1 more every 8 px
-  of gap, half a tile rounding up; the larger of across and down): `single` = the effect plays on the
+  of straight-line gap, half a tile rounding up, so a reach is a circle around the body and a diagonal
+  reaches no farther than straight; the monster AI's `sight` / `give_up` too): `single` = the effect plays on the
   nearest foe in range (`target`) or as a trail to it (`line`); it is hit, and so is any other foe the
   effect touches; `dash` = rush `dash` tiles to the nearest foe within range + dash, then strike it like
   `single` (if it got away, the blow lands in front, toward it, on whatever is there); `beam` = the effect on
-  each tile along the facing, `range` tiles (`axis`); `circle` = the effect bursts out of the user (`user`;
+  each tile along the facing, `range` tiles (`axis`; on a diagonal each piece sits as far past the body's
+  corner as it would past its edge, so the line is just as long); `circle` = the effect bursts out of the user (`user`;
   `range` = how close a wild monster gets before using it); `screen` = every foe with any of its body in
   the camera view (± the margin); `zone` = `zone {w, h, place: front|screen, count, delay, ticks [min,max],
   every}` tiles on the ground; the zone hurts each foe its picture touches (on each tile, or at its center

@@ -225,14 +225,14 @@ void bhv_monster_ai_update(Actor *a, const void *params) {
     fixed walk = monster_speed(a, p->speed), chase = monster_speed(a, p->chase_speed);   // its species' pace
     Actor *pl = actor_player();
     int seen = pl && monster_targetable(pl);
-    int dist = 999;
+    int near = 0;                                   // close enough to measure (moves_within)
     if (seen) {                                     // far away (most of them): no need to measure
         s32 fx = fx_abs(fx_to_int(pl->x) - fx_to_int(a->x)), fy = fx_abs(fx_to_int(pl->y) - fx_to_int(a->y));
-        dist = (fx > fy ? fx : fy) > (p->give_up + p->sight + 4) * 8 ? 999 : moves_tiles(a, pl);
+        near = (fx > fy ? fx : fy) <= (p->give_up + p->sight + 4) * 8;
     }
     switch (st[ST_MODE]) {
     case MODE_WANDER:
-        if (seen && dist <= p->sight && s_hostile < p->max_hostile) {
+        if (near && moves_within(a, pl, p->sight) && s_hostile < p->max_hostile) {
             turn_hostile(st);
             st[ST_CHARGE] = (u32)p->charge / 2;     // first attack comes a bit sooner
             break;
@@ -240,14 +240,14 @@ void bhv_monster_ai_update(Actor *a, const void *params) {
         wander(a, p, st, walk);
         break;
     case MODE_HOSTILE: {
-        if (!pl || !actor_alive(pl) || dist > p->give_up) {
+        if (!pl || !actor_alive(pl) || !near || !moves_within(a, pl, p->give_up)) {
             st[ST_MODE] = MODE_RETURN;
             break;
         }
         if (st[ST_CHARGE] < (u32)p->charge) st[ST_CHARGE]++;
         if (!seen) { stand(a, walk); break; }       // it flew out of reach: wait
         int reach = m ? moves_reach(m) : 1;
-        if (dist > reach) {
+        if (!moves_within(a, pl, reach)) {
             s32 px = fx_to_int(a->x), py = fx_to_int(a->y);
             // Stuck on a wall for a while: try sideways for a moment.
             if (st[ST_STUCK] > 30) {
@@ -267,7 +267,7 @@ void bhv_monster_ai_update(Actor *a, const void *params) {
         break;
     }
     case MODE_RETURN:
-        if (seen && dist <= p->sight && s_hostile < p->max_hostile) {
+        if (near && moves_within(a, pl, p->sight) && s_hostile < p->max_hostile) {
             turn_hostile(st);
             break;
         }

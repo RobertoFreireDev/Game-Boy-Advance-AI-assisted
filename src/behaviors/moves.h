@@ -8,7 +8,7 @@
 // its travel picture comes out of the user, flies to where the effect plays, then the effect plays
 // there (MoveData step1 / step2; whole-screen moves play as they are).
 // Distances are in tiles (8 px) between the monsters' bodies (hitboxes): 1 = touching, then
-// 1 more every 8 px of gap, the larger of across and down.
+// 1 more every 8 px of straight-line gap, so a reach is a circle around the body.
 #ifndef BHV_MOVES_H
 #define BHV_MOVES_H
 
@@ -23,8 +23,8 @@ enum { USE_NONE, USE_FIRED, USE_WHIFF };
 int moves_use(Actor *user, const MoveData *m, int always);
 // How close (tiles) a monster should get to its target before using this move.
 int moves_reach(const MoveData *m);
-// Tiles between two actors' bodies: 1 = touching, +1 every 8 px of gap (larger of across and down).
-int moves_tiles(const Actor *a, const Actor *b);
+// Is b within `tiles` tiles of a? 1 = touching, +1 every 8 px of straight-line gap (a circle).
+int moves_within(const Actor *a, const Actor *b, int tiles);
 // Age the ground zones and let them hurt. Called by every monster; runs once per frame.
 void moves_tick(void);
 

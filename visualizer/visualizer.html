@@ -1554,7 +1554,15 @@ function moveHitStage(id, n) {
     for (let gx = Math.ceil(x0 / 8) * 8; gx <= x1; gx += 8) { ctx.moveTo(gx, y0); ctx.lineTo(gx, y1); }
     for (let gy = Math.ceil(y0 / 8) * 8; gy <= y1; gy += 8) { ctx.moveTo(x0, gy); ctx.lineTo(x1, gy); }
     ctx.stroke();
-    if (L.pick) { ctx.strokeStyle = "#8a6a3a"; ctx.lineWidth = 1 / zm; ctx.setLineDash([2 / zm * 2, 2 / zm * 2]); ctx.strokeRect(hb.x - pad, hb.y - pad, hb.w + 2 * pad, hb.h + 2 * pad); ctx.setLineDash([]); }
+    if (L.pick) {   // moves.c gap_within: `pad` px of straight-line gap around the body (round corners)
+      const bl = hb.x, bt = hb.y, br = hb.x + hb.w, bb = hb.y + hb.h, q = Math.PI / 2;
+      ctx.strokeStyle = "#8a6a3a"; ctx.lineWidth = 1 / zm; ctx.setLineDash([2 / zm * 2, 2 / zm * 2]); ctx.beginPath();
+      ctx.moveTo(bl, bt - pad); ctx.lineTo(br, bt - pad); ctx.arc(br, bt, pad, -q, 0);
+      ctx.lineTo(br + pad, bb); ctx.arc(br, bb, pad, 0, q);
+      ctx.lineTo(bl, bb + pad); ctx.arc(bl, bb, pad, q, 2 * q);
+      ctx.lineTo(bl - pad, bt); ctx.arc(bl, bt, pad, 2 * q, 3 * q);
+      ctx.stroke(); ctx.setLineDash([]);
+    }
     if (L.zone) { ctx.strokeStyle = "#c0503a"; ctx.lineWidth = 1 / zm; ctx.strokeRect(L.zone.x, L.zone.y, L.zone.w, L.zone.h); }
     const hurting = n.shape !== "zone" || (n.effect_at === "center"
       ? (t >= (info.hurt_steps || [0, 0])[0] && t <= (info.hurt_steps || [0, 0])[1]) : t > delay && t <= zoneTicks);
@@ -1636,9 +1644,9 @@ PREVIEW.move = (id, n) => {
         `Orange = what this use hurts: its effect's picture (every frame of the animation) wherever it is drawn, plus ${HIT_MARGIN} px. A monster whose body reaches into it is hit.`,
         mvSteps ? " The orange is hurt the moment the move is used; the animation then plays its 3 steps (the travel picture hurts no one)." : "",
         moving ? " Its particles fly off in random directions and hurt only where they really go, so the area changes every use." : "",
-        { single: ` Shown with no monster in range: straight ahead at full range. Brown dashes = where the nearest monster is picked (${n.range} tile(s) from the body); with one there, the effect plays ${n.effect_at === "line" ? "as a trail from the user to it" : "on it"} instead.`,
+        { single: ` Shown with no monster in range: straight ahead at full range. Brown dashes = where the nearest monster is picked (${n.range} tile(s) from the body, round: no farther on a diagonal); with one there, the effect plays ${n.effect_at === "line" ? "as a trail from the user to it" : "on it"} instead.`,
           dash: ` Shown with no monster in reach: the user rushes ${n.dash} tile(s) ahead (faded = where it started), then strikes in front. Brown dashes = where the nearest monster is picked.`,
-          beam: " Facing up, down or a diagonal, the same line runs that way.",
+          beam: " Facing up, down or a diagonal, the same line runs that way (just as long on a diagonal).",
           zone: z.place === "screen" ? ` Red = one of its ${z.count || 1} spots (aimed near monsters in view). The orange shows only while it can hurt: when the rock lands.` : " Red = the zone's tiles. The orange shows while it lasts; each monster is hurt as soon as it touches it, then again every " + ((z.every || 0) / 60).toFixed(1) + " s while it stays." }[n.shape] || ""].join(""))));
   }
   if (n.effect && PREVIEW.particle) out.push(...[].concat(PREVIEW.particle(n.effect, NODES[n.effect] || {})).map(cd => { cd.querySelector("h3").textContent = "Effect (" + (n.effect_at || "target") + ") — " + cd.querySelector("h3").textContent; return cd; }));

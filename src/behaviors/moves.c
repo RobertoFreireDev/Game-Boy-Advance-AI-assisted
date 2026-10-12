@@ -45,24 +45,44 @@ EWRAM_BSS static Piece s_pieces[MAX_PARTICLES];
 static int s_piece_count;
 static s32 s_strike[4];         // the box around every piece: left, top, right, bottom
 
-// Round a pixel distance to tiles (half a tile rounds up).
-static s32 tiles(s32 px) { return (px + 4) >> 3; }
-
-// Tiles from a's body to b's along one axis (a spans a0..a1, b spans b0..b1): 0 while they
-// overlap on it, 1 when they touch, then 1 more every 8 pixels of gap. Negative when b is
-// on the low side (left / above).
-static s32 axis_tiles(s32 a0, s32 a1, s32 b0, s32 b1) {
-    if (b0 > a1) return tiles(b0 - a1 - 1) + 1;
-    if (a0 > b1) return -tiles(a0 - b1 - 1) - 1;
-    return 0;
+// Pixels of gap from a's body to b's along one axis (a spans a0..a1, b spans b0..b1): 0 when
+// they touch, -1 while they overlap on it. Capped so that its square never overflows.
+static s32 axis_gap(s32 a0, s32 a1, s32 b0, s32 b1) {
+    s32 g = b0 > a1 ? b0 - a1 - 1 : a0 > b1 ? a0 - b1 - 1 : -1;
+    return g > 4095 ? 4095 : g;
 }
 
-int moves_tiles(const Actor *a, const Actor *b) {
+// The straight-line gap between two actors' bodies (hitboxes), squared; -1 while they overlap.
+static s32 gap2(const Actor *a, const Actor *b) {
     s32 al = fx_to_int(a->x) + a->hb_x, at = fx_to_int(a->y) + a->hb_y;
     s32 bl = fx_to_int(b->x) + b->hb_x, bt = fx_to_int(b->y) + b->hb_y;
-    s32 tx = fx_abs(axis_tiles(al, al + a->hb_w - 1, bl, bl + b->hb_w - 1));
-    s32 ty = fx_abs(axis_tiles(at, at + a->hb_h - 1, bt, bt + b->hb_h - 1));
-    return tx > ty ? tx : ty;
+    s32 gx = axis_gap(al, al + a->hb_w - 1, bl, bl + b->hb_w - 1);
+    s32 gy = axis_gap(at, at + a->hb_h - 1, bt, bt + b->hb_h - 1);
+    if (gx < 0 && gy < 0) return -1;
+    if (gx < 0) gx = 0;
+    if (gy < 0) gy = 0;
+    return gx * gx + gy * gy;
+}
+
+// Is a squared gap (gap2) within `tiles` tiles? 1 = touching, then 1 more every 8 px of gap,
+// half a tile rounding up: the gap must be under 8 * tiles - 4 px. A circle, without a square root.
+static int gap_within(s32 g2, int tiles) {
+    if (tiles <= 0) return g2 < 0;
+    s32 r = 8 * tiles - 4;
+    return g2 < r * r;
+}
+
+int moves_within(const Actor *a, const Actor *b, int tiles) {
+    return gap_within(gap2(a, b), tiles);
+}
+
+// Tiles between two actors' bodies (0 = overlapping), measured like moves_within. Counts up
+// from 0, so it is only used on a target already in range (a few steps).
+static int tiles_apart(const Actor *a, const Actor *b) {
+    s32 g2 = gap2(a, b);
+    int k = 0;
+    while (!gap_within(g2, k)) k++;
+    return k;
 }
 
 int moves_reach(const MoveData *m) {
@@ -78,10 +98,13 @@ int moves_reach(const MoveData *m) {
 // The middle of a monster's body (its art stands on the origin).
 static s32 mid_y(const Actor *a) { return fx_to_int(a->y) - 7; }
 
-// The middle of the tile k tiles out from the user's body, in direction (lx, ly).
+// The middle of the tile k tiles out from the user's body, in direction (lx, ly): 8k - 4 px
+// past its edge, or past its corner on a diagonal (the same distance: reach is a circle).
 static void ahead(const Actor *u, int lx, int ly, int k, s32 *x, s32 *y) {
-    *x = fx_to_int(u->x) + lx * (u->hb_w / 2 + 8 * k - 4);
-    *y = mid_y(u) + ly * (u->hb_h / 2 + 8 * k - 4);
+    s32 d = 8 * k - 4;
+    if (lx && ly) d = (d * 181 + 128) >> 8;      // d / sqrt(2) on each axis, rounded
+    *x = fx_to_int(u->x) + lx * (u->hb_w / 2 + d);
+    *y = mid_y(u) + ly * (u->hb_h / 2 + d);
 }
 
 // The 8-way direction from u to t (like monster_ai's face_point); unchanged when they meet.
@@ -108,14 +131,15 @@ static int in_view(const Actor *t) {
            b >= cy - MOVE_HIT_MARGIN && tp < cy + 160 + MOVE_HIT_MARGIN;
 }
 
+// The foe whose body is nearest the user's, within `range` tiles (a circle), or NULL.
 static Actor *nearest_foe(Actor *user, int range) {
     Actor *best = NULL;
-    int bd = range + 1;
+    s32 bd = 0x7fffffff;
     for (int i = 0; i < MAX_ACTORS; i++) {
         Actor *t = &g_actors[i];
         if (!t->active || !monster_is_foe(user, t)) continue;
-        int d = moves_tiles(user, t);
-        if (d < bd) { bd = d; best = t; }
+        s32 d = gap2(user, t);
+        if (d < bd && gap_within(d, range)) { bd = d; best = t; }
     }
     return best;
 }
@@ -195,7 +219,7 @@ static void plan_at(Actor *user, const MoveData *m, const Actor *t) {
     s32 ux = fx_to_int(user->x), uy = mid_y(user);
     s32 x = fx_to_int(t->x), y = mid_y(t);
     if (m->effect_at == FX_AT_LINE) {
-        int steps = moves_tiles(user, t);
+        int steps = tiles_apart(user, t);
         if (steps < 1) steps = 1;
         for (int s = 1; s <= steps; s++) plan(m, ux + (x - ux) * s / steps, uy + (y - uy) * s / steps);
     } else {
@@ -625,8 +649,8 @@ int moves_use(Actor *user, const MoveData *m, int always) {
             dash(user, first ? fx_to_int(first->x) : ux + lx * 64,
                  first ? fx_to_int(first->y) : uy + ly * 64, m->dash * 8);
             h = hit_from(user, m);
-            if (first && moves_tiles(user, first) > m->range) { // rushed in, but it got away: the
-                toward(user, first, &lx, &ly);                  // blow lands in front, toward it
+            if (first && !moves_within(user, first, m->range)) {    // rushed in, but it got away: the
+                toward(user, first, &lx, &ly);                      // blow lands in front, toward it
                 first = NULL;
             }
         }
