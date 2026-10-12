@@ -3,7 +3,7 @@
   "kind": "object",
   "type": "music",
   "name": "Monster Survival Theme",
-  "notes": "Original title theme in C major at 140 BPM: a 2-bar fanfare plays once, then a bright 8-bar marching melody (C - F - G - C) and an 8-bar answer that sits lower and builds up (Am - F - G - G7), looping back to the march. Melody on square 1, chord taps on square 2, bass on the wave channel, march drums. Played quietly (about half volume) so the sound effects stand out over it.",
+  "notes": "Original title theme in C major at 140 BPM: a 2-bar fanfare plays once, then a bright 8-bar marching melody (C - F - G - C) and an 8-bar answer that sits lower and builds up (Am - F - G - G7), looping back to the march. Melody on square 1, chord taps on square 2, bass on the wave channel, march drums. Played very quietly (melody at about a fifth of full volume) so the battle sound effects are easy to hear over it.",
   "bpm": 140,
   "rows_per_beat": 4,
   "loop": true,
@@ -11,20 +11,20 @@
   "instruments": {
     "square1": {
       "duty": 2,
-      "volume": 6,
+      "volume": 3,
       "decay": 0
     },
     "square2": {
       "duty": 1,
-      "volume": 3,
+      "volume": 2,
       "decay": 2
     },
     "wave": {
       "wave": "0123456789abcdeffedcba9876543210",
-      "volume": 2
+      "volume": 1
     },
     "noise": {
-      "volume": 3,
+      "volume": 2,
       "decay": 1
     }
   },

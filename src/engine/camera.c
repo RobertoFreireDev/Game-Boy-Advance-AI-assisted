@@ -33,6 +33,7 @@ void camera_forget(Actor *a) {
 }
 
 void camera_shake(s32 ticks, s32 strength) {
+    if (s_shake >= ticks && s_strength >= strength) return;     // a bigger shake is still going
     s_shake = (u16)ticks;
     s_strength = (u8)strength;
 }
@@ -64,6 +65,13 @@ void camera_update(void) {
         s_shake--;
         s_ox = rng_range(-s_strength, s_strength);
         s_oy = rng_range(-s_strength, s_strength);
+        if (s_bounds == CAM_BOUNDS_MAP) {           // never past the map's edge
+            s32 w = bg_world_w(), h = bg_world_h();
+            if (s_x + s_ox > w - SCREEN_W) s_ox = w - SCREEN_W - s_x;
+            if (s_y + s_oy > h - SCREEN_H) s_oy = h - SCREEN_H - s_y;
+            if (s_x + s_ox < 0) s_ox = -s_x;
+            if (s_y + s_oy < 0) s_oy = -s_y;
+        }
     }
     bg_set_camera(s_x + s_ox, s_y + s_oy);
 }

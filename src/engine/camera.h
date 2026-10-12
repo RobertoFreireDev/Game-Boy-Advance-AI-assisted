@@ -13,7 +13,7 @@ void camera_reset(s32 x, s32 y, u8 bounds);
 void camera_set_target(struct Actor *a);
 // An actor is going away: stop following it.
 void camera_forget(struct Actor *a);
-// Shake the screen for `ticks` by up to `strength` pixels.
+// Shake the screen for `ticks` by up to `strength` pixels (a bigger shake still going wins).
 void camera_shake(s32 ticks, s32 strength);
 // Move toward the target, clamp to the map, apply shake. Once per frame.
 void camera_update(void);

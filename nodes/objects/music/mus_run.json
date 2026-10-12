@@ -3,27 +3,27 @@
   "kind": "object",
   "type": "music",
   "name": "Run theme",
-  "notes": "Original upbeat loop for the run at 155 BPM in E minor / G major: a driving verse (Em - C - D - G) and a rising second part (C - D - Bm - Em). Pumping octave bass and quick drums. Played quietly (about half volume) so the sound effects stand out over it.",
+  "notes": "Original upbeat loop for the run at 155 BPM in E minor / G major: a driving verse (Em - C - D - G) and a rising second part (C - D - Bm - Em). Pumping octave bass and quick drums. Played very quietly (melody at about a fifth of full volume) so the battle sound effects are easy to hear over it.",
   "bpm": 155,
   "rows_per_beat": 4,
   "loop": true,
   "instruments": {
     "square1": {
       "duty": 2,
-      "volume": 5,
+      "volume": 2,
       "decay": 0
     },
     "square2": {
       "duty": 0,
-      "volume": 3,
+      "volume": 2,
       "decay": 2
     },
     "wave": {
-      "wave": "02468aceeca864200000000000000000",
+      "wave": "01234567765432100000000000000000",
       "volume": 1
     },
     "noise": {
-      "volume": 3,
+      "volume": 2,
       "decay": 1
     }
   },

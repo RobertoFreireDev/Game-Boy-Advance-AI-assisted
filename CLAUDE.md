@@ -398,8 +398,11 @@ groups them for humans. **What an actor does comes only from its `logic` list.**
   when super effective, so keep `super` on a channel the type sounds don't use; a missing type uses
   `hit`; wild monsters' hits use `hit` / `super` / `weak`). Damage =
   power × (1 + 0.15 × (level − 1)) × multiplier × user power %, rounded, at least 1; a hit flashes the
-  target for 4 frames (`flash_palette`, white, or the monster behavior's own `flash_palette`: wild monsters
-  blink red) and pushes it 2 px away (less when a wall or another solid monster is in the way).
+  target (`flash_palette`, white, or the monster behavior's own `flash_palette`) `flashes` times for
+  `flash_ticks` frames each, with gaps as long (default once for 4: wild monsters blink red 3 times), runs
+  its `on_hurt` (the player's shakes the screen 1 px) and pushes it 2 px away (less when a wall or another
+  solid monster is in the way). A camera shake never goes past the map's edge, and a smaller shake doesn't
+  cut a bigger one short.
 
 ### 6.2 Examples
 
@@ -848,5 +851,6 @@ The AI runs the Python scripts directly; the `.bat` files exist for the human.
   through the music.
 - **Music**: melody on square1, harmony on square2, bass on wave, drums on noise; melodies in C3–C7;
   build songs from short patterns reused in `order`.
-- **Music sits under the sound effects**: about half their volume (melody ≤ 6, harmony and drums ≤ 3,
-  wave ≤ 2), so every hit, miss and menu sound is heard over the song.
+- **Music sits well under the sound effects**: about a quarter of their volume (melody ≤ 3, harmony and
+  drums ≤ 2, wave ≤ 1, and at wave volume 1 a waveform only half as tall: 0-7), so every hit, miss and
+  menu sound is heard over the song.

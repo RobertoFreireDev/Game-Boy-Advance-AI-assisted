@@ -13,7 +13,7 @@
 #include "engine/particles.h"
 #include "engine/floattext.h"
 
-#define FLASH_TICKS   4         // flash when hit (its flash_palette, else the game's white)
+#define FLASH_TICKS   4         // the paralysis flicker and the faint flash (a hit uses the params)
 #define PUSH_PX       2         // knockback when hit
 #define STATUS_EVERY  60        // poison hurts once a second
 #define FAINT_TICKS   30        // a wild monster flashes and blinks out
@@ -23,6 +23,7 @@ typedef struct {
     const SpeciesData *species;
     s16 hp, hp_max;             // wild monsters (the player's live in game variables)
     u8 level, status, team, buff;
+    u8 flashes, flash_gap;      // a hit's flashes still to come, ticks since the last one ended
     u16 status_ticks, status_clock;
     u16 tox_step, buff_ticks;
     u16 power;
@@ -231,9 +232,13 @@ int monster_hit(Actor *t, const MonsterHit *h) {
         if (pct > 100) { say(t, BT_SUPER, NULL, 1); result = HIT_SUPER; }
         else if (pct < 100) { say(t, BT_WEAK, NULL, 1); result = HIT_WEAK; }
         else result = HIT_NORMAL;
-        t->flash_pal = hit_palette(params_of(t));
-        t->flash = FLASH_TICKS;
+        const Params_monster *tp = params_of(t);
+        t->flash_pal = hit_palette(tp);
+        t->flash = (u8)tp->flash_ticks;
+        m->flashes = (u8)(tp->flash_ticks > 0 && tp->flashes > 1 ? tp->flashes - 1 : 0);
+        m->flash_gap = 0;
         push(t, h->from_x, h->from_y, PUSH_PX);
+        scripts_start(tp->on_hurt, t);
         hurt(t, d);
         if (!actor_alive(t)) return result;
     }
@@ -335,6 +340,12 @@ void bhv_monster_update(Actor *a, const void *params) {
     if (p->level_var >= 0) {
         if (p->xp_var >= 0) player_progress(a, p, m);
         else m->level = (u8)vars_get(p->level_var);
+    }
+    if (m->flashes && a->flash == 0 && ++m->flash_gap >= p->flash_ticks) {   // a hit's next flash
+        m->flashes--;
+        m->flash_gap = 0;
+        a->flash_pal = hit_palette(p);
+        a->flash = (u8)(p->flash_ticks + 1);       // counted down at the end of this tick
     }
     if (m->status != STATUS_NONE) {
         if (m->status == STATUS_PSN || m->status == STATUS_TOX) {

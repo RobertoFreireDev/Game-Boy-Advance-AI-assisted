@@ -3,7 +3,7 @@
   "kind": "object",
   "type": "enemy",
   "name": "Alpha",
-  "notes": "The 25th monster: a random species (never the player's), in its rare Alpha colors with a golden crown and sparkles. Level 8, 180 HP, its moves hit 1.5x harder, and it gives 60 XP. It sleeps in the stone circle of the south-east clearing until the other 24 have fainted, then wakes with a roar for the final fight. Like the others it keeps 1 tile of room from other wild monsters. Like every wild monster it blinks red when hit.",
+  "notes": "The 25th monster: a random species (never the player's), in its rare Alpha colors with a golden crown and sparkles. Level 8, 180 HP, its moves hit 1.5x harder, and it gives 60 XP. It sleeps in the stone circle of the south-east clearing until the other 24 have fainted, then wakes with a roar for the final fight. Like the others it keeps 1 tile of room from other wild monsters. Like every wild monster it blinks red 3 times when hit.",
   "logic": [
     {
       "behavior": "monster",
@@ -11,6 +11,8 @@
         "random": true,
         "avoid_var": "chosen",
         "flash_palette": "pal_flash_red",
+        "flash_ticks": 4,
+        "flashes": 3,
         "alpha": true,
         "level": 8,
         "hp": 180,

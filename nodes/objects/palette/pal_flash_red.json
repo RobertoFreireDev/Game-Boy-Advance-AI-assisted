@@ -3,7 +3,7 @@
   "kind": "object",
   "type": "palette",
   "name": "Enemy hit flash",
-  "notes": "All red: a wild monster blinks red for 4 frames when the player's move hits it. Red stands out on the bright green map better than white, so every hit is easy to see. (The player still flashes white when it is hit.)",
+  "notes": "All red: a wild monster blinks red 3 times (4 frames each, 4 frames apart) when the player's move hits it. Red stands out on the bright green map better than white, so every hit is easy to see. (The player still flashes white when it is hit.)",
   "colors": [
     "#000000",
     "#f83030",

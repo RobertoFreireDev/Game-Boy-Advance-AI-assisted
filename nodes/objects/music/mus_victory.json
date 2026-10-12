@@ -3,24 +3,24 @@
   "kind": "object",
   "type": "music",
   "name": "Victory fanfare",
-  "notes": "A short triumphant fanfare when all 25 monsters are defeated. Played quietly (about half volume) so the sound effects stand out over it.",
+  "notes": "A short triumphant fanfare when all 25 monsters are defeated. Played very quietly (melody at about a fifth of full volume) so the battle sound effects are easy to hear over it.",
   "bpm": 120,
   "rows_per_beat": 4,
   "loop": false,
   "instruments": {
     "square1": {
       "duty": 2,
-      "volume": 6,
+      "volume": 3,
       "decay": 0
     },
     "square2": {
       "duty": 1,
-      "volume": 3,
+      "volume": 2,
       "decay": 0
     },
     "wave": {
       "wave": "0123456789abcdeffedcba9876543210",
-      "volume": 2
+      "volume": 1
     }
   },
   "patterns": {
