@@ -129,7 +129,21 @@ Every move has its own charge timer that starts as soon as the move is unlocked.
 |---|---|
 | Move 1 | 3 s (180 frames) |
 | Move 2 | 10 s (600 frames) |
-| Move 3 | 60 s (3600 frames) |
+| Move 3 | depends on the move (below) |
+
+Move 3 recharges at its own pace: the stronger or safer it is, the longer it takes.
+
+| Move 3 | Species | Charge time |
+|---|---|---|
+| Phase | Wispook | 10 s (600 frames) |
+| Growl | Furrbit | 20 s (1200 frames) |
+| Fly | Gustling | 30 s (1800 frames) |
+| Flamethrower | Emberpup | 40 s (2400 frames) |
+| Thunderbolt | Voltail | 40 s (2400 frames) |
+| Solar Beam | Sproutle | 40 s (2400 frames) |
+| Surf | Splashell | 60 s (3600 frames) |
+| Toxic | Venomole | 60 s (3600 frames) |
+| Rock Slide | Pebbulk | 60 s (3600 frames) |
 
 ### 5.2 Unlock order
 
