@@ -14,6 +14,8 @@ void scene_vblank(void);
 const SceneData *scene_current(void);
 // Node id of the scene being played.
 s16 scene_current_node(void);
+// How many scenes have loaded so far (changes on every load, even of the same scene again).
+u16 scene_loads(void);
 // Fade to black (to_black = 1) or back from black (0) over `ticks`.
 void scene_fade(int to_black, int ticks);
 // Light the screen up white, fading back to normal over `ticks` (a camera flash).

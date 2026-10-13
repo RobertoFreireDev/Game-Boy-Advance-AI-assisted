@@ -17,6 +17,7 @@
 static const SceneData *s_scene;
 static s16 s_scene_node = -1;
 static s16 s_pending = -1;
+static u16 s_loads;         // scenes loaded so far
 
 static fixed s_fade;        // 0 = clear, 16 << 8 = black
 static fixed s_fade_step;
@@ -26,6 +27,7 @@ static fixed s_flash_step;
 
 const SceneData *scene_current(void) { return s_scene; }
 s16 scene_current_node(void) { return s_scene_node; }
+u16 scene_loads(void) { return s_loads; }
 
 void scene_goto(s16 node) {
     if (node >= 0 && node < NODE_COUNT && g_nodes[node].type == NT_SCENE) s_pending = node;
@@ -83,6 +85,7 @@ static void load_scene(s16 node) {
     bg_reset(sc->backdrop);
     s_scene = sc;
     s_scene_node = node;
+    s_loads++;
     s_fade = 0;
     s_fade_step = 0;
     s_fade_target = 0;

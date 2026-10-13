@@ -31,7 +31,7 @@ EWRAM_BSS static Zone s_zones[MAX_ZONES];        // cleared when a scene starts
 // monster has its own timer: hurt the moment it steps on, then every `every` ticks while it stays.
 EWRAM_BSS static u16 s_zone_hurt_at[MAX_ZONES][MAX_ACTORS];
 static u32 s_zone_frame;
-static s16 s_zone_scene = -1;
+static u16 s_zone_load;         // scene_loads() when the zones were last cleared
 static u8 s_zone_use;           // counts the uses that placed zones
 static int s_power_now;         // this use's damage in percent, instead of the user's own (0 = its own)
 
@@ -582,9 +582,9 @@ void moves_tick(void) {
     u32 f = core_frame();
     if (s_zone_frame == f) return;
     s_zone_frame = f;
-    s16 scene = scene_current_node();
-    if (scene != s_zone_scene) {                 // a new scene: no zones are left on the ground
-        s_zone_scene = scene;
+    u16 load = scene_loads();
+    if (load != s_zone_load) {                   // a scene (re)loaded, e.g. a new run: no zones are left on the ground
+        s_zone_load = load;
         for (int i = 0; i < MAX_ZONES; i++) s_zones[i].active = 0;
     }
     // 1. The zones on the ground this frame (landed, not waiting out their delay), and the box
