@@ -606,7 +606,10 @@ Every channel in a pattern has the same number of rows. Missing channels are sil
   (the shot), `aura`, `swarm` (horde movement with grid-based crowd spreading), `magnet` (pickups fly
   to the player), `spawn_wave` (timed off-screen waves), `run_clock` (`stop_var` freezes it), `level_up`.
   Monster-battle set: `monster` (species, level, HP, statuses, damage by the type chart, XP and
-  levels for the player, fainting; the shared combat code is `src/behaviors/monster.c` + `moves.c`),
+  levels for the player, fainting, a `level_tag` over a wild monster's head for a while when its whole
+  body comes `level_tag_margin` px inside the view below the HUD's top panel, gone when a move reaches
+  it, shown again after `level_tag_reset` ticks out of that view; the shared combat code is
+  `src/behaviors/monster.c` + `moves.c`),
   `monster_ai` (wander at home, hostile near the player with a cap, attack with move 1, go home; a
   sleeping boss; keeps `spread` tiles from other wild monsters, walking around them and sliding
   sideways around the player, so a pack spreads out), `move_buttons` (the player's 3 moves on A, B and R, one press each, with charge
@@ -664,7 +667,8 @@ src/engine/
 ├── anim.iwram.c/.h    animation players and frame events
 ├── particles.c/.h particle pool (front / back of the actors); aim a particle first, shoot it later (moves see its flight);
 │                  staged shots for a move's 3 steps (wait hidden, drawn behind, sped-up flight, a two-leg travel picture)
-├── floattext.c/.h floating words (damage numbers, MISS, LV UP!) drawn as 8x8 sprites
+├── floattext.c/.h floating words (damage numbers, MISS, LV UP!) and words pinned over an actor
+│                  for a frame (a monster's level tag), drawn as 8x8 sprites
 ├── camera.c/.h    follow target, clamp to bounds, shake
 ├── bg.c/.h        tiles/palettes upload, tilemap scrolling, streaming for big maps, layer offsets
 ├── sprites.iwram.c/.h OAM shadow buffer and OBJ VRAM allocation, per-actor colors (flash, Alpha),

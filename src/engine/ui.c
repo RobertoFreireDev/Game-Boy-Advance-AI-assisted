@@ -758,6 +758,12 @@ void ui_reset(void) {
 
 int ui_blocking(void) { return s_menu != NULL || s_dlg != NULL; }
 
+int ui_hud_top(void) {
+    const HudData *h = s_hud;
+    if (!h || !h->has_box || h->box.y != 0) return 0;
+    return h->box.h * 8 + 3;                            // the frame below it: 2 px line + 1 px outline
+}
+
 // ---- cover -----------------------------------------------------------------------------
 // Write the cover pattern's pixels into its VRAM tiles.
 static void cover_upload(void) {

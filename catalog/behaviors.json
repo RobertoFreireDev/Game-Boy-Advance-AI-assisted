@@ -254,7 +254,7 @@
     }
   },
   "monster": {
-    "description": "A creature of a monster-battle game. It takes its look, type and 3 moves from a species node, and has a level and hit points. Moves that hit it use the type chart (game.battle) for damage, can MISS, flash it (white, or its own flash_palette, once or a few times), push it back 2 px (not into a wall or another monster) and may paralyze or poison it; floating words show what happened. When its hit points run out it faints (flashes and blinks out). The player's version keeps hit points, level and XP in game variables and levels up (each level up raises its maximum hit points and heals it to full).",
+    "description": "A creature of a monster-battle game. It takes its look, type and 3 moves from a species node, and has a level and hit points. Moves that hit it use the type chart (game.battle) for damage, can MISS, flash it (white, or its own flash_palette, once or a few times), push it back 2 px (not into a wall or another monster) and may paralyze or poison it; floating words show what happened. When its hit points run out it faints (flashes and blinks out). With level_tag, a wild monster shows its level over its head for a few seconds when it comes into view. The player's version keeps hit points, level and XP in game variables and levels up (each level up raises its maximum hit points and heals it to full).",
     "params": {
       "species":      {"type": "node:species", "default": "", "description": "Its species. Empty = use species_var or random."},
       "species_var":  {"type": "var", "default": "", "description": "Game variable holding the species number (order of the species nodes, from 0): the player's pick. Empty = use 'species'."},
@@ -270,6 +270,11 @@
       "flash_ticks":  {"type": "ticks", "default": 4, "description": "How long each hit flash lasts (and the gap between two flashes)."},
       "flashes":      {"type": "int", "default": 1, "description": "How many times it flashes for one hit (3 = a clear red blink-blink-blink)."},
       "shadow":       {"type": "node:sprite", "default": "", "description": "Shown on the ground instead of its body while it flies. Empty = nothing shows."},
+      "level_tag":    {"type": "ticks", "default": 0, "description": "When it comes into view (its whole body at least level_tag_margin px inside the screen, below the HUD's top panel), its level (level_tag_text and the number, battle font) shows over its head for this many ticks, following it. A move reaching it (hit, miss or status) or poison damage takes it away at once. It shows again only after the monster was out of that view for more than level_tag_reset ticks. 0 = never."},
+      "level_tag_reset": {"type": "ticks", "default": 300, "description": "Out of the tag view (see level_tag) for longer than this, the monster counts as unseen again: the next time it comes into view its level tag shows again. Shorter trips out of view don't repeat it."},
+      "level_tag_margin": {"type": "int", "default": 32, "description": "Pixels the tag view is shrunk by on every side (the top one measured from below the HUD's top panel), so the tag over its head is always fully on screen, even for a monster coming down from the top. 0-60."},
+      "level_tag_text": {"type": "text", "default": "LV", "description": "Written before the level number on the tag (1-4 characters of the battle font)."},
+      "level_tag_palette": {"type": "node:palette", "default": "", "description": "Colors of the level tag. Empty = the battle font's own colors."},
       "xp_reward":    {"type": "int", "default": 20, "description": "XP the player gets when this monster faints."},
       "kills_var":    {"type": "var", "default": "", "description": "Game variable that goes up by 1 when this monster faints. Empty = none."},
       "hp_var":       {"type": "var", "default": "", "description": "Game variable holding its hit points (the player's, shown on the HUD). Empty = private hit points."},

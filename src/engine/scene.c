@@ -139,6 +139,7 @@ void scene_update(void) {
     scripts_update();
     if (!core_paused()) {
         sprites_queue_clear();          // behaviors queue this frame's extra sprites again
+        ftext_pins_clear();             // ... and pin their words again
         actor_update_all();
         if (s_scene && s_scene->on_update_fn) s_scene->on_update_fn();
     }

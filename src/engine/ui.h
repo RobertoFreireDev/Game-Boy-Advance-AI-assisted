@@ -20,6 +20,8 @@ void ui_close_menu(void);
 void ui_show_dialog(const DialogData *d);
 // True while a menu or dialog is open.
 int ui_blocking(void);
+// Screen rows the HUD's panel covers at the top, its frame included (0 = no panel there).
+int ui_hud_top(void);
 // Read buttons for the open menu/dialog, type text, refresh the HUD. Once per frame.
 void ui_update(void);
 

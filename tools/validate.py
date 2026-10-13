@@ -480,6 +480,8 @@ def scene_budget(c, insts):
                 bt = p.game.get("battle") if isinstance(p.game.get("battle"), dict) else {}
                 obj_pals.update([bt.get("flash_palette"), bt.get("par_palette")])
                 obj_pals.update(t.get("palette") for t in (bt.get("texts") or {}).values() if isinstance(t, dict))
+                if prm.get("level_tag") and prm.get("level_tag_palette"):
+                    obj_pals.add(prm["level_tag_palette"])
                 if p.type_of(prm.get("species")) == "species":
                     add_species(prm["species"], prm.get("alpha"))
                 elif prm.get("species_var") or prm.get("random"):
@@ -853,6 +855,22 @@ def V_actor(c):
                 c.err("sound '%s' is unknown; use %s" % (ev, ", ".join(C.SOUND_EVENTS)))
             c.ref(s, ["sfx"], "sounds.%s" % ev)
     c.logic(c.get(n, "logic", "list", required=False, default=[]))
+    mon = monster_entry(n)
+    if mon is not None and mon.get("level_tag"):
+        check_level_tag(c, mon)
+
+
+def check_level_tag(c, mon):
+    """A monster's level tag: battle-font words short enough for the number, a view that fits it."""
+    bt = c.p.game.get("battle") if isinstance(c.p.game.get("battle"), dict) else {}
+    text = mon.get("level_tag_text", "LV")
+    if isinstance(text, str):
+        if not 1 <= len(text) <= 4:
+            c.err("'monster.level_tag_text' must be 1 to 4 characters (the level number follows it)")
+        c.text_in_font(text, bt.get("font"), "monster.level_tag_text")
+    margin = mon.get("level_tag_margin", 32)
+    if is_int(margin) and not 0 <= margin <= 60:
+        c.err("'monster.level_tag_margin' must be 0 to 60 pixels (the view must still hold a monster)")
 
 
 def hud_text_width(text):

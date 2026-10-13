@@ -8,6 +8,8 @@
 #include "engine/actions.h"
 #include "engine/audio.h"
 #include "engine/core.h"
+#include "engine/camera.h"
+#include "engine/ui.h"
 #include "engine/physics.h"
 #include "engine/sprites.h"
 #include "engine/particles.h"
@@ -28,6 +30,9 @@ typedef struct {
     u16 tox_step, buff_ticks;
     u16 power;
     u16 xp_known;               // player: 1 once the XP bar was worked out (for xp_seen)
+    u16 tag_ticks;              // its level tag shows this many more ticks
+    u16 away_ticks;             // ticks out of the tag view since it was last in it
+    u8 tag_seen;                // 1: in the tag view lately (the tag showed; it won't show again yet)
     s32 xp_seen;
 } Monster;
 
@@ -95,14 +100,61 @@ static void say(const Actor *t, int bt, const char *text, int row) {
     ftext_show(fx_to_int(t->x), fx_to_int(t->y) - 17 - 9 * row, text, b->font, b->texts[bt].palette);
 }
 
-static void say_number(const Actor *t, int bt, s32 n) {
-    char buf[8];
+// Write n (0 or more, up to 6 digits) at buf, 0-terminated. Returns how many digits.
+static int put_number(char *buf, s32 n) {
     int k = 0;
     char digits[8];
     do { digits[k++] = (char)('0' + n % 10); n /= 10; } while (n && k < 6);
     for (int i = 0; i < k; i++) buf[i] = digits[k - 1 - i];
     buf[k] = 0;
+    return k;
+}
+
+static void say_number(const Actor *t, int bt, s32 n) {
+    char buf[8];
+    put_number(buf, n);
     say(t, bt, buf, 0);
+}
+
+// ---- the level tag ----------------------------------------------------------------------
+// 1 when its whole body is in the tag view: the screen below the HUD's top panel, shrunk by
+// `margin` pixels on every side (so the tag over its head is always on screen).
+static int in_tag_view(const Actor *a, int margin) {
+    s32 l, t, r, b, cx = camera_x(), cy = camera_y();
+    actor_rect(a, &l, &t, &r, &b);
+    return l >= cx + margin && r < cx + 240 - margin && t >= cy + ui_hud_top() + margin && b < cy + 160 - margin;
+}
+
+// A move reached it: the tag goes away at once (the words of the hit take its place).
+static void tag_off(const Actor *a, Monster *m) {
+    if (!m->tag_ticks) return;
+    m->tag_ticks = 0;
+    ftext_unpin(a);
+}
+
+// Its level over its head for a while each time it comes into view after being out of it
+// long enough (or never seen yet).
+static void level_tag(Actor *a, const Params_monster *p, Monster *m) {
+    if (in_tag_view(a, p->level_tag_margin)) {
+        m->away_ticks = 0;
+        if (!m->tag_seen) {
+            m->tag_seen = 1;
+            m->tag_ticks = (u16)p->level_tag;
+        }
+    } else if (m->tag_seen && ++m->away_ticks > p->level_tag_reset) {
+        m->tag_seen = 0;
+    }
+    if (!m->tag_ticks) return;
+    m->tag_ticks--;
+    if ((a->flags & ACTOR_HIDDEN) || !a->body) return;     // flying: only its shadow shows
+    const BattleData *bd = g_game.battle;
+    char buf[16];
+    int n = 0;
+    for (const char *c = p->level_tag_text; c && *c && n < 4; c++) buf[n++] = *c;
+    put_number(buf + n, m->level);
+    s32 dy = -a->body->origin_y - 1;                    // 1 px above the top of its picture
+    if (p->crown) dy -= p->crown->height - 2;           // ... and above the crown
+    ftext_pin(a, dy, buf, bd->font, p->level_tag_palette);
 }
 
 static void battle_sound(int bs) {
@@ -176,6 +228,7 @@ static void hurt(Actor *a, s32 amount) {
     const Params_monster *p = params_of(a);
     Monster *m = mon(a);
     if (!p || !m || amount <= 0 || !actor_alive(a)) return;
+    tag_off(a, m);
     s32 hp = hp_of(p, m) - amount;
     if (hp < 0) hp = 0;
     if (p->hp_var >= 0) vars_set(p->hp_var, hp);
@@ -217,6 +270,7 @@ int monster_hit(Actor *t, const MonsterHit *h) {
     const MoveData *mv = h->move;
     int result = HIT_NONE;
     if (!m || !b || !actor_alive(t)) return HIT_NONE;
+    tag_off(t, m);
     if (mv->power > 0) {
         if (h->roll && mv->accuracy < 100 && rng_range(1, 100) > mv->accuracy) {
             say(t, BT_MISS, NULL, 0);
@@ -371,6 +425,7 @@ void bhv_monster_update(Actor *a, const void *params) {
         sprites_queue(p->crown, (u16)bob, a, -p->crown->width / 2,
                       -a->body->origin_y - p->crown->height + 3 - bob, 0, NULL);
     }
+    if (p->level_tag) level_tag(a, p, m);
     if (p->aura && (core_frame() % 24) == (u32)(actor_index(a) % 24))
         particles_burst(p->aura, fx_to_int(a->x) + rng_range(-8, 8), fx_to_int(a->y) - rng_range(2, 14));
 }

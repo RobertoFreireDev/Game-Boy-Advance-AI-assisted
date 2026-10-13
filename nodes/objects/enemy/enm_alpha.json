@@ -3,7 +3,7 @@
   "kind": "object",
   "type": "enemy",
   "name": "Alpha",
-  "notes": "The 25th monster: a random species (never the player's), in its rare Alpha colors with a golden crown and sparkles. Level 8, 180 HP, its moves hit 1.5x harder, and it gives 60 XP. It sleeps in the stone circle of the south-east clearing until the other 24 have fainted, then wakes with a roar for the final fight. Like the others it keeps 1 tile of room from other wild monsters. Like every wild monster it blinks red 3 times when hit.",
+  "notes": "The 25th monster: a random species (never the player's), in its rare Alpha colors with a golden crown and sparkles. Level 8, 180 HP, its moves hit 1.5x harder, and it gives 60 XP. It sleeps in the stone circle of the south-east clearing until the other 24 have fainted, then wakes with a roar for the final fight. Like the others it keeps 1 tile of room from other wild monsters. Like every wild monster it blinks red 3 times when hit. When it comes into view (its whole body at least 32 px inside the screen, below the top HUD panel) its level shows over its head in cyan (LV8) for 3 s; the tag vanishes the moment a move reaches it. After more than 5 s out of that view it counts as unseen again, so coming back shows the tag again. The tag sits above its crown.",
   "logic": [
     {
       "behavior": "monster",
@@ -19,6 +19,11 @@
         "power": 150,
         "crown": "spr_crown",
         "aura": "ptc_sparkle",
+        "level_tag": 180,
+        "level_tag_reset": 300,
+        "level_tag_margin": 32,
+        "level_tag_text": "LV",
+        "level_tag_palette": "pal_txt_cyan",
         "xp_reward": 60,
         "kills_var": "kills",
         "on_death": [
