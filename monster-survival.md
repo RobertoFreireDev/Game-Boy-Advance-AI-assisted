@@ -338,7 +338,7 @@ When an enemy dies: death animation (flash + fade out, ~0.5 s), then it disappea
 
 ### 7.2 Levels
 
-Max level = **10**. Thresholds are set so **20 kills always reaches max level** (20 kills × 20 XP + at least 20 hits × 2 XP = 440).
+Max level = **25**. Each level costs 50 XP more than the last (level 2 at 40 XP). Thresholds are set so **20 kills always reaches level 10** (20 kills × 20 XP + at least 20 hits × 2 XP = 440). A full run (all 24 wild monsters + the Alpha = 540 XP, plus at least 25 hits × 2 XP) always reaches **level 13**; more hits push it higher, but level 25 is headroom that a single run does not reach with this curve.
 
 | Level | Total XP | Unlock |
 |---|---|---|
@@ -351,7 +351,22 @@ Max level = **10**. Thresholds are set so **20 kills always reaches max level** 
 | 7 | 290 | **Move 3** (≈ minute 6) |
 | 8 | 340 | |
 | 9 | 390 | |
-| 10 | 440 | Max |
+| 10 | 440 | |
+| 11 | 490 | |
+| 12 | 540 | |
+| 13 | 590 | |
+| 14 | 640 | |
+| 15 | 690 | |
+| 16 | 740 | |
+| 17 | 790 | |
+| 18 | 840 | |
+| 19 | 890 | |
+| 20 | 940 | |
+| 21 | 990 | |
+| 22 | 1040 | |
+| 23 | 1090 | |
+| 24 | 1140 | |
+| 25 | 1190 | Max |
 
 These numbers are the tuning knobs for hitting the minute 3 / minute 6 targets; adjust after playtesting.
 
@@ -359,7 +374,7 @@ These numbers are the tuning knobs for hitting the minute 3 / minute 6 targets; 
 
 | Stat | Value |
 |---|---|
-| Max HP | 60 at level 1, +8 per level |
+| Max HP | 60 at level 1, +8 per level (252 at level 25) |
 | Speed | 1 px per frame (diagonals normalized) × its species' walking speed (section 6.1b) |
 
 Level-up raises max HP by 8 **and refills current HP to the new max** (a full heal). This is the only way HP goes up, so fighting for XP is how the player recovers, not running away.

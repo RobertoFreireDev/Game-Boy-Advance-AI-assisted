@@ -51,7 +51,7 @@
         "name": "level",
         "type": "int",
         "initial": 1,
-        "notes": "The player's level (1-10)."
+        "notes": "The player's level (1-25)."
       },
       {
         "name": "xp",

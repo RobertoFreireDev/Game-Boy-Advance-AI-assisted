@@ -3,7 +3,7 @@
   "kind": "object",
   "type": "player",
   "name": "Player monster",
-  "notes": "The monster the human picked on the menu (its species comes from 'chosen'). The D-pad walks in 8 directions (diagonals as fast as straight). A = move 1, B = move 2, R = move 3, each on a single press (a move still charging does nothing). A charged move always goes off and uses its charge, even with no monster in reach (aiming is the player's job): its effect plays straight ahead. Moves recharge on their own timers; move 2 unlocks at level 4 and move 3 at level 7. HP starts at 60; each level adds 8 to the max and refills the HP to full (a reward for fighting instead of running). Sounds: B before move 2 unlocks, or R before move 3 unlocks, buzzes (sfx_error); a move that reaches no monster, or one that misses, whiffs (sfx_miss); a hit plays its type's hit sound (game.battle.player_hit_sounds), plus a ping when it is super effective. When a wild monster's move hurts it, it flashes white and the screen shakes a tiny bit (1 pixel, at random up, down and sideways, for 1/6 s), so you feel every hit. START pauses. When its HP runs out it blinks away and the run ends.",
+  "notes": "The monster the human picked on the menu (its species comes from 'chosen'). The D-pad walks in 8 directions (diagonals as fast as straight). A = move 1, B = move 2, R = move 3, each on a single press (a move still charging does nothing). A charged move always goes off and uses its charge, even with no monster in reach (aiming is the player's job): its effect plays straight ahead. Moves recharge on their own timers; move 2 unlocks at level 4 and move 3 at level 7. It levels up to level 25. HP starts at 60; each level adds 8 to the max and refills the HP to full (a reward for fighting instead of running). Sounds: B before move 2 unlocks, or R before move 3 unlocks, buzzes (sfx_error); a move that reaches no monster, or one that misses, whiffs (sfx_miss); a hit plays its type's hit sound (game.battle.player_hit_sounds), plus a ping when it is super effective. When a wild monster's move hurts it, it flashes white and the screen shakes a tiny bit (1 pixel, at random up, down and sideways, for 1/6 s), so you feel every hit. START pauses. When its HP runs out it blinks away and the run ends.",
   "logic": [
     {
       "behavior": "monster",
@@ -14,6 +14,7 @@
         "level_var": "level",
         "xp_var": "xp",
         "xp_pct_var": "xp_pct",
+        "max_level": 25,
         "shadow": "spr_shadow",
         "on_level_up": [
           {
