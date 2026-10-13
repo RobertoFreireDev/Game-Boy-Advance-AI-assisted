@@ -3,16 +3,24 @@
   "kind": "object",
   "type": "icon",
   "name": "Charge gauge: locked",
-  "notes": "HUD charge circle of a move: a padlock (the move is not unlocked yet).",
+  "notes": "HUD charge circle of a move: a gray padlock (the move is not unlocked yet). 16x16, the same size as the circles, so the row doesn't shift when it unlocks.",
   "palette": "pal_ui",
   "pixels": [
-    "..111...",
-    ".17.71..",
-    ".1...1..",
-    "1111111.",
-    "1777771.",
-    "1771771.",
-    "1777771.",
-    "1111111."
+    "................",
+    "....1111111.....",
+    "...112227711....",
+    "...1227777d1....",
+    "...1221117d1....",
+    "...1221117d1....",
+    "..11221117d11...",
+    ".12222222222d1..",
+    ".12777777777d1..",
+    ".12777717777d1..",
+    ".12777717777d1..",
+    ".12777111777d1..",
+    ".12777777777d1..",
+    ".1ddddddddddd1..",
+    "..11111111111...",
+    "................"
   ]
 }

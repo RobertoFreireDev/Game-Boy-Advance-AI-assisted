@@ -3,16 +3,24 @@
   "kind": "object",
   "type": "icon",
   "name": "Charge gauge: full",
-  "notes": "HUD charge circle of a move: full full.",
+  "notes": "HUD charge circle of a move: full and ready. Yellow like the title logo, an orange rim at the bottom-right and a white shine at the top-left (light from the top-left).",
   "palette": "pal_ui",
   "pixels": [
-    "..1111..",
-    ".114411.",
-    "11424411",
-    "14444441",
-    "14444441",
-    "11444411",
-    ".114411.",
-    "..1111.."
+    ".....11111......",
+    "...114444411....",
+    "..14444444441...",
+    ".1442244444441..",
+    ".1422444444441..",
+    "1442444444444a1.",
+    "1444444444444a1.",
+    "1444444444444a1.",
+    "1444444444444a1.",
+    "1444444444444a1.",
+    ".14444444444a1..",
+    ".14444444444a1..",
+    "..14444444aa1...",
+    "...11aaaaa11....",
+    ".....11111......",
+    "................"
   ]
 }

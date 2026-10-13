@@ -260,7 +260,7 @@ Structural rules (enforced by `validate.py`):
 | `pickup` | `item_` | Collectible: coin, key, heart. | same | same |
 | `trigger` | `trg_` | Invisible zone that runs actions (exit, checkpoint). | `zone{w,h}`, `logic[]` | — |
 | **UI** | | | | |
-| `hud` | `hud_` | Always-on overlay bound to variables. | `font`, `elements[{kind: text│icon│icon_repeat│bar│gauge, x, y, …}]`; text uses placeholders (§5.4) | `icon` |
+| `hud` | `hud_` | Always-on overlay bound to variables. | `font`, `box` (optional panel), `elements[{kind: text│icon│icon_repeat│bar│gauge, x, y, …}]`; text uses placeholders (§5.4) | `icon` |
 | `menu` | `menu_` | List of options the player picks from. | `font`, `title`, `options[{label, actions[]}]`, `texts[]`, `cursor` (icon), `layout`, `on_cancel[]` | `icon` |
 | `dialog` | `dlg_` | Text box conversation. | `font`, `box{x,y,w,h}`, `lines[{speaker, portrait, text}]`, `choices[{label, actions[]}]`, `on_end[]` | `icon` |
 | **Progression** | | | | |
@@ -310,6 +310,14 @@ groups them for humans. **What an actor does comes only from its `logic` list.**
   of the font palette; the bar turns `mid_color` at ≤ 50 % and `low_color` at ≤ 25 %; a dark rim
   frames it), `gauge {var, icons[]}` (shows `icons[var]`: charge circles, lock icons). A HUD can show
   bars in up to 4 different colors.
+- **hud** `box {x, y, w, h, paper, border}` (optional, multiples of 8, min 8): a panel behind part of the
+  HUD (a top status strip). `paper` (font palette index) fills it and its frame sits **outside** it, in
+  the cells around it: a 2 px `border` line, a 1 px dark outline (font color 1), rounded corners, the
+  rest see-through; frame parts off the screen are skipped, so a strip at the screen's edge only shows
+  its inner line. Each element is all inside the box (on the paper; icons get the paper behind them
+  when they use the font's palette) or all outside it and off its frame. The box text uses the menus'
+  and dialogs' box-font slot: give them the same paper (the validator warns), or the panel takes their
+  color while one is open. While `cover_screen` blows, the frame cells show the cover.
 - **menu** `texts [{x, y, text}]`: lines that can't be picked (a pause screen's stats), inside the box.
 - **menu**: `layout {x, y, spacing, title_y}`, optional `box {x, y, w, h, paper, border}`,
   `sounds {move, select}`. Up/Down move, A picks, B or START runs `on_cancel`. Picking an option **locks**

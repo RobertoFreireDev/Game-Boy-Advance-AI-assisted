@@ -482,7 +482,8 @@ class Gen:
                 icon_count, icon, empty, icons, text))
         s = self.sym(nid + "_elements")
         self.emit("static const HudElement %s[] = {\n    %s\n};" % (s, ",\n    ".join(items)))
-        self.emit("const HudData node_%s = { %s, %d, %s };" % (nid, self.ptr(n["font"]), len(items), s))
+        self.emit("const HudData node_%s = { %s, %d, %d, %s, %s };" % (
+            nid, self.ptr(n["font"]), len(items), 1 if n.get("box") else 0, self.box(n.get("box")), s))
 
     def box(self, b):
         if not b:

@@ -1,0 +1,26 @@
+{
+  "id": "icon_btn_a",
+  "kind": "object",
+  "type": "icon",
+  "name": "Button A",
+  "notes": "Big A on the run HUD, left of the charge circle of move 1 (the button that fires it). 16x16: white with a pale cyan bottom and a thick dark outline, like the title logo's letters, so it reads on grass and sand. Drawn against the right edge so it hugs its circle.",
+  "palette": "pal_ui",
+  "pixels": [
+    "................",
+    "......111111....",
+    ".....11222211...",
+    "....1122222211..",
+    "....1222112221..",
+    "....12211112211.",
+    "....12211112211.",
+    "....12222222211.",
+    "....12222222211.",
+    "....1ff1111ff11.",
+    "....1ff1111ff11.",
+    "....1ff11.1ff11.",
+    "....11111.11111.",
+    "......111...111.",
+    "................",
+    "................"
+  ]
+}

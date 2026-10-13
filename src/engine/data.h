@@ -177,7 +177,12 @@ typedef struct {
     const char *text;                   // UI text codes above
 } HudElement;
 
-typedef struct { const FontData *font; u8 count; const HudElement *elements; } HudData;
+typedef struct {
+    const FontData *font;
+    u8 count, has_box;                  // has_box: a panel behind part of the HUD (box: paper + frame outside it)
+    UiBox box;
+    const HudElement *elements;
+} HudData;
 
 typedef struct { const char *label; u8 x, y; ActionList actions; } MenuOption;
 typedef struct { const char *text; u8 x, y; } MenuText;     // a line of a menu that can't be picked

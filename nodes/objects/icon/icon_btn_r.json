@@ -1,0 +1,26 @@
+{
+  "id": "icon_btn_r",
+  "kind": "object",
+  "type": "icon",
+  "name": "Button R",
+  "notes": "Big R on the run HUD, left of the charge circle of move 3 (the button that fires it). 16x16: white with a pale cyan bottom and a thick dark outline, like the title logo's letters, so it reads on grass and sand. Drawn against the right edge so it hugs its circle.",
+  "palette": "pal_ui",
+  "pixels": [
+    "................",
+    "....11111111....",
+    "....122222211...",
+    "....122222221...",
+    "....1221112211..",
+    "....1221112211..",
+    "....1222222211..",
+    "....1222222111..",
+    "....1221122111..",
+    "....1ff111ff11..",
+    "....1ff111fff1..",
+    "....1ff1111ff11.",
+    "....11111.11111.",
+    "......111...111.",
+    "................",
+    "................"
+  ]
+}

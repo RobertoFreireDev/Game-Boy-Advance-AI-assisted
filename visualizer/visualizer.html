@@ -464,28 +464,48 @@ function fillText(text, get) {
     const s = String(get(v)); return pad && s.length < 2 ? "0" + s : s;
   });
 }
+// A HUD box (like ui.c draw_hud_box): paper inside; outside it a 2-pixel border, then a 1-pixel
+// dark outline (font color 1), rounded at the corners. dx / dy = pixels outside the box.
+function drawHudBox(ctx, fontId, box) {
+  const f = NODES[fontId];
+  if (!f || !box) return;
+  const cols = palColors(f.palette);
+  const paper = box.paper === undefined ? 1 : box.paper, border = box.border === undefined ? 2 : box.border;
+  const x0 = box.x, y0 = box.y, x1 = box.x + box.w, y1 = box.y + box.h;
+  ctx.fillStyle = rgbCss(cols[paper]); ctx.fillRect(x0, y0, box.w, box.h);
+  for (let y = y0 - 8; y < y1 + 8; y++) for (let x = x0 - 8; x < x1 + 8; x++) {
+    const dx = x < x0 ? x0 - x : x >= x1 ? x - x1 + 1 : 0, dy = y < y0 ? y0 - y : y >= y1 ? y - y1 + 1 : 0;
+    if (!dx && !dy) continue;
+    const c = dx <= 2 && dy <= 2 && !(dx === 2 && dy === 2) ? border : dx <= 3 && dy <= 3 && dx + dy <= 4 ? 1 : 0;
+    if (c) { ctx.fillStyle = rgbCss(cols[c]); ctx.fillRect(x, y, 1, 1); }
+  }
+}
 function drawHud(ctx, hudId, values) {
   const hd = NODES[hudId];
   if (!hd || !Array.isArray(hd.elements)) return;
   const get = n => (values && n in values) ? values[n] : varInitial(n);
+  const b = hd.box, fpal = (NODES[hd.font] || {}).palette;
+  if (b) drawHudBox(ctx, hd.font, b);
   for (const e of hd.elements) {
     const x = e.x >> 3, y = e.y >> 3;
+    // elements inside the box sit on its paper (icons only when they use the font's palette, like ui.c)
+    const paper = b && e.x >= b.x && e.x < b.x + b.w && e.y >= b.y && e.y < b.y + b.h ? (b.paper === undefined ? 1 : b.paper) : undefined;
     if (e.kind === "text") {
       const s = fillText(e.text, get);
-      drawText(ctx, hd.font, s, e.align === "center" ? x - (s.length >> 1) : x, y);   // centered on x, like ui.c
+      drawText(ctx, hd.font, s, e.align === "center" ? x - (s.length >> 1) : x, y, paper);   // centered on x, like ui.c
     }
-    else if (e.kind === "icon") drawIcon(ctx, e.icon, x, y);
+    else if (e.kind === "icon") drawIcon(ctx, e.icon, x, y, paper, fpal);
     else if (e.kind === "gauge") {
       const icons = e.icons || [];
-      drawIcon(ctx, icons[Math.max(0, Math.min(icons.length - 1, get(e.var)))], x, y);
+      drawIcon(ctx, icons[Math.max(0, Math.min(icons.length - 1, get(e.var)))], x, y, paper, fpal);
     }
     else if (e.kind === "icon_repeat") {
       const ic = NODES[e.icon]; const size = ic ? ic.pixels.length / 8 : 1;
       const sp = (e.spacing || size * 8) >> 3, v = get(e.var);
       const slots = e.max_var ? get(e.max_var) : (e.max || 0);   // empty icons up to max_var (like ui.c)
       for (let k = 0; k < (e.max || 0); k++) {
-        if (k < v) drawIcon(ctx, e.icon, x + k * sp, y);
-        else if (e.empty_icon && k < slots) drawIcon(ctx, e.empty_icon, x + k * sp, y);
+        if (k < v) drawIcon(ctx, e.icon, x + k * sp, y, paper, fpal);
+        else if (e.empty_icon && k < slots) drawIcon(ctx, e.empty_icon, x + k * sp, y, paper, fpal);
       }
     } else if (e.kind === "bar") {
       const f = NODES[hd.font], cols = palColors(f && f.palette);

@@ -45,7 +45,7 @@ TYPE_FIELDS = {
     "particle": {"animation", "mode", "count", "rate", "lifetime", "speed", "angle", "gravity", "on_top"},
     "body": {"origin", "hitbox", "physics", "animations", "default_animation"},
     "trigger": {"zone", "logic"},
-    "hud": {"font", "elements"},
+    "hud": {"font", "elements", "box"},
     "menu": {"font", "title", "options", "upgrades", "cursor", "layout", "on_cancel", "box", "sounds", "texts"},
     "dialog": {"font", "box", "lines", "choices", "on_end", "ticks_per_char"},
     "upgrade": {"category", "title", "icon", "var", "max_level", "descriptions", "requires", "replaces", "on_pick"},
@@ -882,9 +882,45 @@ def check_placeholders(c, text, font, label):
     c.text_in_font(leftover.replace("{", "").replace("}", ""), font, label)
 
 
+def hud_box(c, font):
+    """The HUD's optional box (a panel behind part of it) in tiles (x, y, w, h), or None."""
+    b = c.n.get("box")
+    if b is None:
+        return None
+    if not isinstance(b, dict):
+        c.err("'box' must be an object {x, y, w, h, paper, border}")
+        return None
+    for k in b:
+        if k not in ("x", "y", "w", "h", "paper", "border"):
+            c.err("'box' has unknown field '%s'" % k)
+    good = True
+    for k, lo, hi in (("x", 0, C.SCREEN_W - 8), ("y", 0, C.SCREEN_H - 8), ("w", 8, C.SCREEN_W), ("h", 8, C.SCREEN_H)):
+        v = c.get(b, k, "int", "box." + k, lo=lo, hi=hi)
+        if v is None:
+            good = False
+        elif v % 8:
+            c.err("'box.%s' must be a multiple of 8 (the HUD sits on the 8x8 tile grid)" % k)
+            good = False
+    if good and (b["x"] + b["w"] > C.SCREEN_W or b["y"] + b["h"] > C.SCREEN_H):
+        c.err("'box' goes off the 240x160 screen")
+        good = False
+    paper = c.get(b, "paper", "int", "box.paper", required=False, default=1, lo=0, hi=15)
+    c.get(b, "border", "int", "box.border", required=False, lo=0, hi=15)
+    # The box paints its text with the same box-font slot menus and dialogs use (ui.c): while one
+    # with another paper is open, the panel takes that color.
+    for nid, other in c.p.nodes.items():
+        if c.p.type_of(nid) in ("menu", "dialog") and other.get("font") == font and isinstance(other.get("box"), dict):
+            if other["box"].get("paper", 1) != paper:
+                c.warn("'box.paper' is %s but %s '%s' (same font) uses paper %s: while it is open this HUD's "
+                       "box shows that color" % (paper, c.p.type_of(nid), nid, other["box"].get("paper", 1)))
+    return C.box_tiles(b) if good else None
+
+
 def V_hud(c):
     n = c.n
     font = c.ref(n.get("font"), ["font"], "font")
+    box = hud_box(c, font)
+    font_pal = c.p.nodes.get(font, {}).get("palette") if font else None
     els = c.get(n, "elements", "list", default=[])
     for i, e in enumerate(els):
         label = "elements[%d]" % i
@@ -907,7 +943,7 @@ def V_hud(c):
         for v, k in ((x, "x"), (y, "y")):
             if v is not None and v % 8:
                 c.err("%s.%s must be a multiple of 8 (the HUD sits on the 8x8 tile grid)" % (label, k))
-        width_tiles = 0
+        width_tiles, height_tiles, left_tiles, icon_ids = 0, 1, None, []
         if kind == "text":
             t = c.get(e, "text", "str", label + ".text", default="")
             check_placeholders(c, t, font, label + ".text")
@@ -918,11 +954,13 @@ def V_hud(c):
             if e.get("align") == "center" and x is not None:
                 if x // 8 - (width_tiles + 1) // 2 - 1 < 0 or x // 8 + (width_tiles + 1) // 2 + 1 > 30:
                     c.err("%s (centered on x %d) does not fit on the screen" % (label, x))
+                left_tiles = x // 8 - min(30, width_tiles) // 2 - 1     # the cells ui.c clears
                 width_tiles = 0
         elif kind in ("icon", "icon_repeat"):
             ic = c.ref(e.get("icon"), ["icon"], label + ".icon")
             size = len(c.p.nodes.get(ic, {}).get("pixels", [])) // 8 if ic else 1
-            width_tiles = size
+            width_tiles = height_tiles = size
+            icon_ids = [ic, e.get("empty_icon")]
             if kind == "icon_repeat":
                 if "empty_icon" in e:
                     c.ref(e["empty_icon"], ["icon"], label + ".empty_icon")
@@ -959,9 +997,34 @@ def V_hud(c):
                     sizes.add(len(c.p.nodes.get(ic, {}).get("pixels", [])))
             if len(sizes) > 1:
                 c.err("%s.icons must all be the same size" % label)
-            width_tiles = (max(sizes) // 8) if sizes else 1
+            width_tiles = height_tiles = (max(sizes) // 8) if sizes else 1
+            icon_ids = icons
         if x is not None and x // 8 + width_tiles > 30:
             c.err("%s does not fit on the screen (30 tiles wide)" % label)
+        if box and x is not None and y is not None:
+            hud_element_in_box(c, box, label, x // 8 if left_tiles is None else left_tiles, y // 8,
+                               width_tiles if left_tiles is None else min(30, hud_text_width(e.get("text", ""))) + 2,
+                               height_tiles, icon_ids, font_pal)
+
+
+def hud_element_in_box(c, box, label, x, y, w, h, icon_ids, font_pal):
+    """An element (cells x, y, w, h) sits all inside the HUD box or all outside it and off its frame."""
+    bx, by, bw, bh = box
+    w = max(w, 1)
+
+    def overlap(ax, ay, aw, ah):
+        return x < ax + aw and ax < x + w and y < ay + ah and ay < y + h
+    inside = bx <= x and x + w <= bx + bw and by <= y and y + h <= by + bh
+    if not inside and overlap(bx, by, bw, bh):
+        c.err("%s is partly inside the box: put it all inside (on the paper) or all outside" % label)
+    elif not inside and overlap(bx - 1, by - 1, bw + 2, bh + 2):
+        c.warn("%s covers the box's frame (the cells just around the box)" % label)
+    elif inside:
+        for ic in icon_ids:
+            pal = c.p.nodes.get(ic, {}).get("palette") if ic else None
+            if pal and pal != font_pal:
+                c.warn("%s: icon '%s' is not in the font's palette, so its see-through pixels show the map, "
+                       "not the box" % (label, ic))
 
 
 def V_menu(c):

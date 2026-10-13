@@ -3,16 +3,24 @@
   "kind": "object",
   "type": "icon",
   "name": "Charge gauge: empty",
-  "notes": "HUD charge circle of a move: empty full.",
+  "notes": "HUD charge circle of a move: an empty socket, sunk in (dark rim at the top-left), right after the move was used.",
   "palette": "pal_ui",
   "pixels": [
-    "..1111..",
-    ".11dd11.",
-    "11dddd11",
-    "1dddddd1",
-    "1dddddd1",
-    "11dddd11",
-    ".11dd11.",
-    "..1111.."
+    ".....11111......",
+    "...113333311....",
+    "..133ddddd331...",
+    ".13dddddddddd1..",
+    ".13dddddddddd1..",
+    "13dddddddddddd1.",
+    "13dddddddddddd1.",
+    "13dddddddddddd1.",
+    "13dddddddddddd1.",
+    "13dddddddddddd1.",
+    ".13dddddddddd1..",
+    ".13dddddddddd1..",
+    "..1ddddddddd1...",
+    "...11ddddd11....",
+    ".....11111......",
+    "................"
   ]
 }

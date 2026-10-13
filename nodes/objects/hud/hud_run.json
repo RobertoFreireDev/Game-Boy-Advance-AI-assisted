@@ -3,18 +3,26 @@
   "kind": "object",
   "type": "hud",
   "name": "Run HUD",
-  "notes": "Top: HP bar (green, yellow at half, red at a quarter; its length follows the max HP), level and kills; the XP bar to the next level and the run timer. Bottom: the 3 moves (A, B, R) with their charge circles (a padlock while locked, a white blink when one becomes ready).",
+  "notes": "Top: a deep indigo panel across the screen (the same color and white edge as the pause box, with a dark outline under it) holding the HP bar (green, yellow at half, red at a quarter; its length follows the max HP), the level and kills, the XP bar to the next level and the run timer. Bottom: the 3 moves as big A, B and R letters, each right next to its charge circle (a padlock while locked, a white blink when it becomes ready). No panel at the bottom, so the world stays in view there.",
   "font": "font_default",
+  "box": {
+    "x": 0,
+    "y": 0,
+    "w": 240,
+    "h": 16,
+    "paper": 3,
+    "border": 2
+  },
   "elements": [
     {
       "kind": "text",
-      "x": 0,
+      "x": 8,
       "y": 0,
       "text": "HP"
     },
     {
       "kind": "bar",
-      "x": 16,
+      "x": 24,
       "y": 0,
       "var": "hp",
       "max_var": "hp_max",
@@ -26,7 +34,7 @@
     },
     {
       "kind": "text",
-      "x": 88,
+      "x": 96,
       "y": 0,
       "text": "LV{level}"
     },
@@ -38,13 +46,13 @@
     },
     {
       "kind": "text",
-      "x": 0,
+      "x": 8,
       "y": 8,
       "text": "XP"
     },
     {
       "kind": "bar",
-      "x": 16,
+      "x": 24,
       "y": 8,
       "var": "xp_pct",
       "max": 100,
@@ -59,15 +67,15 @@
       "text": "TIME {time_min:02}:{time_sec:02}"
     },
     {
-      "kind": "text",
+      "kind": "icon",
       "x": 8,
-      "y": 152,
-      "text": "A"
+      "y": 144,
+      "icon": "icon_btn_a"
     },
     {
       "kind": "gauge",
-      "x": 16,
-      "y": 152,
+      "x": 24,
+      "y": 144,
       "var": "g1",
       "icons": [
         "icon_gauge_0",
@@ -80,15 +88,15 @@
       ]
     },
     {
-      "kind": "text",
+      "kind": "icon",
       "x": 40,
-      "y": 152,
-      "text": "B"
+      "y": 144,
+      "icon": "icon_btn_b"
     },
     {
       "kind": "gauge",
-      "x": 48,
-      "y": 152,
+      "x": 56,
+      "y": 144,
       "var": "g2",
       "icons": [
         "icon_gauge_0",
@@ -101,15 +109,15 @@
       ]
     },
     {
-      "kind": "text",
+      "kind": "icon",
       "x": 72,
-      "y": 152,
-      "text": "R"
+      "y": 144,
+      "icon": "icon_btn_r"
     },
     {
       "kind": "gauge",
-      "x": 80,
-      "y": 152,
+      "x": 88,
+      "y": 144,
       "var": "g3",
       "icons": [
         "icon_gauge_0",
@@ -123,6 +131,9 @@
     }
   ],
   "children": [
+    "icon_btn_a",
+    "icon_btn_b",
+    "icon_btn_r",
     "icon_gauge_0",
     "icon_gauge_1",
     "icon_gauge_2",

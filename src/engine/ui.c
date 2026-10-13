@@ -6,7 +6,8 @@
 //   128..255   font glyphs on the box "paper" color (menus with a box, dialogs)
 //   256..264   box frame (3x3: corners, edges, fill)
 //   265..300   bar fill levels 0/8 .. 8/8, up to 4 color sets of 9
-//   304..511   icons
+//   301..308   HUD box frame (the 8 tiles around a HUD box: corners and edges)
+//   309..511   icons
 #include <string.h>
 #include <tonc_memmap.h>
 #include <tonc_memdef.h>
@@ -26,7 +27,8 @@
 #define T_FRAME  256
 #define T_BAR    265
 #define BAR_SETS 4
-#define T_ICONS  304
+#define T_HUD_FRAME 301
+#define T_ICONS  309
 #define T_END    512
 #define TEXT_MAX 64         // characters of one UI text once its placeholders are filled in
 
@@ -38,6 +40,7 @@ static IconSlot s_icons[MAX_ICONS];
 static int s_icon_count, s_icon_next;
 static u8 s_bar_sets[BAR_SETS][2];      // color, back of each bar tile set in VRAM
 static int s_bar_set_count;
+static u8 s_hud_frame_border = 0xFF;    // border color the HUD box frame tiles were made with
 
 static const HudData *s_hud;
 static u32 s_hud_version;
@@ -294,6 +297,59 @@ static void fill_paper(int x, int y, int w, int h) {
 #define HUD_SIG_MAX 32       // HUD elements that remember what they show (more are always redrawn)
 static u32 s_hud_sig[HUD_SIG_MAX];
 
+// The 8 tiles around a HUD box (corners and edges, row by row), so its text can fill the whole
+// box: a 2-pixel border, then a 1-pixel dark outline (font color 1), rounded at the corners and
+// see-through beyond. dx / dy = how many pixels a pixel lies outside the box.
+static void load_hud_frame(u8 border) {
+    if (s_hud_frame_border == border) return;
+    s_hud_frame_border = border;
+    u32 *d = (u32 *)&tile_mem[0][T_HUD_FRAME];
+    for (int t = 0; t < 9; t++) {
+        if (t == 4) continue;                       // the middle is the box itself
+        int col = t % 3, row = t / 3;
+        for (int y = 0; y < 8; y++) {
+            int dy = row == 0 ? 8 - y : row == 2 ? y + 1 : 0;
+            u32 w = 0;
+            for (int x = 0; x < 8; x++) {
+                int dx = col == 0 ? 8 - x : col == 2 ? x + 1 : 0;
+                u32 c = 0;
+                if (dx <= 2 && dy <= 2 && !(dx == 2 && dy == 2)) c = border;
+                else if (dx <= 3 && dy <= 3 && dx + dy <= 4) c = 1;
+                w |= c << (4 * x);
+            }
+            *d++ = w;
+        }
+    }
+}
+
+// 1 when cell (x, y) is inside the HUD's box (its elements there sit on the paper).
+static int in_hud_box(int x, int y) {
+    const HudData *h = s_hud;
+    return h->has_box && x >= h->box.x && x < h->box.x + h->box.w && y >= h->box.y && y < h->box.y + h->box.h;
+}
+
+// Empty cells of a HUD element: paper inside the box, else the empty cell (or the cover).
+static void hud_clear(int x, int y, int w, int h, int paper) {
+    if (paper) fill_paper(x, y, w, h);
+    else clear_rect(x, y, w, h);
+}
+
+// The box: paper inside, the frame in the cells around it (off-screen ones are skipped). While the
+// cover blows, those cells show the cover instead (a frame tile is mostly see-through).
+static void draw_hud_box(void) {
+    const UiBox *b = &s_hud->box;
+    load_hud_frame(b->border);
+    fill_paper(b->x, b->y, b->w, b->h);
+    u16 bank = (u16)(bg_pal_bank(s_hud->font->palette) << 12);
+    for (int j = -1; j <= b->h; j++)
+        for (int i = -1; i <= b->w; i++) {
+            int row = j < 0 ? 0 : j < b->h ? 1 : 2, col = i < 0 ? 0 : i < b->w ? 1 : 2;
+            if (row == 1 && col == 1) continue;
+            int t = row * 3 + col, x = b->x + i, y = b->y + j;
+            put(x, y, s_cover ? blank(x, y) : (u16)((T_HUD_FRAME + t - (t > 4)) | bank));
+        }
+}
+
 // 1 while a blinking HUD text is in its hidden half.
 static int blink_off(const HudElement *e) {
     return e->blink && ((core_frame() / e->blink) & 1);
@@ -325,8 +381,9 @@ static void draw_hud_text(const HudElement *e) {
         cx = e->x - e->span / 2 - 1;
         cw = e->span + 2;
     }
-    clear_rect(cx, e->y, cw, 1);
-    if (!blink_off(e)) draw_plain(x, e->y, buf, 0);
+    int paper = in_hud_box(e->x, e->y);
+    hud_clear(cx, e->y, cw, 1, paper);
+    if (!blink_off(e)) draw_plain(x, e->y, buf, paper);
 }
 
 // Draw the HUD. all = 0 starts at the first element whose values changed: variables like the
@@ -337,6 +394,8 @@ static void draw_hud(int all) {
     const HudData *h = s_hud;
     if (!h) return;
     load_font(h->font);
+    if (h->has_box) load_paper_font(h->font, h->box.paper, h->box.border);
+    if (all && h->has_box) draw_hud_box();
     int from = all ? 0 : h->count;
     for (int i = 0; i < h->count; i++) {
         u32 sig = i < HUD_SIG_MAX ? hud_signature(&h->elements[i]) : 0;
@@ -347,6 +406,7 @@ static void draw_hud(int all) {
     }
     for (int i = from; i < h->count; i++) {
         const HudElement *e = &h->elements[i];
+        u8 paper = in_hud_box(e->x, e->y) ? h->box.paper : 0xFF;
         switch (e->kind) {
         case HUD_TEXT:
             draw_hud_text(e);
@@ -354,11 +414,11 @@ static void draw_hud(int all) {
         case HUD_GAUGE: {
             s32 v = vars_get(e->var);
             v = v < 0 ? 0 : v >= e->icon_count ? e->icon_count - 1 : v;
-            draw_icon(e->x, e->y, e->icons[v], 0xFF);
+            draw_icon(e->x, e->y, e->icons[v], paper);
             break;
         }
         case HUD_ICON:
-            draw_icon(e->x, e->y, e->icon, 0xFF);
+            draw_icon(e->x, e->y, e->icon, paper);
             break;
         case HUD_ICON_REPEAT: {
             s32 v = vars_get(e->var);
@@ -366,9 +426,9 @@ static void draw_hud(int all) {
             int size = e->icon->width / 8;
             for (int k = 0; k < e->max; k++) {
                 int x = e->x + k * e->spacing;
-                if (k < v) draw_icon(x, e->y, e->icon, 0xFF);
-                else if (e->empty_icon && k < slots) draw_icon(x, e->y, e->empty_icon, 0xFF);
-                else clear_rect(x, e->y, size, size);
+                if (k < v) draw_icon(x, e->y, e->icon, paper);
+                else if (e->empty_icon && k < slots) draw_icon(x, e->y, e->empty_icon, paper);
+                else hud_clear(x, e->y, size, size, paper != 0xFF);
             }
             break;
         }
@@ -687,6 +747,7 @@ void ui_reset(void) {
     s_icon_count = 0;
     s_icon_next = T_ICONS;
     s_bar_set_count = 0;
+    s_hud_frame_border = 0xFF;
     s_hud = NULL;
     s_hud_blinks = 0;
     s_menu = NULL;
@@ -729,6 +790,7 @@ void ui_cover(const IconData *icon, int ticks) {
         s_cover = NULL;
         s_cover_ticks = 0;
         if (old) refill_blanks(old);
+        if (old && s_hud && s_hud->has_box && !s_menu && !s_dlg) draw_hud(1);   // the box frame back
         return;
     }
     const IconSlot *slot = icon_slot(icon, 0xFF);
@@ -745,6 +807,7 @@ void ui_cover(const IconData *icon, int ticks) {
     s_cover = slot;
     s_cover_ticks = (u16)ticks;
     refill_blanks(old);
+    if (s_hud && s_hud->has_box && !s_menu && !s_dlg) draw_hud(1);    // the cover around the box
 }
 
 void ui_update(void) {
