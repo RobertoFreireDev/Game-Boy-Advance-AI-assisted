@@ -14,7 +14,8 @@
 
 typedef struct {
     const MoveData *move;
-    u8 active, team, level, pad;
+    u8 active, team, level;
+    u8 use;                     // which use of a move placed it: the zones of one use hurt a foe once a frame
     u16 power;
     s16 x, y, w, h;             // world pixels (top-left, size)
     s16 hl, ht, hr, hb;         // what it hurts: its effect's picture + the margin (world px, inclusive)
@@ -31,6 +32,8 @@ EWRAM_BSS static Zone s_zones[MAX_ZONES];        // cleared when a scene starts
 EWRAM_BSS static u16 s_zone_hurt_at[MAX_ZONES][MAX_ACTORS];
 static u32 s_zone_frame;
 static s16 s_zone_scene = -1;
+static u8 s_zone_use;           // counts the uses that placed zones
+static int s_power_now;         // this use's damage in percent, instead of the user's own (0 = its own)
 
 // The strike: a move hurts what its effect draws. Its particles are picked first (particles_aim),
 // so before they are sent off the move knows every spot each one will be drawn at, and it hurts
@@ -413,7 +416,7 @@ static MonsterHit hit_from(Actor *user, const MoveData *m) {
     h.team = (u8)monster_team(user);
     h.level = (u8)monster_level(user);
     h.roll = 1;
-    h.power = (u16)monster_power(user);
+    h.power = (u16)(s_power_now ? s_power_now : monster_power(user));
     h.from_x = fx_to_int(user->x);
     h.from_y = fx_to_int(user->y);
     return h;
@@ -446,7 +449,8 @@ static Zone *zone_add(Actor *user, const MoveData *m, s32 tx, s32 ty) {
         z->move = m;
         z->team = (u8)monster_team(user);
         z->level = (u8)monster_level(user);
-        z->power = (u16)monster_power(user);
+        z->use = s_zone_use;
+        z->power = (u16)(s_power_now ? s_power_now : monster_power(user));
         z->x = (s16)((tx - m->zone_w / 2) * 8);
         z->y = (s16)((ty - m->zone_h / 2) * 8);
         z->w = (s16)(m->zone_w * 8);
@@ -492,6 +496,7 @@ static Zone *zone_add(Actor *user, const MoveData *m, s32 tx, s32 ty) {
 // middle tile in the zone's middle), or spots on the screen (each one on a monster in view when
 // there is one, else anywhere in view).
 static void zones_place(Actor *user, const MoveData *m) {
+    s_zone_use++;
     s32 ux = fx_to_int(user->x) >> 3, uy = (fx_to_int(user->y) - 4) >> 3;
     if (m->zone_place == ZONE_AROUND) {
         s32 cx, cy;
@@ -608,6 +613,7 @@ void moves_tick(void) {
     }
     if (!n) return;
     // 2. Each monster the zone's picture touches is hurt, unless that zone hurt it less than `every` ago.
+    //    Zones placed by one use (Rock Slide's rocks) hurt a monster they all touch once in a frame.
     for (int k = 0; k < MAX_ACTORS; k++) {
         Actor *t = &g_actors[k];
         if (!t->active) continue;
@@ -615,6 +621,8 @@ void moves_tick(void) {
         if (l > br || r < bl) continue;
         s32 tp = fx_to_int(t->y) + t->hb_y, b = tp + t->hb_h - 1;
         if (tp > bb || b < bt) continue;
+        u8 hit_by[MAX_ZONES];                   // the uses that hurt it this frame
+        int nhit = 0;
         for (int j = 0; j < n; j++) {
             const s32 *e = zr[j];
             if (l > e[2] || r < e[0] || tp > e[3] || b < e[1]) continue;
@@ -623,6 +631,10 @@ void moves_tick(void) {
             if (*at && z->age + 1 - *at < z->move->zone_every) continue;   // still cooling down
             if (!monster_targetable(t) || monster_team(t) == z->team) continue;
             *at = (u16)(z->age + 1);
+            int u = 0;
+            while (u < nhit && hit_by[u] != z->use) u++;
+            if (u < nhit) continue;             // another zone of the same use hurt it just now
+            hit_by[nhit++] = z->use;
             MonsterHit h;
             zone_hit_info(z, &h);
             int res = monster_hit(t, &h);
@@ -697,4 +709,11 @@ int moves_use(Actor *user, const MoveData *m, int always) {
     if (!n) return result_sound_only(user, m) ? USE_WHIFF : USE_FIRED;     // went off at nothing
     monster_hit_sound(&h, best);
     return USE_FIRED;
+}
+
+int moves_use_power(Actor *user, const MoveData *m, int always, int power) {
+    s_power_now = power;
+    int r = moves_use(user, m, always);
+    s_power_now = 0;
+    return r;
 }

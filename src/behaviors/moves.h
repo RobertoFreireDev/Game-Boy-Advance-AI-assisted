@@ -3,7 +3,8 @@
 // effect draws: every foe whose body comes within MOVE_HIT_MARGIN px of the effect's picture
 // (a whole-screen move: every foe in view). It plays its sound, attack pose and on_use actions,
 // hits (monster_hit), then plays one sound for the best result (hit / miss).
-// Zones stay on the ground and hurt over time, also by what their effect draws.
+// Zones stay on the ground and hurt over time, also by what their effect draws; the zones of
+// one use (Rock Slide's rocks) hurt a monster they all touch only once.
 // The effect is shown in 3 steps over the time it lasts (a picture only, the hits don't wait):
 // its travel picture comes out of the user, flies to where the effect plays, then the effect plays
 // there (MoveData step1 / step2; whole-screen moves play as they are).
@@ -21,6 +22,8 @@ enum { USE_NONE, USE_FIRED, USE_WHIFF };
 // aiming is the player's job): then a targeted move plays straight ahead at full range and hurts
 // whatever its effect touches there.
 int moves_use(Actor *user, const MoveData *m, int always);
+// Use a move with its damage at `power` percent instead of the user's own power (0 = its own).
+int moves_use_power(Actor *user, const MoveData *m, int always, int power);
 // How close (tiles) a monster should get to its target before using this move.
 int moves_reach(const MoveData *m);
 // Is b within `tiles` tiles of a? 1 = touching, +1 every 8 px of straight-line gap (a circle).

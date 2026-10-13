@@ -1346,7 +1346,7 @@ PREVIEW.species = (id, n) => {
     const mv = NODES[m] || {};
     return h("div", { class: "bhv" }, h("div", { class: "bn" }, SLOT_KEYS[i] + " · ", nodeLink(m)),
       h("div", { class: "bd" }, `${mv.shape || "?"}${mv.range !== undefined ? ", " + mv.range + " tiles" : ""}, power ${mv.power || 0}, charge ${((mv.charge || 0) / 60).toFixed(0)} s`));
-  }), h("div", { class: "small" }, "Move 2 and move 3 unlock with the player's level (move_buttons). Wild monsters only use move 1.")));
+  }), h("div", { class: "small" }, "Move 2 and move 3 unlock with the player's level (move_buttons). Wild monsters only use move 1, unless their monster_ai `moves` says 2 or 3 (a boss).")));
   out.push(speedCard(id));
   out.push(card("Cry", h("div", { class: "toolbar" }, h("button", { onclick: () => playSfx(n.cry) }, "▶ Play"), nodeLink(n.cry))));
   out.push(card("Type matchups", matchups(n.monster_type)));

@@ -374,7 +374,8 @@ groups them for humans. **What an actor does comes only from its `logic` list.**
   odd w and h, and it stays where it was used); the zone hurts each foe its picture touches (on each tile, or
   at its center as drawn while it can hurt: a falling rock where it lands), the moment it touches, then again
   every `every` ticks while it stays (each foe has its own timer; 0 = once, after `delay`; screen spots aim near
-  foes in view; `range` = how close a foe must be to use it). Its last flicker is cut short so nothing is
+  foes in view; `range` = how close a foe must be to use it). The `count` zones of one use (Rock Slide's
+  rocks) hurt a foe they all touch only once. Its last flicker is cut short so nothing is
   drawn once it stops hurting, and a flickering effect must live longer than `every` (no blinking out).
   A zone lights at most 16 effect pieces at once: a big one sets `cell` (w and h its multiples) and plays its
   effect once in the middle of each cell×cell block, a picture that covers its whole block (Toxic's 9×9 cloud:
@@ -616,7 +617,8 @@ Every channel in a pattern has the same number of rows. Missing channels are sil
   it, shown again after `level_tag_reset` ticks out of that view; the shared combat code is
   `src/behaviors/monster.c` + `moves.c`),
   `monster_ai` (wander at home, hostile near the player with a cap, attack with move 1, go home; a
-  sleeping boss; keeps `spread` tiles from other wild monsters, walking around them and sliding
+  sleeping boss that with `moves` 3 also uses moves 2 and 3, each on its own recharge (`moves_charge` % of
+  the player's) and at its own damage (`moves_power`), an attack being the highest one ready that reaches; keeps `spread` tiles from other wild monsters, walking around them and sliding
   sideways around the player, so a pack spreads out), `move_buttons` (the player's 3 moves on A, B and R, one press each, with charge
   gauges, a locked-move buzz and a miss sound when a move reaches no one),
   `species_select` (the picker's bobbing portrait, Left / Right; species past `unlocked_var` show as a

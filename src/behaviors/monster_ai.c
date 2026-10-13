@@ -1,7 +1,9 @@
 // monster_ai - a wild monster's mind: it wanders around its home, turns hostile when the player
 // comes close (only a few at once), walks up and uses its first move on a timer, and walks
 // home when the player gets away. It keeps some room from the other wild monsters, so a pack
-// spreads out. Can sleep until a variable reaches a value (a boss).
+// spreads out. Can sleep until a variable reaches a value (a boss). A boss can also use its
+// moves 2 and 3: each recharges on its own timer, and an attack is the highest one ready
+// (they can hit at their own power and recharge slower than the player's).
 #include "monster_ai.h"
 #include "monster.h"
 #include "moves.h"
@@ -30,6 +32,7 @@ typedef struct { s16 l, t, r, b; u8 who; } Spot;
 EWRAM_BSS static Spot s_crowd[2][MAX_ACTORS];
 static u8 s_crowd_n[2], s_fill;                 // s_crowd[s_fill] is being written this frame
 EWRAM_BSS static s8 s_away[MAX_ACTORS][2];      // per pool index: its way out of the crowd (-1..1 each)
+EWRAM_BSS static u16 s_extra[MAX_ACTORS][2];    // per pool index: ticks since moves 2 and 3 were used
 static int s_me;                                // pool index of the monster updating now
 
 // A new frame: last frame's list and hostile count become the ones everybody reads.
@@ -181,6 +184,35 @@ static void wander(Actor *a, const Params_monster_ai *p, u32 *st, fixed speed) {
     actor_play_slot(a, ANIM_WALK);
 }
 
+// How many of its species' moves it uses (1-3).
+static int move_count(const Params_monster_ai *p) {
+    return p->moves < 1 ? 1 : p->moves > 3 ? 3 : p->moves;
+}
+
+// Is its move `i` (1 = move 2, 2 = move 3) recharged? It takes moves_charge % of the player's time.
+static int extra_ready(const Params_monster_ai *p, const SpeciesData *sp, int i) {
+    return sp->moves[i] && s_extra[s_me][i - 1] >= (u32)sp->moves[i]->charge * (u32)p->moves_charge / 100;
+}
+
+// The move it walks up to the player for: its highest ready move 2 or 3 (not one it uses on
+// itself, which reaches no one), else move 1.
+static const MoveData *aimed_move(const Params_monster_ai *p, const SpeciesData *sp) {
+    for (int i = move_count(p) - 1; i >= 1; i--)
+        if (extra_ready(p, sp, i) && sp->moves[i]->shape != SHAPE_SELF) return sp->moves[i];
+    return sp->moves[0];
+}
+
+// One attack: its highest ready move 3 or 2 that goes off, else move 1. Returns 1 if one did.
+static int attack(Actor *a, const Params_monster_ai *p, const SpeciesData *sp) {
+    for (int i = move_count(p) - 1; i >= 1; i--) {
+        if (extra_ready(p, sp, i) && moves_use_power(a, sp->moves[i], 0, p->moves_power)) {
+            s_extra[s_me][i - 1] = 0;
+            return 1;
+        }
+    }
+    return sp->moves[0] && moves_use(a, sp->moves[0], 0);
+}
+
 int monster_ai_asleep(const Actor *a) {
     int k = actor_logic_index(a, BHV_MONSTER_AI);
     return k >= 0 && actor_state_of((Actor *)a, k)[ST_MODE] == MODE_SLEEP;
@@ -195,6 +227,7 @@ void bhv_monster_ai_init(Actor *a, const void *params) {
     st[ST_CHARGE] = 0;
     st[ST_STUCK] = 0;
     s_away[actor_index(a)][0] = s_away[actor_index(a)][1] = 0;
+    s_extra[actor_index(a)][0] = s_extra[actor_index(a)][1] = 0xFFFF;   // moves 2 and 3 start ready
 }
 
 void bhv_monster_ai_update(Actor *a, const void *params) {
@@ -221,7 +254,9 @@ void bhv_monster_ai_update(Actor *a, const void *params) {
         return;
     }
     const SpeciesData *sp = monster_species(a);
-    const MoveData *m = sp ? sp->moves[0] : NULL;
+    for (int i = 0; i < 2; i++)                     // moves 2 and 3 recharge while it can act
+        if (s_extra[s_me][i] < 0xFFFF) s_extra[s_me][i]++;
+    const MoveData *m = sp ? aimed_move(p, sp) : NULL;
     fixed walk = monster_speed(a, p->speed), chase = monster_speed(a, p->chase_speed);   // its species' pace
     Actor *pl = actor_player();
     int seen = pl && monster_targetable(pl);
@@ -263,7 +298,10 @@ void bhv_monster_ai_update(Actor *a, const void *params) {
         if (s_away[s_me][0] || s_away[s_me][1]) slide_around(a, pl, walk);
         else stand(a, walk);
         face_point(a, fx_to_int(pl->x), fx_to_int(pl->y));
-        if (st[ST_CHARGE] >= (u32)p->charge && m && moves_use(a, m, 0)) st[ST_CHARGE] = 0;
+        if (st[ST_CHARGE] >= (u32)p->charge && m) {
+            if (attack(a, p, sp)) st[ST_CHARGE] = 0;
+            else walk_to(a, fx_to_int(pl->x), fx_to_int(pl->y), chase);  // a beam off its line: step closer
+        }
         break;
     }
     case MODE_RETURN:

@@ -1,5 +1,5 @@
 // topdown_controller - walk in any direction with the D-pad (no gravity). A monster walks at
-// its species' pace.
+// its species' pace and holds still while it can't act (paralyzed, frozen).
 #include "topdown_controller.h"
 #include "monster.h"
 #include "behavior_params.h"
@@ -11,6 +11,11 @@ void bhv_topdown_controller_update(Actor *a, const void *params) {
     int dx = input_dir_x(), dy = input_dir_y();
     if (!p->eight_way && dx && dy) dy = 0;
     if (a->anim_lock) return;                   // being knocked back
+    if (monster_species(a) && !monster_can_act(a)) {
+        a->vx = a->vy = 0;
+        actor_play_slot(a, ANIM_IDLE);
+        return;
+    }
     fixed speed = p->speed;
     if (p->speed_var >= 0) speed = speed * (10 + vars_get(p->speed_var)) / 10;   // +10% per point
     speed = monster_speed(a, speed);

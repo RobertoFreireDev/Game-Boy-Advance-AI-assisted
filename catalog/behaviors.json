@@ -11,7 +11,7 @@
     }
   },
   "topdown_controller": {
-    "description": "Top-down control: walk in any direction with the D-pad (no gravity). Faces up, down, left or right and picks the matching idle / walk animations (idle_up, walk_down...). A monster (monster behavior) walks at its species' speed: speed x the species' speed percent.",
+    "description": "Top-down control: walk in any direction with the D-pad (no gravity). Faces up, down, left or right and picks the matching idle / walk animations (idle_up, walk_down...). A monster (monster behavior) walks at its species' speed: speed x the species' speed percent, and holds still while paralyzed or frozen.",
     "params": {
       "speed":      {"type": "fixed", "default": 1.0, "description": "Walking speed (pixels per tick)."},
       "eight_way":  {"type": "bool", "default": true, "description": "Allow diagonal movement."},
@@ -293,7 +293,7 @@
     }
   },
   "monster_ai": {
-    "description": "A wild monster's mind (top-down): it wanders and rests around where it was placed. When the player comes within sight it turns hostile (only a few at once), walks up to it and uses its species' first move whenever that is charged. If the player gets far away it walks back home. It keeps at least `spread` tiles from the other wild monsters: it steers away from closer ones and walks around one in its way, and next to the player it slides sideways around it, so a pack spreads out instead of queueing. It holds still while paralyzed or frozen. With wake_var it sleeps until that variable reaches wake_at.",
+    "description": "A wild monster's mind (top-down): it wanders and rests around where it was placed. When the player comes within sight it turns hostile (only a few at once), walks up to it and attacks every `charge` ticks with its species' first move (a boss with `moves` 3 also uses moves 2 and 3; when no move reaches the player from where it stands, it steps closer). If the player gets far away it walks back home. It keeps at least `spread` tiles from the other wild monsters: it steers away from closer ones and walks around one in its way, and next to the player it slides sideways around it, so a pack spreads out instead of queueing. It holds still while paralyzed or frozen. With wake_var it sleeps until that variable reaches wake_at.",
     "params": {
       "speed":        {"type": "fixed", "default": 0.5, "description": "Walking speed while wandering or going home (pixels per tick), times its species' speed percent."},
       "chase_speed":  {"type": "fixed", "default": 0.75, "description": "Speed while chasing the player (pixels per tick), times its species' speed percent."},
@@ -301,7 +301,10 @@
       "sight":        {"type": "int", "default": 5, "description": "Turns hostile when the player is this many tiles away or closer."},
       "give_up":      {"type": "int", "default": 10, "description": "Goes home when the player is farther than this many tiles."},
       "max_hostile":  {"type": "int", "default": 3, "description": "At most this many monsters are hostile at the same time; others keep wandering until one faints or gives up."},
-      "charge":       {"type": "ticks", "default": 240, "description": "Ticks to recharge its move (the first attack comes after half of it)."},
+      "charge":       {"type": "ticks", "default": 240, "description": "Ticks between two attacks (the first attack comes after half of it)."},
+      "moves":        {"type": "int", "default": 1, "description": "How many of its species' moves it uses: 1 = move 1 only; 2 adds move 2; 3 adds move 3 (a boss). Moves 2 and 3 each recharge on their own timer (moves_charge), and are ready the first time it fights. Each attack is its highest ready move that reaches the player (move 3, then 2), else move 1. A move it uses on itself (Fly) never decides where it stands."},
+      "moves_power":  {"type": "int", "default": 0, "description": "Damage of its moves 2 and 3, in percent (100 = a normal monster's), instead of its monster power. 0 = its monster power, like move 1."},
+      "moves_charge": {"type": "int", "default": 100, "description": "Recharge time of its moves 2 and 3, in percent of the player's (the move's charge): 200 = twice as slow. 100-900."},
       "spread":       {"type": "int", "default": 1, "description": "Tiles of room it keeps between its body and other wild monsters' bodies (0 = off)."},
       "wake_var":     {"type": "var", "default": "", "description": "Sleeps until this game variable reaches wake_at (a boss waiting for the others to fall). Empty = always awake."},
       "wake_at":      {"type": "int", "default": 0, "description": "Value of wake_var that wakes it."},
