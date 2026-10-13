@@ -1306,15 +1306,21 @@ def V_move(c):
     z = n.get("zone")
     if shape == "zone":
         if not isinstance(z, dict):
-            c.err("a zone move needs 'zone' {w, h, place, count, delay, ticks, every}")
+            c.err("a zone move needs 'zone' {w, h, place, cell, count, delay, ticks, every}")
         else:
             for k in z:
-                if k not in ("w", "h", "place", "count", "delay", "ticks", "every"):
+                if k not in ("w", "h", "place", "cell", "count", "delay", "ticks", "every"):
                     c.err("'zone' has unknown field '%s'" % k)
-            c.get(z, "w", "int", "zone.w", lo=1, hi=8)
-            c.get(z, "h", "int", "zone.h", lo=1, hi=8)
+            zw = c.get(z, "w", "int", "zone.w", lo=1, hi=15)
+            zh = c.get(z, "h", "int", "zone.h", lo=1, hi=15)
+            cell = c.get(z, "cell", "int", "zone.cell", required=False, lo=1, hi=8)
             if z.get("place") not in C.ZONE_PLACES:
                 c.err("'zone.place' must be one of %s" % ", ".join(C.ZONE_PLACES))
+            if cell and is_int(zw) and is_int(zh) and (zw % cell or zh % cell):
+                c.err("'zone.w' and 'zone.h' must be multiples of 'zone.cell' (%d): its effect plays on each %dx%d block"
+                      % (cell, cell, cell))
+            if z.get("place") == "around" and is_int(zw) and is_int(zh) and not (zw % 2 and zh % 2):
+                c.err("a zone around the user needs an odd 'zone.w' and 'zone.h', so the user stands on its middle tile")
             c.get(z, "count", "int", "zone.count", required=False, lo=1, hi=6)
             c.get(z, "delay", "int", "zone.delay", required=False, lo=0, hi=600)
             c.get(z, "every", "int", "zone.every", required=False, lo=0, hi=255)
@@ -1363,6 +1369,24 @@ def V_move(c):
                     and life - 1 < C.zone_hurt_steps(n)[1]:
                 c.err("its effect (lifetime %d) ends before the zone stops hurting (tick %d): "
                       "nothing would be drawn where it still hurts" % (life, C.zone_hurt_steps(n)[1]))
+            # The zone lights its effect on each tile (or each cell x cell block): few enough pieces
+            # to leave room for the other effects, and each picture covers its block, so no gap
+            # between pieces hurts where nothing is drawn.
+            if shape == "zone" and at == "tiles" and is_int(z.get("w")) and is_int(z.get("h")):
+                cell = z.get("cell", 1) if is_int(z.get("cell", 1)) and z.get("cell", 1) >= 1 else 1
+                ed = c.p.nodes.get(n["effect"], {})
+                count = ed.get("count", 1) if ed.get("mode") == "burst" and is_int(ed.get("count", 1)) else 1
+                pieces = (z["w"] // cell) * (z["h"] // cell) * count
+                if pieces > C.ZONE_MAX_PIECES:
+                    c.err("its zone lights %d effect pieces at once (at most %d): give it a bigger 'zone.cell' "
+                          "(each piece then covers cell x cell tiles) or a smaller zone" % (pieces, C.ZONE_MAX_PIECES))
+                half = cell * 4
+                if cell > 1 and box is not None and (box[0] > -half or box[1] > -half or box[2] < half - 1 or box[3] < half - 1):
+                    c.err("its effect's picture (%d..%d x %d..%d px around its middle) must cover its whole %dx%d-tile "
+                          "block (%d..%d px), so the zone hurts nowhere it draws nothing"
+                          % (box[0], box[2], box[1], box[3], cell, cell, -half, half - 1))
+            elif shape == "zone" and "cell" in z:
+                c.err("'zone.cell' is only for zones whose effect plays on their tiles (effect_at: tiles)")
             # A particle is drawn lifetime - 1 frames; the zone lights it again every `every` frames.
             if shape == "zone" and at == "tiles" and is_int(life) and is_int(z.get("every", 0)) \
                     and 0 < z.get("every", 0) and life - 1 < z["every"]:
@@ -1376,7 +1400,7 @@ def V_move(c):
     travel = c.ref(n.get("travel"), ["animation"], "travel", allow_empty=not away)
     if n.get("travel") and not away:
         c.err("'travel' is only for moves whose effect plays away from the user (not whole-screen moves, "
-              "screen or center zones, or effects at the user)")
+              "screen, around or center zones, or effects at the user)")
     elif travel:
         spr = c.p.nodes.get(c.p.nodes.get(travel, {}).get("sprite") or "", {})
         if is_int(spr.get("width")) and is_int(spr.get("height")) and (spr["width"] > 16 or spr["height"] > 16):

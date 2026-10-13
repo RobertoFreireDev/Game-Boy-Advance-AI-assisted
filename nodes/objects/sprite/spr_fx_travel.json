@@ -3,7 +3,7 @@
   "kind": "object",
   "type": "sprite",
   "name": "Move travel pictures",
-  "notes": "The small pictures that fly from a monster to where its move's effect plays (steps 1 and 2 of every move's animation): two frames per move, which alternate while it flies. All in one sheet on purpose: a run already loads ~26 of the 32 sprite sheets the GBA engine can hold, and this adds only one. Each move has its own animation of its two frames (anim_travel_<move>). Every frame keeps a 1 px empty border, so the picture is never cut at the edge of its sprite.",
+  "notes": "The small pictures that fly from a monster to where its move's effect plays (steps 1 and 2 of every move's animation): two frames per move whose effect plays away from the user, which alternate while it flies. All in one sheet on purpose: a run already loads ~26 of the 32 sprite sheets the GBA engine can hold, and this adds only one. Each move has its own animation of its two frames (anim_travel_<move>). Every frame keeps a 1 px empty border, so the picture is never cut at the edge of its sprite.",
   "palette": "pal_fx",
   "width": 8,
   "height": 8,
@@ -285,26 +285,6 @@
       ".eb8abe.",
       ".ebaabe.",
       "..ebbe..",
-      "...ee...",
-      "........"
-    ],
-    "toxic_a": [
-      "........",
-      "..eeee..",
-      ".ebbbbe.",
-      ".ebaabe.",
-      ".ebaabe.",
-      ".ebbbbe.",
-      "..eeee..",
-      "........"
-    ],
-    "toxic_b": [
-      "........",
-      "...ee...",
-      "..eeee..",
-      ".eebbee.",
-      ".eebbee.",
-      "..eeee..",
       "...ee...",
       "........"
     ],

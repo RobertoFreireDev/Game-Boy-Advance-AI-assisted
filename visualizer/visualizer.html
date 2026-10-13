@@ -1283,7 +1283,7 @@ const SLOT_KEYS = ["A", "B", "R"];
 // Tiles a move reaches (moves.c moves_reach): how close a wild monster walks before using it.
 function moveReach(m) {
   if (m.shape === "dash") return (m.range || 0) + (m.dash || 0);
-  if (m.shape === "zone") return ((m.zone || {}).place || "front") === "front" ? 1 : 8;
+  if (m.shape === "zone") { const pl = (m.zone || {}).place || "front"; return pl === "front" ? 1 : pl === "around" ? (m.range || 0) : 8; }
   if (m.shape === "screen") return 8;
   if (m.shape === "self") return 0;
   return m.range || 0;
@@ -1355,13 +1355,17 @@ function moveLayout(n, hb) {
   } else if (n.shape === "circle" || n.shape === "self") {
     out.spots.push([0, mid]);
   } else if (n.shape === "zone") {
-    const z = n.zone || {}, w = z.w || 1, hgt = z.h || 1;
-    // zones_place: just past the body's edge it faces (front), or one spot (a screen zone, shown 3 tiles ahead).
-    const tx = z.place === "front" ? ((hb.x + hb.w - 1) >> 3) + 1 + Math.floor(w / 2) : 4, ty = (0 - 4) >> 3;
+    const z = n.zone || {}, w = z.w || 1, hgt = z.h || 1, size = 8 * (z.cell || 1);
+    // zones_place: just past the body's edge it faces (front), its middle tile on the body's middle
+    // (around), or one spot (a screen zone, shown 3 tiles ahead).
+    const around = z.place === "around";
+    const tx = around ? (hb.x + Math.trunc(hb.w / 2)) >> 3 : z.place === "front" ? ((hb.x + hb.w - 1) >> 3) + 1 + Math.floor(w / 2) : 4;
+    const ty = around ? (hb.y + Math.trunc(hb.h / 2)) >> 3 : (0 - 4) >> 3;
     const zx = (tx - Math.floor(w / 2)) * 8, zy = (ty - Math.floor(hgt / 2)) * 8;
     out.zone = { x: zx, y: zy, w: w * 8, h: hgt * 8 };
+    // zone_fx: a piece in the middle of each tile (or each cell x cell block).
     if (at === "center") out.spots.push([zx + Math.trunc(w * 8 / 2), zy + Math.trunc(hgt * 8 / 2)]);
-    else for (let y = 0; y < hgt * 8; y += 8) for (let x = 0; x < w * 8; x += 8) out.spots.push([zx + x + 4, zy + y + 4]);
+    else for (let y = 0; y < hgt * 8; y += size) for (let x = 0; x < w * 8; x += size) out.spots.push([zx + x + size / 2, zy + y + size / 2]);
   }
   return out;
 }
@@ -1404,7 +1408,7 @@ function moveHitStage(id, n) {
   const spawn = (x, y, lifeCut) => {
     const a = rnd(ang[0], ang[1]) * Math.PI / 180, s = rnd(sp[0], sp[1]);
     const p = { x, y, vx: Math.cos(a) * s, vy: -Math.sin(a) * s, g: eff.gravity || 0, life: lifeCut || life, anim: eff.animation,
-      onTop: true, front: true, wait: 0, behind: 0, S: 0, F: 0, acc: 0, left: 0, turn: 0, withAnim: false, age: 0 };
+      onTop: !!eff.on_top, front: !!eff.on_top, wait: 0, behind: 0, S: 0, F: 0, acc: 0, left: 0, turn: 0, withAnim: false, age: 0 };
     parts.push(p);
     return p;
   };
@@ -1600,14 +1604,14 @@ PREVIEW.move = (id, n) => {
     beam: `every monster its effect touches on a straight line ${n.range} tiles long in front (${HIT_MARGIN} px margin)`,
     circle: `every monster its effect touches as it bursts out of the user (${HIT_MARGIN} px margin); a wild monster uses it within ${n.range} tiles`,
     screen: "every monster on the screen",
-    zone: (z.place === "screen" ? `${z.count || 1} spot(s) of ${z.w}×${z.h} tiles on the screen` : `the ${z.w}×${z.h} tiles in front of the user`) +
+    zone: (z.place === "screen" ? `${z.count || 1} spot(s) of ${z.w}×${z.h} tiles on the screen` : `the ${z.w}×${z.h} tiles ${z.place === "around" ? "around" : "in front of"} the user`) +
       `: every monster its effect touches there (${HIT_MARGIN} px margin)`,
     self: "only the user",
   }[n.shape] || n.shape;
   // Its animation in 3 steps (moves.c strike_show): only a picture, the hit lands at once.
   const mvSteps = (((D.derived || {}).moves || {})[id] || {}).steps, effLife = (NODES[n.effect] || {}).lifetime || 0;
   const stepsText = !n.effect ? "no effect" : !mvSteps
-    ? `plays as it is over ${effLife} ticks (${n.shape === "screen" ? "it covers the whole screen" : "its rocks fall from the sky"}: nothing comes from the user)`
+    ? `plays as it is over ${effLife} ticks${n.shape === "zone" && z.every ? " (each flicker)" : ""} (${n.shape === "screen" ? "it covers the whole screen" : z.place === "around" ? "it rises from the ground all around the user" : "its rocks fall from the sky"}: nothing comes from the user)`
     : n.effect_at === "user"
       ? `3 steps over ${effLife} ticks: its effect comes out from behind the user and flies its whole way (steps 1-2: ${mvSteps[0] + mvSteps[1]} frames, drawn behind the user), then stays there (step 3: ${effLife - mvSteps[0] - mvSteps[1]} frames)`
       : [`3 steps over ${effLife} ticks${n.shape === "zone" ? " (its first flicker)" : ""}: `, nodeLink(n.travel),
@@ -1622,7 +1626,7 @@ PREVIEW.move = (id, n) => {
     n.status ? h("div", { class: "k" }, "status") : null,
     n.status ? h("div", {}, `${st.chance}% chance: ${{ par: "paralyzed (can't move or attack, flashes yellow)", psn: "poisoned (1 damage a second)", tox: "badly poisoned (1, 2, 3... damage a second)", freeze: "frozen (can't move or attack)" }[st.kind] || st.kind} for ${(st.ticks || [0, 0]).map(t => (t / 60).toFixed(1)).join("-")} s`) : null,
     n.zone ? h("div", { class: "k" }, "zone") : null,
-    n.zone ? h("div", {}, `${z.w}×${z.h} tiles${z.place === "screen" ? ", on screen spots (each near a monster in view)" : ", in front"}${z.delay ? `, lands after ${(z.delay / 60).toFixed(1)} s` : ""}, lasts ${(z.ticks || [0, 0]).map(t => (t / 60).toFixed(1)).join("-")} s${z.every ? `, hurts a monster as soon as it steps on, then every ${(z.every / 60).toFixed(1)} s while it stays (each monster has its own timer)` : ", one hit"}`) : null,
+    n.zone ? h("div", {}, `${z.w}×${z.h} tiles${z.place === "screen" ? ", on screen spots (each near a monster in view)" : z.place === "around" ? ", around the user (it stands on the middle tile)" : ", in front"}${(z.cell || 1) > 1 ? `, its effect drawn once per ${z.cell}×${z.cell} tiles` : ""}${z.delay ? `, lands after ${(z.delay / 60).toFixed(1)} s` : ""}, lasts ${(z.ticks || [0, 0]).map(t => (t / 60).toFixed(1)).join("-")} s${z.every ? `, hurts a monster as soon as it steps on, then every ${(z.every / 60).toFixed(1)} s while it stays (each monster has its own timer)` : ", one hit"}`) : null,
     n.buff ? h("div", { class: "k" }, "buff") : null,
     n.buff ? h("div", {}, `${bf.kind === "fly" ? "Fly: only a shadow shows, it can't be hit and passes over monsters" : "Phase: passes through monsters"} for ${(bf.ticks / 60).toFixed(1)} s`) : null,
     h("div", { class: "k" }, "sound"), h("div", {}, n.sfx ? [h("button", { onclick: () => playSfx(n.sfx) }, "▶"), " ", nodeLink(n.sfx),
@@ -1647,7 +1651,7 @@ PREVIEW.move = (id, n) => {
         { single: ` Shown with no monster in range: straight ahead at full range. Brown dashes = where the nearest monster is picked (${n.range} tile(s) from the body, round: no farther on a diagonal); with one there, the effect plays ${n.effect_at === "line" ? "as a trail from the user to it" : "on it"} instead.`,
           dash: ` Shown with no monster in reach: the user rushes ${n.dash} tile(s) ahead (faded = where it started), then strikes in front. Brown dashes = where the nearest monster is picked.`,
           beam: " Facing up, down or a diagonal, the same line runs that way (just as long on a diagonal).",
-          zone: z.place === "screen" ? ` Red = one of its ${z.count || 1} spots (aimed near monsters in view). The orange shows only while it can hurt: when the rock lands.` : " Red = the zone's tiles. The orange shows while it lasts; each monster is hurt as soon as it touches it, then again every " + ((z.every || 0) / 60).toFixed(1) + " s while it stays." }[n.shape] || ""].join(""))));
+          zone: z.place === "screen" ? ` Red = one of its ${z.count || 1} spots (aimed near monsters in view). The orange shows only while it can hurt: when the rock lands.` : (z.place === "around" ? " Red = the zone's tiles, centered on the user (it stays where it was used)." : " Red = the zone's tiles.") + " The orange shows while it lasts; each monster is hurt as soon as it touches it, then again every " + ((z.every || 0) / 60).toFixed(1) + " s while it stays." }[n.shape] || ""].join(""))));
   }
   if (n.effect && PREVIEW.particle) out.push(...[].concat(PREVIEW.particle(n.effect, NODES[n.effect] || {})).map(cd => { cd.querySelector("h3").textContent = "Effect (" + (n.effect_at || "target") + ") — " + cd.querySelector("h3").textContent; return cd; }));
   out.push(card("Against each type", h("div", { class: "kv" }, TYPES.map(t => [h("div", { class: "k" }, t.toUpperCase()), h("div", {}, "×" + chartMult(n.monster_type, t))]))));

@@ -74,7 +74,8 @@ TILE_FLAGS = ["solid", "one_way", "hazard", "ladder"]
 MOVE_SHAPES = ["single", "dash", "beam", "circle", "screen", "zone", "self"]
 STATUSES = ["none", "par", "psn", "tox", "freeze"]
 BUFFS = ["none", "fly", "phase"]
-ZONE_PLACES = ["front", "screen"]
+ZONE_PLACES = ["front", "screen", "around"]
+ZONE_MAX_PIECES = 16     # effect pieces a zone lights at once (tiles / cell, x burst count): room for other effects
 EFFECT_AT = ["target", "line", "user", "axis", "tiles", "center", "screen"]
 # Where each shape's effect may appear. A move hurts what its effect draws, so the shape decides
 # where the effect goes and the effect decides who is hit (screen: the whole view; self: no one).
@@ -96,7 +97,8 @@ def move_reach(move):
         r, d = move.get("range", 0), move.get("dash", 0)
         return r + d if isinstance(r, int) and isinstance(d, int) else None
     if shape == "zone":
-        return 1 if (move.get("zone") or {}).get("place", "front") == "front" else 8
+        place = (move.get("zone") or {}).get("place", "front")
+        return 1 if place == "front" else move.get("range", 0) if place == "around" else 8
     if shape == "screen":
         return 8
     if shape == "self":
@@ -421,11 +423,12 @@ MOVE_STEPS = (20, 20)
 
 def move_steps(p, move):
     """[step 1, step 2] in frames for a move's effect, or None when it plays as it is: whole-screen
-    moves and zones placed on the screen (nothing comes from the user), zones whose effect plays at
-    their center (timed to when they land), and moves without an effect."""
+    moves, zones placed on the screen (nothing comes from the user) or around the user (it stands in
+    the middle), zones whose effect plays at their center (timed to when they land), and moves
+    without an effect."""
     shape = move.get("shape")
     z = move.get("zone") if isinstance(move.get("zone"), dict) else {}
-    if shape == "screen" or (shape == "zone" and (z.get("place") == "screen" or move.get("effect_at") == "center")):
+    if shape == "screen" or (shape == "zone" and (z.get("place") in ("screen", "around") or move.get("effect_at") == "center")):
         return None
     life = (p.nodes.get(move.get("effect") or "") or {}).get("lifetime")
     if not isinstance(life, int) or isinstance(life, bool) or life < 2:

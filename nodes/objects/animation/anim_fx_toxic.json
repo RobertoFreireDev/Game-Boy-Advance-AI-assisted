@@ -3,25 +3,25 @@
   "kind": "object",
   "type": "animation",
   "name": "Toxic effect",
-  "notes": "Plays purple goo splashing.",
+  "notes": "One half-second puff of Toxic's gas, played again each time the cloud hurts: a small cloud forms in the haze, swells and rises as a green bubble floats up, then the gas thins out and the bubble pops.",
   "sprite": "spr_fx_toxic",
   "loop": false,
   "frames": [
     {
       "frame": "f0",
-      "ticks": 4
+      "ticks": 6
     },
     {
       "frame": "f1",
-      "ticks": 4
+      "ticks": 8
     },
     {
       "frame": "f2",
-      "ticks": 4
+      "ticks": 8
     },
     {
       "frame": "f3",
-      "ticks": 4
+      "ticks": 8
     }
   ],
   "events": []

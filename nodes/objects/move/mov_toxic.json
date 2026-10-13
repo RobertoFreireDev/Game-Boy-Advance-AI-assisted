@@ -3,13 +3,12 @@
   "kind": "object",
   "type": "move",
   "name": "Toxic",
-  "notes": "Venomole's move 3 (R). Hurls toxic goo at the nearest monster up to 4 tiles away; half the time it is badly poisoned (1, 2, 3... damage a second for 8 s). Charge: 60 s.",
+  "notes": "Venomole's move 3 (R). Fills the 9x9 tiles around the user with toxic gas for 5 s; the cloud stays where it was used. Every monster the gas touches takes 4 damage at once, then 4 more every half second while it stays (each monster has its own timer), and each hit has a 50% chance to badly poison it (1, 2, 3... damage a second for 8 s). The ground never misses. Wild monsters only use it when the player is within 4 tiles; the player's goes off anyway. Charge: 60 s.",
   "title": "TOXIC",
   "monster_type": "poison",
-  "shape": "single",
+  "shape": "zone",
   "range": 4,
-  "power": 40,
-  "accuracy": 100,
+  "power": 4,
   "charge": 3600,
   "status": {
     "kind": "tox",
@@ -19,13 +18,22 @@
       480
     ]
   },
+  "zone": {
+    "w": 9,
+    "h": 9,
+    "place": "around",
+    "cell": 3,
+    "ticks": [
+      300,
+      300
+    ],
+    "every": 30
+  },
   "effect": "ptc_fx_toxic",
-  "effect_at": "target",
-  "travel": "anim_travel_toxic",
+  "effect_at": "tiles",
   "sfx": "sfx_mv_poison",
   "children": [
     "spr_fx_toxic",
-    "ptc_fx_toxic",
-    "anim_travel_toxic"
+    "ptc_fx_toxic"
   ]
 }

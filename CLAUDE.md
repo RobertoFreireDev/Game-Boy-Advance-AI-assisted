@@ -359,12 +359,16 @@ groups them for humans. **What an actor does comes only from its `logic` list.**
   each tile along the facing, `range` tiles (`axis`; on a diagonal each piece sits as far past the body's
   corner as it would past its edge, so the line is just as long); `circle` = the effect bursts out of the user (`user`;
   `range` = how close a wild monster gets before using it); `screen` = every foe with any of its body in
-  the camera view (± the margin); `zone` = `zone {w, h, place: front|screen, count, delay, ticks [min,max],
-  every}` tiles on the ground; the zone hurts each foe its picture touches (on each tile, or at its center
-  as drawn while it can hurt: a falling rock where it lands), the moment it touches, then again every
-  `every` ticks while it stays (each foe has its own timer; 0 = once, after `delay`; screen spots aim near
+  the camera view (± the margin); `zone` = `zone {w, h, place: front|screen|around, cell, count, delay,
+  ticks [min,max], every}` tiles on the ground (1-15 each; `around` = centered on the user's middle tile,
+  odd w and h, and it stays where it was used); the zone hurts each foe its picture touches (on each tile, or
+  at its center as drawn while it can hurt: a falling rock where it lands), the moment it touches, then again
+  every `every` ticks while it stays (each foe has its own timer; 0 = once, after `delay`; screen spots aim near
   foes in view; `range` = how close a foe must be to use it). Its last flicker is cut short so nothing is
   drawn once it stops hurting, and a flickering effect must live longer than `every` (no blinking out).
+  A zone lights at most 16 effect pieces at once: a big one sets `cell` (w and h its multiples) and plays its
+  effect once in the middle of each cell×cell block, a picture that covers its whole block (Toxic's 9×9 cloud:
+  `cell` 3, 32×32 gas pieces 24 px apart, its haze repeating every 24 px so the pieces join without seams).
   `self` = `buff {kind: fly|phase, ticks}` (fly: only a `shadow` shows, can't be hit, passes over monsters;
   phase: passes through them). `status {kind: par|psn|tox|freeze, chance %, ticks [min,max]}` (paralysis:
   no moving or attacking, flashes yellow; poison: 1 damage a second; toxic: 1, 2, 3… a second; freeze: no
@@ -373,8 +377,8 @@ groups them for humans. **What an actor does comes only from its `logic` list.**
   plays straight ahead at full range (`target` / `line`), hurts whatever it touches there, and the charge
   is used. `effect` (particle, required unless `screen` / `self`) appears at `effect_at`, which depends on
   the shape: `target` / `line` (single, dash), `axis` (beam: the middle of each tile along the facing),
-  `user` (circle, self, screen), `tiles` / `center` (zone: each tile, flickering every `every` ticks, or its
-  center when placed), `screen` (down the left edge of the view).
+  `user` (circle, self, screen), `tiles` / `center` (zone: each tile or cell, flickering every `every` ticks,
+  or its center when placed), `screen` (down the left edge of the view).
   **The effect plays in 3 steps** over the time it lasts (its particle's `lifetime` L; codegen bakes
   step 1 = round(20 % L) and step 2 = round(40 % L) − step 1 frames, `common.move_steps`): 1. `travel` (an
   animation, at most 16×16, required when the effect plays away from the user) comes out from behind the
@@ -384,8 +388,8 @@ groups them for humans. **What an actor does comes only from its `logic` list.**
   is drawn behind the actors so the user stays in sight. An effect at the user (`circle`, `self`) is drawn
   behind it while it flies its whole way in steps 1-2, then stays there for step 3. A front zone's first
   flicker waits for its travel. **Only a picture**: who is hurt and when doesn't change (the hit lands the
-  moment the move is used; the travel hurts no one). Whole-screen moves, screen zones and center zones
-  (falling rocks, timed to land when they hurt) play as they are.
+  moment the move is used; the travel hurts no one). Whole-screen moves, screen zones, zones around the
+  user and center zones (falling rocks, timed to land when they hurt) play as they are.
   `on_use[]` runs as the user each time (e.g. `cover_screen` for a sandstorm). `sfx` plays when it goes
   off, except the player's damaging moves that hit at once (not zone / self): they play only the result
   sound. Each use plays one result sound for the best result over its targets (zones: one per frame in

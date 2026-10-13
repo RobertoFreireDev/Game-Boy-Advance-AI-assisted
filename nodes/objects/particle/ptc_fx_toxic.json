@@ -3,11 +3,11 @@
   "kind": "object",
   "type": "particle",
   "name": "Toxic effect",
-  "notes": "Purple goo splashing, drawn in front of the monsters.",
+  "notes": "Toxic's gas on the ground, drawn behind the monsters so they stay in sight. The zone lights one every 3x3 tiles (9 of them make the 9x9 cloud) and lights them again every 30 ticks; each lives 31, so the cloud never blinks out (the last ones go out the moment the zone stops hurting).",
   "animation": "anim_fx_toxic",
   "mode": "burst",
   "count": 1,
-  "lifetime": 16,
+  "lifetime": 31,
   "speed": [
     0,
     0
@@ -17,7 +17,7 @@
     0
   ],
   "gravity": 0,
-  "on_top": true,
+  "on_top": false,
   "children": [
     "anim_fx_toxic"
   ]

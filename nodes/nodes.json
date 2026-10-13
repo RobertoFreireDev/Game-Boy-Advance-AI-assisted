@@ -339,7 +339,6 @@
     {"id": "spr_fx_toxic", "kind": "object", "type": "sprite", "path": "objects/sprite/spr_fx_toxic.json", "parent": "mov_toxic"},
     {"id": "anim_fx_toxic", "kind": "object", "type": "animation", "path": "objects/animation/anim_fx_toxic.json", "parent": "ptc_fx_toxic"},
     {"id": "ptc_fx_toxic", "kind": "object", "type": "particle", "path": "objects/particle/ptc_fx_toxic.json", "parent": "mov_toxic"},
-    {"id": "anim_travel_toxic", "kind": "object", "type": "animation", "path": "objects/animation/anim_travel_toxic.json", "parent": "mov_toxic"},
     {"id": "mov_gust", "kind": "object", "type": "move", "path": "objects/move/mov_gust.json", "parent": "mon_gustling"},
     {"id": "spr_fx_gust", "kind": "object", "type": "sprite", "path": "objects/sprite/spr_fx_gust.json", "parent": "mov_gust"},
     {"id": "anim_fx_gust", "kind": "object", "type": "animation", "path": "objects/animation/anim_fx_gust.json", "parent": "ptc_fx_gust"},

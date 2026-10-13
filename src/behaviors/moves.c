@@ -88,7 +88,7 @@ static int tiles_apart(const Actor *a, const Actor *b) {
 int moves_reach(const MoveData *m) {
     switch (m->shape) {
     case SHAPE_DASH: return m->range + m->dash;
-    case SHAPE_ZONE: return m->zone_place == ZONE_FRONT ? 1 : 8;
+    case SHAPE_ZONE: return m->zone_place == ZONE_FRONT ? 1 : m->zone_place == ZONE_AROUND ? m->range : 8;
     case SHAPE_SCREEN: return 8;
     case SHAPE_SELF: return 0;
     }
@@ -451,15 +451,17 @@ static Zone *zone_add(Actor *user, const MoveData *m, s32 tx, s32 ty) {
         z->y = (s16)((ty - m->zone_h / 2) * 8);
         z->w = (s16)(m->zone_w * 8);
         z->h = (s16)(m->zone_h * 8);
-        // What it hurts: its effect's picture on each of its tiles, or at its middle (as drawn
-        // while it can hurt: a falling rock where it lands), + the margin. No picture: its tiles.
+        // What it hurts: its effect's picture on each of its tiles (or cell x cell blocks), or at
+        // its middle (as drawn while it can hurt: a falling rock where it lands), + the margin.
+        // No picture: its tiles.
         s32 l = z->x, t = z->y, r = z->x + z->w - 1, b = z->y + z->h - 1;
         if (m->effect && m->fx_l <= m->fx_r) {
             if (m->effect_at == FX_AT_TILES) {
-                l = z->x + 4 + m->fx_l;
-                t = z->y + 4 + m->fx_t;
-                r = z->x + z->w - 4 + m->fx_r;
-                b = z->y + z->h - 4 + m->fx_b;
+                s32 half = m->zone_cell * 4;            // from a block's edge to its middle
+                l = z->x + half + m->fx_l;
+                t = z->y + half + m->fx_t;
+                r = z->x + z->w - half + m->fx_r;
+                b = z->y + z->h - half + m->fx_b;
             } else if (m->effect_at == FX_AT_CENTER) {
                 s32 cx = z->x + z->w / 2, cy = z->y + z->h / 2;
                 l = cx + m->fx_l;
@@ -486,10 +488,17 @@ static Zone *zone_add(Actor *user, const MoveData *m, s32 tx, s32 ty) {
     return NULL;
 }
 
-// Where the zones of a move go: the tiles in front of the user, or spots on the screen
-// (each one on a monster in view when there is one, else anywhere in view).
+// Where the zones of a move go: the tiles in front of the user, the tiles around it (its
+// middle tile in the zone's middle), or spots on the screen (each one on a monster in view when
+// there is one, else anywhere in view).
 static void zones_place(Actor *user, const MoveData *m) {
     s32 ux = fx_to_int(user->x) >> 3, uy = (fx_to_int(user->y) - 4) >> 3;
+    if (m->zone_place == ZONE_AROUND) {
+        s32 cx, cy;
+        body_mid(user, &cx, &cy);
+        zone_add(user, m, cx >> 3, cy >> 3);
+        return;
+    }
     if (m->zone_place == ZONE_FRONT) {              // starts just past the body's edge it faces
         s32 l, t, r, b;
         actor_rect(user, &l, &t, &r, &b);
@@ -535,8 +544,9 @@ static void zone_hit_info(const Zone *z, MonsterHit *h) {
     h->from_y = (z->ht + z->hb) / 2;
 }
 
-// The zone's effect on each of its tiles (it flickers every `every` ticks while it lasts). The
-// last flicker is cut short so that nothing is drawn once the zone stops hurting: it hurts this
+// The zone's effect on each of its tiles, or in the middle of each cell x cell block of them
+// (it flickers every `every` ticks while it lasts). The last flicker is cut short so that
+// nothing is drawn once the zone stops hurting: it hurts this
 // frame and z->ticks - 1 more, and a particle is drawn until its life - 1 steps have run.
 // (A one-hit zone plays its whole effect.) The first flicker of a zone the move's travel picture
 // flies to waits until it lands, then plays sped up (step 3), ending when it would have.
@@ -551,11 +561,12 @@ static void zone_fx(Zone *z) {
         if (gone < z->arrive) wait = (int)(z->arrive - gone);
         z->arrive = 0;
     }
-    for (int y = 0; y < z->h; y += 8)
-        for (int x = 0; x < z->w; x += 8)
+    int size = m->zone_cell * 8;
+    for (int y = 0; y < z->h; y += size)
+        for (int x = 0; x < z->w; x += size)
             for (int i = 0; i < count; i++) {
                 ParticleShot s;
-                particles_aim(d, z->x + x + 4, z->y + y + 4, &s);
+                particles_aim(d, z->x + x + size / 2, z->y + y + size / 2, &s);
                 if (m->zone_every && s.life > z->ticks + 1) s.life = (u16)(z->ticks + 1);
                 if (wait) particles_shoot_late(&s, wait, 0);
                 else particles_shoot(&s);
@@ -666,7 +677,7 @@ int moves_use(Actor *user, const MoveData *m, int always) {
         begin(user, m);
         break;
     case SHAPE_ZONE:
-        if (!always && (m->zone_place == ZONE_FRONT ? !nearest_foe(user, m->range) : !any_foe_on_screen(user)))
+        if (!always && (m->zone_place != ZONE_SCREEN ? !nearest_foe(user, m->range) : !any_foe_on_screen(user)))
             return USE_NONE;
         begin(user, m);
         zones_place(user, m);
