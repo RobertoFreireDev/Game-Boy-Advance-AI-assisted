@@ -34,10 +34,10 @@ int monster_level(const Actor *a);
 int monster_power(const Actor *a);
 // A walking speed at its species' pace (a slower species, e.g. a long-range one); others: as is.
 fixed monster_speed(const Actor *a, fixed speed);
-// True if it is a monster that can move now (not paralyzed, frozen, pushed or fainted).
+// True if it is a monster that can move and attack now (not paralyzed, frozen, pushed or fainted).
 int monster_can_act(const Actor *a);
-// True if it can also use a move now (it can act and is not blinded).
-int monster_can_attack(const Actor *a);
+// True if a status holds it still (paralyzed or frozen).
+int monster_held(const Actor *a);
 // True if moves can hit it (a fainted or flying monster can't be hit).
 int monster_targetable(const Actor *a);
 // True if b is a monster that a's moves can hit (the other team, and targetable).

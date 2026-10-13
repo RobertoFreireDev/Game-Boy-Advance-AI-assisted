@@ -285,7 +285,8 @@ typedef struct {
     BattleText texts[BT_COUNT];         // floating words and their colors
     const PaletteData *flash_palette;   // hit flash
     const PaletteData *par_palette;     // paralysis flicker
-    const SfxData *sounds[BS_COUNT];    // hit, super, weak, miss, faint (NULL = none)
+    const AnimationData *par_effect;    // looped over a paralyzed monster's middle (sparks; NULL = none)
+    const SfxData *sounds[BS_COUNT];    // hit, super, weak, miss, faint, par (NULL = none)
     const SfxData *const *player_hits;  // [TYPE_*] the player's hit sound by move type (NULL = sounds hit)
 } BattleData;
 

@@ -2,8 +2,9 @@
 // own timer once it is unlocked (by level). A fires move 1, B fires move 2 and R fires move 3,
 // each on a single press. A ready move always goes off and uses its charge, even with nothing in
 // reach (aiming is the player's job). The HUD gauges show each charge through game variables.
-// A button whose move is still locked buzzes; a move that went off at nothing plays the miss
-// sound (the hit sounds come from the move).
+// A button whose move is still locked buzzes, and so does any move button while the monster is
+// paralyzed or frozen; a move that went off at nothing plays the miss sound (the hit sounds come
+// from the move).
 #include "move_buttons.h"
 #include "monster.h"
 #include "moves.h"
@@ -78,11 +79,12 @@ void bhv_move_buttons_update(Actor *a, const void *params) {
     }
     st[ST_MISC] = misc;
 
-    int can = monster_can_attack(a);
+    int can = monster_can_act(a);
     const u16 button[3] = { p->button_1, p->button_2, p->button_3 };
     for (int i = 0; i < 3; i++) {                       // A = move 1, B = move 2, R = move 3
         const MoveData *m = sp->moves[i];
-        if (!input_pressed(button[i]) || !can) continue;
+        if (!input_pressed(button[i])) continue;
+        if (!can) { if (monster_held(a)) sound(p->locked_sfx); continue; }   // paralyzed: it can't
         if (i >= unlocked || !m) sound(p->locked_sfx);
         else if (st[ST_C1 + i] >= m->charge && fire(a, p, m)) st[ST_C1 + i] = 0;
     }

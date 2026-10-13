@@ -229,12 +229,14 @@
       },
       "flash_palette": "pal_flash_white",
       "par_palette": "pal_flash_yellow",
+      "par_effect": "anim_par_sparks",
       "sounds": {
         "hit": "sfx_hit",
         "super": "sfx_super",
         "weak": "sfx_weak",
         "miss": "sfx_miss",
-        "faint": "sfx_faint"
+        "faint": "sfx_faint",
+        "par": "sfx_par"
       },
       "player_hit_sounds": {
         "normal": "sfx_hit_normal",
@@ -543,11 +545,14 @@
     {"id": "pal_flash_red", "kind": "object", "type": "palette", "path": "objects/palette/pal_flash_red.json", "parent": null},
     {"id": "pal_flash_white", "kind": "object", "type": "palette", "path": "objects/palette/pal_flash_white.json", "parent": null},
     {"id": "pal_flash_yellow", "kind": "object", "type": "palette", "path": "objects/palette/pal_flash_yellow.json", "parent": null},
+    {"id": "spr_par_sparks", "kind": "object", "type": "sprite", "path": "objects/sprite/spr_par_sparks.json", "parent": null},
+    {"id": "anim_par_sparks", "kind": "object", "type": "animation", "path": "objects/animation/anim_par_sparks.json", "parent": null},
     {"id": "sfx_hit", "kind": "object", "type": "sfx", "path": "objects/sfx/sfx_hit.json", "parent": null},
     {"id": "sfx_super", "kind": "object", "type": "sfx", "path": "objects/sfx/sfx_super.json", "parent": null},
     {"id": "sfx_weak", "kind": "object", "type": "sfx", "path": "objects/sfx/sfx_weak.json", "parent": null},
     {"id": "sfx_miss", "kind": "object", "type": "sfx", "path": "objects/sfx/sfx_miss.json", "parent": null},
     {"id": "sfx_faint", "kind": "object", "type": "sfx", "path": "objects/sfx/sfx_faint.json", "parent": null},
+    {"id": "sfx_par", "kind": "object", "type": "sfx", "path": "objects/sfx/sfx_par.json", "parent": null},
     {"id": "sfx_level_up", "kind": "object", "type": "sfx", "path": "objects/sfx/sfx_level_up.json", "parent": null},
     {"id": "sfx_new_move", "kind": "object", "type": "sfx", "path": "objects/sfx/sfx_new_move.json", "parent": null},
     {"id": "sfx_bounce", "kind": "object", "type": "sfx", "path": "objects/sfx/sfx_bounce.json", "parent": null},

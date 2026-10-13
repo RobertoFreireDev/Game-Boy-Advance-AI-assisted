@@ -72,7 +72,7 @@ TILE_FLAGS = ["solid", "one_way", "hazard", "ladder"]
 
 # Monster battles (species / move nodes, game.battle). Order matters: these become C enums.
 MOVE_SHAPES = ["single", "dash", "beam", "circle", "screen", "zone", "self"]
-STATUSES = ["none", "par", "psn", "tox", "freeze", "blind"]
+STATUSES = ["none", "par", "psn", "tox", "freeze"]
 BUFFS = ["none", "fly", "phase"]
 ZONE_PLACES = ["front", "screen", "around"]
 ZONE_MAX_PIECES = 25     # effect pieces a zone lights at once (blocks of cell x cell tiles, x burst count): room for other effects
@@ -83,7 +83,7 @@ MOVE_EFFECT_AT = {"single": ["target", "line"], "dash": ["target", "line"], "bea
                   "circle": ["user"], "screen": ["screen", "user"], "zone": ["tiles", "center"],
                   "self": ["user"]}
 BATTLE_TEXTS = ["damage", "miss", "super", "weak", "par", "psn", "tox"]
-BATTLE_SOUNDS = ["hit", "super", "weak", "miss", "faint"]
+BATTLE_SOUNDS = ["hit", "super", "weak", "miss", "faint", "par"]
 SPECIES_FIELDS = ["name", "type", "move1", "move2", "move3"]    # {var.field} placeholders
 SPECIES_TITLE_W = 10     # chars of a species name
 MOVE_TITLE_W = 13        # chars of a move name

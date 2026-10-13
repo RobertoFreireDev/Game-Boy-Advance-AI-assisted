@@ -298,7 +298,7 @@ void bhv_monster_ai_update(Actor *a, const void *params) {
         if (s_away[s_me][0] || s_away[s_me][1]) slide_around(a, pl, walk);
         else stand(a, walk);
         face_point(a, fx_to_int(pl->x), fx_to_int(pl->y));
-        if (st[ST_CHARGE] >= (u32)p->charge && m && monster_can_attack(a)) {     // blinded: it waits, charged
+        if (st[ST_CHARGE] >= (u32)p->charge && m) {
             if (attack(a, p, sp)) st[ST_CHARGE] = 0;
             else walk_to(a, fx_to_int(pl->x), fx_to_int(pl->y), chase);  // a beam off its line: step closer
         }

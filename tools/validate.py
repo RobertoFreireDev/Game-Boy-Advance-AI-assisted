@@ -489,6 +489,8 @@ def scene_budget(c, insts):
             if e.get("behavior") == "monster":
                 bt = p.game.get("battle") if isinstance(p.game.get("battle"), dict) else {}
                 obj_pals.update([bt.get("flash_palette"), bt.get("par_palette")])
+                if p.type_of(bt.get("par_effect")) == "animation":
+                    add_anim(bt["par_effect"])          # the sparks over a paralyzed monster
                 obj_pals.update(t.get("palette") for t in (bt.get("texts") or {}).values() if isinstance(t, dict))
                 if prm.get("level_tag") and prm.get("level_tag_palette"):
                     obj_pals.add(prm["level_tag_palette"])
@@ -1536,7 +1538,8 @@ def check_battle(p, r, b):
         r.err(where, "game.battle must be an object")
         return
     for k in b:
-        if k not in ("types", "chart", "font", "texts", "flash_palette", "par_palette", "sounds", "player_hit_sounds"):
+        if k not in ("types", "chart", "font", "texts", "flash_palette", "par_palette", "par_effect", "sounds",
+                     "player_hit_sounds"):
             r.err(where, "game.battle has unknown field '%s'" % k)
     types = b.get("types")
     if not isinstance(types, list) or not 1 <= len(types) <= 32 or not all(isinstance(t, str) and C.ID_RE.match(t) for t in types):
@@ -1572,6 +1575,8 @@ def check_battle(p, r, b):
     font = ref(b.get("font"), "font", "font")
     for k in ("flash_palette", "par_palette"):
         ref(b.get(k), "palette", k)
+    if "par_effect" in b:
+        ref(b.get("par_effect"), "animation", "par_effect")
     texts = b.get("texts")
     if not isinstance(texts, dict):
         r.err(where, "game.battle.texts must be {%s: {text, palette}}" % ", ".join(C.BATTLE_TEXTS))

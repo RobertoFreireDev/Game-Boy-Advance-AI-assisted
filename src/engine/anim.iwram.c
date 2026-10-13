@@ -41,7 +41,7 @@ void anim_step(AnimPlayer *p, struct Actor *owner) {
 void anim_update(void) {
     for (int i = 0; i < MAX_ACTORS; i++) {
         Actor *a = &g_actors[i];
-        if (a->active) anim_step(&a->anim, a);
+        if (a->active && !(a->flags & ACTOR_STILL)) anim_step(&a->anim, a);
     }
 }
 

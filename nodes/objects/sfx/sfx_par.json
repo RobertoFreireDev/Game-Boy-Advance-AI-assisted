@@ -1,0 +1,66 @@
+{
+  "id": "sfx_par",
+  "kind": "object",
+  "type": "sfx",
+  "name": "Paralyzed",
+  "notes": "Plays when a monster gets paralyzed (game.battle sounds.par), yours or a wild one: a buzzing zap jumping high and low that stutters and fizzles out. On the wave channel, so it doesn't cut the hit sounds or Growl's and Sandstorm's own sounds.",
+  "channel": "wave",
+  "priority": 2,
+  "steps": [
+    {
+      "note": "C6",
+      "ticks": 1,
+      "volume": 4
+    },
+    {
+      "note": "F4",
+      "ticks": 1,
+      "volume": 4
+    },
+    {
+      "note": "B5",
+      "ticks": 1,
+      "volume": 4
+    },
+    {
+      "note": "E4",
+      "ticks": 1,
+      "volume": 4
+    },
+    {
+      "note": "A#5",
+      "ticks": 1,
+      "volume": 4
+    },
+    {
+      "note": "D#4",
+      "ticks": 1,
+      "volume": 4
+    },
+    {
+      "note": "..",
+      "ticks": 2,
+      "volume": 0
+    },
+    {
+      "note": "A5",
+      "ticks": 1,
+      "volume": 4
+    },
+    {
+      "note": "D4",
+      "ticks": 1,
+      "volume": 4
+    },
+    {
+      "note": "G#5",
+      "ticks": 2,
+      "volume": 3
+    },
+    {
+      "note": "C#4",
+      "ticks": 3,
+      "volume": 2
+    }
+  ]
+}

@@ -16,6 +16,7 @@
 #include "engine/floattext.h"
 
 #define FLASH_TICKS   4         // the paralysis flicker and the faint flash (a hit uses the params)
+#define PAR_TREMBLE   1         // px a paralyzed monster trembles sideways (every 2 frames)
 #define PUSH_PX       2         // knockback when hit
 #define STATUS_EVERY  60        // poison hurts once a second
 #define FAINT_TICKS   30        // a wild monster flashes and blinks out
@@ -26,7 +27,7 @@ typedef struct {
     s16 hp, hp_max;             // wild monsters (the player's live in game variables)
     u8 level, status, team, buff;
     u8 flashes, flash_gap;      // a hit's flashes still to come, ticks since the last one ended
-    u16 status_ticks, status_clock;
+    u16 status_ticks, status_clock;     // status_clock: poison's second; paralysis' sparks tick
     u16 tox_step, buff_ticks;
     u16 power;
     u16 xp_known;               // player: 1 once the XP bar was worked out (for xp_seen)
@@ -85,9 +86,9 @@ int monster_can_act(const Actor *a) {
     return m && actor_alive(a) && m->status != STATUS_PAR && m->status != STATUS_FREEZE && !m->shove_ticks;
 }
 
-int monster_can_attack(const Actor *a) {
+int monster_held(const Actor *a) {
     const Monster *m = mon(a);
-    return monster_can_act(a) && m->status != STATUS_BLIND;     // blinded: it walks, but can't use a move
+    return m && actor_alive(a) && (m->status == STATUS_PAR || m->status == STATUS_FREEZE);
 }
 
 int monster_targetable(const Actor *a) {
@@ -215,8 +216,14 @@ static s32 hp_of(const Params_monster *p, const Monster *m) {
     return p->hp_var >= 0 ? vars_get(p->hp_var) : m->hp;
 }
 
+static void par_off(Actor *a) {
+    a->flags &= (u8)~ACTOR_STILL;
+    a->draw_dx = 0;
+}
+
 static void faint(Actor *a, const Params_monster *p, Monster *m) {
     m->status = 0;
+    par_off(a);                         // its fainting animation plays
     m->buff = 0;
     m->shove_ticks = 0;
     if (m->team == TEAM_WILD) {
@@ -284,14 +291,32 @@ static void shove_step(Actor *a, Monster *m) {
     else if (sy && physics_free_at(a, a->x, a->y + sy)) a->y += sy;
 }
 
-static void set_status(Actor *t, Monster *m, int status, int ticks) {
+// Its word floats up on `row` (above the hit's words); paralysis also zaps (game.battle sounds.par).
+static void set_status(Actor *t, Monster *m, int status, int ticks, int row) {
     m->status = (u8)status;
     m->status_ticks = (u16)ticks;
     m->status_clock = 0;
     m->tox_step = 0;
-    if (status == STATUS_PAR) say(t, BT_PAR, NULL, 1);
-    else if (status == STATUS_PSN) say(t, BT_PSN, NULL, 1);
-    else if (status == STATUS_TOX) say(t, BT_TOX, NULL, 1);
+    if (status == STATUS_PAR) { say(t, BT_PAR, NULL, row); battle_sound(BS_PAR); }
+    else if (status == STATUS_PSN) say(t, BT_PSN, NULL, row);
+    else if (status == STATUS_TOX) say(t, BT_TOX, NULL, row);
+}
+
+// A paralyzed monster shows it the whole time: it stops dead in the pose it had (its animation
+// holds), trembles and sparks crackle over it (game.battle par_effect, looped on its middle); the
+// yellow flicker is in the status code.
+static void par_look(Actor *a, Monster *m) {
+    a->flags |= ACTOR_STILL;
+    a->draw_dx = (s8)(((core_frame() >> 1) & 1) * PAR_TREMBLE);
+    const AnimationData *fx = g_game.battle->par_effect;
+    if (!fx || !fx->frame_count || !a->body || (a->flags & ACTOR_HIDDEN)) return;
+    u32 t = m->status_clock++, len = (u32)anim_length(fx);
+    if (m->status_clock >= len) m->status_clock = 0;
+    const AnimFrame *f = fx->frames;
+    while (t >= f->ticks && f < fx->frames + fx->frame_count - 1) t -= f++->ticks;
+    const SpriteData *s = fx->sprite;
+    sprites_queue(s, f->frame, a, a->hb_x + a->hb_w / 2 - s->width / 2, a->hb_y + a->hb_h / 2 - s->height / 2,
+                  f->flip, NULL);
 }
 
 int monster_hit(Actor *t, const MonsterHit *h) {
@@ -327,7 +352,8 @@ int monster_hit(Actor *t, const MonsterHit *h) {
         if (!actor_alive(t)) return result;
     }
     if (mv->status != STATUS_NONE && rng_range(1, 100) <= mv->status_chance)
-        set_status(t, m, mv->status, rng_range(mv->status_min, mv->status_max));
+        set_status(t, m, mv->status, rng_range(mv->status_min, mv->status_max),
+                   result == HIT_SUPER || result == HIT_WEAK ? 2 : 1);
     if (mv->push_px) shove(t, m, h->from_x, h->from_y, mv->push_px, mv->push_ticks);
     return result;
 }
@@ -450,6 +476,8 @@ void bhv_monster_update(Actor *a, const void *params) {
         }
         if (m->status_ticks && --m->status_ticks == 0) m->status = STATUS_NONE;
     }
+    if (m->status == STATUS_PAR) par_look(a, m);
+    else if (a->flags & ACTOR_STILL) par_off(a);
     if (m->shove_ticks) shove_step(a, m);
     if (m->buff) buff_update(a, p, m);
     if (p->crown && a->body) {

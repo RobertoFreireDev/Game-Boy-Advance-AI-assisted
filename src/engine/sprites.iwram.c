@@ -218,7 +218,7 @@ static void draw_queued(s32 cx, s32 cy) {
 static void draw_actor(const Actor *a, s32 cx, s32 cy) {
     if ((a->flags & ACTOR_HIDDEN) || !a->body) return;
     if (a->blink && (a->blink & 4)) return;             // flicker while invincible
-    s32 x = fx_to_int(a->x) - cx, y = fx_to_int(a->y) - cy;
+    s32 x = fx_to_int(a->x) + a->draw_dx - cx, y = fx_to_int(a->y) - cy;
     // Far off screen (sprites are at most 64 px and the origin lies inside them): skip it
     // before reading its animation, as most of a horde's gems and stragglers are out of view.
     if (x <= -64 || x >= 240 + 64 || y <= -64 || y >= 160 + 64) return;

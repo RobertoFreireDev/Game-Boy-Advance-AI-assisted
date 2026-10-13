@@ -10,6 +10,7 @@
 #define ACTOR_DYING   1     // playing its death; no logic, no collisions
 #define ACTOR_FELL    2     // fell below the map this frame
 #define ACTOR_HIDDEN  4     // not drawn
+#define ACTOR_STILL   8     // its animation holds the frame it shows (a paralyzed monster)
 
 #define SOLID_NONE    0
 #define SOLID_FULL    1     // blocks from every side
@@ -31,6 +32,7 @@ typedef struct Actor {
     u8 facing;                      // DIR_*: which way it looks (picks *_up / *_down animations)
     s8 look_x, look_y;              // last 8-way direction it faced (-1..1 each; starts down)
     u8 flash;                       // > 0: drawn with flash_pal for this many more ticks
+    s8 draw_dx;                     // drawn this many px right of its x (a paralyzed monster trembles)
     const PaletteData *pal;         // drawn with these colors instead of its sprite's (NULL = own)
     const PaletteData *flash_pal;   // colors of a short flash (a hit)
     u8 on_ground, was_on_ground;    // standing on something now / last frame

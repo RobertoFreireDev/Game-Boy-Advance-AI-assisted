@@ -389,9 +389,11 @@ groups them for humans. **What an actor does comes only from its `logic` list.**
   When w or h isn't a multiple of `cell`, the blocks are centered on the zone and the outer ones overhang it
   equally (Sandstorm's 9×9: `cell` 2, a 16×16 swirl on every other tile, 5×5 of them, half a tile past each side).
   `self` = `buff {kind: fly|phase, ticks}` (fly: only a `shadow` shows, can't be hit, passes over monsters;
-  phase: passes through them). `status {kind: par|psn|tox|freeze|blind, chance %, ticks [min,max]}` (paralysis:
-  no moving or attacking, flashes yellow; poison: 1 damage a second; toxic: 1, 2, 3… a second; freeze: no
-  moving or attacking; blind: it walks, but can't use a move). `push {px 1-64, ticks 1-60}` (not `self`):
+  phase: passes through them). `status {kind: par|psn|tox|freeze, chance %, ticks [min,max]}` (paralysis:
+  no moving or attacking, plain to see the whole time: it stops dead in its pose (its animation holds),
+  trembles 1 px, flickers yellow and `game.battle.par_effect` loops over its middle, and the player's move
+  buttons buzz; poison: 1 damage a second; toxic: 1, 2, 3… a second; freeze: no moving or attacking). A
+  status shows its word when it lands (paralysis also plays `sounds.par`). `push {px 1-64, ticks 1-60}` (not `self`):
   every foe it reaches slides `px` px straight away from the user in `ticks` ticks, fast then slowing down (along a wall it meets; held where a
   wall or a solid monster is in the way), and can't move or attack while it slides (Phase: 16 even rings,
   every monster within 32 px of the user's middle shoved 32 px). A wild monster's move that would hurt no one doesn't fire and keeps its charge (self
@@ -419,7 +421,9 @@ groups them for humans. **What an actor does comes only from its `logic` list.**
 - **game.battle** (nodes.json): `types[]` (names, in order), `chart {attacker: {defender: multiplier}}`
   (missing = 1, 0–2.55), `font` (floating words, drawn as sprites; needs the digits), `texts {damage,
   miss, super, weak, par, psn, tox: {text, palette}}` (damage has only a palette), `flash_palette`
-  (hit flash), `par_palette` (paralysis flicker), `sounds {hit, super, weak, miss, faint}`,
+  (hit flash), `par_palette` (paralysis flicker), `par_effect` (an animation looped in front of a paralyzed
+  monster, centered on its hitbox: sparks), `sounds {hit, super, weak, miss, faint, par}` (`par`: a monster
+  got paralyzed; keep it on a channel the hit and move sounds of paralyzing moves don't use),
   `player_hit_sounds {type: sfx}` (the player's hits sound like their move's type, plus `super` on top
   when super effective, so keep `super` on a channel the type sounds don't use; a missing type uses
   `hit`; wild monsters' hits use `hit` / `super` / `weak`). Damage =
@@ -680,7 +684,7 @@ src/engine/
 │                       big buckets many actors look into are binned in a 32 px grid); top-down
 │                       solid bodies found inside each other are pushed apart
 ├── physics.c          physics questions asked now and then, kept in ROM (can an actor stand here?)
-├── anim.iwram.c/.h    animation players and frame events
+├── anim.iwram.c/.h    animation players and frame events (an ACTOR_STILL actor holds its frame)
 ├── particles.c/.h particle pool (front / back of the actors); aim a particle first, shoot it later (moves see its flight);
 │                  staged shots for a move's 3 steps (wait hidden, drawn behind, sped-up flight, a two-leg travel picture)
 ├── floattext.c/.h floating words (damage numbers, MISS, LV UP!) and words pinned over an actor
@@ -828,7 +832,7 @@ frames.
 | hud, menu, dialog | Rendered inside a 240×160 GBA screen with the real font and icons. HUD uses variables' initial values; dialog has prev/next line; menu shows the cursor on each option (upgrade menus show sample cards). |
 | upgrade | Its card on the level-up menu with prev/next level, the text per level as wrapped on the GBA, the evolution recipe and what picking it does. |
 | species | Portrait, the body's animations (with an Alpha-colors toggle), its 3 moves, cry player, type matchups and the full type chart. |
-| move | What it does in plain words (with its 3 animation steps), a live pixel diagram of what it hurts (the user facing right, the travel picture and the effect playing in their 3 steps where the engine puts them, a caption naming the step, the orange area = its picture + the margin along each particle's real flight), its effect playing live, sound, and its multiplier against each type. |
+| move | What it does in plain words (with its 3 animation steps), a live pixel diagram of what it hurts (the user facing right, the travel picture and the effect playing in their 3 steps where the engine puts them, a caption naming the step, the orange area = its picture + the margin along each particle's real flight), its effect playing live, sound, a paralyzing move's paralyzed look (live), and its multiplier against each type. |
 | sfx, music | **Audio player**: play/stop/loop + visual (step list for sfx; tracker grid per channel with playhead for music). Web Audio synth approximating the PSG: square with duty, 4-bit wave, noise, 0–15 volume. |
 
 ### 10.4 Fidelity and navigation

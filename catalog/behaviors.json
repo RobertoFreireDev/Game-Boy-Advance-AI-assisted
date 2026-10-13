@@ -254,7 +254,7 @@
     }
   },
   "monster": {
-    "description": "A creature of a monster-battle game. It takes its look, type and 3 moves from a species node, and has a level and hit points. Moves that hit it use the type chart (game.battle) for damage, can MISS, flash it (white, or its own flash_palette, once or a few times), push it back 2 px (not into a wall or another monster) and may paralyze or poison it; floating words show what happened. When its hit points run out it faints (flashes and blinks out). With level_tag, a wild monster shows its level over its head for a few seconds when it comes into view. The player's version keeps hit points, level and XP in game variables and levels up (each level up raises its maximum hit points and heals it to full).",
+    "description": "A creature of a monster-battle game. It takes its look, type and 3 moves from a species node, and has a level and hit points. Moves that hit it use the type chart (game.battle) for damage, can MISS, flash it (white, or its own flash_palette, once or a few times), push it back 2 px (not into a wall or another monster) and may paralyze or poison it; floating words show what happened. A paralyzed monster (the player's too) zaps when it happens, then stops dead in its pose, trembles, flickers yellow and has sparks crackling over it (game.battle par_effect) until it can move again. When its hit points run out it faints (flashes and blinks out). With level_tag, a wild monster shows its level over its head for a few seconds when it comes into view. The player's version keeps hit points, level and XP in game variables and levels up (each level up raises its maximum hit points and heals it to full).",
     "params": {
       "species":      {"type": "node:species", "default": "", "description": "Its species. Empty = use species_var or random."},
       "species_var":  {"type": "var", "default": "", "description": "Game variable holding the species number (order of the species nodes, from 0): the player's pick. Empty = use 'species'."},
@@ -313,7 +313,7 @@
     }
   },
   "move_buttons": {
-    "description": "The player's 3 moves (from its species) on buttons. Each move recharges on its own timer (the move node's charge) from the moment it is unlocked: move 2 and move 3 unlock at a level. A fires move 1 when charged, B fires move 2 and R fires move 3, each on a single press (pressing a button whose move is still charging does nothing). A ready move always goes off and uses its charge, even with nothing in reach (aiming is the player's job): its effect plays straight ahead. HUD gauges read the charges through variables. Sounds: a button whose move is still locked plays 'locked_sfx'; a move that went off at nothing plays 'miss_sfx'; what a move hits sounds by its type (game.battle.player_hit_sounds).",
+    "description": "The player's 3 moves (from its species) on buttons. Each move recharges on its own timer (the move node's charge) from the moment it is unlocked: move 2 and move 3 unlock at a level. A fires move 1 when charged, B fires move 2 and R fires move 3, each on a single press (pressing a button whose move is still charging does nothing). A ready move always goes off and uses its charge, even with nothing in reach (aiming is the player's job): its effect plays straight ahead. HUD gauges read the charges through variables. Sounds: a button whose move is still locked plays 'locked_sfx', and so does any move button while the monster is paralyzed or frozen; a move that went off at nothing plays 'miss_sfx'; what a move hits sounds by its type (game.battle.player_hit_sounds).",
     "params": {
       "level_var":         {"type": "var", "required": true, "description": "Game variable with the player's level."},
       "unlock_2":          {"type": "int", "default": 4, "description": "Level that unlocks move 2."},
@@ -326,7 +326,7 @@
       "gauge_3":           {"type": "var", "default": "", "description": "Same for move 3."},
       "unlocked_var":      {"type": "var", "default": "", "description": "Game variable set to how many moves are unlocked (1-3). Empty = none."},
       "on_unlock":         {"type": "actions", "default": [], "description": "What happens when a move unlocks (NEW MOVE!)."},
-      "locked_sfx":        {"type": "node:sfx", "default": "", "description": "Sound when a move's button is pressed but the move is still locked (an error buzz). Empty = silent."},
+      "locked_sfx":        {"type": "node:sfx", "default": "", "description": "Sound when a move's button is pressed but the move is still locked, or while the monster is paralyzed or frozen (an error buzz). Empty = silent."},
       "miss_sfx":          {"type": "node:sfx", "default": "", "description": "Sound when a charged move goes off but reaches nothing (it still uses its charge). Empty = silent."}
     }
   },

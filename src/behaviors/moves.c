@@ -666,7 +666,7 @@ void moves_tick(void) {
 
 // ---- using a move -----------------------------------------------------------------------
 int moves_use(Actor *user, const MoveData *m, int always) {
-    if (!m || !monster_can_attack(user)) return USE_NONE;
+    if (!m || !monster_can_act(user)) return USE_NONE;
     MonsterHit h = hit_from(user, m);
     Actor *first = NULL;                                        // the foe it is aimed at
     strike_begin();

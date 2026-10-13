@@ -601,9 +601,10 @@ class Gen:
         if hits:
             ph = self.sym("battle_player_hits")
             self.emit("static const SfxData *const %s[] = { %s };" % (ph, ", ".join(self.ptr(hits.get(t)) for t in types)))
-        self.emit("const BattleData g_battle = { %d, %d, %s, %s, %s, %s, { %s }, %s, %s, { %s }, %s };" % (
+        self.emit("const BattleData g_battle = { %d, %d, %s, %s, %s, %s, { %s }, %s, %s, %s, { %s }, %s };" % (
             len(types), len(species), names, cs, ss, self.ptr(b["font"]), words, self.ptr(b.get("flash_palette")),
-            self.ptr(b.get("par_palette")), ", ".join(self.ptr(snd.get(k)) for k in C.BATTLE_SOUNDS), ph))
+            self.ptr(b.get("par_palette")), self.ptr(b.get("par_effect")),
+            ", ".join(self.ptr(snd.get(k)) for k in C.BATTLE_SOUNDS), ph))
         return "&g_battle"
 
     def E_dialog(self, nid, n):

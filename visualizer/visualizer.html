@@ -1363,6 +1363,24 @@ PREVIEW.species = (id, n) => {
   out.push(typeChartCard(n.monster_type, n.monster_type));
   return out;
 };
+// How a paralyzed monster looks (monster.c par_look): it holds its pose, trembles 1 px every 2
+// frames, flickers yellow (game.battle par_palette, 3 frames of every 8) and the par_effect
+// animation loops on its hitbox's middle, in front of it.
+function parStage(bodyId) {
+  const hb = (NODES[bodyId] || {}).hitbox || { x: -8, y: -15, w: 16, h: 16 };
+  const fx = NODES[BATTLE.par_effect], fs = fx ? NODES[fx.sprite] : null;
+  const W = 56, H = 48, z = 5, wx = 28, wy = 32;
+  const [c, ctx] = zoomCanvas(W, H, z);
+  live(tick => {
+    if (!c.isConnected) return;
+    ctx.fillStyle = "#1a1d24"; ctx.fillRect(0, 0, W, H);
+    drawBody(ctx, bodyId, "walk", wx + ((tick >> 1) & 1), wy, 0, false, (tick & 7) < 3 ? BATTLE.par_palette : null);
+    const at = fs && animAt(BATTLE.par_effect, tick);
+    if (at) blit(ctx, frameCanvas(at.sprite, at.frame.frame), wx + hb.x + Math.trunc(hb.w / 2) - fs.width / 2,
+      wy + hb.y + Math.trunc(hb.h / 2) - fs.height / 2, !!at.frame.flip_x, !!at.frame.flip_y);
+  });
+  return c;
+}
 // A move hurts what its effect draws (moves.c): the effect's picture box (every frame of its
 // animation, worked out by tools/common.py) around each particle, at every spot of its flight,
 // grown by MOVE_HIT_MARGIN px. Whole-screen moves hurt everything in view; self moves no one.
@@ -1661,7 +1679,7 @@ PREVIEW.move = (id, n) => {
     h("div", { class: "k" }, "charge (player)"), h("div", {}, `${n.charge} ticks (${(n.charge / 60).toFixed(1)} s)`),
     h("div", { class: "k" }, "animation"), h("div", {}, [].concat(stepsText, mvSteps ? h("span", { class: "small" }, " — only a picture: the hit lands the moment the move is used") : [])),
     n.status ? h("div", { class: "k" }, "status") : null,
-    n.status ? h("div", {}, `${st.chance}% chance: ${{ par: "paralyzed (can't move or attack, flashes yellow)", psn: "poisoned (1 damage a second)", tox: "badly poisoned (1, 2, 3... damage a second)", freeze: "frozen (can't move or attack)", blind: "blinded (can still move, but can't use a move)" }[st.kind] || st.kind} for ${(st.ticks || [0, 0]).map(t => (t / 60).toFixed(1)).join("-")} s`) : null,
+    n.status ? h("div", {}, `${st.chance}% chance: ${{ par: "paralyzed (can't move or attack: it stops dead in its pose, trembles, flickers yellow and sparks crackle over it; PAR and a zap when it lands)", psn: "poisoned (1 damage a second)", tox: "badly poisoned (1, 2, 3... damage a second)", freeze: "frozen (can't move or attack)" }[st.kind] || st.kind} for ${(st.ticks || [0, 0]).map(t => (t / 60).toFixed(1)).join("-")} s`) : null,
     n.zone ? h("div", { class: "k" }, "zone") : null,
     n.zone ? h("div", {}, `${z.w}×${z.h} tiles${z.place === "screen" ? ", on screen spots (each near a monster in view)" : z.place === "around" ? ", around the user (it stands on the middle tile)" : ", in front"}${(z.cell || 1) > 1 ? `, its effect drawn once per ${z.cell}×${z.cell} tiles` : ""}${z.delay ? `, lands after ${(z.delay / 60).toFixed(1)} s` : ""}${z.every ? `, lasts ${(z.ticks || [0, 0]).map(t => (t / 60).toFixed(1)).join("-")} s, hurts a monster as soon as it steps on, then every ${(z.every / 60).toFixed(1)} s while it stays (each monster has its own timer)` : ", one hit"}`) : null,
     n.push ? h("div", { class: "k" }, "push") : null,
@@ -1674,6 +1692,15 @@ PREVIEW.move = (id, n) => {
     n.power ? h("div", {}, hitSfx ? [h("button", { onclick: () => playSfx(hitSfx) }, "▶"), " ", nodeLink(hitSfx),
       h("span", { class: "small" }, typeHit ? ` — every ${String(n.monster_type).toUpperCase()} hit by the player (a miss: ${(BATTLE.sounds || {}).miss || "silent"})` : " — the battle hit sound")] : "silent") : null);
   out.push(card(`${n.title} — what it does`, kv, n.on_use && n.on_use.length ? h("div", {}, h("b", {}, "Also, each use: "), actionList(n.on_use)) : null));
+  if (st.kind === "par") {
+    const target = SPECIES.find(s => !((NODES[s] || {}).moves || []).includes(id)) || SPECIES[0];
+    const parSfx = (BATTLE.sounds || {}).par;
+    out.push(card("Paralyzed look", h("div", { class: "stage" }, parStage((NODES[target] || {}).body)),
+      h("div", { class: "small" }, "How every paralyzed monster looks (the player's too) for as long as it lasts: it stops dead in the pose it had, trembles 1 px, flickers yellow (",
+        nodeLink(BATTLE.par_palette), ") and the sparks (", BATTLE.par_effect ? nodeLink(BATTLE.par_effect) : "none", ") crackle over its middle. When it lands, PAR floats up and the zap plays: ",
+        parSfx ? [h("button", { onclick: () => playSfx(parSfx) }, "▶"), " ", nodeLink(parSfx)] : "silent",
+        ". The player's move buttons buzz while it can't move.")));
+  }
   // What it hurts: the effect playing where the engine puts it, and the area it hurts in orange.
   if (n.shape === "screen" || n.shape === "self") {
     out.push(card("Area", h("div", { class: "small" }, n.shape === "self" ? "No area: it changes the user." : "The whole 240×160 screen (30×20 tiles) the camera shows: every monster with any part of its body in view.")));
