@@ -3,18 +3,19 @@
   "kind": "object",
   "type": "particle",
   "name": "Phase effect",
-  "notes": "A ghostly ring fading out, drawn in front of the monsters.",
+  "notes": "16 ghost rings shooting out evenly all around the user (one every 22.5 degrees), drawn in front of the monsters. Each flies about 25 px out and grows as it goes, so together they form a ring that covers every monster whose body comes within 32 px of the user's middle (a little more on the diagonals, where each ring's square corners reach): that is what Phase pushes.",
   "animation": "anim_fx_phase",
   "mode": "burst",
-  "count": 1,
+  "count": 16,
+  "even": true,
   "lifetime": 20,
   "speed": [
-    0,
-    0
+    1.35,
+    1.35
   ],
   "angle": [
     0,
-    0
+    359
   ],
   "gravity": 0,
   "on_top": true,

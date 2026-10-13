@@ -15,8 +15,9 @@ typedef struct {
 
 // Remove every particle and emitter (scene change).
 void particles_clear(void);
-// Pick one particle's random direction and speed (so a move can see where it will fly first).
-void particles_aim(const ParticleData *p, s32 x, s32 y, ParticleShot *out);
+// Pick one particle's direction and speed (so a move can see where it will fly first): random,
+// or for an even burst set by i, its place in the burst (0 .. count - 1).
+void particles_aim(const ParticleData *p, int i, s32 x, s32 y, ParticleShot *out);
 // Send off a particle picked by particles_aim.
 void particles_shoot(const ParticleShot *s);
 // Send it off late (a move's effect landing, step 3): hidden for `wait` frames, then it plays its

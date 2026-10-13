@@ -34,13 +34,14 @@ int monster_level(const Actor *a);
 int monster_power(const Actor *a);
 // A walking speed at its species' pace (a slower species, e.g. a long-range one); others: as is.
 fixed monster_speed(const Actor *a, fixed speed);
-// True if it is a monster that can move and attack now (not paralyzed, frozen or fainted).
+// True if it is a monster that can move and attack now (not paralyzed, frozen, pushed or fainted).
 int monster_can_act(const Actor *a);
 // True if moves can hit it (a fainted or flying monster can't be hit).
 int monster_targetable(const Actor *a);
 // True if b is a monster that a's moves can hit (the other team, and targetable).
 int monster_is_foe(const Actor *a, const Actor *b);
-// A move hits monster t: accuracy, damage, words, flash, push, status, XP, fainting.
+// A move hits monster t: accuracy, damage, words, flash, push, status, XP, fainting, and the
+// move's own push (t slides away from the hit, unable to move or attack until it stops).
 // Returns HIT_*; it plays no sound (the caller plays one per use with monster_hit_sound).
 int monster_hit(Actor *t, const MonsterHit *h);
 // The sound of a hit result: MISS, or the player's type hit (+ the super ping), or hit / super / weak.

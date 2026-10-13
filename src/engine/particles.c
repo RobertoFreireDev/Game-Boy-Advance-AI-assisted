@@ -33,8 +33,10 @@ void particles_clear(void) {
     for (int i = 0; i < MAX_EMITTERS; i++) s_emitters[i].data = NULL;
 }
 
-void particles_aim(const ParticleData *d, s32 x, s32 y, ParticleShot *s) {
-    s32 angle = rng_range(d->angle_min, d->angle_max);
+void particles_aim(const ParticleData *d, int i, s32 x, s32 y, ParticleShot *s) {
+    s32 angle = d->even && d->count > 1                 // even: one every (max - min + 1) / count degrees
+        ? d->angle_min + (d->angle_max - d->angle_min + 1) * i / d->count
+        : rng_range(d->angle_min, d->angle_max);
     fixed speed = rng_range(d->speed_min, d->speed_max);
     s->data = d;
     s->x = x;
@@ -125,15 +127,18 @@ void particles_travel(const AnimationData *a, s32 x0, s32 y0, s32 x1, s32 y1, s3
     p->front = p->behind ? 0 : 1;
 }
 
-void particles_emit_one(const ParticleData *d, s32 x, s32 y) {
+// Emit particle number i of a burst.
+static void emit(const ParticleData *d, int i, s32 x, s32 y) {
     ParticleShot s;
-    particles_aim(d, x, y, &s);
+    particles_aim(d, i, x, y, &s);
     particles_shoot(&s);
 }
 
+void particles_emit_one(const ParticleData *d, s32 x, s32 y) { emit(d, 0, x, y); }
+
 void particles_burst(const ParticleData *d, s32 x, s32 y) {
     int n = d->mode == PTC_BURST ? d->count : 1;
-    for (int i = 0; i < n; i++) particles_emit_one(d, x, y);
+    for (int i = 0; i < n; i++) emit(d, i, x, y);
 }
 
 void particles_place(const ParticleData *d, s32 x, s32 y) {

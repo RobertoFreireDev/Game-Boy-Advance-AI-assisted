@@ -249,7 +249,7 @@ Structural rules (enforced by `validate.py`):
 | `music` | `mus_` | Looping song on the 4 PSG channels. | `bpm`, `rows_per_beat`, `loop`, `instruments{}`, `patterns{}`, `order[]` | — |
 | **Visual** | | | | |
 | `animation` | `anim_` | Frames from one sprite sheet over time. | `sprite`, `loop`, `frames[{frame, ticks, flip_x, flip_y}]`, `events[{at, action}]` | — |
-| `particle` | `ptc_` | Particle emitter (dust, sparks, splash). | `animation`, `mode` (burst/stream), `count`, `rate`, `lifetime`, `speed[min,max]`, `angle[min,max]`, `gravity` | `animation` |
+| `particle` | `ptc_` | Particle emitter (dust, sparks, splash). | `animation`, `mode` (burst/stream), `count`, `rate`, `lifetime`, `speed[min,max]`, `angle[min,max]`, `gravity`, `even` | `animation` |
 | **Things in the world** | | | | |
 | `body` | `body_` | What an actor looks like + its collision shape. | `origin[x,y]`, `hitbox{x,y,w,h}` (relative to origin), `physics{gravity, solid, collides_with[]}`, `animations{slot: id}`, `default_animation` | `sprite`, `animation`, `particle` |
 | `player` | `plr_` | Controlled by the human. | `body`, `logic[]`, `sounds{}` | `body`, `particle`, `sfx` |
@@ -267,7 +267,7 @@ Structural rules (enforced by `validate.py`):
 | `upgrade` | `upg_` | One card of the level-up menu: a weapon, a passive item, an evolution or a bonus filler. | `category`, `title`, `icon`, `var`, `max_level`, `descriptions[]`, `requires[]`, `replaces`, `on_pick[]` | `icon` |
 | **Monster battles** | | | | |
 | `species` | `mon_` | A kind of monster: its look, type and 3 moves. Actors with the `monster` behavior take their body from it. | `title`, `monster_type`, `speed`, `body`, `alpha_palette`, `portrait`, `cry`, `moves[3]` | `body`, `sprite`, `sfx`, `move`, `palette` |
-| `move` | `mov_` | One move a monster uses: what it hits, how hard, how often, what status and effect. | `title`, `monster_type`, `shape`, `range`, `power`, `accuracy`, `charge`, `status`, `dash`, `zone`, `buff`, `effect`, `effect_at`, `travel`, `sfx`, `on_use[]` | `particle`, `animation`, `sprite`, `sfx` |
+| `move` | `mov_` | One move a monster uses: what it hits, how hard, how often, what status and effect. | `title`, `monster_type`, `shape`, `range`, `power`, `accuracy`, `charge`, `status`, `dash`, `zone`, `buff`, `push`, `effect`, `effect_at`, `travel`, `sfx`, `on_use[]` | `particle`, `animation`, `sprite`, `sfx` |
 
 Actor types (`player` … `pickup`) share one structure; the type gives sensible defaults and
 groups them for humans. **What an actor does comes only from its `logic` list.**
@@ -291,7 +291,9 @@ groups them for humans. **What an actor does comes only from its `logic` list.**
 - **sfx** steps: `note` (or `".."` silence) for square/wave, `pitch` 0–15 for noise.
 - **animation** `events[{at: frame index, action | actions}]` run when that frame starts.
 - **particle**: positions are the sprite's center; `rate` = ticks between stream particles;
-  `on_top: true` draws it in front of the actors (attack effects), else behind them (dust).
+  `on_top: true` draws it in front of the actors (attack effects), else behind them (dust); `even: true`
+  (burst only) sends particle i at `angle[0]` + i × (`angle[1]` − `angle[0]` + 1) / `count` degrees instead
+  of a random angle (`[0, 359]` = a full, even ring: a move's area is then the same every use).
 - **body** animation slots: `idle walk run jump fall hurt die attack climb`, plus the top-down
   slots `idle_up idle_down walk_up walk_down attack_up attack_down`. `origin` mirrors with
   the art when it faces left; the **hitbox does not mirror**. The `*_up` / `*_down` slots are
@@ -380,7 +382,10 @@ groups them for humans. **What an actor does comes only from its `logic` list.**
   `self` = `buff {kind: fly|phase, ticks}` (fly: only a `shadow` shows, can't be hit, passes over monsters;
   phase: passes through them). `status {kind: par|psn|tox|freeze, chance %, ticks [min,max]}` (paralysis:
   no moving or attacking, flashes yellow; poison: 1 damage a second; toxic: 1, 2, 3… a second; freeze: no
-  moving or attacking). A wild monster's move that would hurt no one doesn't fire and keeps its charge (self
+  moving or attacking). `push {px 1-64, ticks 1-60}` (not `self`): every foe it reaches slides `px` px
+  straight away from the user in `ticks` ticks, fast then slowing down (along a wall it meets; held where a
+  wall or a solid monster is in the way), and can't move or attack while it slides (Phase: 16 even rings,
+  every monster within 32 px of the user's middle shoved 32 px). A wild monster's move that would hurt no one doesn't fire and keeps its charge (self
   moves always fire); the player's moves always go off (aiming is their job): with no foe in range the effect
   plays straight ahead at full range (`target` / `line`), hurts whatever it touches there, and the charge
   is used. `effect` (particle, required unless `screen` / `self`) appears at `effect_at`, which depends on

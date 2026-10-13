@@ -174,7 +174,7 @@ Moves unlock one at a time, in order, by level (section 7). Tuned so a normal ru
 | **Grass** | **Vine Whip** — single target ≤3 tiles | **Razor Leaf** — beam 3 tiles | **Solar Beam** — beam 6 tiles |
 | **Poison** | **Poison Sting** — single target ≤1 tile, 50% chance to **poison** | **Acid** — acid on a 3×3 tile area in front of the player for 3 s (ground zone) | **Toxic** — single target ≤4 tiles, 50% chance to **badly poison** |
 | **Flying** | **Gust** — beam 3 tiles | **Peck** — single target ≤1 tile | **Fly** — 3 s untouchable; player sprite replaced by a shadow, can move freely. No damage |
-| **Ghost** | **Lick** — single target ≤1 tile | **Night Shade** — beam 3 tiles | **Phase** (Ghost) — 3 s passing through enemies (no body collision). No damage |
+| **Ghost** | **Lick** — single target ≤1 tile | **Night Shade** — beam 3 tiles | **Phase** (Ghost) — 16 ghost rings burst out all around the player; every enemy within 32 px is shoved 32 px straight away from the player (can't move or attack while it slides). No damage |
 | **Rock** | **Rock Throw** — single target ≤3 tiles | **Sandstorm** — 5 s: all enemies on screen freeze (no move, no attack); screen covered by a sand overlay so the player can't see | **Rock Slide** — 3 random 2×2 tile spots on the visible screen get hit by falling rocks |
 
 ### 5.5 Move power and accuracy

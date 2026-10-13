@@ -30,10 +30,12 @@ typedef struct {
     u16 tox_step, buff_ticks;
     u16 power;
     u16 xp_known;               // player: 1 once the XP bar was worked out (for xp_seen)
+    u16 shove_ticks;            // a move's push: ticks of sliding left (it can't move or attack)
     u16 tag_ticks;              // its level tag shows this many more ticks
     u16 away_ticks;             // ticks out of the tag view since it was last in it
     u8 tag_seen;                // 1: in the tag view lately (the tag showed; it won't show again yet)
     s32 xp_seen;
+    s32 shove_x, shove_y;       // the push's step unit (1/65536 px): the k-th last tick slides k units
 } Monster;
 
 EWRAM_BSS static Monster s_mon[MAX_ACTORS];
@@ -80,7 +82,7 @@ fixed monster_speed(const Actor *a, fixed speed) {
 
 int monster_can_act(const Actor *a) {
     const Monster *m = mon(a);
-    return m && actor_alive(a) && m->status != STATUS_PAR && m->status != STATUS_FREEZE;
+    return m && actor_alive(a) && m->status != STATUS_PAR && m->status != STATUS_FREEZE && !m->shove_ticks;
 }
 
 int monster_targetable(const Actor *a) {
@@ -211,6 +213,7 @@ static s32 hp_of(const Params_monster *p, const Monster *m) {
 static void faint(Actor *a, const Params_monster *p, Monster *m) {
     m->status = 0;
     m->buff = 0;
+    m->shove_ticks = 0;
     if (m->team == TEAM_WILD) {
         give_xp(p->xp_reward);
         if (p->kills_var >= 0) vars_add(p->kills_var, 1);
@@ -252,6 +255,28 @@ static void push(Actor *a, s32 fx, s32 fy, int px) {
         a->x += sx;
         a->y += sy;
     }
+}
+
+// A move's push: start sliding `px` pixels straight away from (fx, fy) in `ticks` ticks, fast at
+// first, then slowing down (the k-th last tick slides k units: they add up to px).
+static void shove(Actor *a, Monster *m, s32 fx, s32 fy, int px, int ticks) {
+    s32 dx = fx_to_int(a->x) - fx, dy = fx_to_int(a->y) - fy;
+    if (!dx && !dy) { dx = -a->look_x; dy = -a->look_y; }  // right on it: back off from where it looks
+    if (!dx && !dy) dy = 1;
+    s32 len = (s32)fx_isqrt((u32)(dx * dx + dy * dy) << 8);    // the distance x 16
+    s32 unit = ((s32)px << 17) / (ticks * (ticks + 1));        // 2 px / (ticks (ticks + 1)), in 1/65536 px
+    m->shove_x = ((dx << 12) / len) * unit >> 8;               // (dx / distance in 24.8) x unit
+    m->shove_y = ((dy << 12) / len) * unit >> 8;
+    m->shove_ticks = (u16)ticks;
+}
+
+// One tick of a push: slide (along a wall it meets), or hold where something is in the way.
+static void shove_step(Actor *a, Monster *m) {
+    s32 k = m->shove_ticks--;
+    fixed sx = (m->shove_x * k) >> 8, sy = (m->shove_y * k) >> 8;
+    if (physics_free_at(a, a->x + sx, a->y + sy)) { a->x += sx; a->y += sy; }
+    else if (sx && physics_free_at(a, a->x + sx, a->y)) a->x += sx;
+    else if (sy && physics_free_at(a, a->x, a->y + sy)) a->y += sy;
 }
 
 static void set_status(Actor *t, Monster *m, int status, int ticks) {
@@ -298,6 +323,7 @@ int monster_hit(Actor *t, const MonsterHit *h) {
     }
     if (mv->status != STATUS_NONE && rng_range(1, 100) <= mv->status_chance)
         set_status(t, m, mv->status, rng_range(mv->status_min, mv->status_max));
+    if (mv->push_px) shove(t, m, h->from_x, h->from_y, mv->push_px, mv->push_ticks);
     return result;
 }
 
@@ -419,6 +445,7 @@ void bhv_monster_update(Actor *a, const void *params) {
         }
         if (m->status_ticks && --m->status_ticks == 0) m->status = STATUS_NONE;
     }
+    if (m->shove_ticks) shove_step(a, m);
     if (m->buff) buff_update(a, p, m);
     if (p->crown && a->body) {
         int bob = (core_frame() >> 4) & 1;

@@ -3,7 +3,7 @@
   "kind": "object",
   "type": "animation",
   "name": "Phase effect",
-  "notes": "Plays a ghostly ring fading out.",
+  "notes": "Plays a ghostly ring growing and fading out (each of Phase's 16 rings).",
   "sprite": "spr_fx_phase",
   "loop": false,
   "frames": [

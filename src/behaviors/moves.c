@@ -186,7 +186,7 @@ static void plan(const MoveData *m, s32 x, s32 y) {
     int n = d->mode == PTC_BURST ? d->count : 1;
     for (int i = 0; i < n && s_piece_count < MAX_PARTICLES; i++) {
         Piece *p = &s_pieces[s_piece_count++];
-        particles_aim(d, x, y, &p->shot);
+        particles_aim(d, i, x, y, &p->shot);
         p->l = p->t = 0x7fffffff;                       // until it is found drawn: touches no one
         p->r = p->b = -0x7fffffff;
         if (m->fx_l > m->fx_r) continue;                // an effect that draws nothing
@@ -566,7 +566,7 @@ static void zone_fx(Zone *z) {
         for (int x = 0; x < z->w; x += size)
             for (int i = 0; i < count; i++) {
                 ParticleShot s;
-                particles_aim(d, z->x + x + size / 2, z->y + y + size / 2, &s);
+                particles_aim(d, i, z->x + x + size / 2, z->y + y + size / 2, &s);
                 if (m->zone_every && s.life > z->ticks + 1) s.life = (u16)(z->ticks + 1);
                 if (wait) particles_shoot_late(&s, wait, 0);
                 else particles_shoot(&s);

@@ -1009,16 +1009,21 @@ PREVIEW.animation = (id, n) => {
 };
 
 // Particle simulation: same math as particles.c (angles in degrees, 90 = up).
+// particles.c particles_aim: particle i of an even burst leaves at min + (max - min + 1) * i / count degrees.
+function particleAngle(n, i) {
+  const a = n.angle || [0, 0], k = n.count || 1;
+  return n.even && n.mode === "burst" && k > 1 ? a[0] + Math.trunc((a[1] - a[0] + 1) * i / k) : a[0] + Math.random() * (a[1] - a[0]);
+}
 PREVIEW.particle = (id, n) => {
   const W = 160, H = 120, z = 3;
   const [c, ctx] = zoomCanvas(W, H, z);
   let parts = [], timer = 0;
   const rnd = (a, b) => a + Math.random() * (b - a);
-  const emit = () => {
-    const ang = rnd((n.angle || [0, 0])[0], (n.angle || [0, 0])[1]) * Math.PI / 180, sp = rnd((n.speed || [0, 0])[0], (n.speed || [0, 0])[1]);
+  const emit = i => {
+    const ang = particleAngle(n, i) * Math.PI / 180, sp = rnd((n.speed || [0, 0])[0], (n.speed || [0, 0])[1]);
     parts.push({ x: W / 2, y: H / 2, vx: Math.cos(ang) * sp, vy: -Math.sin(ang) * sp, life: n.lifetime || 30, age: 0 });
   };
-  const burst = () => { const k = n.mode === "burst" ? (n.count || 1) : 1; for (let i = 0; i < k; i++) emit(); };
+  const burst = () => { const k = n.mode === "burst" ? (n.count || 1) : 1; for (let i = 0; i < k; i++) emit(i); };
   const restart = () => { parts = []; timer = 0; };
   live((tick, steps) => {
     if (!c.isConnected) return;
@@ -1037,7 +1042,7 @@ PREVIEW.particle = (id, n) => {
       blit(ctx, frameCanvas(st.sprite, st.frame.frame), Math.floor(p.x) - spr.width / 2, Math.floor(p.y) - spr.height / 2, st.frame.flip_x, st.frame.flip_y);
     }
   });
-  return card(`Live emitter — ${n.mode}, ${n.mode === "burst" ? (n.count || 1) + " per burst" : "one every " + n.rate + " ticks"}, lives ${n.lifetime} ticks${n.on_top ? ", drawn in front of the actors" : ""}`,
+  return card(`Live emitter — ${n.mode}, ${n.mode === "burst" ? (n.count || 1) + " per burst" + (n.even ? ", evenly spaced" : "") : "one every " + n.rate + " ticks"}, lives ${n.lifetime} ticks${n.on_top ? ", drawn in front of the actors" : ""}`,
     h("div", { class: "toolbar" }, playButtons(h("button", { onclick: restart }, "↺ Restart"))), h("div", { class: "stage" }, c),
     h("div", { class: "small" }, "The cross marks the emit point. Angle 0 = right, 90 = up."));
 };
@@ -1397,7 +1402,7 @@ function moveLayout(n, hb) {
 function moveHitStage(id, n) {
   const eff = NODES[n.effect] || {}, info = ((D.derived || {}).moves || {})[id] || {};
   const box = info.box, M = HIT_MARGIN, user = moveUser(id), hb = user.hb, L = moveLayout(n, hb);
-  const z = n.zone || {}, life = eff.lifetime || 1, sp = eff.speed || [0, 0], ang = eff.angle || [0, 0];
+  const z = n.zone || {}, life = eff.lifetime || 1, sp = eff.speed || [0, 0];
   const steps = info.steps, T1 = steps ? steps[0] : 0, T2 = steps ? steps[1] : 0;
   const travelSpr = NODES[(NODES[n.travel] || {}).sprite] || null;
   const atUser = n.effect_at === "user", staged = !!steps && (atUser || !!travelSpr);
@@ -1425,14 +1430,14 @@ function moveHitStage(id, n) {
   let t = 0, parts = [], img = null;
   // A particle like particles.c: a plain one shows after steps 1 .. life - 1; a staged one may wait
   // hidden (wait = frames + 1), be drawn behind the user, and spread its S steps over F frames.
-  const spawn = (x, y, lifeCut) => {
-    const a = rnd(ang[0], ang[1]) * Math.PI / 180, s = rnd(sp[0], sp[1]);
+  const spawn = (x, y, lifeCut, i) => {
+    const a = particleAngle(eff, i) * Math.PI / 180, s = rnd(sp[0], sp[1]);
     const p = { x, y, vx: Math.cos(a) * s, vy: -Math.sin(a) * s, g: eff.gravity || 0, life: lifeCut || life, anim: eff.animation,
       onTop: !!eff.on_top, front: !!eff.on_top, wait: 0, behind: 0, S: 0, F: 0, acc: 0, left: 0, turn: 0, withAnim: false, age: 0 };
     parts.push(p);
     return p;
   };
-  const burst = (x, y, lifeCut) => { const out = []; for (let i = 0; i < (eff.mode === "burst" ? (eff.count || 1) : 1); i++) out.push(spawn(x, y, lifeCut)); return out; };
+  const burst = (x, y, lifeCut) => { const out = []; for (let i = 0; i < (eff.mode === "burst" ? (eff.count || 1) : 1); i++) out.push(spawn(x, y, lifeCut, i)); return out; };
   const late = (p, wait, behind) => {           // particles_shoot_late: step 3, sped up to end when it would have
     const S = p.life - 1;
     if (S < 1) return;
@@ -1613,7 +1618,7 @@ function moveHitStage(id, n) {
 }
 PREVIEW.move = (id, n) => {
   const out = [];
-  const st = n.status || {}, z = n.zone || {}, bf = n.buff || {};
+  const st = n.status || {}, z = n.zone || {}, bf = n.buff || {}, push = n.push || {};
   // Like moves.c: the player's damaging moves that hit at once play only their result sound.
   const resultOnly = n.power > 0 && n.shape !== "zone" && n.shape !== "self";
   const typeHit = (BATTLE.player_hit_sounds || {})[n.monster_type], hitSfx = typeHit || (BATTLE.sounds || {}).hit;
@@ -1639,7 +1644,7 @@ PREVIEW.move = (id, n) => {
   const kv = h("div", { class: "kv" },
     h("div", { class: "k" }, "type"), h("div", {}, String(n.monster_type || "").toUpperCase()),
     h("div", { class: "k" }, "hits"), h("div", {}, shapeText),
-    h("div", { class: "k" }, "power"), h("div", {}, n.power ? String(n.power) + (n.shape === "zone" && z.every ? ` per hit (on touch, then every ${(z.every / 60).toFixed(1)} s per monster)` : "") : "none (status only)"),
+    h("div", { class: "k" }, "power"), h("div", {}, n.power ? String(n.power) + (n.shape === "zone" && z.every ? ` per hit (on touch, then every ${(z.every / 60).toFixed(1)} s per monster)` : "") : n.status ? "none (status only)" : "none"),
     h("div", { class: "k" }, "accuracy"), h("div", {}, n.power ? (n.accuracy ? n.accuracy + "% (a miss shows MISS)" : "never misses") : "—"),
     h("div", { class: "k" }, "charge (player)"), h("div", {}, `${n.charge} ticks (${(n.charge / 60).toFixed(1)} s)`),
     h("div", { class: "k" }, "animation"), h("div", {}, [].concat(stepsText, mvSteps ? h("span", { class: "small" }, " — only a picture: the hit lands the moment the move is used") : [])),
@@ -1647,6 +1652,8 @@ PREVIEW.move = (id, n) => {
     n.status ? h("div", {}, `${st.chance}% chance: ${{ par: "paralyzed (can't move or attack, flashes yellow)", psn: "poisoned (1 damage a second)", tox: "badly poisoned (1, 2, 3... damage a second)", freeze: "frozen (can't move or attack)" }[st.kind] || st.kind} for ${(st.ticks || [0, 0]).map(t => (t / 60).toFixed(1)).join("-")} s`) : null,
     n.zone ? h("div", { class: "k" }, "zone") : null,
     n.zone ? h("div", {}, `${z.w}×${z.h} tiles${z.place === "screen" ? ", on screen spots (each near a monster in view)" : z.place === "around" ? ", around the user (it stands on the middle tile)" : ", in front"}${(z.cell || 1) > 1 ? `, its effect drawn once per ${z.cell}×${z.cell} tiles` : ""}${z.delay ? `, lands after ${(z.delay / 60).toFixed(1)} s` : ""}, lasts ${(z.ticks || [0, 0]).map(t => (t / 60).toFixed(1)).join("-")} s${z.every ? `, hurts a monster as soon as it steps on, then every ${(z.every / 60).toFixed(1)} s while it stays (each monster has its own timer)` : ", one hit"}`) : null,
+    n.push ? h("div", { class: "k" }, "push") : null,
+    n.push ? h("div", {}, `every monster it reaches slides ${push.px} px straight away from the user in ${push.ticks} ticks (${(push.ticks / 60).toFixed(2)} s), fast at first, then slowing down; walls and other monsters stop it, and it can't move or attack while it slides`) : null,
     n.buff ? h("div", { class: "k" }, "buff") : null,
     n.buff ? h("div", {}, `${bf.kind === "fly" ? "Fly: only a shadow shows, it can't be hit and passes over monsters" : "Phase: passes through monsters"} for ${(bf.ticks / 60).toFixed(1)} s`) : null,
     h("div", { class: "k" }, "sound"), h("div", {}, n.sfx ? [h("button", { onclick: () => playSfx(n.sfx) }, "▶"), " ", nodeLink(n.sfx),
@@ -1667,7 +1674,7 @@ PREVIEW.move = (id, n) => {
       h("div", { class: "small" }, [
         `Orange = what this use hurts: its effect's picture (every frame of the animation) wherever it is drawn, plus ${HIT_MARGIN} px. A monster whose body reaches into it is hit.`,
         mvSteps ? " The orange is hurt the moment the move is used; the animation then plays its 3 steps (the travel picture hurts no one)." : "",
-        moving ? " Its particles fly off in random directions and hurt only where they really go, so the area changes every use." : "",
+        moving ? ((NODES[n.effect] || {}).even ? " Its particles fly out evenly spaced, so the area is the same every use." : " Its particles fly off in random directions and hurt only where they really go, so the area changes every use.") : "",
         { single: ` Shown with no monster in range: straight ahead at full range. Brown dashes = where the nearest monster is picked (${n.range} tile(s) from the body, round: no farther on a diagonal); with one there, the effect plays ${n.effect_at === "line" ? "as a trail from the user to it" : "on it"} instead.`,
           dash: ` Shown with no monster in reach: the user rushes ${n.dash} tile(s) ahead (faded = where it started), then strikes in front. Brown dashes = where the nearest monster is picked.`,
           beam: " Facing up, down or a diagonal, the same line runs that way (just as long on a diagonal).",

@@ -122,7 +122,8 @@ typedef struct {
 typedef struct {
     const AnimationData *anim;
     u8 mode, count;
-    u8 on_top, pad;                     // on_top: drawn in front of the actors (attack effects)
+    u8 on_top;                          // drawn in front of the actors (attack effects)
+    u8 even;                            // a burst's particles leave at evenly spaced angles (else random)
     u16 rate, lifetime;
     fixed speed_min, speed_max, gravity;
     s16 angle_min, angle_max;
@@ -247,7 +248,8 @@ typedef struct {
     u8 zone_cell;                       // zone: tiles each piece of its effect covers (cell x cell block; 1 = each tile)
     u8 zone_count, zone_every;          // zones placed; ticks before a zone hurts the same monster again (0 = one hit)
     u16 zone_delay;                     // ticks before a zone hurts (a rock falling)
-    u8 effect_at;                       // FX_AT_*: where the effect particles appear
+    u8 push_px, push_ticks;             // every foe it reaches slides push_px px away from it in push_ticks ticks (0 = no push)
+    u8 effect_at;                      // FX_AT_*: where the effect particles appear
     u8 step1, step2;                    // its effect's 3 steps (moves.c): frames coming out of the user, frames on
                                         // its way; step 3 = the rest of its lifetime (0, 0 = it plays as it is)
     s8 fx_l, fx_t, fx_r, fx_b;          // what the effect draws around each particle (px, inclusive; l > r = nothing)

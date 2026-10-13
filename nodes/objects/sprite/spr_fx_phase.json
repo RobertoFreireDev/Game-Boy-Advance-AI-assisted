@@ -3,7 +3,7 @@
   "kind": "object",
   "type": "sprite",
   "name": "Phase effect",
-  "notes": "Phase: ghostly rings spreading out of the user. Every frame keeps a 1 px empty border, so the picture is never cut at the edge of its sprite.",
+  "notes": "Phase: a ghostly ring that grows, breaks up and fades. Phase shoots 16 of them out around the user. Every frame keeps a 1 px empty border, so the picture is never cut at the edge of its sprite.",
   "palette": "pal_fx",
   "width": 16,
   "height": 16,

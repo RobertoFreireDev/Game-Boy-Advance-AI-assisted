@@ -42,7 +42,7 @@ TYPE_FIELDS = {
     "sfx": {"channel", "duty", "steps", "priority"},
     "music": {"bpm", "rows_per_beat", "loop", "loop_from", "instruments", "patterns", "order"},
     "animation": {"sprite", "loop", "frames", "events"},
-    "particle": {"animation", "mode", "count", "rate", "lifetime", "speed", "angle", "gravity", "on_top"},
+    "particle": {"animation", "mode", "count", "rate", "lifetime", "speed", "angle", "gravity", "on_top", "even"},
     "body": {"origin", "hitbox", "physics", "animations", "default_animation"},
     "trigger": {"zone", "logic"},
     "hud": {"font", "elements", "box"},
@@ -51,7 +51,7 @@ TYPE_FIELDS = {
     "upgrade": {"category", "title", "icon", "var", "max_level", "descriptions", "requires", "replaces", "on_pick"},
     "species": {"title", "monster_type", "speed", "body", "alpha_palette", "portrait", "cry", "moves"},
     "move": {"title", "monster_type", "shape", "range", "power", "accuracy", "charge", "status", "dash", "zone", "buff",
-             "effect", "effect_at", "travel", "sfx", "on_use"},
+             "push", "effect", "effect_at", "travel", "sfx", "on_use"},
 }
 for _t in C.ACTOR_TYPES:
     if _t != "trigger":
@@ -796,6 +796,8 @@ def V_particle(c):
     c.get(n, "lifetime", "int", lo=1, hi=600)
     c.get(n, "gravity", "num", required=False, lo=-4, hi=4)
     c.get(n, "on_top", "bool", required=False)
+    if c.get(n, "even", "bool", required=False) and mode != "burst":
+        c.err("'even' spreads a burst's particles evenly, so it is only for mode \"burst\"")
     for k, lo, hi in (("speed", 0, 8), ("angle", -360, 720)):
         v = c.get(n, k, "list")
         if v is not None:
@@ -1421,8 +1423,17 @@ def V_move(c):
             c.get(bf, "ticks", "int", "buff.ticks", lo=1, hi=3600)
     elif bf is not None:
         c.err("'buff' is only for the self shape")
-    if not power and st is None and shape != "self":
-        c.warn("this move has no power and no status: it does nothing but its effect")
+    push = c.get(n, "push", "dict", required=False)
+    if push is not None:
+        if shape == "self":
+            c.err("'push' moves the monsters a move reaches, and a self move reaches no one")
+        for k in push:
+            if k not in ("px", "ticks"):
+                c.err("'push' has unknown field '%s'" % k)
+        c.get(push, "px", "int", "push.px", lo=1, hi=64)
+        c.get(push, "ticks", "int", "push.ticks", lo=1, hi=60)
+    if not power and st is None and push is None and shape != "self":
+        c.warn("this move has no power, no status and no push: it does nothing but its effect")
     if acc is not None and not power:
         c.warn("'accuracy' does nothing on a move without power")
     eff = c.ref(n.get("effect"), ["particle"], "effect", allow_empty=True)

@@ -3,15 +3,16 @@
   "kind": "object",
   "type": "move",
   "name": "Phase",
-  "notes": "Wispook's move 3 (R). Turns ghostly for 3 s: the user passes through monsters (they still can hit it). Charge: 10 s.",
+  "notes": "Wispook's move 3 (R). A ghostly blast: 16 ghost rings shoot out evenly all around the user and hang in a ring about 3 tiles out, covering every monster whose body comes within 32 px of its middle. Every monster they touch is shoved 32 px straight away from the user, sliding fast and then slowing down for about a quarter of a second (16 ticks); while it slides it can't move or attack. No damage. Charge: 10 s.",
   "title": "PHASE",
   "monster_type": "ghost",
-  "shape": "self",
+  "shape": "circle",
+  "range": 3,
   "power": 0,
   "charge": 600,
-  "buff": {
-    "kind": "phase",
-    "ticks": 180
+  "push": {
+    "px": 32,
+    "ticks": 16
   },
   "effect": "ptc_fx_phase",
   "effect_at": "user",
