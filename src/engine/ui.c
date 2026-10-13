@@ -233,20 +233,46 @@ static const char *species_field(s32 index, int field) {
     return "";
 }
 
+// Seconds as minutes:seconds, at least 2 digits each (03:42); a negative time prints --:--.
+static int put_time(char *out, int n, int cap, s32 secs) {
+    if (secs < 0) return put_str(out, n, cap, "--:--");
+    n = put_num(out, n, cap, secs / 60, 2);
+    if (n < cap) out[n++] = ':';
+    return put_num(out, n, cap, secs % 60, 2);
+}
+
+// The variable a placeholder's variable byte names; when an index code came before it (*index
+// >= 0), the slot of that list the index variable picks (-1 outside the list). Clears *index.
+static s16 text_var(char code, s16 *index) {
+    s16 id = (s16)((u8)code - 1);
+    if (*index >= 0) {
+        id = vars_slot(id, vars_get(*index));
+        *index = -1;
+    }
+    return id;
+}
+
 // Fill in a UI text's placeholders (see data.h): out gets plain characters (cap + 1 bytes).
 // Returns its length.
 static int expand(const char *s, char *out, int cap) {
     int n = 0;
+    s16 index = -1;
     for (; *s && n < cap; s++) {
         char c = *s;
-        if ((c == TXT_VAR || c == TXT_VAR02) && s[1]) {
-            n = put_num(out, n, cap, vars_get((s16)((u8)s[1] - 1)), c == TXT_VAR02 ? 2 : 1);
+        if (c == TXT_INDEX && s[1]) {
+            index = (s16)((u8)s[1] - 1);
+            s++;
+        } else if ((c == TXT_VAR || c == TXT_VAR02) && s[1]) {
+            n = put_num(out, n, cap, vars_get(text_var(s[1], &index)), c == TXT_VAR02 ? 2 : 1);
+            s++;
+        } else if (c == TXT_TIME && s[1]) {
+            n = put_time(out, n, cap, vars_get(text_var(s[1], &index)));
             s++;
         } else if (c == TXT_SPECIES && s[1] && s[2]) {
-            n = put_str(out, n, cap, species_field(vars_get((s16)((u8)s[1] - 1)), (u8)s[2]));
+            n = put_str(out, n, cap, species_field(vars_get(text_var(s[1], &index)), (u8)s[2]));
             s += 2;
         } else if (c == TXT_PICK && s[1] && s[2]) {
-            s32 k = vars_get((s16)((u8)s[1] - 1));
+            s32 k = vars_get(text_var(s[1], &index));
             int count = (u8)s[2];
             if (k < 0) k = 0;
             if (k >= count) k = count - 1;
@@ -362,11 +388,17 @@ static u32 hud_signature(const HudElement *e) {
         return (u32)vars_get(e->var) | (u32)vars_get(e->max_var) << 16;
     if (e->kind != HUD_TEXT) return (u32)vars_get(e->var);
     u32 sig = (u32)blink_off(e);
+    s16 index = -1;
     for (const char *s = e->text; *s; s++) {
-        if (*s == TXT_VAR || *s == TXT_VAR02 || *s == TXT_SPECIES || *s == TXT_PICK) {
-            if (!s[1]) break;
-            sig = sig * 31 + (u32)vars_get((s16)((u8)s[1] - 1));
+        char c = *s;
+        if (c == TXT_INDEX && s[1]) {
+            index = (s16)((u8)s[1] - 1);
             s++;
+        } else if (c == TXT_VAR || c == TXT_VAR02 || c == TXT_TIME || c == TXT_SPECIES || c == TXT_PICK) {
+            if (!s[1]) break;
+            sig = sig * 31 + (u32)vars_get(text_var(s[1], &index));
+            s++;
+            if ((c == TXT_SPECIES || c == TXT_PICK) && s[1]) s++;     // past the field / choice count
         }
     }
     return sig;

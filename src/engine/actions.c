@@ -46,6 +46,17 @@ static int compare(s32 v, u8 cmp, s32 w) {
     return 0;
 }
 
+// The variable slots a set_var / add_var works on: the one its index picks (none when the index is
+// outside the list), or every slot of a list without an index. Returns how many, from *first.
+static int var_slots(const Action *a, s16 *first) {
+    if (a->var_index < 0) {
+        *first = a->var;
+        return vars_len(a->var);
+    }
+    *first = vars_slot(a->var, vars_get(a->var_index));
+    return *first >= 0;
+}
+
 static void push(Script *s, ActionList list) {
     if (list.count == 0 || s->depth + 1 >= SCRIPT_DEPTH) return;
     s->depth++;
@@ -88,21 +99,31 @@ static int run(Script *s) {
         case ACT_STOP_MUSIC:
             audio_stop_music();
             break;
-        case ACT_SET_VAR:
-            vars_set(a->var, a->var_from >= 0 ? vars_get(a->var_from) : a->a);
+        case ACT_SET_VAR: {
+            s16 id;
+            s32 v = a->var_from >= 0 ? vars_get(a->var_from) : a->a;
+            for (int k = var_slots(a, &id); k > 0; k--, id++) vars_set(id, v);
             break;
+        }
         case ACT_ADD_VAR: {
-            s32 v = vars_get(a->var) + (a->var_from >= 0 ? vars_get(a->var_from) : a->a);
-            if (a->var_max >= 0 && v > vars_get(a->var_max)) v = vars_get(a->var_max);
-            vars_set(a->var, v);
+            s16 id;
+            s32 d = a->var_from >= 0 ? vars_get(a->var_from) : a->a;
+            for (int k = var_slots(a, &id); k > 0; k--, id++) {
+                s32 v = vars_get(id) + d;
+                if (a->var_max >= 0 && v > vars_get(a->var_max)) v = vars_get(a->var_max);
+                vars_set(id, v);
+            }
             break;
         }
         case ACT_RESET_VARS:
             vars_reset();
             break;
-        case ACT_IF_VAR:
-            push(s, compare(vars_get(a->var), a->sub, a->a) ? a->then_list : a->else_list);
+        case ACT_IF_VAR: {
+            s16 id = a->var_index < 0 ? a->var : vars_slot(a->var, vars_get(a->var_index));
+            s32 w = a->var_from >= 0 ? vars_get(a->var_from) : a->a;
+            push(s, compare(vars_get(id), a->sub, w) ? a->then_list : a->else_list);
             break;
+        }
         case ACT_IF_CHANCE:
             push(s, rng_range(1, 100) <= a->a ? a->then_list : a->else_list);
             break;

@@ -3,7 +3,7 @@
   "kind": "object",
   "type": "hud",
   "name": "Victory text",
-  "notes": "YOU SURVIVED! with the final time, level and kills, and NEW MONSTER: <name> when this win unlocked one ('new_mon' is -1 when nothing was unlocked, so the line stays empty).",
+  "notes": "YOU SURVIVED! with the final time, level and kills, then this monster's best time: NEW BEST TIME! <time> when this run set it, BEST TIME <time> otherwise. Under it NEW MONSTER: <name> when this win unlocked one ('new_mon' is -1 when nothing was unlocked, so the line stays empty).",
   "font": "font_default",
   "elements": [
     {
@@ -30,14 +30,21 @@
     {
       "kind": "text",
       "x": 120,
-      "y": 128,
+      "y": 120,
+      "text": "{new_best|BEST TIME|NEW BEST TIME!} {best_time[chosen]:time}",
+      "align": "center"
+    },
+    {
+      "kind": "text",
+      "x": 120,
+      "y": 136,
       "text": "{new_mon||NEW MONSTER: }{new_mon.name}",
       "align": "center"
     },
     {
       "kind": "text",
       "x": 120,
-      "y": 144,
+      "y": 152,
       "text": "PRESS START",
       "align": "center",
       "blink": 30

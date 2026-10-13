@@ -3,9 +3,16 @@
   "kind": "object",
   "type": "hud",
   "name": "Monster picker text",
-  "notes": "Shown once the logo has landed: arrows on both sides of the monster, its name and type centered under it, then a blinking PRESS START and, at the bottom, the SELECT: CLEAR SAVE hint. On a locked monster the two bottom lines become a blinking LOCKED and WIN A RUN TO UNLOCK (they follow 'sel_locked', which the picker sets).",
+  "notes": "Shown once the logo has landed: this monster's best time (its fastest won run) above it, under the logo — BEST TIME --:-- until it wins a run — arrows on both sides of the monster, its name and type centered under it, then a blinking PRESS START and, at the bottom, the SELECT: CLEAR SAVE hint. Browsing to another monster switches the best time to that monster's. On a locked monster the two bottom lines become a blinking LOCKED and WIN A RUN TO UNLOCK (they follow 'sel_locked', which the picker sets).",
   "font": "font_default",
   "elements": [
+    {
+      "kind": "text",
+      "x": 120,
+      "y": 56,
+      "text": "BEST TIME {best_time[chosen]:time}",
+      "align": "center"
+    },
     {
       "kind": "icon",
       "x": 32,

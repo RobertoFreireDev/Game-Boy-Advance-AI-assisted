@@ -48,22 +48,24 @@
     "params": {}
   },
   "set_var": {
-    "description": "Set a game variable.",
+    "description": "Set a game variable. On a list variable, set the slot 'index' picks, or every slot without 'index'.",
     "sentence": "Set {var} to {value}",
     "params": {
-      "var":    {"type": "var", "required": true, "description": "Variable to change."},
+      "var":    {"type": "var", "required": true, "list": true, "description": "Variable to change."},
       "value":  {"type": "int", "default": 0, "description": "New value (true/false for flags)."},
-      "from":   {"type": "var", "default": "", "description": "Copy this other variable's value instead of 'value'. Empty = use 'value'."}
+      "from":   {"type": "var", "default": "", "description": "Copy this other variable's value instead of 'value'. Empty = use 'value'."},
+      "index":  {"type": "var", "default": "", "description": "When 'var' is a list: the variable whose value picks the slot (0 = first; outside the list = nothing happens). Empty = every slot."}
     }
   },
   "add_var": {
-    "description": "Add to a game variable (use a negative number to subtract).",
+    "description": "Add to a game variable (use a negative number to subtract). On a list variable, add to the slot 'index' picks, or to every slot without 'index'.",
     "sentence": "Add {value} to {var}",
     "params": {
-      "var":      {"type": "var", "required": true, "description": "Variable to change."},
+      "var":      {"type": "var", "required": true, "list": true, "description": "Variable to change."},
       "value":    {"type": "int", "default": 0, "description": "Amount to add (negative to subtract)."},
       "from":     {"type": "var", "default": "", "description": "Add this other variable's value instead of 'value'. Empty = use 'value'."},
-      "max_var":  {"type": "var", "default": "", "description": "Never go above this other variable (health up to max health). Empty = no limit."}
+      "max_var":  {"type": "var", "default": "", "description": "Never go above this other variable (health up to max health). Empty = no limit."},
+      "index":    {"type": "var", "default": "", "description": "When 'var' is a list: the variable whose value picks the slot (0 = first; outside the list = nothing happens). Empty = every slot."}
     }
   },
   "reset_vars": {
@@ -72,12 +74,14 @@
     "params": {}
   },
   "if_var": {
-    "description": "Check a game variable and run one of two lists.",
+    "description": "Check a game variable against a number or another variable and run one of two lists.",
     "sentence": "If {var} {op} {value}",
     "params": {
-      "var":    {"type": "var", "required": true, "description": "Variable to check."},
+      "var":    {"type": "var", "required": true, "list": true, "description": "Variable to check (a list needs 'index')."},
       "op":     {"type": "choice", "default": "==", "options": ["==", "!=", "<", "<=", ">", ">="], "description": "Comparison."},
-      "value":  {"type": "int", "required": true, "description": "Value to compare with."},
+      "value":  {"type": "int", "default": 0, "description": "Value to compare with."},
+      "from":   {"type": "var", "default": "", "description": "Compare with this other variable's value instead of 'value'. Empty = use 'value'."},
+      "index":  {"type": "var", "default": "", "description": "When 'var' is a list: the variable whose value picks the slot checked (0 = first; outside the list reads 0)."},
       "then":   {"type": "actions", "default": [], "description": "Runs when the check is true."},
       "else":   {"type": "actions", "default": [], "description": "Runs when the check is false."}
     }

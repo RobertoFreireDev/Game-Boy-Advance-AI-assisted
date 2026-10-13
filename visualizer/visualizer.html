@@ -454,14 +454,19 @@ function speciesField(index, field) {
   const m = /^move([123])$/.exec(field);
   return m ? ((NODES[(sp.moves || [])[m[1] - 1]] || {}).title || "") : "";
 }
-// Placeholders like ui.c: {var}, {var:02} (at least 2 digits), {var.field} (a species' name, type or
-// move), {var|a|b|c} (one word picked by the value). get(name) returns a variable's value.
+// Placeholders like ui.c: {var}, {var:02} (at least 2 digits), {var:time} (seconds as 03:42, negative
+// = --:--), {var.field} (a species' name, type or move), {var|a|b|c} (one word picked by the value), and
+// {list[i]...} (the slot of a list variable that i picks; every slot starts at the list's initial value).
+// get(name) returns a variable's value.
 function fillText(text, get) {
   get = get || varInitial;
-  return String(text || "").replace(/\{(\w+)(?:(:02)|\.(\w+)|\|([^{}]*))?\}/g, (m, v, pad, field, pick) => {
-    if (field) return speciesField(get(v), field);
-    if (pick !== undefined) { const o = pick.split("|"); return o[Math.max(0, Math.min(o.length - 1, get(v)))]; }
-    const s = String(get(v)); return pad && s.length < 2 ? "0" + s : s;
+  const two = n => (n < 10 ? "0" : "") + n;
+  return String(text || "").replace(/\{(\w+)(?:\[(\w+)\])?(?:(:02|:time)|\.(\w+)|\|([^{}]*))?\}/g, (m, v, index, fmt, field, pick) => {
+    const val = get(v);
+    if (field) return speciesField(val, field);
+    if (pick !== undefined) { const o = pick.split("|"); return o[Math.max(0, Math.min(o.length - 1, val))]; }
+    if (fmt === ":time") return val < 0 ? "--:--" : two(Math.floor(val / 60)) + ":" + two(val % 60);
+    const s = String(val); return fmt && s.length < 2 ? "0" + s : s;
   });
 }
 // A HUD box (like ui.c draw_hud_box): paper inside; outside it a 2-pixel border, then a 1-pixel
@@ -772,6 +777,7 @@ function actionItem(a) {
   const params = spec.params || {};
   let sentence = spec.sentence || a.do;
   if ((a.do === "set_var" || a.do === "add_var") && a.from) sentence = a.do === "set_var" ? "Set {var} to the value of {from}" : "Add the value of {from} to {var}";
+  if (a.do === "if_var" && a.from) sentence = "If {var} {op} the value of {from}";
   if (a.do === "add_var" && a.max_var) sentence += " (never above {max_var})";
   const parts = sentence.split(/(\{\w+\})/);
   for (const p of parts) {
@@ -779,7 +785,11 @@ function actionItem(a) {
     if (!m) { li.append(p); continue; }
     const key = m[1], pdef = params[key] || {};
     const v = key in a ? a[key] : pdef.default;
-    li.append(valueNode(pdef.type || "", v));
+    // A list variable: the slot its index picks (best_time[chosen]), or every slot without one.
+    const count = key === "var" ? ((VARS.find(x => x.name === v) || {}).count || 1) : 1;
+    if (a.index && key === "var") li.append(h("b", {}, v + "[" + a.index + "]"));
+    else if (count > 1) li.append("every slot of ", h("b", {}, v), " (" + count + ")");
+    else li.append(valueNode(pdef.type || "", v));
   }
   if (a.do === "if_var" || a.do === "if_chance") {
     li.append(h("div", {}, "then:", actionList(a.then)), h("div", {}, "otherwise:", actionList(a.else)));
@@ -1149,7 +1159,7 @@ PREVIEW.hud = (id, n) => {
   const [c, ctx] = screenCanvas(3);
   ctx.fillStyle = "#3a4458"; ctx.fillRect(0, 0, 240, 160);
   drawHud(ctx, id);
-  return card("On a 240×160 screen — variables at their starting values (" + VARS.map(v => v.name + " = " + v.initial).join(", ") + ")", c);
+  return card("On a 240×160 screen — variables at their starting values (" + VARS.map(v => v.name + " = " + (v.count > 1 ? v.count + " × " : "") + v.initial).join(", ") + ")", c);
 };
 PREVIEW.upgrade = (id, n) => {
   const levels = n.category === "weapon" || n.category === "item" ? (n.max_level || 1) : 1;

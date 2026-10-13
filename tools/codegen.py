@@ -86,7 +86,7 @@ class Gen:
     def __init__(self, p):
         self.p = p
         self.ids = [e["id"] for e in p.index]
-        self.vars = p.var_names()
+        self.var_slot = {name: at for name, at, _ in p.var_slots()}     # VAR_* number of each variable
         self.out = []
         self.n = 0
         self.extern_fns = set()          # prototypes for custom code
@@ -131,7 +131,7 @@ class Gen:
 
         op = "ACT_%s" % up(do)
         sub, node, var, va, vb = 0, "-1", "-1", 0, 0
-        var_from = var_max = "-1"
+        var_from = var_max = var_index = "-1"
         then_l = else_l = "{ NULL, 0 }"
         fn = "NULL"
         text = "NULL"
@@ -145,7 +145,7 @@ class Gen:
             node = self.node_enum(val("music"))
         elif do in ("set_var", "add_var"):
             var, va = self.var_enum(val("var")), int(val("value") or 0)
-            var_from = self.var_enum(val("from"))
+            var_from, var_index = self.var_enum(val("from")), self.var_enum(val("index"))
             if do == "add_var":
                 var_max = self.var_enum(val("max_var"))
         elif do == "if_chance":
@@ -154,7 +154,8 @@ class Gen:
             else_l = self.actions(val("else") or [], base + "_else")
         elif do == "if_var":
             ops = spec["op"]["options"]
-            var, va, sub = self.var_enum(val("var")), int(val("value")), ops.index(val("op"))
+            var, va, sub = self.var_enum(val("var")), int(val("value") or 0), ops.index(val("op"))
+            var_from, var_index = self.var_enum(val("from")), self.var_enum(val("index"))
             then_l = self.actions(val("then") or [], base + "_then")
             else_l = self.actions(val("else") or [], base + "_else")
         elif do == "show_dialog":
@@ -177,23 +178,26 @@ class Gen:
             node, va = self.node_enum(val("icon")), int(val("ticks") or 0)
         elif do == "float_text":
             node, va, text = self.node_enum(val("palette")), int(val("height") or 0), cstr(val("text"))
-        return ("{ %s, %d, %s, %s, %s, %s, 0, %d, %d, %s, %s, %s, %s }"
-                % (op, sub, node, var, var_from, var_max, va, vb, then_l, else_l, fn, text))
+        return ("{ %s, %d, %s, %s, %s, %s, %s, %d, %d, %s, %s, %s, %s }"
+                % (op, sub, node, var, var_from, var_max, var_index, va, vb, then_l, else_l, fn, text))
 
     def text(self, t):
         """C string for UI text with its placeholders as codes (see src/engine/data.h):
-        {var} -> \\001 v, {var:02} -> \\002 v, {var.field} -> \\003 v f, {var|a|b} -> \\004 v n a\\005 b\\005."""
+        {var} -> \\001 v, {var:02} -> \\002 v, {var.field} -> \\003 v f, {var|a|b} -> \\004 v n a\\005 b\\005,
+        {var:time} -> \\006 v; {list[i]...} puts \\007 i before the placeholder's code."""
         if t is None:
             return "NULL"
 
         def code(m):
-            v = chr(self.vars.index(m.group(1)) + 1)
-            if m.group(3):
-                return "\x03" + v + chr(C.SPECIES_FIELDS.index(m.group(3)) + 1)
-            if m.group(4) is not None:
-                opts = m.group(4).split("|")
-                return "\x04" + v + chr(len(opts)) + "".join(o + "\x05" for o in opts)
-            return ("\x02" if m.group(2) else "\x01") + v
+            v = chr(self.var_slot[m.group("var")] + 1)
+            index = "\x07" + chr(self.var_slot[m.group("index")] + 1) if m.group("index") else ""
+            if m.group("field"):
+                return index + "\x03" + v + chr(C.SPECIES_FIELDS.index(m.group("field")) + 1)
+            if m.group("pick") is not None:
+                opts = m.group("pick").split("|")
+                return index + "\x04" + v + chr(len(opts)) + "".join(o + "\x05" for o in opts)
+            fmt = {":02": "\x02", ":time": "\x06"}.get(m.group("fmt"), "\x01")
+            return index + fmt + v
         return cstr(C.PLACEHOLDER_RE.sub(code, t))
 
     # ---- behavior params ----
@@ -676,7 +680,8 @@ for _t in C.ACTOR_TYPES:
 
 
 def gen_node_ids(p):
-    vars_ = p.game.get("variables", [])
+    slots = p.var_slots()
+    total = sum(n for _, _, n in slots)
     out = [HEADER, "#ifndef NODE_IDS_H\n#define NODE_IDS_H\n"]
 
     def enum(name, items, count=None):
@@ -686,8 +691,9 @@ def gen_node_ids(p):
         out.append("// %s\nenum {\n%s\n};\n" % (name, body))
 
     enum("Every node (index into g_nodes)", ["NODE_%s" % up(e["id"]) for e in p.index], "NODE_COUNT")
-    enum("Game variables (nodes.json game.variables)", ["VAR_%s" % up(v["name"]) for v in vars_], "VAR_COUNT")
-    out.append("#define VAR_ARRAY_SIZE %d\n" % max(1, len(vars_)))
+    enum("Game variables (nodes.json game.variables): a list variable takes 'count' slots from its number",
+         ["VAR_%s = %d" % (up(name), at) for name, at, _ in slots], "VAR_COUNT = %d" % total)
+    out.append("#define VAR_ARRAY_SIZE %d\n" % max(1, total))
     enum("Node types", ["NT_SCENE"] + ["NT_%s" % up(t) for t in C.OBJECT_TYPES], "NT_COUNT")
     enum("Scene types", ["SCENE_%s" % up(t) for t in C.SCENE_TYPES])
     enum("Collision categories (bit = 1 << CAT_*)", ["CAT_%s" % up(c) for c in C.CATEGORIES], "CAT_COUNT")
@@ -769,12 +775,17 @@ def gen_game_data(p):
     g.emit("const GameData g_game = { %s, %s, %d, %d, %d, %s };" % (
         cstr(game["title"]), g.node_enum(game["start_scene"]), 1 if game.get("save") else 0,
         fx(game.get("gravity", 0.25)), fx(game.get("max_fall_speed", 4)), battle))
-    inits = [int(v["initial"]) for v in game.get("variables", [])] or [0]
-    g.emit("const s32 g_var_initial[VAR_ARRAY_SIZE] = { %s };" % ", ".join(str(v) for v in inits))
-    keep = [1 if v.get("persistent") else 0 for v in game.get("variables", [])] or [0]
-    g.emit("const u8 g_var_persistent[VAR_ARRAY_SIZE] = { %s };" % ", ".join(str(v) for v in keep))
-    keys = [C.var_save_key(v["name"]) for v in game.get("variables", [])] or [0]
-    g.emit("const u16 g_var_key[VAR_ARRAY_SIZE] = { %s };" % ", ".join("0x%04X" % k for k in keys))
+    inits, keep, keys, lens = [], [], [], []
+    for v in game.get("variables", []):            # one entry per slot (a list variable has 'count')
+        n = p.var_count(v["name"])
+        inits += [int(v["initial"])] * n
+        keep += [1 if v.get("persistent") else 0] * n
+        keys += C.var_slot_keys(v["name"], n)
+        lens += [n - k for k in range(n)]
+    g.emit("const s32 g_var_initial[VAR_ARRAY_SIZE] = { %s };" % ", ".join(str(v) for v in inits or [0]))
+    g.emit("const u8 g_var_persistent[VAR_ARRAY_SIZE] = { %s };" % ", ".join(str(v) for v in keep or [0]))
+    g.emit("const u16 g_var_key[VAR_ARRAY_SIZE] = { %s };" % ", ".join("0x%04X" % k for k in keys or [0]))
+    g.emit("const u8 g_var_len[VAR_ARRAY_SIZE] = { %s };" % ", ".join(str(v) for v in lens or [0]))
     sq, wv = [], []
     for note in range(128):
         f = 440.0 * math.pow(2, (note - 69) / 12.0)

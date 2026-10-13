@@ -20,6 +20,14 @@ s32 vars_get(s16 id) {
     return (id >= 0 && id < VAR_COUNT) ? s_vars[id] : 0;
 }
 
+s16 vars_slot(s16 id, s32 k) {
+    return (id >= 0 && id < VAR_COUNT && k >= 0 && k < g_var_len[id]) ? (s16)(id + k) : -1;
+}
+
+int vars_len(s16 id) {
+    return (id >= 0 && id < VAR_COUNT) ? g_var_len[id] : 0;
+}
+
 void vars_set(s16 id, s32 value) {
     if (id < 0 || id >= VAR_COUNT || s_vars[id] == value) return;
     s_vars[id] = value;

@@ -12,6 +12,10 @@ void vars_init(void);
 void vars_reset(void);
 // Read a variable (0 for an invalid id).
 s32 vars_get(s16 id);
+// Id of slot k of a list variable (nodes.json 'count'), or -1 when k is outside the list.
+s16 vars_slot(s16 id, s32 k);
+// How many slots a list variable has from this id on (1 for a plain variable).
+int vars_len(s16 id);
 // Write a variable.
 void vars_set(s16 id, s32 value);
 // Add to a variable.

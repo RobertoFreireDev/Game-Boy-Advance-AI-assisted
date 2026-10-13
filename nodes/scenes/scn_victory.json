@@ -3,7 +3,7 @@
   "kind": "scene",
   "type": "credits",
   "name": "Victory",
-  "notes": "YOU SURVIVED! over the meadow, with the winning monster bobbing, the final time, level and kills. Winning unlocks the next locked monster of the roster (while any is left): its name shows under the stats with a jingle, and the progress is saved at once. START goes back to the menu.",
+  "notes": "YOU SURVIVED! over the meadow, with the winning monster bobbing, the final time, level and kills. The run's time is checked against this monster's best time (best_time[chosen]): if it never won before, or this run was faster, it becomes the new best and the screen says NEW BEST TIME!, otherwise it shows the best time to beat. Winning also unlocks the next locked monster of the roster (while any is left): its name shows under the stats. A jingle plays for a new monster or a new best time, and the progress (unlocks and best times) is saved at once. START goes back to the menu.",
   "backdrop": "#58a8f0",
   "music": "mus_victory",
   "camera": {
@@ -34,6 +34,53 @@
       "value": -1
     },
     {
+      "do": "set_var",
+      "var": "new_best",
+      "value": 0
+    },
+    {
+      "do": "if_var",
+      "var": "best_time",
+      "index": "chosen",
+      "op": "<",
+      "value": 0,
+      "then": [
+        {
+          "do": "set_var",
+          "var": "best_time",
+          "index": "chosen",
+          "from": "time"
+        },
+        {
+          "do": "set_var",
+          "var": "new_best",
+          "value": 1
+        }
+      ],
+      "else": [
+        {
+          "do": "if_var",
+          "var": "best_time",
+          "index": "chosen",
+          "op": ">",
+          "from": "time",
+          "then": [
+            {
+              "do": "set_var",
+              "var": "best_time",
+              "index": "chosen",
+              "from": "time"
+            },
+            {
+              "do": "set_var",
+              "var": "new_best",
+              "value": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
       "do": "if_var",
       "var": "unlocked",
       "op": "<",
@@ -48,11 +95,11 @@
           "do": "add_var",
           "var": "unlocked",
           "value": 1
-        },
-        {
-          "do": "save_game"
         }
       ]
+    },
+    {
+      "do": "save_game"
     },
     {
       "do": "fade_in",
@@ -71,6 +118,24 @@
         {
           "do": "play_sfx",
           "sfx": "sfx_new_move"
+        }
+      ],
+      "else": [
+        {
+          "do": "if_var",
+          "var": "new_best",
+          "op": "==",
+          "value": 1,
+          "then": [
+            {
+              "do": "wait",
+              "ticks": 20
+            },
+            {
+              "do": "play_sfx",
+              "sfx": "sfx_new_move"
+            }
+          ]
         }
       ]
     }

@@ -174,6 +174,13 @@ def var_save_key(name):
     return (h ^ (h >> 16)) & 0xFFFF
 
 
+def var_slot_keys(name, count):
+    """Save key of each slot of a variable: its name's, or name[0], name[1]... for a list."""
+    if count == 1:
+        return [var_save_key(name)]
+    return [var_save_key("%s[%d]" % (name, k)) for k in range(count)]
+
+
 def color_to_bgr555(hex_color):
     """Convert '#RRGGBB' to a 15-bit GBA color (what the hardware shows)."""
     r = int(hex_color[1:3], 16) >> 3
@@ -188,12 +195,16 @@ def split_music_tokens(text):
 
 
 HUD_VAR_WIDTH = 3  # characters reserved for a {var} value when checking that text fits
+HUD_TIME_WIDTH = 5  # a {var:time} clock: 03:42
 
 # UI text placeholders:
 #   {var}        a game variable          {var:02}   with at least 2 digits (a clock: 05)
+#   {var:time}   seconds as minutes:seconds (03:42); a negative value prints --:-- (no time yet)
 #   {var.field}  a field (name, type, move1..3) of the species whose number is in var
 #   {var|a|b|c}  one of the words: the first when var is 0, the second when 1... (last if more)
-PLACEHOLDER_RE = re.compile(r"\{(\w+)(?:(:02)|\.(\w+)|\|([^{}]*))?\}")
+#   {list[i]}    any of the above on a list variable: the slot whose number is in variable i
+PLACEHOLDER_RE = re.compile(
+    r"\{(?P<var>\w+)(?:\[(?P<index>\w+)\])?(?:(?P<fmt>:02|:time)|\.(?P<field>\w+)|\|(?P<pick>[^{}]*))?\}")
 
 # Widest text each species field prints (set from the project by set_species_widths).
 SPECIES_FIELD_W = {f: (SPECIES_TITLE_W if f == "name" else MOVE_TITLE_W) for f in SPECIES_FIELDS}
@@ -215,10 +226,12 @@ def set_species_widths(project):
 
 def placeholder_value_width(m):
     """Columns one placeholder match takes at most."""
-    if m.group(3):
-        return SPECIES_FIELD_W.get(m.group(3), MOVE_TITLE_W)
-    if m.group(4) is not None:
-        return max(len(o) for o in m.group(4).split("|"))
+    if m.group("field"):
+        return SPECIES_FIELD_W.get(m.group("field"), MOVE_TITLE_W)
+    if m.group("pick") is not None:
+        return max(len(o) for o in m.group("pick").split("|"))
+    if m.group("fmt") == ":time":
+        return HUD_TIME_WIDTH
     return HUD_VAR_WIDTH
 
 
@@ -496,6 +509,23 @@ class Project:
 
     def var_names(self):
         return [v.get("name") for v in self.game.get("variables", []) if isinstance(v, dict)]
+
+    def var_count(self, name):
+        """Slots of a variable: its 'count' for a list (one value per monster...), else 1."""
+        for v in self.game.get("variables", []):
+            if isinstance(v, dict) and v.get("name") == name:
+                return v.get("count", 1) if isinstance(v.get("count", 1), int) else 1
+        return 1
+
+    def var_slots(self):
+        """[(name, first slot, count)] in order: a list variable takes count slots in a row."""
+        out, at = [], 0
+        for v in self.game.get("variables", []):
+            if isinstance(v, dict):
+                n = self.var_count(v.get("name"))
+                out.append((v.get("name"), at, n))
+                at += n
+        return out
 
 
 def load_project():

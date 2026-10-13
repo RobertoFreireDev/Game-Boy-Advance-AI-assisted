@@ -215,6 +215,9 @@ class Ctx:
                 return
             if v not in self.p.var_names():
                 self.err("'%s' names variable '%s', which is not in nodes.json game.variables" % (label, v))
+            elif self.p.var_count(v) > 1 and not pdef.get("list"):
+                self.err("'%s' names '%s', a list of %d values: only set_var / add_var / if_var (with 'index') "
+                         "and text placeholders ({%s[index]}) can use it" % (label, v, self.p.var_count(v), v))
         elif ptype == "choice":
             if v not in pdef.get("options", []):
                 self.err("'%s' must be one of %s" % (label, ", ".join(pdef.get("options", []))))
@@ -263,10 +266,17 @@ class Ctx:
                         self.err("'%s' (%s) needs '%s'" % (where, a["do"], pname))
                     continue
                 self.param_value(pdef["type"], pdef, a[pname], "%s.%s" % (where, pname))
-            if a["do"] in ("set_var", "add_var") and "value" in a and a.get("from"):
+            if a["do"] in ("set_var", "add_var", "if_var") and "value" in a and a.get("from"):
                 self.err("'%s' (%s) has both 'value' and 'from'; use one" % (where, a["do"]))
-            if a["do"] in ("set_var", "add_var") and "value" not in a and not a.get("from"):
+            if a["do"] in ("set_var", "add_var", "if_var") and "value" not in a and not a.get("from"):
                 self.err("'%s' (%s) needs 'value' (or 'from')" % (where, a["do"]))
+            if a["do"] in ("set_var", "add_var", "if_var") and a.get("var") in self.p.var_names():
+                count = self.p.var_count(a["var"])
+                if a.get("index") and count == 1:
+                    self.err("'%s.index' only works on a list variable ('%s' has no 'count')" % (where, a["var"]))
+                if a["do"] == "if_var" and count > 1 and not a.get("index"):
+                    self.err("'%s' checks '%s', a list of %d values: say which one with 'index'"
+                             % (where, a["var"], count))
             if a["do"] == "if_chance" and is_int(a.get("percent")) and not 0 <= a["percent"] <= 100:
                 self.err("'%s.percent' must be between 0 and 100" % where)
             if a["do"] == "float_text" and not isinstance(self.p.game.get("battle"), dict):
@@ -882,9 +892,18 @@ def hud_text_width(text):
 def check_placeholders(c, text, font, label):
     """Placeholders must name game variables (and species fields); the rest must be in the font."""
     for m in C.PLACEHOLDER_RE.finditer(text):
-        var, field, pick = m.group(1), m.group(3), m.group(4)
+        var, index, field, pick = m.group("var"), m.group("index"), m.group("field"), m.group("pick")
         if var not in c.p.var_names():
             c.err("%s uses {%s}, which is not a game variable" % (label, var))
+        elif index is None and c.p.var_count(var) > 1:
+            c.err("%s uses {%s}, a list of %d values: say which one, like {%s[chosen]}"
+                  % (label, var, c.p.var_count(var), var))
+        elif index is not None and c.p.var_count(var) == 1:
+            c.err("%s uses {%s[%s]}, but '%s' is not a list (it has no 'count')" % (label, var, index, var))
+        if index is not None and index not in c.p.var_names():
+            c.err("%s uses [%s], which is not a game variable" % (label, index))
+        elif index is not None and c.p.var_count(index) > 1:
+            c.err("%s uses [%s] as an index, but it is a list itself" % (label, index))
         if field is not None:
             if field not in C.SPECIES_FIELDS:
                 c.err("%s uses {%s.%s}; a species field is one of %s" % (label, var, field, ", ".join(C.SPECIES_FIELDS)))
@@ -898,7 +917,8 @@ def check_placeholders(c, text, font, label):
             c.text_in_font(pick.replace("|", " "), font, label)
     leftover = C.PLACEHOLDER_RE.sub("", text)
     if "{" in leftover or "}" in leftover:
-        c.err("%s has a '{' or '}' that is not a placeholder ({var}, {var:02}, {var.name}, {var|a|b})" % label)
+        c.err("%s has a '{' or '}' that is not a placeholder ({var}, {var:02}, {var:time}, {var.name}, "
+              "{var|a|b}, {list[var]})" % label)
     c.text_in_font(leftover.replace("{", "").replace("}", ""), font, label)
 
 
@@ -1671,17 +1691,21 @@ def check_game(p, r):
             r.err(where, "%s needs 'notes' explaining it" % label)
         if not isinstance(v.get("persistent", False), bool):
             r.err(where, "%s.persistent must be true or false" % label)
+        if "count" in v and (not is_int(v["count"]) or not 2 <= v["count"] <= 64):
+            r.err(where, "%s.count must be a whole number from 2 to 64 (a list of values)" % label)
         for k in v:
-            if k not in ("name", "type", "initial", "notes", "persistent"):
+            if k not in ("name", "type", "initial", "notes", "persistent", "count"):
                 r.err(where, "%s has unknown field '%s'" % (label, k))
+    if sum(n for _, _, n in p.var_slots()) > 250:
+        r.err(where, "game.variables hold more than 250 values (each list counts its 'count')")
     keys = {}
     for v in vars_:
         name = v.get("name") if isinstance(v, dict) else None
         if isinstance(name, str):
-            k = C.var_save_key(name)
-            if k in keys and keys[k] != name:
-                r.err(where, "variables '%s' and '%s' get the same save key: rename one" % (keys[k], name))
-            keys[k] = name
+            for k in C.var_slot_keys(name, p.var_count(name)):
+                if k in keys:
+                    r.err(where, "variables '%s' and '%s' get the same save key: rename one" % (keys[k], name))
+                keys[k] = name
 
 
 def check_index(p, r):

@@ -118,6 +118,20 @@
         "type": "flag",
         "initial": false,
         "notes": "Set when the run is won or lost (stops the timer)."
+      },
+      {
+        "name": "new_best",
+        "type": "flag",
+        "initial": false,
+        "notes": "Set on the victory screen when this run beat the monster's best time (or was its first win): the screen then says NEW BEST TIME!."
+      },
+      {
+        "name": "best_time",
+        "type": "int",
+        "count": 9,
+        "initial": -1,
+        "notes": "Fastest won run of each monster, in seconds: one value per monster, in roster order (best_time[chosen] = the picked one's). -1 = never won with it, shown as --:--. The victory screen keeps the smaller of it and the run's time; shown above the monster on the menu. Saved on the cartridge; clearing the saved progress erases them.",
+        "persistent": true
       }
     ],
     "battle": {

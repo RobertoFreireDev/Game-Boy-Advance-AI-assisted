@@ -3,7 +3,7 @@
   "kind": "object",
   "type": "menu",
   "name": "Clear saved progress",
-  "notes": "Opens with SELECT on the menu screen. Asks before wiping the saved progress; the cursor starts on NO so it is never cleared by accident. YES locks every monster again except Furrbit (the Normal one), selects Furrbit and saves that. NO, B or START close it and keep everything.",
+  "notes": "Opens with SELECT on the menu screen. Asks before wiping the saved progress; the cursor starts on NO so it is never cleared by accident. YES locks every monster again except Furrbit (the Normal one), erases every best time, selects Furrbit and saves that. NO, B or START close it and keep everything.",
   "font": "font_default",
   "title": "CLEAR SAVED PROGRESS?",
   "cursor": "icon_cursor",
@@ -11,7 +11,7 @@
     "x": 8,
     "y": 40,
     "w": 224,
-    "h": 80,
+    "h": 88,
     "paper": 3,
     "border": 2
   },
@@ -24,12 +24,17 @@
     {
       "x": 24,
       "y": 72,
-      "text": "WILL BE LOCKED AGAIN."
+      "text": "WILL BE LOCKED AGAIN AND"
+    },
+    {
+      "x": 24,
+      "y": 80,
+      "text": "ALL BEST TIMES ERASED."
     }
   ],
   "layout": {
     "x": 104,
-    "y": 88,
+    "y": 96,
     "spacing": 16,
     "title_y": 48
   },
@@ -54,6 +59,11 @@
           "do": "set_var",
           "var": "chosen",
           "value": 0
+        },
+        {
+          "do": "set_var",
+          "var": "best_time",
+          "value": -1
         },
         {
           "do": "save_game"

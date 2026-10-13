@@ -188,7 +188,11 @@ games add `battle` (§6.1b): the monster types, the type chart, the floating-tex
 are the game's global state; HUD, behaviors and actions read and write them by name. Flags are
 stored as 0/1. A variable with `"persistent": true` keeps its value through `reset_vars` (permanent
 unlocks, banked gold); `save_game` saves every variable (each under a key made from its name, so `load_game`
-still restores the rest after an update adds, removes or reorders variables). Index order: scenes first, then objects.
+still restores the rest after an update adds, removes or reorders variables). A variable with `"count": N`
+(2–64) is a **list** of N values, each starting at `initial` (one best time per monster); `set_var`, `add_var`
+and `if_var` pick a slot with `index` (a variable holding the slot number, from 0), and text with `{list[var]}`.
+Nothing else may use a list (the validator says so); `set_var` / `add_var` on a list without `index` change
+every slot (clearing a save). Each slot is saved under `name[k]`. Index order: scenes first, then objects.
 
 ### 5.3 Common fields (every node file)
 
@@ -223,9 +227,11 @@ Structural rules (enforced by `validate.py`):
 - **UI positions** (HUD elements, menu layout, boxes) are pixels but must be multiples of 8:
   BG0 text sits on the 8×8 tile grid.
 - **UI text placeholders** (HUD, menu titles / options / texts): `{var}` a variable, `{var:02}` at
-  least 2 digits, `{var.field}` a field of the species whose number (nodes.json order, from 0) is in
+  least 2 digits, `{var:time}` seconds as minutes:seconds (`03:42`; a negative value prints `--:--`, "no
+  time yet"), `{var.field}` a field of the species whose number (nodes.json order, from 0) is in
   `var`: `name`, `type`, `move1`…`move3`; `{var|a|b|c}` one of the words, picked by the value (0 = first,
-  past the end = last).
+  past the end = last). On a list variable each of these takes the slot another variable picks:
+  `{best_time[chosen]:time}`.
 
 ---
 
@@ -634,7 +640,8 @@ animation events, etc. Format: `{ "do": "<action>", ...params }`, run in order; 
 the list. Catalog in `catalog/actions.json`. Starter set:
 `goto_scene`, `fade_in`, `fade_out`, `wait`, `play_sfx`, `play_music`, `stop_music`,
 `set_var`, `add_var` (both take `value` or `from` another variable; `add_var` can cap at `max_var`),
-`reset_vars` (skips persistent variables), `if_var` (`then[]`/`else[]`), `if_chance` (`percent`,
+`reset_vars` (skips persistent variables), `if_var` (`value` or `from` another variable, `then[]`/`else[]`;
+the three take `index` on a list variable, §5.2), `if_chance` (`percent`,
 `then[]`/`else[]`, random drops), `show_dialog`, `open_menu`,
 `close_menu`, `spawn`, `destroy_self`, `shake_camera`, `save_game`, `load_game`, `call` (custom C, §7.3),
 `show_hud` (switch HUD, e.g. after an intro), `flash_screen` (white flash), `cover_screen` (a drifting
@@ -665,7 +672,7 @@ src/engine/
 ├── core.c/.h      main loop, VBlank wait, frame counter
 ├── input.c/.h     pressed / held / released for every button
 ├── fixed.h        fixed-point 24.8 math, sin/cos table, rng
-├── vars.c/.h      game variables (get / set / add by id)
+├── vars.c/.h      game variables (get / set / add by id; a list variable's slots follow its id)
 ├── scene.c/.h     load / unload scenes, spawn instances, transitions and fades
 ├── actor.iwram.c/.h   actor pool (in EWRAM), runs each actor's logic list every tick
 ├── physics.iwram.c/.h gravity, tile collision (solid/one_way/hazard/ladder), actor overlaps

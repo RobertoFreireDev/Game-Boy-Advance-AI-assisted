@@ -21,7 +21,7 @@ struct Action {
     s16 var;            // variable argument (VAR_*), -1 = none
     s16 var_from;       // set_var / add_var: use this variable's value instead of a, -1 = none
     s16 var_max;        // add_var: never go above this variable, -1 = none
-    s16 pad;
+    s16 var_index;      // set_var / add_var / if_var on a list: this variable's value picks the slot, -1 = none
     s32 a, b;           // number arguments (ticks, value, x/y, strength, percent)
     ActionList then_list, else_list;
     ActionFn fn;        // 'call' target
@@ -161,11 +161,15 @@ enum { HUD_TEXT, HUD_ICON, HUD_ICON_REPEAT, HUD_BAR, HUD_GAUGE };
 //   \002 v        {var:02}         at least 2 digits
 //   \003 v f      {var.field}      f = 1 name, 2 type, 3 move1, 4 move2, 5 move3 of species #var
 //   \004 v n ...  {var|a|b|...}    n choices, each ended by \005; prints choice #var
+//   \006 v        {var:time}       seconds as minutes:seconds (03:42); negative = --:--
+//   \007 i        {list[i]...}     before one of the above: its v is a list, read slot #i of it
 #define TXT_VAR     '\001'
 #define TXT_VAR02   '\002'
 #define TXT_SPECIES '\003'
 #define TXT_PICK    '\004'
 #define TXT_PICKEND '\005'
+#define TXT_TIME    '\006'
+#define TXT_INDEX   '\007'
 
 typedef struct {
     u8 kind, x, y, max;                 // x, y in tiles
@@ -328,6 +332,7 @@ extern const GameData g_game;
 extern const s32 g_var_initial[VAR_ARRAY_SIZE];
 extern const u8 g_var_persistent[VAR_ARRAY_SIZE];  // 1 = kept by reset_vars (permanent unlocks)
 extern const u16 g_var_key[VAR_ARRAY_SIZE];        // each variable's save key (from its name)
+extern const u8 g_var_len[VAR_ARRAY_SIZE];         // slots from this one to the end of its list (1 = last)
 extern const BehaviorDef g_behaviors[BHV_ARRAY_SIZE];
 
 #endif
