@@ -377,14 +377,16 @@ groups them for humans. **What an actor does comes only from its `logic` list.**
   foes in view; `range` = how close a foe must be to use it). The `count` zones of one use (Rock Slide's
   rocks) hurt a foe they all touch only once. Its last flicker is cut short so nothing is
   drawn once it stops hurting, and a flickering effect must live longer than `every` (no blinking out).
-  A zone lights at most 16 effect pieces at once: a big one sets `cell` (w and h its multiples) and plays its
-  effect once in the middle of each cell×cell block, a picture that covers its whole block (Toxic's 9×9 cloud:
+  A zone lights at most 25 effect pieces at once: a big one sets `cell` and plays its effect once in the
+  middle of each cell×cell block, a picture that covers its whole block but the hit margin (Toxic's 9×9 cloud:
   `cell` 3, 32×32 gas pieces 24 px apart, its haze repeating every 24 px so the pieces join without seams).
+  When w or h isn't a multiple of `cell`, the blocks are centered on the zone and the outer ones overhang it
+  equally (Sandstorm's 9×9: `cell` 2, a 16×16 swirl on every other tile, 5×5 of them, half a tile past each side).
   `self` = `buff {kind: fly|phase, ticks}` (fly: only a `shadow` shows, can't be hit, passes over monsters;
-  phase: passes through them). `status {kind: par|psn|tox|freeze, chance %, ticks [min,max]}` (paralysis:
+  phase: passes through them). `status {kind: par|psn|tox|freeze|blind, chance %, ticks [min,max]}` (paralysis:
   no moving or attacking, flashes yellow; poison: 1 damage a second; toxic: 1, 2, 3… a second; freeze: no
-  moving or attacking). `push {px 1-64, ticks 1-60}` (not `self`): every foe it reaches slides `px` px
-  straight away from the user in `ticks` ticks, fast then slowing down (along a wall it meets; held where a
+  moving or attacking; blind: it walks, but can't use a move). `push {px 1-64, ticks 1-60}` (not `self`):
+  every foe it reaches slides `px` px straight away from the user in `ticks` ticks, fast then slowing down (along a wall it meets; held where a
   wall or a solid monster is in the way), and can't move or attack while it slides (Phase: 16 even rings,
   every monster within 32 px of the user's middle shoved 32 px). A wild monster's move that would hurt no one doesn't fire and keeps its charge (self
   moves always fire); the player's moves always go off (aiming is their job): with no foe in range the effect
@@ -404,7 +406,7 @@ groups them for humans. **What an actor does comes only from its `logic` list.**
   flicker waits for its travel. **Only a picture**: who is hurt and when doesn't change (the hit lands the
   moment the move is used; the travel hurts no one). Whole-screen moves, screen zones, zones around the
   user and center zones (falling rocks, timed to land when they hurt) play as they are.
-  `on_use[]` runs as the user each time (e.g. `cover_screen` for a sandstorm). `sfx` plays when it goes
+  `on_use[]` runs as the user each time (e.g. `cover_screen` to hide the world). `sfx` plays when it goes
   off, except the player's damaging moves that hit at once (not zone / self): they play only the result
   sound. Each use plays one result sound for the best result over its targets (zones: one per frame in
   which they hurt someone).

@@ -3,9 +3,9 @@
   "kind": "object",
   "type": "animation",
   "name": "Sandstorm effect",
-  "notes": "Plays a swirl of sand.",
+  "notes": "The sand swirl turning; it loops for as long as the sandstorm lasts.",
   "sprite": "spr_fx_sand",
-  "loop": false,
+  "loop": true,
   "frames": [
     {
       "frame": "f0",

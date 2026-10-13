@@ -3,11 +3,11 @@
   "kind": "object",
   "type": "particle",
   "name": "Sandstorm effect",
-  "notes": "A swirl of sand, drawn in front of the monsters.",
+  "notes": "One sand swirl of Sandstorm, drawn behind the monsters so they stay in sight. The zone lights one on every other tile (25 of them fill the 9x9 area); each lives 301 ticks, so the swirls whirl for exactly the 5 s the monsters inside stay blinded.",
   "animation": "anim_fx_sand",
   "mode": "burst",
   "count": 1,
-  "lifetime": 16,
+  "lifetime": 301,
   "speed": [
     0,
     0
@@ -17,7 +17,7 @@
     0
   ],
   "gravity": 0,
-  "on_top": true,
+  "on_top": false,
   "children": [
     "anim_fx_sand"
   ]

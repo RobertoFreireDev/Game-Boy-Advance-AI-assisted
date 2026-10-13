@@ -441,6 +441,14 @@ static void dash(Actor *u, s32 tx, s32 ty, int px) {
 }
 
 // ---- zones -------------------------------------------------------------------------------
+// How far a zone's cell x cell blocks overhang it on each side (px), along a side `len` px long:
+// when it isn't a multiple of the block, the blocks are centered on it (0 when it is).
+static s32 cell_overhang(s32 len, s32 size) {
+    s32 span = size;
+    while (span < len) span += size;
+    return (span - len) / 2;
+}
+
 static Zone *zone_add(Actor *user, const MoveData *m, s32 tx, s32 ty) {
     for (int i = 0; i < MAX_ZONES; i++) {
         Zone *z = &s_zones[i];
@@ -462,10 +470,11 @@ static Zone *zone_add(Actor *user, const MoveData *m, s32 tx, s32 ty) {
         if (m->effect && m->fx_l <= m->fx_r) {
             if (m->effect_at == FX_AT_TILES) {
                 s32 half = m->zone_cell * 4;            // from a block's edge to its middle
-                l = z->x + half + m->fx_l;
-                t = z->y + half + m->fx_t;
-                r = z->x + z->w - half + m->fx_r;
-                b = z->y + z->h - half + m->fx_b;
+                s32 ox = cell_overhang(z->w, half * 2), oy = cell_overhang(z->h, half * 2);
+                l = z->x - ox + half + m->fx_l;
+                t = z->y - oy + half + m->fx_t;
+                r = z->x + z->w + ox - half + m->fx_r;
+                b = z->y + z->h + oy - half + m->fx_b;
             } else if (m->effect_at == FX_AT_CENTER) {
                 s32 cx = z->x + z->w / 2, cy = z->y + z->h / 2;
                 l = cx + m->fx_l;
@@ -567,8 +576,9 @@ static void zone_fx(Zone *z) {
         z->arrive = 0;
     }
     int size = m->zone_cell * 8;
-    for (int y = 0; y < z->h; y += size)
-        for (int x = 0; x < z->w; x += size)
+    s32 ox = cell_overhang(z->w, size), oy = cell_overhang(z->h, size);
+    for (s32 y = -oy; y < z->h; y += size)
+        for (s32 x = -ox; x < z->w; x += size)
             for (int i = 0; i < count; i++) {
                 ParticleShot s;
                 particles_aim(d, i, z->x + x + size / 2, z->y + y + size / 2, &s);
@@ -656,7 +666,7 @@ void moves_tick(void) {
 
 // ---- using a move -----------------------------------------------------------------------
 int moves_use(Actor *user, const MoveData *m, int always) {
-    if (!m || !monster_can_act(user)) return USE_NONE;
+    if (!m || !monster_can_attack(user)) return USE_NONE;
     MonsterHit h = hit_from(user, m);
     Actor *first = NULL;                                        // the foe it is aimed at
     strike_begin();

@@ -85,6 +85,11 @@ int monster_can_act(const Actor *a) {
     return m && actor_alive(a) && m->status != STATUS_PAR && m->status != STATUS_FREEZE && !m->shove_ticks;
 }
 
+int monster_can_attack(const Actor *a) {
+    const Monster *m = mon(a);
+    return monster_can_act(a) && m->status != STATUS_BLIND;     // blinded: it walks, but can't use a move
+}
+
 int monster_targetable(const Actor *a) {
     const Monster *m = mon(a);
     return m && actor_alive(a) && m->buff != BUFF_FLY && !monster_ai_asleep(a);

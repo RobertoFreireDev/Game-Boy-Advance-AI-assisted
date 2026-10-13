@@ -78,7 +78,7 @@ void bhv_move_buttons_update(Actor *a, const void *params) {
     }
     st[ST_MISC] = misc;
 
-    int can = monster_can_act(a);
+    int can = monster_can_attack(a);
     const u16 button[3] = { p->button_1, p->button_2, p->button_3 };
     for (int i = 0; i < 3; i++) {                       // A = move 1, B = move 2, R = move 3
         const MoveData *m = sp->moves[i];

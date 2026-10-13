@@ -72,10 +72,10 @@ TILE_FLAGS = ["solid", "one_way", "hazard", "ladder"]
 
 # Monster battles (species / move nodes, game.battle). Order matters: these become C enums.
 MOVE_SHAPES = ["single", "dash", "beam", "circle", "screen", "zone", "self"]
-STATUSES = ["none", "par", "psn", "tox", "freeze"]
+STATUSES = ["none", "par", "psn", "tox", "freeze", "blind"]
 BUFFS = ["none", "fly", "phase"]
 ZONE_PLACES = ["front", "screen", "around"]
-ZONE_MAX_PIECES = 16     # effect pieces a zone lights at once (tiles / cell, x burst count): room for other effects
+ZONE_MAX_PIECES = 25     # effect pieces a zone lights at once (blocks of cell x cell tiles, x burst count): room for other effects
 EFFECT_AT = ["target", "line", "user", "axis", "tiles", "center", "screen"]
 # Where each shape's effect may appear. A move hurts what its effect draws, so the shape decides
 # where the effect goes and the effect decides who is hit (screen: the whole view; self: no one).

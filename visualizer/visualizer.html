@@ -1388,9 +1388,11 @@ function moveLayout(n, hb) {
     const ty = around ? (hb.y + Math.trunc(hb.h / 2)) >> 3 : (0 - 4) >> 3;
     const zx = (tx - Math.floor(w / 2)) * 8, zy = (ty - Math.floor(hgt / 2)) * 8;
     out.zone = { x: zx, y: zy, w: w * 8, h: hgt * 8 };
-    // zone_fx: a piece in the middle of each tile (or each cell x cell block).
+    // zone_fx: a piece in the middle of each tile (or each cell x cell block; when the zone's size
+    // isn't a multiple of the block, the blocks are centered on it: moves.c cell_overhang).
+    const over = len => (Math.ceil(len / size) * size - len) / 2, ox = over(w * 8), oy = over(hgt * 8);
     if (at === "center") out.spots.push([zx + Math.trunc(w * 8 / 2), zy + Math.trunc(hgt * 8 / 2)]);
-    else for (let y = 0; y < hgt * 8; y += size) for (let x = 0; x < w * 8; x += size) out.spots.push([zx + x + size / 2, zy + y + size / 2]);
+    else for (let y = -oy; y < hgt * 8; y += size) for (let x = -ox; x < w * 8; x += size) out.spots.push([zx + x + size / 2, zy + y + size / 2]);
   }
   return out;
 }
@@ -1645,13 +1647,13 @@ PREVIEW.move = (id, n) => {
     h("div", { class: "k" }, "type"), h("div", {}, String(n.monster_type || "").toUpperCase()),
     h("div", { class: "k" }, "hits"), h("div", {}, shapeText),
     h("div", { class: "k" }, "power"), h("div", {}, n.power ? String(n.power) + (n.shape === "zone" && z.every ? ` per hit (on touch, then every ${(z.every / 60).toFixed(1)} s per monster)` : "") : n.status ? "none (status only)" : "none"),
-    h("div", { class: "k" }, "accuracy"), h("div", {}, n.power ? (n.accuracy ? n.accuracy + "% (a miss shows MISS)" : "never misses") : "—"),
+    h("div", { class: "k" }, "accuracy"), h("div", {}, n.shape === "zone" ? "never misses (the ground)" : n.power ? (n.accuracy ? n.accuracy + "% (a miss shows MISS)" : "never misses") : "—"),
     h("div", { class: "k" }, "charge (player)"), h("div", {}, `${n.charge} ticks (${(n.charge / 60).toFixed(1)} s)`),
     h("div", { class: "k" }, "animation"), h("div", {}, [].concat(stepsText, mvSteps ? h("span", { class: "small" }, " — only a picture: the hit lands the moment the move is used") : [])),
     n.status ? h("div", { class: "k" }, "status") : null,
-    n.status ? h("div", {}, `${st.chance}% chance: ${{ par: "paralyzed (can't move or attack, flashes yellow)", psn: "poisoned (1 damage a second)", tox: "badly poisoned (1, 2, 3... damage a second)", freeze: "frozen (can't move or attack)" }[st.kind] || st.kind} for ${(st.ticks || [0, 0]).map(t => (t / 60).toFixed(1)).join("-")} s`) : null,
+    n.status ? h("div", {}, `${st.chance}% chance: ${{ par: "paralyzed (can't move or attack, flashes yellow)", psn: "poisoned (1 damage a second)", tox: "badly poisoned (1, 2, 3... damage a second)", freeze: "frozen (can't move or attack)", blind: "blinded (can still move, but can't use a move)" }[st.kind] || st.kind} for ${(st.ticks || [0, 0]).map(t => (t / 60).toFixed(1)).join("-")} s`) : null,
     n.zone ? h("div", { class: "k" }, "zone") : null,
-    n.zone ? h("div", {}, `${z.w}×${z.h} tiles${z.place === "screen" ? ", on screen spots (each near a monster in view)" : z.place === "around" ? ", around the user (it stands on the middle tile)" : ", in front"}${(z.cell || 1) > 1 ? `, its effect drawn once per ${z.cell}×${z.cell} tiles` : ""}${z.delay ? `, lands after ${(z.delay / 60).toFixed(1)} s` : ""}, lasts ${(z.ticks || [0, 0]).map(t => (t / 60).toFixed(1)).join("-")} s${z.every ? `, hurts a monster as soon as it steps on, then every ${(z.every / 60).toFixed(1)} s while it stays (each monster has its own timer)` : ", one hit"}`) : null,
+    n.zone ? h("div", {}, `${z.w}×${z.h} tiles${z.place === "screen" ? ", on screen spots (each near a monster in view)" : z.place === "around" ? ", around the user (it stands on the middle tile)" : ", in front"}${(z.cell || 1) > 1 ? `, its effect drawn once per ${z.cell}×${z.cell} tiles` : ""}${z.delay ? `, lands after ${(z.delay / 60).toFixed(1)} s` : ""}${z.every ? `, lasts ${(z.ticks || [0, 0]).map(t => (t / 60).toFixed(1)).join("-")} s, hurts a monster as soon as it steps on, then every ${(z.every / 60).toFixed(1)} s while it stays (each monster has its own timer)` : ", one hit"}`) : null,
     n.push ? h("div", { class: "k" }, "push") : null,
     n.push ? h("div", {}, `every monster it reaches slides ${push.px} px straight away from the user in ${push.ticks} ticks (${(push.ticks / 60).toFixed(2)} s), fast at first, then slowing down; walls and other monsters stop it, and it can't move or attack while it slides`) : null,
     n.buff ? h("div", { class: "k" }, "buff") : null,

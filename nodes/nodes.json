@@ -587,8 +587,6 @@
     {"id": "icon_gauge_6", "kind": "object", "type": "icon", "path": "objects/icon/icon_gauge_6.json", "parent": "hud_run"},
     {"id": "icon_arrow_l", "kind": "object", "type": "icon", "path": "objects/icon/icon_arrow_l.json", "parent": "hud_select"},
     {"id": "icon_arrow_r", "kind": "object", "type": "icon", "path": "objects/icon/icon_arrow_r.json", "parent": "hud_select"},
-    {"id": "pal_sand", "kind": "object", "type": "palette", "path": "objects/palette/pal_sand.json", "parent": null},
-    {"id": "icon_sand", "kind": "object", "type": "icon", "path": "objects/icon/icon_sand.json", "parent": null},
     {"id": "hud_select", "kind": "object", "type": "hud", "path": "objects/hud/hud_select.json", "parent": null},
     {"id": "hud_run", "kind": "object", "type": "hud", "path": "objects/hud/hud_run.json", "parent": null},
     {"id": "hud_game_over", "kind": "object", "type": "hud", "path": "objects/hud/hud_game_over.json", "parent": null},
