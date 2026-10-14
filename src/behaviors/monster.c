@@ -51,6 +51,11 @@ static Monster *mon(const Actor *a) {
     return (a && a->active && actor_logic_index(a, BHV_MONSTER) >= 0) ? &s_mon[actor_index(a)] : NULL;
 }
 
+// A game variable's value, or 0 when the param names none (the player's boosts).
+static s32 var_or_0(s16 var) {
+    return var >= 0 ? vars_get(var) : 0;
+}
+
 // The colors it flashes when a move hits it: its own (wild monsters: red), else the game's (white).
 static const PaletteData *hit_palette(const Params_monster *p) {
     return p && p->flash_palette ? p->flash_palette : g_game.battle->flash_palette;
@@ -73,7 +78,11 @@ int monster_level(const Actor *a) {
 
 int monster_power(const Actor *a) {
     const Monster *m = mon(a);
-    return m ? m->power : 100;
+    return m ? m->power + var_or_0(params_of(a)->power_var) : 100;
+}
+
+int monster_aim(const Actor *a) {
+    return mon(a) ? var_or_0(params_of(a)->aim_var) : 0;
 }
 
 fixed monster_speed(const Actor *a, fixed speed) {
@@ -326,8 +335,11 @@ int monster_hit(Actor *t, const MonsterHit *h) {
     int result = HIT_NONE;
     if (!m || !b || !actor_alive(t)) return HIT_NONE;
     tag_off(t, m);
+    const Params_monster *tp = params_of(t);
     if (mv->power > 0) {
-        if (h->roll && mv->accuracy < 100 && rng_range(1, 100) > mv->accuracy) {
+        // It hits on accuracy %: the move's, + the user's aim, - the target's dodge (zones never miss).
+        s32 acc = (s32)mv->accuracy + h->aim - var_or_0(tp->dodge_var);
+        if (h->roll && acc < 100 && rng_range(1, 100) > acc) {
             say(t, BT_MISS, NULL, 0);
             return HIT_MISS;
         }
@@ -341,7 +353,6 @@ int monster_hit(Actor *t, const MonsterHit *h) {
         if (pct > 100) { say(t, BT_SUPER, NULL, 1); result = HIT_SUPER; }
         else if (pct < 100) { say(t, BT_WEAK, NULL, 1); result = HIT_WEAK; }
         else result = HIT_NORMAL;
-        const Params_monster *tp = params_of(t);
         t->flash_pal = hit_palette(tp);
         t->flash = (u8)tp->flash_ticks;
         m->flashes = (u8)(tp->flash_ticks > 0 && tp->flashes > 1 ? tp->flashes - 1 : 0);

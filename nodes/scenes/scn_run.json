@@ -3,7 +3,7 @@
   "kind": "scene",
   "type": "level",
   "name": "Run",
-  "notes": "The run. The player's monster starts in the middle of the 3x3-screen world; 27 wild monsters live around it (3 per screen: levels 2 near the center, 4 and 6 farther out), but the player's own species stays away, leaving 24, plus the sleeping Alpha in the south-east clearing. Defeat all 25 to win; if HP runs out it's game over.",
+  "notes": "The run. The player's monster starts in the middle of the 3x3-screen world; 27 wild monsters live around it (3 per screen: levels 2 near the center, 4 and 6 farther out), but the player's own species stays away, leaving 24, plus the sleeping Alpha in the south-east clearing (level 6, +1 each minute up to 14 until it wakes). 5 floor items (Swift Feather, Power Gem, Aim Charm, Mist Orb, Quick Hourglass) each lie at a random one of their 9 spots, one spot per screen; only the player picks them up, each giving a small boost for the rest of the run. Defeat all 25 to win; if HP runs out it's game over.",
   "backdrop": "#78c050",
   "music": "mus_run",
   "camera": {
@@ -381,6 +381,36 @@
       "object": "enm_alpha",
       "x": 576,
       "y": 404
+    },
+    {
+      "id": "swift_feather",
+      "object": "item_swift_feather",
+      "x": 188,
+      "y": 116
+    },
+    {
+      "id": "power_gem",
+      "object": "item_power_gem",
+      "x": 68,
+      "y": 348
+    },
+    {
+      "id": "aim_charm",
+      "object": "item_aim_charm",
+      "x": 252,
+      "y": 212
+    },
+    {
+      "id": "mist_orb",
+      "object": "item_mist_orb",
+      "x": 500,
+      "y": 132
+    },
+    {
+      "id": "quick_hourglass",
+      "object": "item_quick_hourglass",
+      "x": 564,
+      "y": 324
     },
     {
       "id": "hud",

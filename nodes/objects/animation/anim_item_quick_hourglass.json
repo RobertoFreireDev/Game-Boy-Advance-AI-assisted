@@ -1,0 +1,32 @@
+{
+  "id": "anim_item_quick_hourglass",
+  "kind": "object",
+  "type": "animation",
+  "name": "Quick Hourglass bob",
+  "notes": "The Quick Hourglass lying on the ground: it bobs 1 px up and down over its shadow and twinkles once a loop, so it catches the eye on the grass.",
+  "sprite": "spr_items",
+  "loop": true,
+  "frames": [
+    {
+      "frame": "hourglass_rest",
+      "ticks": 10
+    },
+    {
+      "frame": "hourglass_up",
+      "ticks": 10
+    },
+    {
+      "frame": "hourglass_rest",
+      "ticks": 10
+    },
+    {
+      "frame": "hourglass_up",
+      "ticks": 10
+    },
+    {
+      "frame": "hourglass_glint",
+      "ticks": 8
+    }
+  ],
+  "events": []
+}

@@ -1,6 +1,6 @@
 // move_buttons - the player's moves on buttons. Each of the monster's 3 moves recharges on its
-// own timer once it is unlocked (by level). A fires move 1, B fires move 2 and R fires move 3,
-// each on a single press. A ready move always goes off and uses its charge, even with nothing in
+// own timer once it is unlocked (by level; charge_var can make every timer shorter). A fires
+// move 1, B fires move 2 and R fires move 3, each on a single press. A ready move always goes off and uses its charge, even with nothing in
 // reach (aiming is the player's job). The HUD gauges show each charge through game variables.
 // A button whose move is still locked buzzes, and so does any move button while the monster is
 // paralyzed or frozen; a move that went off at nothing plays the miss sound (the hit sounds come
@@ -23,6 +23,16 @@ static s32 gauge(u32 charge, u32 full, int unlocked, int blink) {
     if (!unlocked) return 0;
     if (charge >= full) return blink ? 6 : 5;
     return 1 + (s32)(charge * 4 / (full ? full : 1));
+}
+
+// Ticks a move takes to recharge: its charge, cut by charge_var percent (at most 90 %).
+static u32 full_charge(const Params_move_buttons *p, const MoveData *m) {
+    if (!m) return 1;
+    u32 full = m->charge;
+    s32 cut = p->charge_var >= 0 ? vars_get(p->charge_var) : 0;
+    if (cut > 90) cut = 90;
+    if (cut > 0) full = full * (u32)(100 - cut) / 100;
+    return full ? full : 1;
 }
 
 static int unlocked_at(const Params_move_buttons *p, s32 level) {
@@ -68,14 +78,15 @@ void bhv_move_buttons_update(Actor *a, const void *params) {
     u32 misc = (u32)unlocked;
     for (int i = 0; i < 3; i++) {
         const MoveData *m = sp->moves[i];
+        u32 full = full_charge(p, m);
         u32 blink = (st[ST_MISC] >> shift[i]) & 0xFF;
         if (blink) blink--;
-        if (i < unlocked && m && st[ST_C1 + i] < m->charge) {
-            if (++st[ST_C1 + i] >= m->charge) blink = BLINK_TICKS;
+        if (i < unlocked && m && st[ST_C1 + i] < full) {
+            if (++st[ST_C1 + i] >= full) blink = BLINK_TICKS;
         }
         misc |= blink << shift[i];
         if (gauge_var[i] >= 0)
-            vars_set(gauge_var[i], gauge(st[ST_C1 + i], m ? m->charge : 1, i < unlocked, (blink & 4) != 0));
+            vars_set(gauge_var[i], gauge(st[ST_C1 + i], full, i < unlocked, (blink & 4) != 0));
     }
     st[ST_MISC] = misc;
 
@@ -86,6 +97,6 @@ void bhv_move_buttons_update(Actor *a, const void *params) {
         if (!input_pressed(button[i])) continue;
         if (!can) { if (monster_held(a)) sound(p->locked_sfx); continue; }   // paralyzed: it can't
         if (i >= unlocked || !m) sound(p->locked_sfx);
-        else if (st[ST_C1 + i] >= m->charge && fire(a, p, m)) st[ST_C1 + i] = 0;
+        else if (st[ST_C1 + i] >= full_charge(p, m) && fire(a, p, m)) st[ST_C1 + i] = 0;
     }
 }

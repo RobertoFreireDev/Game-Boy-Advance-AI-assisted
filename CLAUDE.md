@@ -361,7 +361,9 @@ groups them for humans. **What an actor does comes only from its `logic` list.**
   the picker), `cry` (sfx), exactly 3 `moves` (A, B, R). Its number for `species_var` and
   `{var.name}` is its order among the species in nodes.json, from 0.
 - **move**: `title` ≤ 13 chars, `monster_type`, `power` (0 = status only), `accuracy` % (a miss shows
-  MISS; zones never miss), `charge` (ticks to recharge for the player). **A move hurts exactly what its
+  MISS; zones never miss; the user's `monster` `aim_var` adds to it and the target's `dodge_var` takes
+  from it, so a 100 % move can miss a dodging target), `charge` (ticks to recharge for the player; the
+  `move_buttons` `charge_var` cuts it by a percent). **A move hurts exactly what its
   effect draws**: every foe whose hitbox comes within `MOVE_HIT_MARGIN` (2) px of the effect's picture —
   the opaque pixels of every frame its animation shows (codegen bakes the box into the move), at every
   spot each particle is drawn in its flight (particles flying off at random angles hurt only where they
@@ -427,7 +429,8 @@ groups them for humans. **What an actor does comes only from its `logic` list.**
   `player_hit_sounds {type: sfx}` (the player's hits sound like their move's type, plus `super` on top
   when super effective, so keep `super` on a channel the type sounds don't use; a missing type uses
   `hit`; wild monsters' hits use `hit` / `super` / `weak`). Damage =
-  power × (1 + 0.15 × (level − 1)) × multiplier × user power %, rounded, at least 1; a hit flashes the
+  power × (1 + 0.15 × (level − 1)) × multiplier × user power % (`power` + its `power_var`), rounded, at
+  least 1 (a wild monster with `level_var` reads its level every tick: a boss that grows); a hit flashes the
   target (`flash_palette`, white, or the monster behavior's own `flash_palette`) `flashes` times for
   `flash_ticks` frames each, with gaps as long (default once for 4: wild monsters blink red 3 times), runs
   its `on_hurt` (the player's shakes the screen 1 px) and pushes it 2 px away (less when a wall or another
@@ -617,12 +620,15 @@ Every channel in a pattern has the same number of rows. Missing channels are sil
   the two drift apart 1 px a frame. Knockback and dashes stop at them too (`physics_free_at`).
   Monster bodies use a hitbox the size of the whole picture, so their pictures never overlap either.
 - Starter set: `platformer_controller`, `topdown_controller`, `patrol`, `chase_player`,
-  `follow_path`, `solid_platform`, `health`, `damage_on_touch`, `stompable`, `collectible`,
+  `follow_path`, `solid_platform`, `health`, `damage_on_touch`, `stompable`, `collectible` (`as_player`:
+  its `on_collect` runs as the player, so `float_text` pops over the player), `random_spot` (appears at a
+  random one of its spots each time: floor items; the validator checks every spot is in the map and off
+  solid and hazard tiles, and warns when one is under an `over` layer),
   `trigger_zone`, `talk`, `camera_target`, `spawn_particles`, `button_actions` (a button press runs
   actions, e.g. START opens a pause menu). Top-down set: `sword_attack`,
   `wander`, `locked_door`. Survivors set: `weapon` (auto-fire, level from a variable), `projectile`
   (the shot), `aura`, `swarm` (horde movement with grid-based crowd spreading), `magnet` (pickups fly
-  to the player), `spawn_wave` (timed off-screen waves), `run_clock` (`stop_var` freezes it), `level_up`.
+  to the player), `spawn_wave` (timed off-screen waves), `run_clock` (`stop_var` freezes it; `on_minute` runs actions at each whole minute), `level_up`.
   Monster-battle set: `monster` (species, level, HP, statuses, damage by the type chart, XP and
   levels for the player, fainting, a `level_tag` over a wild monster's head for a while when its whole
   body comes `level_tag_margin` px inside the view below the HUD's top panel, gone when a move reaches
@@ -632,7 +638,7 @@ Every channel in a pattern has the same number of rows. Missing channels are sil
   sleeping boss that with `moves` 3 also uses moves 2 and 3, each on its own recharge (`moves_charge` % of
   the player's) and at its own damage (`moves_power`), an attack being the highest one ready that reaches; keeps `spread` tiles from other wild monsters, walking around them and sliding
   sideways around the player, so a pack spreads out), `move_buttons` (the player's 3 moves on A, B and R, one press each, with charge
-  gauges, a locked-move buzz and a miss sound when a move reaches no one),
+  gauges, a locked-move buzz and a miss sound when a move reaches no one; `charge_var` = a recharge boost),
   `species_select` (the picker's bobbing portrait, Left / Right; species past `unlocked_var` show as a
   silhouette and can't be picked), `drop_in` (a logo or layer that
   falls in and bounces). Add more as games need them.

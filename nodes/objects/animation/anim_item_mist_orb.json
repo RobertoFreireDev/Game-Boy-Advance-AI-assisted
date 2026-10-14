@@ -1,0 +1,32 @@
+{
+  "id": "anim_item_mist_orb",
+  "kind": "object",
+  "type": "animation",
+  "name": "Mist Orb bob",
+  "notes": "The Mist Orb lying on the ground: it bobs 1 px up and down over its shadow and twinkles once a loop, so it catches the eye on the grass.",
+  "sprite": "spr_items",
+  "loop": true,
+  "frames": [
+    {
+      "frame": "orb_rest",
+      "ticks": 10
+    },
+    {
+      "frame": "orb_up",
+      "ticks": 10
+    },
+    {
+      "frame": "orb_rest",
+      "ticks": 10
+    },
+    {
+      "frame": "orb_up",
+      "ticks": 10
+    },
+    {
+      "frame": "orb_glint",
+      "ticks": 8
+    }
+  ],
+  "events": []
+}

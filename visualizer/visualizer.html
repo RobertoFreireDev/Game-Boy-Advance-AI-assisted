@@ -796,11 +796,11 @@ function actionItem(a) {
   }
   return li;
 }
-function valueNode(type, v) {
+function valueNode(type, v, sep) {
   if (type.startsWith("node:") || (typeof v === "string" && IDX[v])) return v ? nodeLink(v) : h("span", { class: "small" }, "(none)");
   if (type === "actions") return actionList(v);
   if (type === "var") return h("b", {}, v || "(none)");
-  if (type === "points") return h("span", { class: "mono" }, (v || []).map(p => `(${p[0]}, ${p[1]})`).join(" → "));
+  if (type === "points") return h("span", { class: "mono" }, (v || []).map(p => `(${p[0]}, ${p[1]})`).join(sep || " → "));
   if (typeof v === "boolean") return h("b", {}, v ? "yes" : "no");
   if (typeof v === "string" && /^#[0-9a-f]{6}$/i.test(v)) return h("span", {}, h("span", { class: "sw", style: "background:" + rgbCss(q15(v)) }), v);
   if (v === undefined) return h("span", { class: "small" }, "—");
@@ -816,7 +816,8 @@ function behaviorCard(entry, overrides) {
     if (p in ov) { v = ov[p]; badge = h("span", { class: "badge over", title: "Changed for this one instance" }, "instance"); }
     else if (p in given) { v = given[p]; badge = h("span", { class: "badge set", title: "Set on the object" }, "set"); }
     else { v = pdef.default; badge = h("span", { class: "badge default", title: "Catalog default" }, "default"); }
-    kv.append(h("div", { class: "k", title: pdef.description || "" }, p), h("div", { class: "v" }, valueNode(pdef.type || "", v), " ", badge));
+    // A path's points run in order; random_spot's spots are just places (no arrows).
+    kv.append(h("div", { class: "k", title: pdef.description || "" }, p), h("div", { class: "v" }, valueNode(pdef.type || "", v, name === "random_spot" ? ",  " : null), " ", badge));
   }
   if (!kv.childNodes.length) kv.append(h("div", { class: "k" }, "(no params)"), h("div"));
   card.append(kv);
@@ -1783,6 +1784,19 @@ function drawScene(ctx, sc, L, tick, ov, layersOnScreen) {
         ctx.strokeStyle = "#ffcf5c"; ctx.setLineDash([2, 2]); ctx.lineWidth = 1 / ov.zoom; ctx.beginPath();
         pts.forEach((p, k) => k ? ctx.lineTo(x + p[0], y + p[1]) : ctx.moveTo(x + p[0], y + p[1])); ctx.stroke(); ctx.setLineDash([]);
       }
+      // random_spot: the other places it may appear this run, drawn faded with a dashed box.
+      const rs = (i.node.logic || []).find(e => e.behavior === "random_spot");
+      if (rs) {
+        const spots = ((i.overrides || {}).random_spot || {}).spots || (rs.params || {}).spots || [];
+        for (const [sx, sy] of spots) {
+          ctx.globalAlpha = 0.45;
+          const g = drawBody(ctx, look.body, (NODES[look.body] || {}).default_animation || "idle", sx, sy, tick, false, look.pal);
+          ctx.globalAlpha = 1;
+          if (!g) continue;
+          ctx.strokeStyle = "#ffcf5c"; ctx.setLineDash([2, 2]); ctx.lineWidth = 1 / ov.zoom; ctx.strokeRect(g.x, g.y, g.w, g.h); ctx.setLineDash([]);
+          hits.push({ inst: i, ...g });
+        }
+      }
     }
   }
   [...L.maps].filter(m => m.node.over).forEach(m => drawSceneMap(ctx, m, L, ov));
@@ -1823,7 +1837,7 @@ function PREVIEW_scene(id, sc) {
   build();
   live(tick => { if (canvas.isConnected) hits = drawScene(ctx, sc, L, tick, ov); });
   const tb = h("div", { class: "toolbar" }, playButtons(), zoomSelect(ov.zoom, z => { ov.zoom = z; build(); }),
-    ...[["Tile grid", "grid"], ["Collision", "coll"], ["Hitboxes", "hitbox"], ["Origins", "origin"], ["Labels", "labels"], ["Paths", "paths"], ["Trigger zones", "zones"], ["Screen frame", "frame"]].map(([l, k]) => toggle(l, ov, k, () => {})));
+    ...[["Tile grid", "grid"], ["Collision", "coll"], ["Hitboxes", "hitbox"], ["Origins", "origin"], ["Labels", "labels"], ["Paths & random spots", "paths"], ["Trigger zones", "zones"], ["Screen frame", "frame"]].map(([l, k]) => toggle(l, ov, k, () => {})));
   const table = h("table", { class: "inst-table" }, h("tr", {}, h("th", {}, "instance"), h("th", {}, "object"), h("th", {}, "x, y"), h("th", {}, "per-instance changes")));
   for (const i of L.insts) table.append(h("tr", {}, h("td", { class: "mono" }, i.id), h("td", {}, nodeLink(i.object)), h("td", { class: "mono" }, i.x === undefined ? "—" : `${i.x}, ${i.y}`),
     h("td", {}, i.overrides ? Object.entries(i.overrides).map(([b, ps]) => h("div", {}, h("span", { class: "badge over" }, b), " ", Object.entries(ps).map(([k, v]) => k + " = " + JSON.stringify(v)).join(", "))) : "")));

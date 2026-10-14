@@ -15,7 +15,8 @@ enum { HIT_NONE, HIT_MISS, HIT_WEAK, HIT_NORMAL, HIT_SUPER };
 typedef struct {
     const MoveData *move;
     u8 team, level, roll;           // roll: 1 = roll the move's accuracy
-    u16 power;                      // damage percent of the user (Alpha 150)
+    u16 power;                      // damage percent of the user (Alpha 150; + the player's power boost)
+    s16 aim;                        // accuracy points the user adds to the move's (the player's aim boost)
     s32 from_x, from_y;             // where it came from (the target is pushed away from it)
 } MonsterHit;
 
@@ -30,8 +31,10 @@ const SpeciesData *monster_species(const Actor *a);
 int monster_team(const Actor *a);
 // Its level (the player's comes from a variable).
 int monster_level(const Actor *a);
-// Damage percent of its moves (100, Alpha 150).
+// Damage percent of its moves (100, Alpha 150), plus its power_var boost.
 int monster_power(const Actor *a);
+// Accuracy points it adds to its moves (its aim_var boost; 0 for most).
+int monster_aim(const Actor *a);
 // A walking speed at its species' pace (a slower species, e.g. a long-range one); others: as is.
 fixed monster_speed(const Actor *a, fixed speed);
 // True if it is a monster that can move and attack now (not paralyzed, frozen, pushed or fainted).
@@ -42,8 +45,8 @@ int monster_held(const Actor *a);
 int monster_targetable(const Actor *a);
 // True if b is a monster that a's moves can hit (the other team, and targetable).
 int monster_is_foe(const Actor *a, const Actor *b);
-// A move hits monster t: accuracy, damage, words, flash, push, status, XP, fainting, and the
-// move's own push (t slides away from the hit, unable to move or attack until it stops).
+// A move hits monster t: accuracy (the move's + the user's aim - t's dodge), damage, words,
+// flash, push, status, XP, fainting, and the move's own push (t slides away from the hit, unable to move or attack until it stops).
 // Returns HIT_*; it plays no sound (the caller plays one per use with monster_hit_sound).
 int monster_hit(Actor *t, const MonsterHit *h);
 // The sound of a hit result: MISS, or the player's type hit (+ the super ping), or hit / super / weak.

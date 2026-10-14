@@ -1,4 +1,4 @@
-// run_clock - counts play time in seconds (and mm:ss).
+// run_clock - counts play time in seconds (and mm:ss); runs actions each whole minute.
 #ifndef BHV_RUN_CLOCK_H
 #define BHV_RUN_CLOCK_H
 

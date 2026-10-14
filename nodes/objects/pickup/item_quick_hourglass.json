@@ -1,0 +1,70 @@
+{
+  "id": "item_quick_hourglass",
+  "kind": "object",
+  "type": "pickup",
+  "name": "Quick Hourglass",
+  "notes": "A floor item (an hourglass with cream caps and yellow sand running down). Only the player can pick it up: walking into it plays the item chime, floats '-10% RECHARGE' over the player and keeps the boost until the run ends. All 3 of the player's moves take 10% less time to recharge for the rest of the run (move_buttons charge_var): move 1 in 2.7 s instead of 3 s, move 2 in 9 s instead of 10 s. It lies at a random one of 9 spots each run (one per screen of the map, all reachable and out from under the tree tops, away from the start, the monsters' homes and the sleeping Alpha); the scene places it at the first.",
+  "body": "body_item_quick_hourglass",
+  "logic": [
+    {
+      "behavior": "random_spot",
+      "params": {
+        "spots": [
+          [
+            236,
+            156
+          ],
+          [
+            188,
+            164
+          ],
+          [
+            204,
+            372
+          ],
+          [
+            308,
+            140
+          ],
+          [
+            436,
+            188
+          ],
+          [
+            476,
+            340
+          ],
+          [
+            556,
+            124
+          ],
+          [
+            484,
+            268
+          ]
+        ]
+      }
+    },
+    {
+      "behavior": "collectible",
+      "params": {
+        "var": "boost_charge",
+        "amount": 10,
+        "as_player": true,
+        "on_collect": [
+          {
+            "do": "float_text",
+            "text": "-10% RECHARGE",
+            "palette": "pal_txt_yellow"
+          }
+        ]
+      }
+    }
+  ],
+  "sounds": {
+    "collect": "sfx_item"
+  },
+  "children": [
+    "body_item_quick_hourglass"
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "id": "anim_item_aim_charm",
+  "kind": "object",
+  "type": "animation",
+  "name": "Aim Charm bob",
+  "notes": "The Aim Charm lying on the ground: it bobs 1 px up and down over its shadow and twinkles once a loop, so it catches the eye on the grass.",
+  "sprite": "spr_items",
+  "loop": true,
+  "frames": [
+    {
+      "frame": "target_rest",
+      "ticks": 10
+    },
+    {
+      "frame": "target_up",
+      "ticks": 10
+    },
+    {
+      "frame": "target_rest",
+      "ticks": 10
+    },
+    {
+      "frame": "target_up",
+      "ticks": 10
+    },
+    {
+      "frame": "target_glint",
+      "ticks": 8
+    }
+  ],
+  "events": []
+}

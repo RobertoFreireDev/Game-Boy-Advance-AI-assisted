@@ -1,0 +1,70 @@
+{
+  "id": "item_swift_feather",
+  "kind": "object",
+  "type": "pickup",
+  "name": "Swift Feather",
+  "notes": "A floor item (a pale blue feather with a grey shaft). Only the player can pick it up: walking into it plays the item chime, floats '+10% SPEED' over the player and keeps the boost until the run ends. The player walks 10% faster for the rest of the run (topdown_controller speed_var: each point of boost_speed is +10%). It lies at a random one of 9 spots each run (one per screen of the map, all reachable and out from under the tree tops, away from the start, the monsters' homes and the sleeping Alpha); the scene places it at the first.",
+  "body": "body_item_swift_feather",
+  "logic": [
+    {
+      "behavior": "random_spot",
+      "params": {
+        "spots": [
+          [
+            236,
+            260
+          ],
+          [
+            148,
+            420
+          ],
+          [
+            316,
+            84
+          ],
+          [
+            380,
+            164
+          ],
+          [
+            324,
+            412
+          ],
+          [
+            644,
+            84
+          ],
+          [
+            540,
+            252
+          ],
+          [
+            500,
+            420
+          ]
+        ]
+      }
+    },
+    {
+      "behavior": "collectible",
+      "params": {
+        "var": "boost_speed",
+        "amount": 1,
+        "as_player": true,
+        "on_collect": [
+          {
+            "do": "float_text",
+            "text": "+10% SPEED",
+            "palette": "pal_txt_yellow"
+          }
+        ]
+      }
+    }
+  ],
+  "sounds": {
+    "collect": "sfx_item"
+  },
+  "children": [
+    "body_item_swift_feather"
+  ]
+}

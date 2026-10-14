@@ -1,0 +1,32 @@
+{
+  "id": "anim_item_power_gem",
+  "kind": "object",
+  "type": "animation",
+  "name": "Power Gem bob",
+  "notes": "The Power Gem lying on the ground: it bobs 1 px up and down over its shadow and twinkles once a loop, so it catches the eye on the grass.",
+  "sprite": "spr_items",
+  "loop": true,
+  "frames": [
+    {
+      "frame": "gem_rest",
+      "ticks": 10
+    },
+    {
+      "frame": "gem_up",
+      "ticks": 10
+    },
+    {
+      "frame": "gem_rest",
+      "ticks": 10
+    },
+    {
+      "frame": "gem_up",
+      "ticks": 10
+    },
+    {
+      "frame": "gem_glint",
+      "ticks": 8
+    }
+  ],
+  "events": []
+}

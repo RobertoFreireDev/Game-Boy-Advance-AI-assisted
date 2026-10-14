@@ -1,0 +1,70 @@
+{
+  "id": "item_power_gem",
+  "kind": "object",
+  "type": "pickup",
+  "name": "Power Gem",
+  "notes": "A floor item (a red faceted gem). Only the player can pick it up: walking into it plays the item chime, floats '+10% POWER' over the player and keeps the boost until the run ends. Every move of the player does 10% more damage for the rest of the run, ground zones included (monster power_var). It lies at a random one of 9 spots each run (one per screen of the map, all reachable and out from under the tree tops, away from the start, the monsters' homes and the sleeping Alpha); the scene places it at the first.",
+  "body": "body_item_power_gem",
+  "logic": [
+    {
+      "behavior": "random_spot",
+      "params": {
+        "spots": [
+          [
+            132,
+            92
+          ],
+          [
+            116,
+            300
+          ],
+          [
+            380,
+            116
+          ],
+          [
+            244,
+            300
+          ],
+          [
+            260,
+            388
+          ],
+          [
+            500,
+            76
+          ],
+          [
+            612,
+            252
+          ],
+          [
+            644,
+            396
+          ]
+        ]
+      }
+    },
+    {
+      "behavior": "collectible",
+      "params": {
+        "var": "boost_power",
+        "amount": 10,
+        "as_player": true,
+        "on_collect": [
+          {
+            "do": "float_text",
+            "text": "+10% POWER",
+            "palette": "pal_txt_yellow"
+          }
+        ]
+      }
+    }
+  ],
+  "sounds": {
+    "collect": "sfx_item"
+  },
+  "children": [
+    "body_item_power_gem"
+  ]
+}

@@ -1,0 +1,70 @@
+{
+  "id": "item_aim_charm",
+  "kind": "object",
+  "type": "pickup",
+  "name": "Aim Charm",
+  "notes": "A floor item (a red and white target). Only the player can pick it up: walking into it plays the item chime, floats '-5% MISS' over the player and keeps the boost until the run ends. The player's moves miss 5% less for the rest of the run: their accuracy goes up 5 points, so a 95% move never misses and a 90% one hits 95% of the time (monster aim_var). It lies at a random one of 9 spots each run (one per screen of the map, all reachable and out from under the tree tops, away from the start, the monsters' homes and the sleeping Alpha); the scene places it at the first.",
+  "body": "body_item_aim_charm",
+  "logic": [
+    {
+      "behavior": "random_spot",
+      "params": {
+        "spots": [
+          [
+            92,
+            156
+          ],
+          [
+            188,
+            308
+          ],
+          [
+            92,
+            412
+          ],
+          [
+            460,
+            76
+          ],
+          [
+            364,
+            340
+          ],
+          [
+            644,
+            156
+          ],
+          [
+            532,
+            172
+          ],
+          [
+            516,
+            356
+          ]
+        ]
+      }
+    },
+    {
+      "behavior": "collectible",
+      "params": {
+        "var": "boost_aim",
+        "amount": 5,
+        "as_player": true,
+        "on_collect": [
+          {
+            "do": "float_text",
+            "text": "-5% MISS",
+            "palette": "pal_txt_yellow"
+          }
+        ]
+      }
+    }
+  ],
+  "sounds": {
+    "collect": "sfx_item"
+  },
+  "children": [
+    "body_item_aim_charm"
+  ]
+}

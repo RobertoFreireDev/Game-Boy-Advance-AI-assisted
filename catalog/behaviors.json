@@ -114,7 +114,14 @@
     "params": {
       "var":         {"type": "var", "default": "", "description": "Game variable to add to. Empty = none."},
       "amount":      {"type": "int", "default": 1, "description": "How much to add."},
-      "on_collect":  {"type": "actions", "default": [], "description": "What happens when picked up."}
+      "on_collect":  {"type": "actions", "default": [], "description": "What happens when picked up."},
+      "as_player":   {"type": "bool", "default": false, "description": "on_collect runs as the player who picked it up instead of as the item, so float_text pops up over the player (+10% SPEED)."}
+    }
+  },
+  "random_spot": {
+    "description": "When it appears, it moves to a spot picked at random: where it was placed in the scene, or one of its other spots, each as likely, so it lies somewhere else every time (floor items). Put it first in the logic list. Give each object its own spots so two never land on the same one. The validator checks that every spot is inside the collision map and off solid and hazard tiles, and warns when one is under the tree tops (an 'over' layer).",
+    "params": {
+      "spots":       {"type": "points", "required": true, "description": "The other places it may appear, as [x, y] scene pixels (where its origin goes: an item's feet), up to 32."}
     }
   },
   "trigger_zone": {
@@ -227,12 +234,13 @@
     }
   },
   "run_clock": {
-    "description": "Counts play time: adds 1 to a seconds variable every 60 ticks and keeps minutes / seconds variables for a mm:ss display. Stops while a menu pauses the game, or when its stop variable is set.",
+    "description": "Counts play time: adds 1 to a seconds variable every 60 ticks and keeps minutes / seconds variables for a mm:ss display, and runs on_minute each time a whole minute has passed (a boss that grows stronger the longer the run takes). Stops while a menu pauses the game, or when its stop variable is set.",
     "params": {
       "total_var":    {"type": "var", "required": true, "description": "Game variable counting seconds since the run started."},
       "minutes_var":  {"type": "var", "default": "", "description": "Game variable set to the whole minutes. Empty = none."},
       "seconds_var":  {"type": "var", "default": "", "description": "Game variable set to the seconds within the minute (0-59). Empty = none."},
-      "stop_var":     {"type": "var", "default": "", "description": "The clock stops while this game variable is not 0 (the run is won or lost). Empty = never stops."}
+      "stop_var":     {"type": "var", "default": "", "description": "The clock stops while this game variable is not 0 (the run is won or lost). Empty = never stops."},
+      "on_minute":    {"type": "actions", "default": [], "description": "What happens each time the clock reaches a whole minute (1:00, 2:00, ...), run as the object with the clock."}
     }
   },
   "level_up": {
@@ -254,7 +262,7 @@
     }
   },
   "monster": {
-    "description": "A creature of a monster-battle game. It takes its look, type and 3 moves from a species node, and has a level and hit points. Moves that hit it use the type chart (game.battle) for damage, can MISS, flash it (white, or its own flash_palette, once or a few times), push it back 2 px (not into a wall or another monster) and may paralyze or poison it; floating words show what happened. A paralyzed monster (the player's too) zaps when it happens, then stops dead in its pose, trembles, flickers yellow and has sparks crackling over it (game.battle par_effect) until it can move again. When its hit points run out it faints (flashes and blinks out). With level_tag, a wild monster shows its level over its head for a few seconds when it comes into view. The player's version keeps hit points, level and XP in game variables and levels up (each level up raises its maximum hit points and heals it to full).",
+    "description": "A creature of a monster-battle game. It takes its look, type and 3 moves from a species node, and has a level and hit points. Moves that hit it use the type chart (game.battle) for damage, can MISS, flash it (white, or its own flash_palette, once or a few times), push it back 2 px (not into a wall or another monster) and may paralyze or poison it; floating words show what happened. A paralyzed monster (the player's too) zaps when it happens, then stops dead in its pose, trembles, flickers yellow and has sparks crackling over it (game.battle par_effect) until it can move again. When its hit points run out it faints (flashes and blinks out). With level_tag, a wild monster shows its level over its head for a few seconds when it comes into view. A monster with level_var reads its level from that variable every tick (a boss that grows stronger while it sleeps). Boost variables can raise its damage (power_var) and accuracy (aim_var) and make moves miss it more (dodge_var). The player's version keeps hit points, level and XP in game variables and levels up (each level up raises its maximum hit points and heals it to full).",
     "params": {
       "species":      {"type": "node:species", "default": "", "description": "Its species. Empty = use species_var or random."},
       "species_var":  {"type": "var", "default": "", "description": "Game variable holding the species number (order of the species nodes, from 0): the player's pick. Empty = use 'species'."},
@@ -263,6 +271,9 @@
       "level":        {"type": "int", "default": 1, "description": "Level, for damage (when level_var is empty)."},
       "hp":           {"type": "int", "default": 30, "description": "Hit points (when hp_var is empty)."},
       "power":        {"type": "int", "default": 100, "description": "Damage of its moves, in percent (an Alpha hits harder: 150)."},
+      "power_var":    {"type": "var", "default": "", "description": "Game variable added to 'power' (percent): a damage boost for all its moves, ground zones included (10 = +10%). Empty = none."},
+      "aim_var":      {"type": "var", "default": "", "description": "Game variable added to the accuracy of its moves (percent points): 5 = a 95% move hits 100% of the time. Ground zones never miss anyway. Empty = none."},
+      "dodge_var":    {"type": "var", "default": "", "description": "Game variable taken off the accuracy of the moves that hit it (percent points): 10 = a 95% move hits only 85% of the time, and even a 100% move can miss. Ground zones never miss. Empty = none."},
       "alpha":        {"type": "bool", "default": false, "description": "Draw it in its species' Alpha colors."},
       "crown":        {"type": "node:sprite", "default": "", "description": "Sprite drawn over its head, its 2 frames shimmering (the Alpha's crown). Empty = none."},
       "aura":         {"type": "node:particle", "default": "", "description": "Sparkles that keep rising around it. Empty = none."},
@@ -279,7 +290,7 @@
       "kills_var":    {"type": "var", "default": "", "description": "Game variable that goes up by 1 when this monster faints. Empty = none."},
       "hp_var":       {"type": "var", "default": "", "description": "Game variable holding its hit points (the player's, shown on the HUD). Empty = private hit points."},
       "hp_max_var":   {"type": "var", "default": "", "description": "Game variable holding its maximum hit points (raised on level up, when the hit points are also refilled to it)."},
-      "level_var":    {"type": "var", "default": "", "description": "Game variable holding its level. Empty = the 'level' param."},
+      "level_var":    {"type": "var", "default": "", "description": "Game variable holding its level, read every tick (a wild monster's level can change while it lives). Empty = the 'level' param."},
       "xp_var":       {"type": "var", "default": "", "description": "Game variable collecting its XP (the player): reaching the next total levels it up. Empty = no leveling."},
       "xp_pct_var":   {"type": "var", "default": "", "description": "Game variable kept at 0-100 = progress to the next level (for an XP bar). Empty = none."},
       "xp_per_hit":   {"type": "int", "default": 2, "description": "XP this monster (the player) gets for every hit that damages a wild monster, poison and ground damage included."},
@@ -327,7 +338,8 @@
       "unlocked_var":      {"type": "var", "default": "", "description": "Game variable set to how many moves are unlocked (1-3). Empty = none."},
       "on_unlock":         {"type": "actions", "default": [], "description": "What happens when a move unlocks (NEW MOVE!)."},
       "locked_sfx":        {"type": "node:sfx", "default": "", "description": "Sound when a move's button is pressed but the move is still locked, or while the monster is paralyzed or frozen (an error buzz). Empty = silent."},
-      "miss_sfx":          {"type": "node:sfx", "default": "", "description": "Sound when a charged move goes off but reaches nothing (it still uses its charge). Empty = silent."}
+      "miss_sfx":          {"type": "node:sfx", "default": "", "description": "Sound when a charged move goes off but reaches nothing (it still uses its charge). Empty = silent."},
+      "charge_var":        {"type": "var", "default": "", "description": "Game variable with a percent cut from every move's recharge time (10 = each move recharges in 90% of its time; at most 90). Empty = none."}
     }
   },
   "species_select": {

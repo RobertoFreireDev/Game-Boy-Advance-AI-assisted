@@ -3,7 +3,7 @@
   "kind": "object",
   "type": "player",
   "name": "Player monster",
-  "notes": "The monster the human picked on the menu (its species comes from 'chosen'). The D-pad walks in 8 directions (diagonals as fast as straight). A = move 1, B = move 2, R = move 3, each on a single press (a move still charging does nothing). A charged move always goes off and uses its charge, even with no monster in reach (aiming is the player's job): its effect plays straight ahead. Moves recharge on their own timers; move 2 unlocks at level 4 and move 3 at level 7. It levels up to level 25. HP starts at 60; each level adds 8 to the max and refills the HP to full (a reward for fighting instead of running). Sounds: B before move 2 unlocks, or R before move 3 unlocks, buzzes (sfx_error); a move that reaches no monster, or one that misses, whiffs (sfx_miss); a hit plays its type's hit sound (game.battle.player_hit_sounds), plus a ping when it is super effective. When a wild monster's move hurts it, it flashes white and the screen shakes a tiny bit (1 pixel, at random up, down and sideways, for 1/6 s), so you feel every hit. START pauses. When its HP runs out it blinks away and the run ends.",
+  "notes": "The monster the human picked on the menu (its species comes from 'chosen'). The D-pad walks in 8 directions (diagonals as fast as straight). A = move 1, B = move 2, R = move 3, each on a single press (a move still charging does nothing). A charged move always goes off and uses its charge, even with no monster in reach (aiming is the player's job): its effect plays straight ahead. Moves recharge on their own timers; move 2 unlocks at level 4 and move 3 at level 7. It levels up to level 25. HP starts at 60; each level adds 8 to the max and refills the HP to full (a reward for fighting instead of running). Sounds: B before move 2 unlocks, or R before move 3 unlocks, buzzes (sfx_error); a move that reaches no monster, or one that misses, whiffs (sfx_miss); a hit plays its type's hit sound (game.battle.player_hit_sounds), plus a ping when it is super effective. When a wild monster's move hurts it, it flashes white and the screen shakes a tiny bit (1 pixel, at random up, down and sideways, for 1/6 s), so you feel every hit. Floor items it walks into boost it for the rest of the run: Swift Feather +10% speed (boost_speed), Power Gem +10% damage (boost_power), Aim Charm 5% fewer misses (boost_aim), Mist Orb wild monsters miss it 10% more (boost_dodge), Quick Hourglass moves recharge 10% faster (boost_charge). Its run clock also raises the sleeping Alpha's level by 1 each whole minute (boss_level, 6 up to 14) until all 24 wild monsters have fainted. START pauses. When its HP runs out it blinks away and the run ends.",
   "logic": [
     {
       "behavior": "monster",
@@ -16,6 +16,9 @@
         "xp_pct_var": "xp_pct",
         "max_level": 25,
         "shadow": "spr_shadow",
+        "power_var": "boost_power",
+        "aim_var": "boost_aim",
+        "dodge_var": "boost_dodge",
         "on_level_up": [
           {
             "do": "float_text",
@@ -62,7 +65,8 @@
       "behavior": "topdown_controller",
       "params": {
         "speed": 1.0,
-        "eight_way": true
+        "eight_way": true,
+        "speed_var": "boost_speed"
       }
     },
     {
@@ -92,7 +96,8 @@
             "do": "play_sfx",
             "sfx": "sfx_new_move"
           }
-        ]
+        ],
+        "charge_var": "boost_charge"
       }
     },
     {
@@ -117,7 +122,30 @@
         "total_var": "time",
         "minutes_var": "time_min",
         "seconds_var": "time_sec",
-        "stop_var": "run_over"
+        "stop_var": "run_over",
+        "on_minute": [
+          {
+            "do": "if_var",
+            "var": "kills",
+            "op": "<",
+            "value": 24,
+            "then": [
+              {
+                "do": "if_var",
+                "var": "boss_level",
+                "op": "<",
+                "value": 14,
+                "then": [
+                  {
+                    "do": "add_var",
+                    "var": "boss_level",
+                    "value": 1
+                  }
+                ]
+              }
+            ]
+          }
+        ]
       }
     }
   ]

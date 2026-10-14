@@ -3,7 +3,7 @@
   "kind": "object",
   "type": "font",
   "name": "Floating text font",
-  "notes": "Bold 8x8 letters for the words that pop up over monsters (damage numbers, MISS, PAR, LV UP!...). They are drawn as sprites, in the colors of the floating-text palettes.",
+  "notes": "Bold 8x8 letters for the words that pop up over monsters (damage numbers, MISS, PAR, LV UP!...). They are drawn as sprites, in the colors of the floating-text palettes. '-' and '%' write the floor items' boosts (+10% SPEED, -5% MISS).",
   "palette": "pal_txt_white",
   "glyphs": {
     "0": [
@@ -375,6 +375,26 @@
       "...1....",
       "........",
       "........"
+    ],
+    "-": [
+      "........",
+      "........",
+      ".1111...",
+      "122221..",
+      "133331..",
+      ".1111...",
+      "........",
+      "........"
+    ],
+    "%": [
+      ".11..1..",
+      "1221121.",
+      "122121..",
+      ".1121...",
+      ".13111..",
+      "1311331.",
+      ".1.1331.",
+      "....11.."
     ]
   }
 }

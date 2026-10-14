@@ -92,6 +92,7 @@ All monsters, names, sprites, tiles and music are **original**. The style may ev
 
 - The player's monster spawns in the **center screen** of the 3×3 map.
 - 25 enemies are placed on the map at run start (see section 6).
+- 5 floor items lie at random spots on the map; walking into one gives a small boost for the rest of the run (section 7.4).
 - Player moves freely in 8 directions. Enemies near the player turn hostile and attack.
 - Moves auto-charge; the player fires them with buttons (section 5).
 - Run music: a separate original, upbeat loop (same channel setup, faster ~155 BPM). A short jingle plays on level-up and when a new move unlocks.
@@ -300,6 +301,8 @@ When the player picks a type, the other **8 types** populate the map:
 
 The **Alpha** is a random species from the 8 enemy types, drawn with an alternate palette and a small crown/aura effect. It has 3× HP and its moves hit harder. It stays dormant in a fixed spot (a clearing in a corner screen) and only wakes up once the other 24 are defeated — a final fight. It gives 3× kill XP.
 
+**The Alpha grows while it sleeps:** it starts every run at **level 6** and gains **+1 level at each whole minute** of the run timer (1:00 → 7, 2:00 → 8, …), up to **level 14** (reached at 8:00). Once all 24 wild monsters are defeated and it wakes, its level stays where it is. A fast run meets a weaker boss. Its HP stays 180 at any level, but its damage grows with its level: its 40-power move 3 hits for 70 at level 6 and 118 at level 14 (105 to 177 when super effective), so from level 10 up a super-effective move 3 can knock out a full-HP player in one blow.
+
 ### 6.3 Enemy stats
 
 | Enemy | Level | HP |
@@ -307,7 +310,7 @@ The **Alpha** is a random species from the 8 enemy types, drawn with an alternat
 | First 8 spawned (one per type) | 2 | 30 |
 | Next 8 | 4 | 45 |
 | Last 8 | 6 | 60 |
-| Alpha | 8 | 180 |
+| Alpha | 6, +1 per minute until it wakes (max 14) | 180 |
 
 Weaker enemies are placed closer to the center screen, stronger ones in outer screens.
 
@@ -378,6 +381,20 @@ These numbers are the tuning knobs for hitting the minute 3 / minute 6 targets; 
 | Speed | 1 px per frame (diagonals normalized) × its species' walking speed (section 6.1b) |
 
 Level-up raises max HP by 8 **and refills current HP to the new max** (a full heal). This is the only way HP goes up, so fighting for XP is how the player recovers, not running away.
+
+### 7.4 Floor items
+
+Five items lie on the ground, one of each kind. Each run every item is at a random one of its own 9 spots (one per screen of the map), all reachable, out from under the tree tops, away from the start, the monsters' homes and the Alpha's clearing. Only the player can pick them up (monsters walk over them). Picking one up plays a chime, floats its boost over the player in yellow and keeps the boost until the run ends.
+
+| Item | Look | Boost | Words |
+|---|---|---|---|
+| Swift Feather | pale blue feather | walks 10% faster | `+10% SPEED` |
+| Power Gem | red faceted gem | every move does 10% more damage (ground zones too) | `+10% POWER` |
+| Aim Charm | red and white target | the player's moves are 5 points more accurate (95% → 100%, 90% → 95%) | `-5% MISS` |
+| Mist Orb | purple orb with a misty swirl | wild monsters' moves are 10 points less accurate against the player (95% → 85%; even 100% moves can miss); ground zones still never miss | `+10% DODGE` |
+| Quick Hourglass | hourglass with yellow sand | every move recharges in 10% less time (Move 1: 3 s → 2.7 s) | `-10% RECHARGE` |
+
+The items share the move effects' palette, drawn like the monsters (dark outline, lit from the top-left), and bob over a small shadow with a twinkle so they stand out on the grass.
 
 ---
 
@@ -484,3 +501,5 @@ These points weren't specified, so this doc picks a value:
 11. **A move hits exactly what its animation draws** (+2 px). Cones became straight beams, because that is what their animations draw.
 12. **Unlocks follow the roster order** (Normal first, Rock last), one per won run, so every player sees the same order. Locked monsters stay visible as silhouettes with their name and type. Clearing the save is on Select, behind a NO/YES question.
 13. **Long reach costs speed**: each species walks at 100 / 90 / 80 / 70 % for a Move 1 that reaches 1 / 2 / 3 / 4+ tiles (section 6.1b), as the player and as a wild monster.
+14. **The Alpha's level follows the clock**: level 6 + 1 per whole minute of the run timer, capped at 14, frozen when it wakes. Its HP stays 180.
+15. **Floor items**: one of each of the 5 boosts per run, each on a random one of its own 9 spots (one per screen), so two never share a spot.

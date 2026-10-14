@@ -1,0 +1,31 @@
+{
+  "id": "body_item_quick_hourglass",
+  "kind": "object",
+  "type": "body",
+  "name": "Quick Hourglass body",
+  "notes": "How the Quick Hourglass looks on the ground (an hourglass with cream caps and yellow sand running down) and the box the player touches to pick it up. Its shadow sits on the origin. Not solid and only touches the player: monsters walk over it and never take it.",
+  "origin": [
+    8,
+    13
+  ],
+  "hitbox": {
+    "x": -6,
+    "y": -11,
+    "w": 12,
+    "h": 12
+  },
+  "physics": {
+    "gravity": false,
+    "solid": false,
+    "collides_with": [
+      "player"
+    ]
+  },
+  "animations": {
+    "idle": "anim_item_quick_hourglass"
+  },
+  "default_animation": "idle",
+  "children": [
+    "anim_item_quick_hourglass"
+  ]
+}

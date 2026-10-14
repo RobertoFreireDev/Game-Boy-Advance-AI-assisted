@@ -1,0 +1,37 @@
+{
+  "id": "sfx_item",
+  "kind": "object",
+  "type": "sfx",
+  "name": "Item pickup",
+  "notes": "A bright rising chime when the player picks up a floor item. On square1 like the level-up jingle (the reward channel), so it never cuts a hit or miss sound; thinner (25% duty) and higher than the level-up so the two sound different.",
+  "channel": "square1",
+  "duty": 1,
+  "priority": 3,
+  "steps": [
+    {
+      "note": "B5",
+      "ticks": 2,
+      "volume": 13
+    },
+    {
+      "note": "E6",
+      "ticks": 2,
+      "volume": 13
+    },
+    {
+      "note": "G#6",
+      "ticks": 2,
+      "volume": 13
+    },
+    {
+      "note": "B6",
+      "ticks": 8,
+      "volume": 13
+    },
+    {
+      "note": "B6",
+      "ticks": 4,
+      "volume": 7
+    }
+  ]
+}

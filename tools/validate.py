@@ -437,7 +437,65 @@ def V_scene(c):
             c.get(cam, "y", "int", "camera.y", required=False)
     if "on_start" in n:
         c.actions(n["on_start"], "on_start")
+    check_random_spots(c, ids, layers)
     scene_budget(c, insts)
+
+
+def check_random_spots(c, ids, layers):
+    """random_spot actors: every place they may appear (the placed one and their spots) has the
+    body's hitbox inside the collision map and off solid and hazard tiles (so it can be reached),
+    and a warning when the picture would be under an 'over' layer (hidden by tree tops)."""
+    p = c.p
+
+    def layer_map(layer):
+        iid = layers.get(layer)
+        node = p.nodes.get(ids[iid].get("object")) if iid in ids else None
+        return node if isinstance(node, dict) and isinstance(node.get("rows"), list) else None
+
+    def tile_at(m, tx, ty):
+        rows = m["rows"]
+        return rows[ty][tx] if 0 <= ty < len(rows) and 0 <= tx < len(rows[ty]) else "."
+
+    ground = layer_map(1)
+    overs = [m for m in (layer_map(2), layer_map(3)) if m and m.get("over") and m.get("parallax", 1) == 1]
+    for iid, inst in ids.items():
+        node = p.nodes.get(inst.get("object"), {})
+        entry = next((e for e in node.get("logic", []) or []
+                      if isinstance(e, dict) and e.get("behavior") == "random_spot"), None)
+        if entry is None:
+            continue
+        spots = ((inst.get("overrides") or {}).get("random_spot") or {}).get("spots", (entry.get("params") or {}).get("spots"))
+        if not isinstance(spots, list):
+            continue                                    # the params check reports it
+        body = p.nodes.get(node.get("body"), {})
+        hb = body.get("hitbox") if isinstance(body.get("hitbox"), dict) else {"x": 0, "y": 0, "w": 1, "h": 1}
+        anim = p.nodes.get((body.get("animations") or {}).get(body.get("default_animation")), {})
+        spr = p.nodes.get(anim.get("sprite"), {})
+        ox, oy = (body.get("origin") or [0, 0])[:2]
+        for pt in [[inst.get("x", 0), inst.get("y", 0)]] + spots:
+            if not (isinstance(pt, list) and len(pt) == 2 and all(is_int(v) for v in pt)):
+                continue
+            x, y = pt
+            here = "instance '%s' may appear at (%d, %d), but" % (iid, x, y)
+            if ground:
+                tiles = p.nodes.get(ground.get("tileset"), {}).get("tiles", {}) or {}
+                l, t = x + hb.get("x", 0), y + hb.get("y", 0)
+                r, b = l + hb.get("w", 1) - 1, t + hb.get("h", 1) - 1
+                w, h = max(len(row) for row in ground["rows"]) * 8, len(ground["rows"]) * 8
+                if l < 0 or t < 0 or r >= w or b >= h:
+                    c.err("%s its hitbox is outside the map" % here)
+                    continue
+                bad = sorted({tile_at(ground, tx, ty) for ty in range(t // 8, b // 8 + 1) for tx in range(l // 8, r // 8 + 1)
+                              if (tiles.get(tile_at(ground, tx, ty)) or {}).get("solid") or (tiles.get(tile_at(ground, tx, ty)) or {}).get("hazard")})
+                if bad:
+                    c.err("%s its hitbox touches solid or hazard tiles ('%s'), where it can't be reached" % (here, "', '".join(bad)))
+            if spr.get("width") and spr.get("height"):
+                l, t = x - ox, y - oy
+                for m in overs:
+                    if any(tile_at(m, tx, ty) != "." for ty in range(t // 8, (t + spr["height"] - 1) // 8 + 1)
+                           for tx in range(l // 8, (l + spr["width"] - 1) // 8 + 1)):
+                        c.warn("%s it would be hidden under '%s' (drawn over the actors)" % (here, m.get("id")))
+                        break
 
 
 def scene_budget(c, insts):

@@ -1,0 +1,32 @@
+{
+  "id": "anim_item_swift_feather",
+  "kind": "object",
+  "type": "animation",
+  "name": "Swift Feather bob",
+  "notes": "The Swift Feather lying on the ground: it bobs 1 px up and down over its shadow and twinkles once a loop, so it catches the eye on the grass.",
+  "sprite": "spr_items",
+  "loop": true,
+  "frames": [
+    {
+      "frame": "feather_rest",
+      "ticks": 10
+    },
+    {
+      "frame": "feather_up",
+      "ticks": 10
+    },
+    {
+      "frame": "feather_rest",
+      "ticks": 10
+    },
+    {
+      "frame": "feather_up",
+      "ticks": 10
+    },
+    {
+      "frame": "feather_glint",
+      "ticks": 8
+    }
+  ],
+  "events": []
+}
