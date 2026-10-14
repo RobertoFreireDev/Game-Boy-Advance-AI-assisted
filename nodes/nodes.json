@@ -19,8 +19,8 @@
       {
         "name": "unlocked",
         "type": "int",
-        "initial": 1,
-        "notes": "How many monsters can be picked, counting from Furrbit in the roster order above (1 = only Furrbit, 9 = all). Each won run adds 1. Saved on the cartridge; clearing the saved progress puts it back to 1.",
+        "initial": 3,
+        "notes": "How many monsters can be picked, counting from Furrbit in the roster order above (3 = Furrbit, Emberpup and Splashell, the start; 9 = all). The first won run of each monster adds 1; winning again with a monster that already won a run adds nothing. Saved on the cartridge; clearing the saved progress puts it back to 3 (the menu also raises an older save's 1 or 2 to 3).",
         "persistent": true
       },
       {

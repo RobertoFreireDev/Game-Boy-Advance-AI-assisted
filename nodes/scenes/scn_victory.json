@@ -3,7 +3,7 @@
   "kind": "scene",
   "type": "credits",
   "name": "Victory",
-  "notes": "YOU SURVIVED! over the meadow, with the winning monster bobbing, the final time, level and kills. The run's time is checked against this monster's best time (best_time[chosen]): if it never won before, or this run was faster, it becomes the new best and the screen says NEW BEST TIME!, otherwise it shows the best time to beat. Winning also unlocks the next locked monster of the roster (while any is left): its name shows under the stats. A jingle plays for a new monster or a new best time, and the progress (unlocks and best times) is saved at once. START goes back to the menu.",
+  "notes": "YOU SURVIVED! over the meadow, with the winning monster bobbing, the final time, level and kills. The run's time is checked against this monster's best time (best_time[chosen]): if it never won before, or this run was faster, it becomes the new best and the screen says NEW BEST TIME!, otherwise it shows the best time to beat. The first win with a monster (its best time was still --:--) also unlocks the next locked monster of the roster (while any is left): its name shows under the stats. Winning again with a monster that already won a run unlocks nothing. A jingle plays for a new monster or a new best time, and the progress (unlocks and best times) is saved at once. START goes back to the menu.",
   "backdrop": "#58a8f0",
   "music": "mus_victory",
   "camera": {
@@ -55,6 +55,24 @@
           "do": "set_var",
           "var": "new_best",
           "value": 1
+        },
+        {
+          "do": "if_var",
+          "var": "unlocked",
+          "op": "<",
+          "value": 9,
+          "then": [
+            {
+              "do": "set_var",
+              "var": "new_mon",
+              "from": "unlocked"
+            },
+            {
+              "do": "add_var",
+              "var": "unlocked",
+              "value": 1
+            }
+          ]
         }
       ],
       "else": [
@@ -77,24 +95,6 @@
               "value": 1
             }
           ]
-        }
-      ]
-    },
-    {
-      "do": "if_var",
-      "var": "unlocked",
-      "op": "<",
-      "value": 9,
-      "then": [
-        {
-          "do": "set_var",
-          "var": "new_mon",
-          "from": "unlocked"
-        },
-        {
-          "do": "add_var",
-          "var": "unlocked",
-          "value": 1
         }
       ]
     },
