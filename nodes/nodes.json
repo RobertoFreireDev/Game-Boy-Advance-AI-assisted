@@ -136,8 +136,8 @@
       {
         "name": "boss_level",
         "type": "int",
-        "initial": 6,
-        "notes": "The Alpha's level. Each run starts it at 6; every whole minute on the run clock adds 1 (1:00 = 7, 2:00 = 8 ... 8:00 = 14, the most) while fewer than 24 wild monsters have fainted. Once all 24 are down the Alpha wakes and its level stays where it is."
+        "initial": 4,
+        "notes": "The Alpha's level. Each run starts it at 4; every whole minute on the run clock adds 1 (1:00 = 5, 2:00 = 6 ... 10:00 = 14, the most) while fewer than 24 wild monsters have fainted. Once all 24 are down the Alpha wakes and its level stays where it is."
       },
       {
         "name": "boost_speed",

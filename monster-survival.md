@@ -301,7 +301,7 @@ When the player picks a type, the other **8 types** populate the map:
 
 The **Alpha** is a random species from the 8 enemy types, drawn with an alternate palette and a small crown/aura effect. It has 3× HP and its moves hit harder. It stays dormant in a fixed spot (a clearing in a corner screen) and only wakes up once the other 24 are defeated — a final fight. It gives 3× kill XP.
 
-**The Alpha grows while it sleeps:** it starts every run at **level 6** and gains **+1 level at each whole minute** of the run timer (1:00 → 7, 2:00 → 8, …), up to **level 14** (reached at 8:00). Once all 24 wild monsters are defeated and it wakes, its level stays where it is. A fast run meets a weaker boss. Its HP stays 180 at any level, but its damage grows with its level: its 40-power move 3 hits for 70 at level 6 and 118 at level 14 (105 to 177 when super effective), so from level 10 up a super-effective move 3 can knock out a full-HP player in one blow.
+**The Alpha grows while it sleeps:** it starts every run at **level 4** and gains **+1 level at each whole minute** of the run timer (1:00 → 5, 2:00 → 6, …), up to **level 14** (reached at 10:00). Once all 24 wild monsters are defeated and it wakes, its level stays where it is. A fast run meets a weaker boss. Its HP stays 180 at any level, but its damage grows with its level: its 40-power move 3 hits for 58 at level 4 and 118 at level 14 (87 to 177 when super effective), so from level 10 up a super-effective move 3 can knock out a full-HP player in one blow.
 
 ### 6.3 Enemy stats
 
@@ -310,7 +310,7 @@ The **Alpha** is a random species from the 8 enemy types, drawn with an alternat
 | First 8 spawned (one per type) | 2 | 30 |
 | Next 8 | 4 | 45 |
 | Last 8 | 6 | 60 |
-| Alpha | 6, +1 per minute until it wakes (max 14) | 180 |
+| Alpha | 4, +1 per minute until it wakes (max 14) | 180 |
 
 Weaker enemies are placed closer to the center screen, stronger ones in outer screens.
 
@@ -501,5 +501,5 @@ These points weren't specified, so this doc picks a value:
 11. **A move hits exactly what its animation draws** (+2 px). Cones became straight beams, because that is what their animations draw.
 12. **Unlocks follow the roster order** (Normal first, Rock last), one per won run, so every player sees the same order. Locked monsters stay visible as silhouettes with their name and type. Clearing the save is on Select, behind a NO/YES question.
 13. **Long reach costs speed**: each species walks at 100 / 90 / 80 / 70 % for a Move 1 that reaches 1 / 2 / 3 / 4+ tiles (section 6.1b), as the player and as a wild monster.
-14. **The Alpha's level follows the clock**: level 6 + 1 per whole minute of the run timer, capped at 14, frozen when it wakes. Its HP stays 180.
+14. **The Alpha's level follows the clock**: level 4 + 1 per whole minute of the run timer, capped at 14, frozen when it wakes. Its HP stays 180.
 15. **Floor items**: one of each of the 5 boosts per run, each on a random one of its own 9 spots (one per screen), so two never share a spot.
