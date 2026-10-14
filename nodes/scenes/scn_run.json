@@ -3,7 +3,7 @@
   "kind": "scene",
   "type": "level",
   "name": "Run",
-  "notes": "The run. The player's monster starts in the middle of the 3x3-screen world; 27 wild monsters live around it (3 per screen: levels 2 near the center, 4 and 6 farther out), but the player's own species stays away, leaving 24, plus the sleeping Alpha in the south-east clearing (level 6, +1 each minute up to 14 until it wakes). 5 floor items (Swift Feather, Power Gem, Aim Charm, Mist Orb, Quick Hourglass) each lie at a random one of their 9 spots, one spot per screen; only the player picks them up, each giving a small boost for the rest of the run. Defeat all 25 to win; if HP runs out it's game over.",
+  "notes": "The run. The player's monster starts in the middle of the 3x3-screen world; 27 wild monsters live around it (3 per screen: levels 2 near the center, 4 and 6 farther out), but the player's own species stays away, leaving 24, plus the sleeping Alpha in the south-east clearing (level 6, +1 each minute up to 14 until it wakes). 5 floor items (Swift Feather, Power Gem, Aim Charm, Mist Orb, Quick Hourglass) each lie at a random one of their 9 spots, one spot per screen; only the player picks them up, each giving a small boost for the rest of the run. Defeat all 25 to win; if HP runs out it's game over. Music: the run theme (mus_run) until the Alpha wakes, then the boss theme (mus_boss) for the final fight; a restarted run starts again with the run theme.",
   "backdrop": "#78c050",
   "music": "mus_run",
   "camera": {

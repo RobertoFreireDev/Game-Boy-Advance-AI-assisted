@@ -1,0 +1,105 @@
+{
+  "id": "mus_boss",
+  "kind": "object",
+  "type": "music",
+  "name": "Boss theme",
+  "notes": "The Alpha fight. Starts only when the Alpha wakes (the moment the 24th wild monster faints): the run theme stops under its roar and, 40 ticks later, this song begins. It plays until the run ends; victory, game over, RESTART and QUIT each switch to their own scene's song, so it is never heard anywhere else. A darker, faster cousin of the run theme: same E minor, same instruments and drum kit, but 176 BPM instead of 155, a sharper 25 % lead, a galloping octave bass, and the leading tone D# plus a menacing F for drama. A short suspense intro plays once (a pedal bass with a trembling harmony, then climbing 3-3-2 stabs and a snare roll), then the loop: the hook (the run theme's rising E minor arpeggio, darkened), its answer, the hook again and a peak; then a breakdown with heartbeat drums and a slowly creeping inner line, a rebuild, and a climbing diminished chord with a snare roll back into the hook. Kept as quiet as the other songs (melody at volume 3, harmony and drums 2, bass 1 with a half-height waveform) so every hit, miss and roar is heard over it.",
+  "bpm": 176,
+  "rows_per_beat": 4,
+  "loop": true,
+  "loop_from": 2,
+  "instruments": {
+    "square1": {
+      "duty": 1,
+      "volume": 3,
+      "decay": 0
+    },
+    "square2": {
+      "duty": 0,
+      "volume": 2,
+      "decay": 2
+    },
+    "wave": {
+      "wave": "00001111222233334444555566667777",
+      "volume": 1
+    },
+    "noise": {
+      "volume": 2,
+      "decay": 1
+    }
+  },
+  "patterns": {
+    "I1": {
+      "square1": ".. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. | B4 -- -- -- -- -- -- -- C5 -- -- -- -- -- -- --",
+      "square2": "B4 E5 B4 E5 B4 E5 B4 E5 B4 E5 B4 E5 B4 E5 B4 E5 | C5 F5 C5 F5 C5 F5 C5 F5 C5 F5 C5 F5 C5 F5 C5 F5",
+      "wave": "E2 .. E2 .. E2 .. E2 .. E2 .. E2 .. E2 .. E2 .. | F2 .. F2 .. F2 .. F2 .. F2 .. F2 .. F2 .. F2 ..",
+      "noise": "X1 .. .. .. .. .. .. .. X1 .. .. .. .. .. .. .. | X1 .. .. .. X1 .. .. .. X1 .. .. .. X1 .. Xb Xb"
+    },
+    "I2": {
+      "square1": "E5 -- .. E5 -- .. E5 -- F5 -- .. F5 -- .. F5 -- | F#5 -- .. F#5 -- .. F#5 -- G5 -- A5 -- A#5 -- B5 --",
+      "square2": "B4 -- .. B4 -- .. B4 -- C5 -- .. C5 -- .. C5 -- | D#5 -- .. D#5 -- .. D#5 -- E5 -- F#5 -- G5 -- F#5 --",
+      "wave": "E2 -- .. E2 -- .. E2 -- F2 -- .. F2 -- .. F2 -- | B2 -- .. B2 -- .. B2 -- C3 -- C#3 -- D3 -- D#3 --",
+      "noise": "X1 .. .. X1 .. .. X1 .. X1 .. .. X1 .. .. X1 .. | X1 .. .. X1 .. .. X1 .. Xb Xb Xb Xb Xc Xc Xd Xd"
+    },
+    "A1": {
+      "square1": "E5 .. E5 .. G5 -- B5 -- -- -- A5 -- G5 -- F#5 -- | G5 -- -- -- E5 -- -- -- D#5 -- -- -- F#5 -- -- --",
+      "square2": "E4 G4 B4 G4 E4 G4 B4 G4 E4 G4 B4 G4 E4 G4 B4 G4 | E4 G4 C5 G4 E4 G4 C5 G4 D#4 F#4 B4 F#4 D#4 F#4 B4 F#4",
+      "wave": "E2 .. E2 E3 E2 .. E2 E3 E2 .. E2 E3 E2 .. E2 E3 | C3 .. C3 C4 C3 .. C3 C4 B2 .. B2 B3 B2 .. B2 B3",
+      "noise": "X1 .. Xe Xe Xb .. Xe X1 X1 .. Xe Xe Xb .. Xe Xe | X1 .. Xe Xe Xb .. Xe X1 X1 .. Xe Xe Xb .. Xe Xe"
+    },
+    "A2": {
+      "square1": "A5 .. A5 .. C6 -- E6 -- -- -- D6 -- C6 -- B5 -- | C6 -- -- -- A5 -- -- -- B5 -- A5 -- F#5 -- D#5 --",
+      "square2": "E4 A4 C5 A4 E4 A4 C5 A4 E4 A4 C5 A4 E4 A4 C5 A4 | F4 A4 C5 A4 F4 A4 C5 A4 D#4 F#4 B4 F#4 D#4 F#4 B4 F#4",
+      "wave": "A2 .. A2 A3 A2 .. A2 A3 A2 .. A2 A3 A2 .. A2 A3 | F2 .. F2 F3 F2 .. F2 F3 B2 .. B2 B3 B2 .. B2 B3",
+      "noise": "X1 .. Xe Xe Xb .. Xe X1 X1 .. Xe Xe Xb .. Xe Xe | X1 .. Xe Xe Xb .. Xe X1 X1 .. Xb Xb Xb Xc Xc Xd"
+    },
+    "A3": {
+      "square1": "E5 .. E5 .. G5 -- B5 -- -- -- A5 -- G5 -- F#5 -- | G5 -- -- -- E5 -- G5 -- A5 -- -- -- F#5 -- D5 --",
+      "square2": "E4 G4 B4 G4 E4 G4 B4 G4 E4 G4 B4 G4 E4 G4 B4 G4 | E4 G4 C5 G4 E4 G4 C5 G4 D4 F#4 A4 F#4 D4 F#4 A4 F#4",
+      "wave": "E2 .. E2 E3 E2 .. E2 E3 E2 .. E2 E3 E2 .. E2 E3 | C3 .. C3 C4 C3 .. C3 C4 D3 .. D3 D4 D3 .. D3 D4",
+      "noise": "X1 .. Xe Xe Xb .. Xe X1 X1 .. Xe Xe Xb .. Xe Xe | X1 .. Xe Xe Xb .. Xe X1 X1 .. Xe Xe Xb .. Xe Xe"
+    },
+    "A4": {
+      "square1": "E6 -- -- -- D6 -- C6 -- B5 -- -- -- G5 -- -- -- | F#5 -- G5 -- A5 -- B5 -- D#6 -- -- -- B5 -- -- --",
+      "square2": "E4 G4 C5 G4 E4 G4 C5 G4 E4 G4 C5 G4 E4 G4 C5 G4 | D#4 F#4 B4 F#4 D#4 F#4 B4 F#4 D#4 F#4 B4 F#4 D#4 F#4 B4 F#4",
+      "wave": "C3 .. C3 C4 C3 .. C3 C4 C3 .. C3 C4 C3 .. C3 C4 | B2 .. B2 B3 B2 .. B2 B3 B2 B3 B2 B3 B2 B3 B2 B3",
+      "noise": "X1 .. Xe Xe Xb .. Xe X1 X1 .. Xe Xe Xb .. Xe Xe | X1 .. Xe Xe Xb .. Xe X1 Xb Xb Xb Xb Xc Xc Xd Xd"
+    },
+    "B1": {
+      "square1": "G5 -- -- -- -- -- F#5 -- -- -- -- -- E5 -- -- -- | F#5 -- -- -- -- -- G5 -- -- -- -- -- A5 -- -- --",
+      "square2": "B4 E5 B4 E5 B4 E5 B4 E5 B4 D#5 B4 D#5 B4 D#5 B4 D#5 | B4 D5 B4 D5 B4 D5 B4 D5 B4 C#5 B4 C#5 B4 C#5 B4 C#5",
+      "wave": "E2 .. E2 -- -- -- -- -- E2 .. E2 -- -- -- -- -- | E2 .. E2 -- -- -- -- -- E2 .. E2 -- -- -- -- --",
+      "noise": "X1 .. X1 .. .. .. Xe .. X1 .. X1 .. .. .. Xe .. | X1 .. X1 .. .. .. Xe .. X1 .. X1 .. .. .. Xe .."
+    },
+    "B2": {
+      "square1": "B5 -- -- -- -- -- C6 -- -- -- -- -- B5 -- -- -- | A5 -- -- -- -- -- -- -- F#5 -- G5 -- A5 -- B5 --",
+      "square2": "G4 C5 G4 C5 G4 C5 G4 C5 G4 E5 G4 E5 G4 E5 G4 E5 | F#4 B4 F#4 B4 F#4 B4 F#4 B4 F#4 D#5 F#4 D#5 F#4 D#5 F#4 D#5",
+      "wave": "C3 .. C3 -- -- -- -- -- C3 .. C3 -- -- -- -- -- | B2 .. B2 -- -- -- -- -- B2 .. B2 -- -- -- -- --",
+      "noise": "X1 .. X1 .. .. .. Xe .. X1 .. X1 .. .. .. Xe .. | X1 .. X1 .. .. .. Xe .. X1 .. X1 .. Xb .. Xb .."
+    },
+    "B3": {
+      "square1": "C6 -- -- -- -- -- B5 -- -- -- -- -- A5 -- -- -- | A5 -- -- -- -- -- G5 -- -- -- -- -- F5 -- -- --",
+      "square2": "A4 C5 A4 C5 A4 C5 A4 C5 A4 E5 A4 E5 A4 E5 A4 E5 | A4 C5 A4 C5 A4 C5 A4 C5 A4 F5 A4 F5 A4 F5 A4 F5",
+      "wave": "A2 .. A3 .. A2 .. A3 .. A2 .. A3 .. A2 .. A3 .. | F2 .. F3 .. F2 .. F3 .. F2 .. F3 .. F2 .. F3 ..",
+      "noise": "X1 .. Xe .. X1 .. Xe .. X1 .. Xe .. X1 .. Xe .. | X1 .. Xe .. X1 .. Xe .. X1 .. Xe .. Xb .. Xb .."
+    },
+    "B4": {
+      "square1": "F#5 -- -- -- A5 -- -- -- C6 -- -- -- D#6 -- -- -- | B5 -- -- -- -- -- -- -- -- -- -- -- .. .. .. ..",
+      "square2": "F#4 A4 F#4 A4 F#4 A4 F#4 A4 A4 C5 A4 C5 A4 C5 A4 C5 | B4 D#5 B4 D#5 B4 D#5 B4 D#5 D#5 F#5 D#5 F#5 D#5 F#5 D#5 F#5",
+      "wave": "D#2 .. D#2 D#3 D#2 .. D#2 D#3 D#2 .. D#2 D#3 D#2 .. D#2 D#3 | B2 .. B2 B3 B2 .. B2 B3 B2 B3 B2 B3 B2 B3 B2 B3",
+      "noise": "X1 .. Xb .. X1 .. Xb .. X1 .. Xb .. X1 Xb Xb Xb | Xb .. Xb .. Xb Xb Xb Xb Xb Xb Xc Xc Xd Xd Xe Xe"
+    }
+  },
+  "order": [
+    "I1",
+    "I2",
+    "A1",
+    "A2",
+    "A3",
+    "A4",
+    "B1",
+    "B2",
+    "B3",
+    "B4"
+  ]
+}

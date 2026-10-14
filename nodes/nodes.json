@@ -616,6 +616,7 @@
     {"id": "sfx_hit_rock", "kind": "object", "type": "sfx", "path": "objects/sfx/sfx_hit_rock.json", "parent": null},
     {"id": "mus_menu", "kind": "object", "type": "music", "path": "objects/music/mus_menu.json", "parent": null},
     {"id": "mus_run", "kind": "object", "type": "music", "path": "objects/music/mus_run.json", "parent": null},
+    {"id": "mus_boss", "kind": "object", "type": "music", "path": "objects/music/mus_boss.json", "parent": null},
     {"id": "mus_victory", "kind": "object", "type": "music", "path": "objects/music/mus_victory.json", "parent": null},
     {"id": "mus_game_over", "kind": "object", "type": "music", "path": "objects/music/mus_game_over.json", "parent": null},
     {"id": "pal_ground", "kind": "object", "type": "palette", "path": "objects/palette/pal_ground.json", "parent": null},
