@@ -190,7 +190,15 @@ typedef struct {
 } HudData;
 
 typedef struct { const char *label; u8 x, y; ActionList actions; } MenuOption;
-typedef struct { const char *text; u8 x, y; } MenuText;     // a line of a menu that can't be picked
+// A line of a menu that can't be picked. Its letters use colors[0] (a copy of the font's palette
+// with the letters' color changed), or colors[value of color_var] when there are several (0 =
+// first, past the end = last); color_count 0 = the font's own palette.
+typedef struct {
+    const char *text;
+    u8 x, y, color_count;
+    s16 color_var;
+    const PaletteData *const *colors;
+} MenuText;
 
 typedef struct {
     const FontData *font;
@@ -203,6 +211,7 @@ typedef struct {
     s16 sfx_move, sfx_select;
     u8 upgrade_count;                   // > 0: an upgrade menu; options only hold the card slots
     u8 text_count;
+    u8 row;                             // 1: the options sit side by side (Left / Right move the cursor)
     const MenuText *texts;
 } MenuData;
 

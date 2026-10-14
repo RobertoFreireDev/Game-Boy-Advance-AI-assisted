@@ -12,6 +12,7 @@
 #include "engine/core.h"
 #include "engine/actions.h"
 #include "engine/particles.h"
+#include "engine/scene.h"
 
 enum { ST_MODE, ST_TIMER, ST_DIR, ST_CHARGE, ST_STUCK };
 enum { MODE_SLEEP, MODE_WANDER, MODE_HOSTILE, MODE_RETURN };
@@ -24,6 +25,7 @@ static const s8 s_dx[9] = { 1, 1, 0, -1, -1, -1, 0, 1, 0 };
 static const s8 s_dy[9] = { 0, 1, 1, 1, 0, -1, -1, -1, 0 };
 
 static u32 s_count_frame = 0xFFFFFFFF;
+static u16 s_load;              // scene_loads() the crowd list and hostile count belong to
 static int s_hostile;           // hostile right now: last frame's count + those that turned this frame
 static int s_hostile_next;      // counted this frame, for the next one
 // The crowd: each solid monster with this behavior writes its pool index and hitbox here when
@@ -44,6 +46,11 @@ static void new_frame(void) {
     s_crowd_n[s_fill] = 0;
     s_hostile = s_hostile_next;
     s_hostile_next = 0;
+    if (scene_loads() != s_load) {              // a scene (re)loaded, e.g. a new run: nobody from
+        s_load = scene_loads();                 // the old one is left to read
+        s_crowd_n[s_fill ^ 1] = 0;
+        s_hostile = 0;
+    }
 }
 
 // This monster joins the crowd list of this frame (and the hostile count).

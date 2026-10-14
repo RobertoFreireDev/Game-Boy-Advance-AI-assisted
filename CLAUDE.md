@@ -326,9 +326,16 @@ groups them for humans. **What an actor does comes only from its `logic` list.**
   when they use the font's palette) or all outside it and off its frame. The box text uses the menus'
   and dialogs' box-font slot: give them the same paper (the validator warns), or the panel takes their
   color while one is open. While `cover_screen` blows, the frame cells show the cover.
-- **menu** `texts [{x, y, text}]`: lines that can't be picked (a pause screen's stats), inside the box.
-- **menu**: `layout {x, y, spacing, title_y}`, optional `box {x, y, w, h, paper, border}`,
-  `sounds {move, select}`. Up/Down move, A picks, B or START runs `on_cancel`. Picking an option **locks**
+- **menu** `texts [{x, y, text, color?, color_by?}]`: lines that can't be picked (a pause screen's stats),
+  inside the box. `color` ("#RRGGBB") repaints the font's letter color (its most used one: white here;
+  the shadow and the paper stay); `color_by {var, colors[]}` picks the color by the variable's value when
+  the menu opens (0 = first, past the end = last: a locked move in grey). Each color the font doesn't
+  already have takes a BG palette (a recolored copy of the font's), counted by the validator.
+- **menu**: `layout {x, y, spacing, title_y, direction}`, optional `box {x, y, w, h, paper, border}`,
+  `sounds {move, select}`. `direction` `"column"` (default: one option under the other, `spacing` px
+  apart, Up/Down move) or `"row"` (side by side on line `y`, the first label at `x`, each next one
+  `spacing` px after the end of the one before, room for its cursor and a gap; Left/Right move). A picks,
+  B or START runs `on_cancel`. Picking an option **locks**
   the menu (no more input) and runs its actions, so they should `close_menu`, `goto_scene`,
   `open_menu` or `show_dialog` (the validator warns otherwise). Option labels and the title may use
   `{var}` / `{var:02}` placeholders (re-`open_menu` to refresh them, e.g. a shop).

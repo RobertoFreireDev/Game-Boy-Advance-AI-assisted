@@ -87,7 +87,8 @@ For a monster battler, copy from `games/monster_survival` instead: species `mon_
 its body, portrait, Alpha palette, cry and moves), moves `mov_ember` (zone), `mov_bubble_beam`
 (beam), `mov_rock_slide` (screen zone), `mov_fly` (self buff), `anim_travel_*` + `spr_fx_travel` (travel pictures, 8×8, 2 frames each); actors `plr_monster`, `enm_wild`
 (species per instance), `enm_alpha`; the picker `prop_picker` + `hud_select` + `scn_menu`; the
-pause screen `menu_pause` (texts with `{chosen.move2}` / `{moves|...}`); `game.battle` in
+pause screen `menu_pause` (colored texts, `color_by` greys a locked move, a `row` of options,
+RESTART = `reset_vars` + `goto_scene` the run again); `game.battle` in
 nodes.json. Its art, map and audio came from a scratchpad generator (session a013694e,
 `scratchpad/ms/`: `main.py` writes every node; `monsters.py`, `effects.py`, `tiles.py`,
 `mapgen.py`, `title.py`, `ui_art.py`, `audio.py`; `sheet_*.py` / `render_map.py` draw PNG previews).

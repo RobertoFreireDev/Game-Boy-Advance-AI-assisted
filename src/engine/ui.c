@@ -611,6 +611,24 @@ static void draw_menu_cursor(void) {
     }
 }
 
+// A line of a menu that can't be picked, in its color: drawn with the font, then its letters
+// switched to the palette bank of a copy of the font's palette with the letters' color changed.
+static void draw_menu_text(const MenuText *t, int paper) {
+    char buf[TEXT_MAX + 1];
+    expand(t->text, buf, TEXT_MAX);
+    draw_plain(t->x, t->y, buf, paper);
+    if (!t->color_count || t->y >= 20) return;
+    s32 k = t->color_var >= 0 ? vars_get(t->color_var) : 0;
+    k = k < 0 ? 0 : k >= t->color_count ? t->color_count - 1 : k;
+    u16 bank = (u16)(bg_pal_bank(t->colors[k]) << 12);
+    u16 *row = &se_mem[SBB][t->y * 32];
+    for (int i = 0; buf[i] && buf[i] != '\n' && t->x + i < 30; i++) {
+        u16 *e = &row[t->x + i];
+        int tile = *e & 0x3FF;
+        if (tile >= T_FONT && tile < T_FRAME) *e = (u16)((*e & 0x0FFF) | bank);    // letters only
+    }
+}
+
 static void draw_menu(void) {
     const MenuData *m = s_menu;
     int paper = m->has_box;
@@ -621,7 +639,7 @@ static void draw_menu(void) {
         load_font(m->font);
     }
     if (m->title) draw_text(m->title_x, m->title_y, m->title, paper);
-    for (int i = 0; i < m->text_count; i++) draw_text(m->texts[i].x, m->texts[i].y, m->texts[i].text, paper);
+    for (int i = 0; i < m->text_count; i++) draw_menu_text(&m->texts[i], paper);
     for (int i = 0; i < menu_count(); i++) {
         if (m->upgrade_count) draw_upgrade_card(i);
         else draw_text(m->options[i].x, m->options[i].y, m->options[i].label, paper);
@@ -658,7 +676,8 @@ void ui_close_menu(void) {
 static void menu_update(void) {
     const MenuData *m = s_menu;
     if (s_menu_locked || s_opened == core_frame()) return;
-    int dir = input_pressed(KEY_DOWN) - input_pressed(KEY_UP);
+    int dir = m->row ? input_pressed(KEY_RIGHT) - input_pressed(KEY_LEFT)      // options side by side
+                     : input_pressed(KEY_DOWN) - input_pressed(KEY_UP);
     if (dir) {
         s_cursor = (u8)((s_cursor + dir + menu_count()) % menu_count());
         if (m->sfx_move >= 0) audio_play_sfx((const SfxData *)g_nodes[m->sfx_move].data);

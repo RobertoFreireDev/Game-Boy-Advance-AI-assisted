@@ -536,6 +536,9 @@ def scene_budget(c, insts):
                 continue
             prm = dict(e.get("params") or {})
             prm.update(((inst or {}).get("overrides") or {}).get(e.get("behavior"), {}))
+            for m in re.findall(r"'do': 'open_menu', [^}]*'menu': '(\w+)'", str(prm)):
+                if p.type_of(m) == "menu":
+                    add_object(m)                       # a menu it opens (a pause menu) shows in this scene
             for v in prm.values():                      # sprites and particles a behavior shows
                 if isinstance(v, str) and p.type_of(v) == "sprite":
                     sprites.add(v)
@@ -565,6 +568,15 @@ def scene_budget(c, insts):
                 c.err("tileset '%s' has %d tiles, too many for layer %s" % (node.get("tileset"), ntiles, node.get("layer")))
         if t in ("hud", "menu", "dialog"):
             bg_pals.add(p.nodes.get(node.get("font"), {}).get("palette"))
+            if t == "menu":                             # each new color of its texts: a recolored copy
+                font = p.nodes.get(node.get("font"), {})
+                fcols = p.nodes.get(font.get("palette"), {}).get("colors") or []
+                ink = C.font_ink(font)
+                own = C.color_to_bgr555(fcols[ink]) if ink < len(fcols) and C.COLOR_RE.match(str(fcols[ink])) else None
+                for tx in node.get("texts") or []:
+                    for col in C.menu_text_colors(tx)[0] if isinstance(tx, dict) else []:
+                        if isinstance(col, str) and C.COLOR_RE.match(col) and C.color_to_bgr555(col) != own:
+                            bg_pals.add("%s@%04x" % (font.get("palette"), C.color_to_bgr555(col)))
             refs = set(re.findall(r'"(icon_\w+)"', str(node).replace("'", '"')))
             if t == "menu" and node.get("upgrades"):
                 refs |= {u.get("icon") for u in upgrade_nodes(p).values() if u.get("icon")}
@@ -1142,12 +1154,20 @@ def V_menu(c):
         c.err("'options' must have 1 to 10 options (or use 'upgrades')")
     lay = c.get(n, "layout", "dict", default={})
     for k in lay:
-        if k not in ("x", "y", "spacing", "title_y"):
+        if k not in ("x", "y", "spacing", "title_y", "direction"):
             c.err("'layout' has unknown field '%s'" % k)
     for k in ("x", "y", "spacing", "title_y"):
         v = c.get(lay, k, "int", "layout." + k, required=k in ("x", "y"), lo=0, hi=C.SCREEN_H if k != "x" else C.SCREEN_W)
         if v is not None and v % 8:
             c.err("'layout.%s' must be a multiple of 8" % k)
+    if lay.get("direction", "column") not in ("column", "row"):
+        c.err("'layout.direction' must be \"column\" (Up/Down) or \"row\" (side by side, Left/Right)")
+    elif lay.get("direction") == "row" and isinstance(lay.get("spacing", 16), int):
+        cur = c.p.nodes.get(n.get("cursor"), {}).get("pixels") or ["."]
+        cw = max(1, len(cur[0]) // 8)
+        if lay.get("spacing", 16) // 8 < cw + 1:
+            c.err("'layout.spacing' (from one option's end to the next one's start, in a row) must be at "
+                  "least %d px: room for the cursor (%d px) and an 8 px gap" % ((cw + 1) * 8, cw * 8))
     if "box" in n:
         c.box(n["box"], "box")
     for i, t in enumerate(c.get(n, "texts", "list", required=False, default=[])):
@@ -1156,8 +1176,24 @@ def V_menu(c):
             c.err("%s must be {x, y, text}" % label)
             continue
         for k in t:
-            if k not in ("x", "y", "text"):
+            if k not in ("x", "y", "text", "color", "color_by"):
                 c.err("%s has unknown field '%s'" % (label, k))
+        if "color" in t and "color_by" in t:
+            c.err("%s has both 'color' and 'color_by': use one" % label)
+        elif "color" in t:
+            c.color(t["color"], label + ".color")
+        elif "color_by" in t:
+            by = t["color_by"]
+            if not isinstance(by, dict) or set(by) - {"var", "colors"}:
+                c.err("%s.color_by must be {var, colors}" % label)
+            else:
+                c.param_value("var", {"required": True}, by.get("var"), label + ".color_by.var")
+                cols = by.get("colors")
+                if not isinstance(cols, list) or not 2 <= len(cols) <= 16:
+                    c.err("%s.color_by.colors must list 2 to 16 colors (one per value of the variable)" % label)
+                else:
+                    for k, col in enumerate(cols):
+                        c.color(col, "%s.color_by.colors[%d]" % (label, k))
         tx = c.get(t, "x", "int", label + ".x", lo=0, hi=C.SCREEN_W - 8)
         ty = c.get(t, "y", "int", label + ".y", lo=0, hi=C.SCREEN_H - 8)
         text = c.get(t, "text", "str", label + ".text", default="")

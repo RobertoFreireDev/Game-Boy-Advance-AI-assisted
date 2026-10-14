@@ -90,6 +90,7 @@ class Gen:
         self.out = []
         self.n = 0
         self.extern_fns = set()          # prototypes for custom code
+        self.ink_pals = {}               # (font palette, 15-bit color) -> recolored copy's symbol
 
     # ---- small helpers ----
     def sym(self, base):
@@ -505,6 +506,33 @@ class Gen:
         self.emit("static const MenuOption %s[] = {\n    %s\n};" % (s, ",\n    ".join(items)))
         return s
 
+    def ink_palette(self, font_id, color):
+        """The palette a text in `color` uses: the font's own when its letters already have that
+        color, else a copy of it with the letters' color changed (emitted once per color)."""
+        pal_id = self.p.nodes[font_id]["palette"]
+        cols = self.p.nodes[pal_id]["colors"]
+        ink = C.font_ink(self.p.nodes[font_id])
+        c555 = C.color_to_bgr555(color)
+        if ink < len(cols) and C.color_to_bgr555(cols[ink]) == c555:
+            return self.ptr(pal_id)
+        key = (pal_id, c555)
+        if key not in self.ink_pals:
+            s = self.sym("%s_ink_%04x" % (pal_id, c555))
+            new = [C.color_to_bgr555(c) for c in C.recolored_palette(cols, ink, color)]
+            self.emit("static const PaletteData %s = { %d, { %s } };" % (s, len(new), ", ".join("0x%04X" % c for c in new)))
+            self.ink_pals[key] = "&" + s
+        return self.ink_pals[key]
+
+    def menu_text(self, nid, font_id, t):
+        colors, var = C.menu_text_colors(t)
+        cs = "NULL"
+        if colors:
+            cs = self.sym(nid + "_colors")
+            ptrs = [self.ink_palette(font_id, c) for c in colors]
+            self.emit("static const PaletteData *const %s[] = { %s };" % (cs, ", ".join(ptrs)))
+        return "{ %s, %d, %d, %d, %s, %s }" % (self.text(t["text"]), t["x"] // 8, t["y"] // 8, len(colors),
+                                               self.var_enum(var), cs)
+
     def E_menu(self, nid, n):
         lay = C.menu_layout(n)
         opts = self.options(n.get("options") or [], lay["options"], nid)
@@ -513,14 +541,14 @@ class Gen:
         texts = n.get("texts") or []
         ts = "NULL"
         if texts:
+            items = [self.menu_text(nid, n["font"], t) for t in texts]
             ts = self.sym(nid + "_texts")
-            self.emit("static const MenuText %s[] = { %s };" % (ts, ", ".join(
-                "{ %s, %d, %d }" % (self.text(t["text"]), t["x"] // 8, t["y"] // 8) for t in texts)))
-        self.emit("const MenuData node_%s = { %s, %s, %d, %d, %d, %d, %s, %s, %s, %s, %s, %s, %d, %d, %s };" % (
+            self.emit("static const MenuText %s[] = {\n    %s\n};" % (ts, ",\n    ".join(items)))
+        self.emit("const MenuData node_%s = { %s, %s, %d, %d, %d, %d, %s, %s, %s, %s, %s, %s, %d, %d, %d, %s };" % (
             nid, self.ptr(n["font"]), self.text(n.get("title") or None), lay["title_x"], lay["title_y"],
             len(lay["options"]), 1 if n.get("box") else 0, opts, self.ptr(n["cursor"]), self.box(n.get("box")),
             cancel, self.node_enum(snd.get("move")), self.node_enum(snd.get("select")), n.get("upgrades", 0),
-            len(texts), ts))
+            len(texts), lay["row"], ts))
 
     def E_upgrade(self, nid, n):
         cat = n["category"]

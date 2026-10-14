@@ -293,7 +293,9 @@ def dialog_layout(box, line):
 
 
 def menu_layout(menu):
-    """Tile positions of a menu: title (x, y) and each option's (x, y). Cursor sits left of x."""
+    """Tile positions of a menu: title (x, y) and each option's (x, y). Cursor sits left of x.
+    A "row" layout puts the options side by side on line y: each label starts `spacing` px after
+    the end of the one before (the next option's cursor sits in that gap). row = 1 then."""
     lay = menu.get("layout", {})
     x, y = lay.get("x", 64) // 8, lay.get("y", 64) // 8
     spacing = max(1, lay.get("spacing", 16) // 8)
@@ -306,8 +308,48 @@ def menu_layout(menu):
     else:
         title_x = (30 - placeholder_width(title)) // 2
     count = menu.get("upgrades") if menu.get("upgrades") else len(menu.get("options", []))
-    opts = [(x, y + i * spacing) for i in range(count)]
-    return {"title_x": title_x, "title_y": title_y, "options": opts}
+    row = lay.get("direction") == "row" and not menu.get("upgrades")
+    if row:
+        opts, ox = [], x
+        for o in menu.get("options", []):
+            opts.append((ox, y))
+            ox += placeholder_width(str((o.get("label") if isinstance(o, dict) else "") or "")) + spacing
+    else:
+        opts = [(x, y + i * spacing) for i in range(count)]
+    return {"title_x": title_x, "title_y": title_y, "options": opts, "row": 1 if row else 0}
+
+
+def font_ink(font):
+    """Palette index of a font's letters: the color its glyphs use most (white letters with a dark
+    shadow -> the white). A menu text's `color` replaces that one color; shadow and paper stay."""
+    counts = {}
+    for rows in (font.get("glyphs") or {}).values():
+        for row in rows if isinstance(rows, list) else []:
+            for ch in str(row):
+                if ch in PIXEL_CHARS and ch != ".":
+                    counts[ch] = counts.get(ch, 0) + 1
+    if not counts:
+        return 1
+    return pixel_index(max(sorted(counts), key=lambda ch: counts[ch]))
+
+
+def menu_text_colors(text):
+    """A menu text's letter colors and the variable that picks one: (["#RRGGBB", ...], var).
+    `color` = one fixed color; `color_by {var, colors}` = colors[value] (0 = first, past the end =
+    last); neither = ([], None), the font's own color."""
+    by = text.get("color_by")
+    if isinstance(by, dict):
+        return list(by.get("colors") or []), by.get("var")
+    if text.get("color"):
+        return [text["color"]], None
+    return [], None
+
+
+def recolored_palette(colors, ink, color):
+    """A copy of a palette's colors (list of '#RRGGBB') with slot `ink` set to `color`."""
+    out = list(colors) + ["#000000"] * max(0, ink + 1 - len(colors))
+    out[ink] = color
+    return out
 
 
 def setup_console():

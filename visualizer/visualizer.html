@@ -249,10 +249,14 @@ function bgr555(hex) {
   return v[0] | (v[1] << 5) | (v[2] << 10);
 }
 const rgbCss = c => `rgb(${c[0]},${c[1]},${c[2]})`;
+// palId may be "pal_ui@2@#f8d038": that palette with color 2 changed (a menu text's letters, like
+// the recolored copies codegen makes).
 function palColors(palId) {
-  const p = NODES[palId];
+  const at = String(palId || "").split("@");
+  const p = NODES[at[0]];
   const cols = (p && Array.isArray(p.colors)) ? p.colors.map(q15) : [];
   while (cols.length < 16) cols.push([255, 0, 255]);
+  if (at.length === 3) cols[+at[1]] = q15(at[2]);
   return cols;
 }
 const PIX = ".123456789abcdef";
@@ -401,14 +405,15 @@ function glyphRows(fontId, ch) {
   if (!f || !f.glyphs) return null;
   return f.glyphs[ch] || f.glyphs[ch.toUpperCase()] || null;
 }
-function drawText(ctx, fontId, text, tx, ty, paper) {
+// pal (optional) = the palette the letters use instead of the font's (a colored menu text).
+function drawText(ctx, fontId, text, tx, ty, paper, pal) {
   const f = NODES[fontId];
   if (!f) return;
   let x = tx, y = ty;
   for (const ch of String(text)) {
     if (ch === "\n") { y++; x = tx; continue; }
     const rows = glyphRows(fontId, ch);
-    if (rows) ctx.drawImage(pixelsCanvas(rows, f.palette, paper), x * 8, y * 8);
+    if (rows) ctx.drawImage(pixelsCanvas(rows, pal || f.palette, paper), x * 8, y * 8);
     else if (paper !== undefined && paper !== null) { ctx.fillStyle = rgbCss(palColors(f.palette)[paper]); ctx.fillRect(x * 8, y * 8, 8, 8); }
     x++;
   }
@@ -524,13 +529,22 @@ function drawHud(ctx, hudId, values) {
     }
   }
 }
+// The palette a menu text's letters use (like ui.c draw_menu_text): the font's with its letter
+// color changed to `color`, or to the one color_by's variable picks (0 = first, past the end = last).
+function menuTextPal(fontId, t, ink) {
+  const by = t.color_by && Array.isArray(t.color_by.colors) ? t.color_by : null;
+  const cols = by ? by.colors : t.color ? [t.color] : [];
+  if (!cols.length) return undefined;
+  const k = by ? Math.max(0, Math.min(cols.length - 1, varInitial(by.var))) : 0;
+  return (NODES[fontId] || {}).palette + "@" + (ink === undefined ? 2 : ink) + "@" + cols[k];
+}
 function drawMenu(ctx, menuId, cursor) {
   const m = NODES[menuId], lay = DERIVED.menus[menuId];
   if (!m || !lay) return;
   const paper = m.box ? (m.box.paper === undefined ? 1 : m.box.paper) : undefined;
   if (m.box) drawBox(ctx, m.font, m.box);
   if (m.title) drawText(ctx, m.font, fillText(m.title), lay.title_x, lay.title_y, paper);
-  for (const t of m.texts || []) drawText(ctx, m.font, fillText(t.text), t.x >> 3, t.y >> 3, paper);
+  for (const t of m.texts || []) drawText(ctx, m.font, fillText(t.text), t.x >> 3, t.y >> 3, paper, menuTextPal(m.font, t, lay.ink));
   const f = NODES[m.font];
   const cw = NODES[m.cursor] ? NODES[m.cursor].pixels.length / 8 : 1;
   if (m.upgrades) {                          // card slots, filled with sample upgrades
@@ -1220,10 +1234,13 @@ PREVIEW.menu = (id, n) => {
   draw();
   const opts = h("div");
   (n.options || []).forEach((o, i) => opts.append(h("div", { class: "bhv" }, h("div", { class: "bn" }, "Option " + (i + 1) + ": " + fillText(o.label)), actionList(o.actions))));
+  const row = (DERIVED.menus[id] || {}).row;     // options side by side: Left / Right
+  const keys = row ? ["◀ Left", "▶ Right", "Left/Right"] : ["▲ Up", "▼ Down", "Up/Down"];
+  const colored = (n.texts || []).some(t => t.color_by) ? " Colored lines show the color their variable picks at its initial value." : "";
   return [card("On a 240×160 screen", h("div", { class: "toolbar" },
-    h("button", { onclick: () => { cur = (cur + (n.options || [1]).length - 1) % (n.options || [1]).length; draw(); } }, "▲ Up"),
-    h("button", { onclick: () => { cur = (cur + 1) % (n.options || [1]).length; draw(); } }, "▼ Down"),
-    h("span", { class: "small" }, "Up/Down move the cursor; A picks. The menu stays on screen (locked) until its actions close it or change scene.")), c),
+    h("button", { onclick: () => { cur = (cur + (n.options || [1]).length - 1) % (n.options || [1]).length; draw(); } }, keys[0]),
+    h("button", { onclick: () => { cur = (cur + 1) % (n.options || [1]).length; draw(); } }, keys[1]),
+    h("span", { class: "small" }, keys[2] + " move the cursor; A picks. The menu stays on screen (locked) until its actions close it or change scene." + colored)), c),
   card("What each option does", opts),
   n.on_cancel ? card("When B or START is pressed", actionList(n.on_cancel)) : null];
 };

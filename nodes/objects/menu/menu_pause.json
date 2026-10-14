@@ -3,7 +3,7 @@
   "kind": "object",
   "type": "menu",
   "name": "Pause",
-  "notes": "Opens with START during a run (the world freezes). Shows the level, XP, kills, timer and the 3 moves (LOCKED until their level). RESUME (or B / START) goes back; QUIT ends the run and returns to the menu.",
+  "notes": "Opens with START during a run (the world freezes). Shows the level (yellow), XP (blue), kills (red) and timer (green), then the 3 moves: a move not unlocked yet is written in dark grey. The 3 choices sit side by side at the bottom, Left / Right pick one: CONTINUE (or B / START) goes back; RESTART starts a new run with the same monster (the screen fades out, the song starts over, the run's variables reset and the run scene loads from scratch, exactly like START on the monster picker); QUIT ends the run and returns to the menu.",
   "font": "font_default",
   "title": "PAUSED",
   "cursor": "icon_cursor",
@@ -18,42 +18,84 @@
   "texts": [
     {
       "x": 16,
-      "y": 40,
-      "text": "LV {level}   XP {xp}"
-    },
-    {
-      "x": 16,
       "y": 48,
-      "text": "KILLS {kills}/25   TIME {time_min:02}:{time_sec:02}"
+      "text": "LV {level}",
+      "color": "#f8d038"
+    },
+    {
+      "x": 128,
+      "y": 48,
+      "text": "XP {xp}",
+      "color": "#78a8f8"
     },
     {
       "x": 16,
-      "y": 64,
-      "text": "A  {chosen.move1}"
+      "y": 56,
+      "text": "KILLS {kills}/25",
+      "color": "#f86860"
     },
     {
-      "x": 16,
-      "y": 72,
-      "text": "B  {chosen.move2} {moves|LOCKED|LOCKED||}"
+      "x": 128,
+      "y": 56,
+      "text": "TIME {time_min:02}:{time_sec:02}",
+      "color": "#58d058"
     },
     {
       "x": 16,
       "y": 80,
-      "text": "R  {chosen.move3} {moves|LOCKED|LOCKED|LOCKED|}"
+      "text": "A  {chosen.move1}"
+    },
+    {
+      "x": 16,
+      "y": 88,
+      "text": "B  {chosen.move2}",
+      "color_by": {
+        "var": "moves",
+        "colors": ["#606060", "#606060", "#f8f8f8"]
+      }
+    },
+    {
+      "x": 16,
+      "y": 96,
+      "text": "R  {chosen.move3}",
+      "color_by": {
+        "var": "moves",
+        "colors": ["#606060", "#606060", "#606060", "#f8f8f8"]
+      }
     }
   ],
   "layout": {
-    "x": 32,
-    "y": 104,
-    "spacing": 16,
+    "direction": "row",
+    "x": 24,
+    "y": 128,
+    "spacing": 24,
     "title_y": 24
   },
   "options": [
     {
-      "label": "RESUME",
+      "label": "CONTINUE",
       "actions": [
         {
           "do": "close_menu"
+        }
+      ]
+    },
+    {
+      "label": "RESTART",
+      "actions": [
+        {
+          "do": "fade_out",
+          "ticks": 20
+        },
+        {
+          "do": "stop_music"
+        },
+        {
+          "do": "reset_vars"
+        },
+        {
+          "do": "goto_scene",
+          "scene": "scn_run"
         }
       ]
     },

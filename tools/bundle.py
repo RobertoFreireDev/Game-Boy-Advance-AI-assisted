@@ -34,6 +34,7 @@ def derived(p):
                     [choice["inner_x"] + 1, choice["inner_y"] + i] for i in range(len(n.get("choices") or []))]}
             elif t == "menu":
                 out["menus"][nid] = C.menu_layout(n)
+                out["menus"][nid]["ink"] = C.font_ink(p.nodes.get(n.get("font"), {}))  # the letters' color slot
             elif t == "upgrade":
                 out["upgrades"][nid] = [C.wrap_text(d, C.UPGRADE_TEXT_W)[0] for d in n.get("descriptions", [])]
             elif t == "move":       # what its effect draws around each particle: the move hurts that
