@@ -372,7 +372,7 @@ groups them for humans. **What an actor does comes only from its `logic` list.**
   from it, so a 100 % move can miss a dodging target; a target with the walking dodge loses it
   `dodge_walk` points more when it walked (its own steps, not a push) in the last `dodge_ticks` ticks
   before the move was used, and `dodge_away` more on top when on one of those ticks it walked away from
-  the user on both axes, diagonally (a level axis counts either way): the player, 10 / +20 in 0.1 s),
+  the user on both axes, diagonally (a level axis counts either way): the player, 20 / +30 in 0.1 s),
   `charge` (ticks to recharge for the player; the
   `move_buttons` `charge_var` cuts it by a percent). **A move hurts exactly what its
   effect draws**: every foe whose hitbox comes within `MOVE_HIT_MARGIN` (2) px of the effect's picture —
