@@ -149,6 +149,8 @@ class Gen:
             var_from, var_index = self.var_enum(val("from")), self.var_enum(val("index"))
             if do == "add_var":
                 var_max = self.var_enum(val("max_var"))
+        elif do == "random_var":
+            var, va, vb = self.var_enum(val("var")), int(val("min") or 0), int(val("max") or 0)
         elif do == "if_chance":
             va = int(val("percent"))
             then_l = self.actions(val("then") or [], base + "_then")
@@ -673,8 +675,16 @@ class Gen:
                     lsym, lcount = self.logic(onode.get("logic") or [], "%s_%s" % (nid, inst["id"]), inst["overrides"])
                 elif onode.get("logic"):
                     lsym, lcount = "logic_" + obj, len(onode["logic"])
-            insts.append("{ %s, %d, %s, %d, %d, &node_%s, %s }" % (
-                kind, lcount, self.node_enum(obj), inst.get("x", 0), inst.get("y", 0), obj, lsym))
+            psym, pvar, pcount = "NULL", "-1", 0
+            variants = inst.get("variants")
+            if variants:                    # one of several tilemaps, picked by a variable at load
+                psym = self.sym("%s_%s_picks" % (nid, inst["id"]))
+                self.emit("static const void *const %s[] = { %s };" % (
+                    psym, ", ".join("&node_%s" % v for v in variants["objects"])))
+                pvar, pcount = self.var_enum(variants["var"]), len(variants["objects"])
+            insts.append("{ %s, %d, %s, %d, %d, &node_%s, %s, %s, %d, %s }" % (
+                kind, lcount, self.node_enum(obj), inst.get("x", 0), inst.get("y", 0), obj, lsym,
+                pvar, pcount, psym))
         s = "NULL"
         if insts:
             s = self.sym(nid + "_instances")

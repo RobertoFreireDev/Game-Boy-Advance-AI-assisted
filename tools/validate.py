@@ -279,6 +279,8 @@ class Ctx:
                              % (where, a["var"], count))
             if a["do"] == "if_chance" and is_int(a.get("percent")) and not 0 <= a["percent"] <= 100:
                 self.err("'%s.percent' must be between 0 and 100" % where)
+            if a["do"] == "random_var" and is_int(a.get("max")) and is_int(a.get("min", 0)) and a["max"] < a.get("min", 0):
+                self.err("'%s.max' must be at least 'min'" % where)
             if a["do"] == "float_text" and not isinstance(self.p.game.get("battle"), dict):
                 self.err("'%s' uses float_text, which needs game.battle (its font) in nodes.json" % where)
             if a["do"] == "float_text" and isinstance(a.get("text"), str):
@@ -366,7 +368,7 @@ def V_scene(c):
             c.err("'%s' must be an object" % where)
             continue
         for k in inst:
-            if k not in ("id", "object", "x", "y", "overrides"):
+            if k not in ("id", "object", "x", "y", "overrides", "variants"):
                 c.err("'%s' has unknown field '%s'" % (where, k))
         iid = c.get(inst, "id", "str", where + ".id")
         if iid is not None:
@@ -394,6 +396,8 @@ def V_scene(c):
             huds += 1
         elif t in ("menu", "dialog"):
             boxes += 1
+        if inst.get("variants") is not None:
+            check_variants(c, inst, obj, t, node, where)
         ov = inst.get("overrides")
         if ov is not None:
             if t not in C.ACTOR_TYPES:
@@ -441,23 +445,65 @@ def V_scene(c):
     scene_budget(c, insts)
 
 
+def instance_objects(inst):
+    """Every object an instance may place: its variants (one is picked when the scene loads), else its object."""
+    v = inst.get("variants")
+    objs = v.get("objects") if isinstance(v, dict) else None
+    if isinstance(objs, list) and objs and all(isinstance(o, str) for o in objs):
+        return objs
+    return [inst.get("object")]
+
+
+def check_variants(c, inst, obj, t, node, where):
+    """A tilemap instance with 'variants' {var, objects}: one of the objects is placed when the
+    scene loads, picked by the variable (a world's map). They all take the same background layer."""
+    v = inst["variants"]
+    if t != "tilemap":
+        c.err("'%s' has variants, but only tilemap instances can have them" % where)
+        return
+    if not isinstance(v, dict):
+        c.err("'%s.variants' must be an object {var, objects}" % where)
+        return
+    for k in v:
+        if k not in ("var", "objects"):
+            c.err("'%s.variants' has unknown field '%s'" % (where, k))
+    c.param_value("var", {"required": True}, v.get("var"), where + ".variants.var")
+    objs = v.get("objects")
+    if not isinstance(objs, list) or len(objs) < 2:
+        c.err("'%s.variants.objects' must list at least 2 tilemaps" % where)
+        return
+    if len(set(map(str, objs))) != len(objs):
+        c.err("'%s.variants.objects' lists a tilemap twice" % where)
+    if obj not in objs:
+        c.err("'%s.object' ('%s') must be one of its variants (the one the visualizer shows first)" % (where, obj))
+    for j, o in enumerate(objs):
+        if c.ref(o, ["tilemap"], "%s.variants.objects[%d]" % (where, j)) is None:
+            continue
+        on = c.p.nodes.get(o, {})
+        for f, dflt in (("layer", None), ("over", False), ("parallax", 1)):
+            if on.get(f, dflt) != node.get(f, dflt):
+                c.err("'%s' variant '%s' has %s %s, but '%s' has %s: every variant takes the same place"
+                      % (where, o, f, on.get(f, dflt), obj, node.get(f, dflt)))
+
+
 def check_random_spots(c, ids, layers):
     """random_spot actors: every place they may appear (the placed one and their spots) has the
     body's hitbox inside the collision map and off solid and hazard tiles (so it can be reached),
-    and a warning when the picture would be under an 'over' layer (hidden by tree tops)."""
+    and a warning when the picture would be under an 'over' layer (hidden by tree tops). A layer
+    with variants is checked in each of them."""
     p = c.p
 
-    def layer_map(layer):
+    def layer_maps(layer):
         iid = layers.get(layer)
-        node = p.nodes.get(ids[iid].get("object")) if iid in ids else None
-        return node if isinstance(node, dict) and isinstance(node.get("rows"), list) else None
+        objs = instance_objects(ids[iid]) if iid in ids else []
+        return [m for m in (p.nodes.get(o) for o in objs) if isinstance(m, dict) and isinstance(m.get("rows"), list)]
 
     def tile_at(m, tx, ty):
         rows = m["rows"]
         return rows[ty][tx] if 0 <= ty < len(rows) and 0 <= tx < len(rows[ty]) else "."
 
-    ground = layer_map(1)
-    overs = [m for m in (layer_map(2), layer_map(3)) if m and m.get("over") and m.get("parallax", 1) == 1]
+    grounds = layer_maps(1)
+    overs = [m for m in layer_maps(2) + layer_maps(3) if m.get("over") and m.get("parallax", 1) == 1]
     for iid, inst in ids.items():
         node = p.nodes.get(inst.get("object"), {})
         entry = next((e for e in node.get("logic", []) or []
@@ -477,18 +523,24 @@ def check_random_spots(c, ids, layers):
                 continue
             x, y = pt
             here = "instance '%s' may appear at (%d, %d), but" % (iid, x, y)
-            if ground:
+            outside = False
+            for ground in grounds:
+                on = " in '%s'" % ground.get("id") if len(grounds) > 1 else ""
                 tiles = p.nodes.get(ground.get("tileset"), {}).get("tiles", {}) or {}
                 l, t = x + hb.get("x", 0), y + hb.get("y", 0)
                 r, b = l + hb.get("w", 1) - 1, t + hb.get("h", 1) - 1
                 w, h = max(len(row) for row in ground["rows"]) * 8, len(ground["rows"]) * 8
                 if l < 0 or t < 0 or r >= w or b >= h:
-                    c.err("%s its hitbox is outside the map" % here)
-                    continue
+                    c.err("%s its hitbox is outside the map%s" % (here, on))
+                    outside = True
+                    break
                 bad = sorted({tile_at(ground, tx, ty) for ty in range(t // 8, b // 8 + 1) for tx in range(l // 8, r // 8 + 1)
                               if (tiles.get(tile_at(ground, tx, ty)) or {}).get("solid") or (tiles.get(tile_at(ground, tx, ty)) or {}).get("hazard")})
                 if bad:
-                    c.err("%s its hitbox touches solid or hazard tiles ('%s'), where it can't be reached" % (here, "', '".join(bad)))
+                    c.err("%s its hitbox touches solid or hazard tiles ('%s')%s, where it can't be reached"
+                          % (here, "', '".join(bad), on))
+            if outside:
+                continue
             if spr.get("width") and spr.get("height"):
                 l, t = x - ox, y - oy
                 for m in overs:
@@ -584,11 +636,26 @@ def scene_budget(c, insts):
                 bg_pals.add(p.nodes.get(ref, {}).get("palette"))
                 icons.add(ref)
 
+    picked = []                                         # instances placing one of several maps
     for inst in insts:
-        if isinstance(inst, dict) and inst.get("object") in p.nodes:
+        if isinstance(inst, dict) and len(instance_objects(inst)) > 1:
+            picked.append([o for o in instance_objects(inst) if o in p.nodes])
+        elif isinstance(inst, dict) and inst.get("object") in p.nodes:
             add_object(inst["object"], inst)
     for a in re.findall(r"'do': 'spawn', [^}]*'object': '(\w+)'", str(c.n.get("on_start", []))):
         add_object(a)                                   # things the scene spawns when it starts
+    # Only one variant of each is loaded: count the one adding the most palettes (the worst world).
+    base_bg = set(bg_pals)
+    for objs in picked:
+        worst = set()
+        for o in objs:
+            bg_pals.clear()
+            add_object(o)
+            if len(bg_pals - base_bg) > len(worst):
+                worst = bg_pals - base_bg
+        base_bg |= {"%s (or another variant)" % w for w in worst}
+    bg_pals.clear()
+    bg_pals.update(base_bg)
     # Sheets kept whole, plus the slots streamed sheets load their frames into (reserved by the
     # engine whenever the game has one: src/engine/sprites.iwram.c).
     limits = C.read_engine_limits()
@@ -944,6 +1011,17 @@ def V_actor(c):
         check_level_tag(c, mon)
     if mon is not None:
         check_walk_dodge(c, mon)
+        check_home(c, mon)
+
+
+def check_home(c, mon):
+    """A monster's home-world bonus: percents the engine can apply (a recharge can't be cut to nothing)."""
+    for k, hi in (("home_power", 100), ("home_speed", 100), ("home_charge", 90)):
+        v = mon.get(k, 10)
+        if is_int(v) and not 0 <= v <= hi:
+            c.err("'monster.%s' must be 0 to %d (percent)" % (k, hi))
+    if mon.get("on_home") and not mon.get("home_var"):
+        c.warn("'monster.on_home' never runs: the monster has no home_var")
 
 
 def check_walk_dodge(c, mon):

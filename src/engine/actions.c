@@ -118,6 +118,9 @@ static int run(Script *s) {
         case ACT_RESET_VARS:
             vars_reset();
             break;
+        case ACT_RANDOM_VAR:
+            vars_set(a->var, rng_range(a->a, a->b));
+            break;
         case ACT_IF_VAR: {
             s16 id = a->var_index < 0 ? a->var : vars_slot(a->var, vars_get(a->var_index));
             s32 w = a->var_from >= 0 ? vars_get(a->var_from) : a->a;

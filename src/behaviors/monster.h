@@ -32,11 +32,15 @@ const SpeciesData *monster_species(const Actor *a);
 int monster_team(const Actor *a);
 // Its level (the player's comes from a variable).
 int monster_level(const Actor *a);
-// Damage percent of its moves (100, Alpha 150), plus its power_var boost.
-int monster_power(const Actor *a);
+// Damage percent of one of its moves: `power` (0 = its own: 100, Alpha 150, plus its power_var
+// boost), + home_power % in its home world.
+int monster_power(const Actor *a, int power);
+// Ticks a recharge of `ticks` takes it: home_charge % shorter in its home world, else as is.
+u32 monster_recharge(const Actor *a, u32 ticks);
 // Accuracy points it adds to its moves (its aim_var boost; 0 for most).
 int monster_aim(const Actor *a);
-// A walking speed at its species' pace (a slower species, e.g. a long-range one); others: as is.
+// A walking speed at its species' pace (a slower species, e.g. a long-range one; + home_speed % in its
+// home world); others: as is.
 fixed monster_speed(const Actor *a, fixed speed);
 // True if it is a monster that can move and attack now (not paralyzed, frozen, pushed or fainted).
 int monster_can_act(const Actor *a);

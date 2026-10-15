@@ -416,7 +416,7 @@ static MonsterHit hit_from(Actor *user, const MoveData *m) {
     h.team = (u8)monster_team(user);
     h.level = (u8)monster_level(user);
     h.roll = 1;
-    h.power = (u16)(s_power_now ? s_power_now : monster_power(user));
+    h.power = (u16)monster_power(user, s_power_now);
     h.aim = (s16)monster_aim(user);
     h.from_x = fx_to_int(user->x);
     h.from_y = fx_to_int(user->y);
@@ -460,7 +460,7 @@ static Zone *zone_add(Actor *user, const MoveData *m, s32 tx, s32 ty) {
         z->team = (u8)monster_team(user);
         z->level = (u8)monster_level(user);
         z->use = s_zone_use;
-        z->power = (u16)(s_power_now ? s_power_now : monster_power(user));
+        z->power = (u16)monster_power(user, s_power_now);
         z->x = (s16)((tx - m->zone_w / 2) * 8);
         z->y = (s16)((ty - m->zone_h / 2) * 8);
         z->w = (s16)(m->zone_w * 8);

@@ -283,7 +283,10 @@ groups them for humans. **What an actor does comes only from its `logic` list.**
 - **scene**: `backdrop` color; `music` id or `null` (silence); `camera {follow: instance id,
   bounds: "map"|"none", x, y}` (x, y = start when not following); `instances[{id, object, x, y,
   overrides}]` — `object` may be a tilemap, actor, hud, menu, dialog or particle (a placed particle
-  is a permanent emitter); at most one HUD and one menu-or-dialog; one tilemap per layer.
+  is a permanent emitter); at most one HUD and one menu-or-dialog; one tilemap per layer. A tilemap
+  instance may have `variants {var, objects[]}`: when the scene loads it places `objects[value of var]`
+  instead (0 = first, past the end = last), e.g. one world per run; `object` is one of them (the one the
+  visualizer shows first), all take the same layer, `over` and `parallax`, and random spots are checked in each.
 - **palette**: `colors[0]` is the transparent slot (its value is ignored).
 - **sprite** frames are listed in order; the art faces **right** (the engine mirrors it).
 - **tileset** keys are one printable ASCII char (not `.` or space); flags `solid`, `one_way`,
@@ -643,7 +646,9 @@ Every channel in a pattern has the same number of rows. Missing channels are sil
   Monster-battle set: `monster` (species, level, HP, statuses, damage by the type chart, a walking dodge, XP and
   levels for the player, fainting, a `level_tag` over a wild monster's head for a while when its whole
   body comes `level_tag_margin` px inside the view below the HUD's top panel, gone when a move reaches
-  it, shown again after `level_tag_reset` ticks out of that view; the shared combat code is
+  it, shown again after `level_tag_reset` ticks out of that view; a home world: `home_var` holds the
+  world's type, and a monster of that type hits `home_power` % harder, walks `home_speed` % faster,
+  recharges `home_charge` % sooner and runs `on_home` when it appears; the shared combat code is
   `src/behaviors/monster.c` + `moves.c`),
   `monster_ai` (wander at home, hostile near the player with a cap, attack with move 1, go home; a
   sleeping boss that with `moves` 3 also uses moves 2 and 3, each on its own recharge (`moves_charge` % of
@@ -661,7 +666,7 @@ animation events, etc. Format: `{ "do": "<action>", ...params }`, run in order; 
 the list. Catalog in `catalog/actions.json`. Starter set:
 `goto_scene`, `fade_in`, `fade_out`, `wait`, `play_sfx`, `play_music`, `stop_music`,
 `set_var`, `add_var` (both take `value` or `from` another variable; `add_var` can cap at `max_var`),
-`reset_vars` (skips persistent variables), `if_var` (`value` or `from` another variable, `then[]`/`else[]`;
+`random_var` (a random whole number from `min` to `max`), `reset_vars` (skips persistent variables), `if_var` (`value` or `from` another variable, `then[]`/`else[]`;
 the three take `index` on a list variable, §5.2), `if_chance` (`percent`,
 `then[]`/`else[]`, random drops), `show_dialog`, `open_menu`,
 `close_menu`, `spawn`, `destroy_self`, `shake_camera`, `save_game`, `load_game`, `call` (custom C, §7.3),
@@ -837,7 +842,7 @@ frames.
 
 | Type | Preview |
 |------|---------|
-| scene | Whole scene on a canvas: backdrop, tilemaps with parallax (`over` layers above the actors), every instance drawn with its default animation (animated; monsters in their species' look, faded when it is the player's own kind), HUD on top. Overlays: tile grid, hitboxes, origins, instance labels, platform paths, trigger zones, 240×160 screen frame at camera start. Click an instance → selects its object. Instance list below. |
+| scene | Whole scene on a canvas: backdrop, tilemaps with parallax (`over` layers above the actors; a map with `variants` has a selector to show each one, e.g. each world), every instance drawn with its default animation (animated; monsters in their species' look, faded when it is the player's own kind), HUD on top. Overlays: tile grid, hitboxes, origins, instance labels, platform paths, trigger zones, 240×160 screen frame at camera start. Click an instance → selects its object. Instance list below. |
 | palette | Swatches with index, hex and 15-bit value. |
 | sprite, icon, font | Pixel-perfect zoom of every frame/glyph; optional index grid. |
 | tileset | Every tile with its char and flags (solid, one-way, hazard, ladder). |

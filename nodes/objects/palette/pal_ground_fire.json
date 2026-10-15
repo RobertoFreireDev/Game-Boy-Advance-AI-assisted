@@ -1,0 +1,25 @@
+{
+  "id": "pal_ground_fire",
+  "kind": "object",
+  "type": "palette",
+  "name": "Fire world ground colors",
+  "notes": "Colors of the Fire world's ground (Ember Crater). Same slots as the meadow's ground palette (outline, highlight, four ground shades, two path shades, accents, three stone shades), so the shared path, paving and Alpha-ring pieces take this world's colors.",
+  "colors": [
+    "#000000",
+    "#24140e",
+    "#f8f0c0",
+    "#9a8a80",
+    "#7a6c64",
+    "#5e524c",
+    "#423838",
+    "#c4ad98",
+    "#94806e",
+    "#f89830",
+    "#f8e070",
+    "#e05020",
+    "#a49ca4",
+    "#787480",
+    "#4c4856",
+    "#c02818"
+  ]
+}

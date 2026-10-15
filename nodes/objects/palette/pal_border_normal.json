@@ -1,8 +1,8 @@
 {
-  "id": "pal_canopy",
+  "id": "pal_border_normal",
   "kind": "object",
   "type": "palette",
-  "name": "Tree top colors",
+  "name": "Normal world border colors",
   "notes": "Leafy greens (lit from the top-left) for the tree tops.",
   "colors": [
     "#000000",

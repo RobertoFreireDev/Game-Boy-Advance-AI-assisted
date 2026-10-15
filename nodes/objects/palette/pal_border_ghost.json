@@ -1,0 +1,19 @@
+{
+  "id": "pal_border_ghost",
+  "kind": "object",
+  "type": "palette",
+  "name": "Ghost world border colors",
+  "notes": "Colors of the Ghost world's border (a dead forest at night: dark twisted crowns, eyes watching from the gaps), lit from the top-left like the monsters.",
+  "colors": [
+    "#000000",
+    "#08080c",
+    "#f8f070",
+    "#76629a",
+    "#54447a",
+    "#3a2e62",
+    "#221a44",
+    "#7a6e80",
+    "#4c4458",
+    "#a8f8f0"
+  ]
+}

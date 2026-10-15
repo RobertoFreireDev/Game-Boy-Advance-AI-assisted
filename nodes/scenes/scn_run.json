@@ -3,7 +3,7 @@
   "kind": "scene",
   "type": "level",
   "name": "Run",
-  "notes": "The run. The player's monster starts in the middle of the 3x3-screen world; 27 wild monsters live around it (3 per screen: levels 2 near the center, 4 and 6 farther out), but the player's own species stays away, leaving 24, plus the sleeping Alpha in the south-east clearing (level 4, +1 each minute up to 14 until it wakes). 5 floor items (Swift Feather, Power Gem, Aim Charm, Mist Orb, Quick Hourglass) each lie at a random one of their 9 spots, one spot per screen; only the player picks them up, each giving a small boost for the rest of the run. Defeat all 25 to win; if HP runs out it's game over. Music: the run theme (mus_run) until the Alpha wakes, then the boss theme (mus_boss) for the final fight; a restarted run starts again with the run theme.",
+  "notes": "The run. It happens in one of 9 worlds, one per monster type, picked by the 'world' variable: its ground and its border (forest, lava sea, ocean, crystal ridge, jungle, sludge bog, clouds, dead forest or canyon walls) are swapped in when the scene loads; every world has the same size, the same solid band around the edge and nothing solid inside, so every monster and item keeps its place. Monsters whose type is the world's (the player, wild ones and the Alpha alike) are at home: +10% power, +10% speed and -10% recharge for the whole run. The player's monster starts in the middle of the 3x3-screen world; 27 wild monsters live around it (3 per screen: levels 2 near the center, 4 and 6 farther out), but the player's own species stays away, leaving 24, plus the sleeping Alpha in the south-east clearing (level 4, +1 each minute up to 14 until it wakes). 5 floor items (Swift Feather, Power Gem, Aim Charm, Mist Orb, Quick Hourglass) each lie at a random one of their 9 spots, one spot per screen; only the player picks them up, each giving a small boost for the rest of the run. Defeat all 25 to win; if HP runs out it's game over. Music: the run theme (mus_run) until the Alpha wakes, then the boss theme (mus_boss) for the final fight; a restarted run starts again with the run theme.",
   "backdrop": "#78c050",
   "music": "mus_run",
   "camera": {
@@ -13,11 +13,39 @@
   "instances": [
     {
       "id": "ground",
-      "object": "map_ground"
+      "object": "map_ground_normal",
+      "variants": {
+        "var": "world",
+        "objects": [
+          "map_ground_normal",
+          "map_ground_fire",
+          "map_ground_water",
+          "map_ground_electric",
+          "map_ground_grass",
+          "map_ground_poison",
+          "map_ground_flying",
+          "map_ground_ghost",
+          "map_ground_rock"
+        ]
+      }
     },
     {
-      "id": "treetops",
-      "object": "map_canopy"
+      "id": "border",
+      "object": "map_border_normal",
+      "variants": {
+        "var": "world",
+        "objects": [
+          "map_border_normal",
+          "map_border_fire",
+          "map_border_water",
+          "map_border_electric",
+          "map_border_grass",
+          "map_border_poison",
+          "map_border_flying",
+          "map_border_ghost",
+          "map_border_rock"
+        ]
+      }
     },
     {
       "id": "player",

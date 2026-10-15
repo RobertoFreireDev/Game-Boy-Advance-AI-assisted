@@ -1,0 +1,20 @@
+{
+  "id": "pal_border_grass",
+  "kind": "object",
+  "type": "palette",
+  "name": "Grass world border colors",
+  "notes": "Colors of the Grass world's border (a wall of jungle: big glossy leaves, hanging vines and flowers), lit from the top-left like the monsters.",
+  "colors": [
+    "#000000",
+    "#0c2010",
+    "#e0ffa0",
+    "#a0e048",
+    "#60c038",
+    "#3c9430",
+    "#286428",
+    "#163c1c",
+    "#f878b8",
+    "#f8e050",
+    "#8c6030"
+  ]
+}

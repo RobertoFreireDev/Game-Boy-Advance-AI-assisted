@@ -1,10 +1,10 @@
 {
-  "id": "map_canopy",
+  "id": "map_border_normal",
   "kind": "object",
   "type": "tilemap",
-  "name": "Overworld (tree tops)",
-  "notes": "The leafy edge of the forest that rings the world, drawn over the monsters: walking right next to the border hides you under its leaves. There are no single trees inside the field any more.",
-  "tileset": "ts_canopy",
+  "name": "Normal world: Green Meadow (border)",
+  "notes": "The Normal world's edge: the leafy edge of the forest that rings the world, drawn over the monsters: walking right next to the border hides you under its leaves. There are no single trees inside the field any more.",
+  "tileset": "ts_border_normal",
   "layer": 2,
   "parallax": 1,
   "over": true,
@@ -71,6 +71,6 @@
     "eefeeeeeefeeeeeefeeeeeefeeeeeefeeeeeefeeeeeefeeeeeefeeeeeefeeeeeefeeeeeefeeeeeefeeeeeefeee"
   ],
   "children": [
-    "ts_canopy"
+    "ts_border_normal"
   ]
 }

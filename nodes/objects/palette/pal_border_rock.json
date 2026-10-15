@@ -1,0 +1,20 @@
+{
+  "id": "pal_border_rock",
+  "kind": "object",
+  "type": "palette",
+  "name": "Rock world border colors",
+  "notes": "Colors of the Rock world's border (canyon walls of banded sandstone, fallen boulders piled at their foot), lit from the top-left like the monsters.",
+  "colors": [
+    "#000000",
+    "#281810",
+    "#f8e0c0",
+    "#e8b888",
+    "#c88c58",
+    "#a06c40",
+    "#784c2c",
+    "#4c3020",
+    "#b8aca0",
+    "#8c8078",
+    "#625850"
+  ]
+}

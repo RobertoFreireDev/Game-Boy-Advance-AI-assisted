@@ -1,0 +1,25 @@
+{
+  "id": "pal_ground_flying",
+  "kind": "object",
+  "type": "palette",
+  "name": "Flying world ground colors",
+  "notes": "Colors of the Flying world's ground (Sky Isle). Same slots as the meadow's ground palette (outline, highlight, four ground shades, two path shades, accents, three stone shades), so the shared path, paving and Alpha-ring pieces take this world's colors.",
+  "colors": [
+    "#000000",
+    "#28305a",
+    "#ffffff",
+    "#d8f8e0",
+    "#b0e6c0",
+    "#88c8a0",
+    "#609880",
+    "#ecf0fa",
+    "#b8bcd8",
+    "#a07850",
+    "#f8f8b0",
+    "#80a8f0",
+    "#e4e8f4",
+    "#c4c8dc",
+    "#9094b4",
+    "#f0a8c8"
+  ]
+}

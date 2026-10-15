@@ -25,13 +25,15 @@ static s32 gauge(u32 charge, u32 full, int unlocked, int blink) {
     return 1 + (s32)(charge * 4 / (full ? full : 1));
 }
 
-// Ticks a move takes to recharge: its charge, cut by charge_var percent (at most 90 %).
-static u32 full_charge(const Params_move_buttons *p, const MoveData *m) {
+// Ticks a move takes to recharge: its charge, cut by charge_var percent (at most 90 %), then
+// by the monster's home bonus in its home world.
+static u32 full_charge(const Actor *a, const Params_move_buttons *p, const MoveData *m) {
     if (!m) return 1;
     u32 full = m->charge;
     s32 cut = p->charge_var >= 0 ? vars_get(p->charge_var) : 0;
     if (cut > 90) cut = 90;
     if (cut > 0) full = full * (u32)(100 - cut) / 100;
+    full = monster_recharge(a, full);
     return full ? full : 1;
 }
 
@@ -78,7 +80,7 @@ void bhv_move_buttons_update(Actor *a, const void *params) {
     u32 misc = (u32)unlocked;
     for (int i = 0; i < 3; i++) {
         const MoveData *m = sp->moves[i];
-        u32 full = full_charge(p, m);
+        u32 full = full_charge(a, p, m);
         u32 blink = (st[ST_MISC] >> shift[i]) & 0xFF;
         if (blink) blink--;
         if (i < unlocked && m && st[ST_C1 + i] < full) {
@@ -97,6 +99,6 @@ void bhv_move_buttons_update(Actor *a, const void *params) {
         if (!input_pressed(button[i])) continue;
         if (!can) { if (monster_held(a)) sound(p->locked_sfx); continue; }   // paralyzed: it can't
         if (i >= unlocked || !m) sound(p->locked_sfx);
-        else if (st[ST_C1 + i] >= full_charge(p, m) && fire(a, p, m)) st[ST_C1 + i] = 0;
+        else if (st[ST_C1 + i] >= full_charge(a, p, m) && fire(a, p, m)) st[ST_C1 + i] = 0;
     }
 }

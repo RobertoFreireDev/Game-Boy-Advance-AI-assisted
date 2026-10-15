@@ -3,7 +3,7 @@
   "kind": "object",
   "type": "menu",
   "name": "Pause",
-  "notes": "Opens with START during a run (the world freezes). Shows the level (yellow), XP (blue), kills (red) and timer (green), then the 3 moves: a move not unlocked yet is written in dark grey. The 3 choices sit side by side at the bottom, Left / Right pick one: CONTINUE (or B / START) goes back; RESTART starts a new run with the same monster (the screen fades out, the song starts over, the run's variables reset and the run scene loads from scratch, exactly like START on the monster picker); QUIT ends the run and returns to the menu.",
+  "notes": "Opens with START during a run (the world freezes). Shows the level (yellow), XP (blue), kills (red) and timer (green), then the 3 moves: a move not unlocked yet is written in dark grey. The 3 choices sit side by side at the bottom, Left / Right pick one: CONTINUE (or B / START) goes back; RESTART starts a new run with the same monster in the same world (the screen fades out, the song starts over, the run's variables reset and the run scene loads from scratch, exactly like START on the monster picker); QUIT ends the run and returns to the menu.",
   "font": "font_default",
   "title": "PAUSED",
   "cursor": "icon_cursor",

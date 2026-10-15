@@ -1,0 +1,25 @@
+{
+  "id": "pal_ground_ghost",
+  "kind": "object",
+  "type": "palette",
+  "name": "Ghost world ground colors",
+  "notes": "Colors of the Ghost world's ground (Haunted Hollow). Same slots as the meadow's ground palette (outline, highlight, four ground shades, two path shades, accents, three stone shades), so the shared path, paving and Alpha-ring pieces take this world's colors.",
+  "colors": [
+    "#000000",
+    "#10101c",
+    "#e8f0ff",
+    "#8890b8",
+    "#6a7098",
+    "#525880",
+    "#3a3e60",
+    "#a29ab8",
+    "#787090",
+    "#8c6c78",
+    "#a8f8f0",
+    "#48b0c8",
+    "#8a84a2",
+    "#686282",
+    "#484462",
+    "#c870f0"
+  ]
+}

@@ -1,8 +1,8 @@
 {
-  "id": "pal_ground",
+  "id": "pal_ground_normal",
   "kind": "object",
   "type": "palette",
-  "name": "Overworld ground colors",
+  "name": "Normal world ground colors",
   "notes": "Colors of the ground tiles, picked to look like the Game Boy Color Pokemon games: near-black outline, white, four grass greens (tip highlight, the light floor, tufts, shade), two path sands, brown wood, two water blues, three stone greys and flower red.",
   "colors": [
     "#000000",

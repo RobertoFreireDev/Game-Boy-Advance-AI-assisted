@@ -1,0 +1,17 @@
+{
+  "id": "pal_border_water",
+  "kind": "object",
+  "type": "palette",
+  "name": "Water world border colors",
+  "notes": "Colors of the Water world's border (the open sea, shallow near the beach, with white surf lapping the sand), lit from the top-left like the monsters.",
+  "colors": [
+    "#000000",
+    "#183060",
+    "#ffffff",
+    "#c8f0f8",
+    "#78d0f0",
+    "#3c98e0",
+    "#2468c0",
+    "#1c4c98"
+  ]
+}

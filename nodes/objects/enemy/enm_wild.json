@@ -3,7 +3,7 @@
   "kind": "object",
   "type": "enemy",
   "name": "Wild monster",
-  "notes": "A wild monster of the species set on each map instance (levels 2, 4 or 6 with 30, 45 or 60 HP). The player's own species stays away. It wanders near home, turns hostile within 5 tiles (at most 3 at once), walks up and uses its species' first move every 4 s, and goes home if the player gets more than 10 tiles away. It keeps at least 1 tile of room from the other wild monsters: it steers away from close ones and walks around one in its way, and next to the player it slides sideways, so a pack spreads around the player instead of queueing. Touching never hurts. When the player's move hits it, it blinks red 3 times (red, normal, red, normal, red: about a third of a second), so every hit is easy to see. Each one gives 20 XP when it faints (plus 2 XP per hit taken). When it comes into view (its whole body at least 32 px inside the screen, below the top HUD panel) its level shows over its head in cyan (e.g. LV4) for 3 s; the tag vanishes the moment a move reaches it. After more than 5 s out of that view it counts as unseen again, so coming back shows the tag again.",
+  "notes": "A wild monster of the species set on each map instance (levels 2, 4 or 6 with 30, 45 or 60 HP). The player's own species stays away. It wanders near home, turns hostile within 5 tiles (at most 3 at once), walks up and uses its species' first move every 4 s, and goes home if the player gets more than 10 tiles away. It keeps at least 1 tile of room from the other wild monsters: it steers away from close ones and walks around one in its way, and next to the player it slides sideways, so a pack spreads around the player instead of queueing. Touching never hurts. When the player's move hits it, it blinks red 3 times (red, normal, red, normal, red: about a third of a second), so every hit is easy to see. Each one gives 20 XP when it faints (plus 2 XP per hit taken). When it comes into view (its whole body at least 32 px inside the screen, below the top HUD panel) its level shows over its head in cyan (e.g. LV4) for 3 s; the tag vanishes the moment a move reaches it. After more than 5 s out of that view it counts as unseen again, so coming back shows the tag again. In its home world (the run's world is its type) it hits 10% harder, walks 10% faster and attacks 10% more often.",
   "logic": [
     {
       "behavior": "monster",
@@ -15,6 +15,7 @@
         "flash_palette": "pal_flash_red",
         "flash_ticks": 4,
         "flashes": 3,
+        "home_var": "world",
         "level_tag": 180,
         "level_tag_reset": 300,
         "level_tag_margin": 32,

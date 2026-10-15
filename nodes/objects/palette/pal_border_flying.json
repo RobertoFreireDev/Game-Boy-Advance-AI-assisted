@@ -1,0 +1,17 @@
+{
+  "id": "pal_border_flying",
+  "kind": "object",
+  "type": "palette",
+  "name": "Flying world border colors",
+  "notes": "Colors of the Flying world's border (a sea of clouds, puffs piling up on the island's rim), lit from the top-left like the monsters.",
+  "colors": [
+    "#000000",
+    "#5878b8",
+    "#ffffff",
+    "#e8f4ff",
+    "#c8dcf8",
+    "#a0b8e8",
+    "#80c8f8",
+    "#5aa8f0"
+  ]
+}

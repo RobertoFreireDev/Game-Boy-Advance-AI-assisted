@@ -1,10 +1,10 @@
 {
-  "id": "map_ground",
+  "id": "map_ground_normal",
   "kind": "object",
   "type": "tilemap",
-  "name": "Overworld (ground)",
-  "notes": "The 3x3-screen world (90x60 tiles), one wide open field: nothing inside blocks the player or the monsters. Only the 3-tile band of deep forest around the edge is solid, so nobody can leave the map. Inside there are only things you walk over: grass, paths joining every screen (the north path runs straight up to the forest now), flower beds in the east, tall grass in the south, stone floors where the ruins (south-west) and the rocky spots (north-east) used to be, and the Alpha's stone circle in the south-east. Water, trees, rocks, fences, ledges, walls, pillars and graves were all removed.",
-  "tileset": "ts_ground",
+  "name": "Normal world: Green Meadow (ground)",
+  "notes": "The Normal world's ground, a green meadow (world 0, the first of the 9 worlds; the run picks one at random). The 3x3-screen world (90x60 tiles), one wide open field: nothing inside blocks the player or the monsters. Only the 3-tile band of deep forest around the edge is solid, so nobody can leave the map. Inside there are only things you walk over: grass, paths joining every screen (the north path runs straight up to the forest now), flower beds in the east, tall grass in the south, stone floors where the ruins (south-west) and the rocky spots (north-east) used to be, and the Alpha's stone circle in the south-east. Water, trees, rocks, fences, ledges, walls, pillars and graves were all removed.",
+  "tileset": "ts_ground_normal",
   "layer": 1,
   "parallax": 1,
   "rows": [
@@ -70,6 +70,6 @@
     "KKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKK"
   ],
   "children": [
-    "ts_ground"
+    "ts_ground_normal"
   ]
 }

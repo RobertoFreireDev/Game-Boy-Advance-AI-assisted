@@ -196,23 +196,24 @@ static int move_count(const Params_monster_ai *p) {
     return p->moves < 1 ? 1 : p->moves > 3 ? 3 : p->moves;
 }
 
-// Is its move `i` (1 = move 2, 2 = move 3) recharged? It takes moves_charge % of the player's time.
-static int extra_ready(const Params_monster_ai *p, const SpeciesData *sp, int i) {
-    return sp->moves[i] && s_extra[s_me][i - 1] >= (u32)sp->moves[i]->charge * (u32)p->moves_charge / 100;
+// Is its move `i` (1 = move 2, 2 = move 3) recharged? It takes moves_charge % of the player's time
+// (less in its home world).
+static int extra_ready(const Actor *a, const Params_monster_ai *p, const SpeciesData *sp, int i) {
+    return sp->moves[i] && s_extra[s_me][i - 1] >= monster_recharge(a, (u32)sp->moves[i]->charge * (u32)p->moves_charge / 100);
 }
 
 // The move it walks up to the player for: its highest ready move 2 or 3 (not one it uses on
 // itself, which reaches no one), else move 1.
-static const MoveData *aimed_move(const Params_monster_ai *p, const SpeciesData *sp) {
+static const MoveData *aimed_move(const Actor *a, const Params_monster_ai *p, const SpeciesData *sp) {
     for (int i = move_count(p) - 1; i >= 1; i--)
-        if (extra_ready(p, sp, i) && sp->moves[i]->shape != SHAPE_SELF) return sp->moves[i];
+        if (extra_ready(a, p, sp, i) && sp->moves[i]->shape != SHAPE_SELF) return sp->moves[i];
     return sp->moves[0];
 }
 
 // One attack: its highest ready move 3 or 2 that goes off, else move 1. Returns 1 if one did.
 static int attack(Actor *a, const Params_monster_ai *p, const SpeciesData *sp) {
     for (int i = move_count(p) - 1; i >= 1; i--) {
-        if (extra_ready(p, sp, i) && moves_use_power(a, sp->moves[i], 0, p->moves_power)) {
+        if (extra_ready(a, p, sp, i) && moves_use_power(a, sp->moves[i], 0, p->moves_power)) {
             s_extra[s_me][i - 1] = 0;
             return 1;
         }
@@ -263,7 +264,8 @@ void bhv_monster_ai_update(Actor *a, const void *params) {
     const SpeciesData *sp = monster_species(a);
     for (int i = 0; i < 2; i++)                     // moves 2 and 3 recharge while it can act
         if (s_extra[s_me][i] < 0xFFFF) s_extra[s_me][i]++;
-    const MoveData *m = sp ? aimed_move(p, sp) : NULL;
+    const MoveData *m = sp ? aimed_move(a, p, sp) : NULL;
+    u32 charge = monster_recharge(a, (u32)p->charge);  // the wait between attacks (shorter at home)
     fixed walk = monster_speed(a, p->speed), chase = monster_speed(a, p->chase_speed);   // its species' pace
     Actor *pl = actor_player();
     int seen = pl && monster_targetable(pl);
@@ -276,7 +278,7 @@ void bhv_monster_ai_update(Actor *a, const void *params) {
     case MODE_WANDER:
         if (near && moves_within(a, pl, p->sight) && s_hostile < p->max_hostile) {
             turn_hostile(st);
-            st[ST_CHARGE] = (u32)p->charge / 2;     // first attack comes a bit sooner
+            st[ST_CHARGE] = charge / 2;             // first attack comes a bit sooner
             break;
         }
         wander(a, p, st, walk);
@@ -286,7 +288,7 @@ void bhv_monster_ai_update(Actor *a, const void *params) {
             st[ST_MODE] = MODE_RETURN;
             break;
         }
-        if (st[ST_CHARGE] < (u32)p->charge) st[ST_CHARGE]++;
+        if (st[ST_CHARGE] < charge) st[ST_CHARGE]++;
         if (!seen) { stand(a, walk); break; }       // it flew out of reach: wait
         int reach = m ? moves_reach(m) : 1;
         if (!moves_within(a, pl, reach)) {
@@ -305,7 +307,7 @@ void bhv_monster_ai_update(Actor *a, const void *params) {
         if (s_away[s_me][0] || s_away[s_me][1]) slide_around(a, pl, walk);
         else stand(a, walk);
         face_point(a, fx_to_int(pl->x), fx_to_int(pl->y));
-        if (st[ST_CHARGE] >= (u32)p->charge && m) {
+        if (st[ST_CHARGE] >= charge && m) {
             if (attack(a, p, sp)) st[ST_CHARGE] = 0;
             else walk_to(a, fx_to_int(pl->x), fx_to_int(pl->y), chase);  // a beam off its line: step closer
         }

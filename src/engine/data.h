@@ -308,6 +308,9 @@ typedef struct {
     s16 x, y;
     const void *data;
     const LogicEntry *logic;            // actors: object logic, or a per-instance copy with overrides
+    s16 pick_var;                       // tilemaps with variants: picks[value of this variable] is placed
+    u16 pick_count;                     //   instead of data (0 = first, past the end = last); 0 = no variants
+    const void *const *picks;
 } InstanceData;
 
 typedef void (*SceneHook)(void);

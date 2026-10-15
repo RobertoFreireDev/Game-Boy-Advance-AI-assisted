@@ -57,7 +57,7 @@ nodes), but their engine features stayed, so all three genres are covered withou
 | Platformer | `platformer_controller`, `health`, `camera_target` | `patrol`, `chase_player`, `stompable`, `damage_on_touch` | `follow_path` + `solid_platform` lifts, `collectible`, `trigger_zone` exits, gravity bodies, one-way/ladder/hazard tiles |
 | Top-down adventure | `topdown_controller`, `sword_attack`, `health` | `wander`, `chase_player`, `damage_on_touch` | `talk` + dialogs, `locked_door`, `if_var` flags, `*_up`/`*_down` animation slots |
 | Survivors / bullet heaven | `topdown_controller` (`speed_var`), `weapon` ×N, `aura` | `swarm`, `spawn_wave` (on an invisible `prop` director) | `projectile` props, `magnet` gems, `level_up` + `upgrade` nodes + upgrade menu, `run_clock`, `persistent` vars + `save_game` shop |
-| Monster battler (**Monster Survival**, branch `games/monster_survival`) | `monster` (`species_var`, HP/XP/level vars, walking dodge `dodge_walk` / `dodge_away`), `topdown_controller`, `move_buttons` | `monster` (species per instance, `avoid_var`), `monster_ai`; a sleeping Alpha (`random`, `alpha`, `wake_var`, all 3 moves via `monster_ai` `moves`) | `species` + `move` nodes (each move's `travel` picture flies from the user to its effect: one shared sheet `spr_fx_travel`), `game.battle` (type chart, floating words, the player's hit sound per type), solid top-down bodies, `species_select` picker (locked species as silhouettes, each unlocked by the first win of a monster that never won, saved with `save_game`), `drop_in` logo, `cover_screen` / `flash_screen` / `float_text`, gauges and `{var.name}` text, floor items (`pickup` + `random_spot` + `collectible` `as_player`) feeding boost variables (`power_var`, `aim_var`, `dodge_var`, `charge_var`, `speed_var`), a boss that levels up each minute (`run_clock` `on_minute` → its `level_var`) |
+| Monster battler (**Monster Survival**, branch `games/monster_survival`) | `monster` (`species_var`, HP/XP/level vars, walking dodge `dodge_walk` / `dodge_away`), `topdown_controller`, `move_buttons` | `monster` (species per instance, `avoid_var`), `monster_ai`; a sleeping Alpha (`random`, `alpha`, `wake_var`, all 3 moves via `monster_ai` `moves`) | `species` + `move` nodes (each move's `travel` picture flies from the user to its effect: one shared sheet `spr_fx_travel`), `game.battle` (type chart, floating words, the player's hit sound per type), solid top-down bodies, `species_select` picker (locked species as silhouettes, each unlocked by the first win of a monster that never won, saved with `save_game`), `drop_in` logo, `cover_screen` / `flash_screen` / `float_text`, gauges and `{var.name}` text, floor items (`pickup` + `random_spot` + `collectible` `as_player`) feeding boost variables (`power_var`, `aim_var`, `dodge_var`, `charge_var`, `speed_var`), a boss that levels up each minute (`run_clock` `on_minute` → its `level_var`), one world per type (the run scene's two map instances have `variants` picked by a `world` variable that the picker sets with `random_var`; a monster of the world's type is at home: `monster` `home_var`, `on_home` words) |
 
 If the genre is new (shmup, puzzle, racing, RPG battles…), map it to these first, then list
 the **missing** behaviors/actions and ask the human before adding a node type or changing
@@ -98,6 +98,15 @@ lunge frames derived from them + a closed-outline check), `portrait.py` (32x32 c
 from shapes), `fx.py` (every effect, with a no-edge check), `gen_mons.py` / `gen_fx.py` (write the
 nodes), `bench.py` / `fxview.py` / `pview.py` (PNG previews). Harness additions in `scratchpad/t/`:
 `test_move3.py <species>` (R, screenshot move 3 every 10 frames).
+The 8 other worlds (Ember Crater, Coral Lagoon, Storm Plateau, Verdant Jungle, Miasma Swamp, Sky Isle,
+Haunted Hollow, Boulder Canyon; the meadow is the Normal world) came from a generator in session
+ff69787e, `scratchpad/w/`: `gen.py [--repo] [world…]` writes each world's palettes, tilesets and maps
+(and PNG previews in `out/`); `worlds.py` = ground art (palettes keep the meadow's slot layout so its path
+and paving pieces recolor themselves; `DENS` = the Alpha's 4x4 den per world), `border.py` = the painted
+borders (a 32 px texture + a 2-tile strip per side + 16 px corner blocks keeps each under ~80 tiles),
+`layout.py` = paths between screen hubs (auto-tiled, never 1 tile wide), paving, patches, stamps.
+`scratchpad/t/test_worlds.py` plays 12 runs + a RESTART in the emulator: maps per world, every
+monster's home bonus, real walking / recharge / damage, the floating words, a screenshot per world.
 
 **Generic nodes kept across games** (on `main` too; reuse, recolor if needed, don't delete):
 `font_default`, `pal_ui`, `icon_cursor`, `icon_heart`, `sfx_select`, `sfx_confirm`.

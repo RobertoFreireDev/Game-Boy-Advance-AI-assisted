@@ -1,0 +1,25 @@
+{
+  "id": "pal_ground_rock",
+  "kind": "object",
+  "type": "palette",
+  "name": "Rock world ground colors",
+  "notes": "Colors of the Rock world's ground (Boulder Canyon). Same slots as the meadow's ground palette (outline, highlight, four ground shades, two path shades, accents, three stone shades), so the shared path, paving and Alpha-ring pieces take this world's colors.",
+  "colors": [
+    "#000000",
+    "#301c10",
+    "#fff0d8",
+    "#f0c898",
+    "#d8a470",
+    "#b88050",
+    "#8c5c38",
+    "#c8b8a0",
+    "#988870",
+    "#7c8c48",
+    "#ecdcbc",
+    "#a89070",
+    "#ccb49c",
+    "#a48e7a",
+    "#7a6656",
+    "#c86040"
+  ]
+}

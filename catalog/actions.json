@@ -73,6 +73,15 @@
     "sentence": "Reset all game variables to their starting values",
     "params": {}
   },
+  "random_var": {
+    "description": "Set a game variable to a random whole number between 'min' and 'max', both included (each equally likely): e.g. pick the world of a new run.",
+    "sentence": "Set {var} to a random number from {min} to {max}",
+    "params": {
+      "var": { "type": "var", "required": true, "description": "Variable to change." },
+      "min": { "type": "int", "default": 0, "description": "Smallest value it can get." },
+      "max": { "type": "int", "required": true, "description": "Largest value it can get (at least 'min')." }
+    }
+  },
   "if_var": {
     "description": "Check a game variable against a number or another variable and run one of two lists.",
     "sentence": "If {var} {op} {value}",

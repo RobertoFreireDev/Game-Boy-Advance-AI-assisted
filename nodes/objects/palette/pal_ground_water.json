@@ -1,0 +1,25 @@
+{
+  "id": "pal_ground_water",
+  "kind": "object",
+  "type": "palette",
+  "name": "Water world ground colors",
+  "notes": "Colors of the Water world's ground (Coral Lagoon). Same slots as the meadow's ground palette (outline, highlight, four ground shades, two path shades, accents, three stone shades), so the shared path, paving and Alpha-ring pieces take this world's colors.",
+  "colors": [
+    "#000000",
+    "#2c3c58",
+    "#fffff0",
+    "#f8ecc4",
+    "#ecd4a0",
+    "#d4b680",
+    "#b08c5c",
+    "#ddc490",
+    "#bfa070",
+    "#f07858",
+    "#88dcf4",
+    "#3c94dc",
+    "#bcc8d0",
+    "#8c9cac",
+    "#5c6c80",
+    "#f4a0b8"
+  ]
+}

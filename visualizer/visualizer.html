@@ -1750,8 +1750,15 @@ PREVIEW.move = (id, n) => {
 };
 
 // ---- scenes ------------------------------------------------------------------------
-function sceneLayout(sc) {
-  const insts = (sc.instances || []).map((inst, i) => ({ ...inst, index: i, node: NODES[inst.object], type: typeOf(inst.object) }));
+// What an instance places: its object, or with 'variants' the one the variable picks (like
+// scene.c: 0 = first, past the end = last). pick null = the instance's own object.
+function instObject(inst, pick) {
+  const v = inst.variants, objs = v && Array.isArray(v.objects) ? v.objects : [];
+  if (!objs.length || pick === null || pick === undefined) return inst.object;
+  return objs[Math.max(0, Math.min(pick, objs.length - 1))];
+}
+function sceneLayout(sc, pick) {
+  const insts = (sc.instances || []).map((inst, i) => { const object = instObject(inst, pick); return { ...inst, object, index: i, node: NODES[object], type: typeOf(object) }; });
   const maps = insts.filter(i => i.type === "tilemap" && i.node);
   const coll = maps.find(m => m.node.layer === 1);
   let W = 240, H = 160;
@@ -1844,7 +1851,8 @@ function drawScene(ctx, sc, L, tick, ov, layersOnScreen) {
   return hits;
 }
 function PREVIEW_scene(id, sc) {
-  const L = sceneLayout(sc);
+  const varied = (sc.instances || []).filter(i => i.variants && Array.isArray(i.variants.objects) && i.variants.objects.length);
+  let L = sceneLayout(sc, null);
   const ov = { zoom: L.W > 400 ? 2 : 3, grid: false, hitbox: false, origin: false, labels: false, paths: true, zones: true, frame: true, coll: false };
   const stage = h("div", { class: "stage" });
   let canvas, ctx, hits = [];
@@ -1860,11 +1868,22 @@ function PREVIEW_scene(id, sc) {
   };
   build();
   live(tick => { if (canvas.isConnected) hits = drawScene(ctx, sc, L, tick, ov); });
-  const tb = h("div", { class: "toolbar" }, playButtons(), zoomSelect(ov.zoom, z => { ov.zoom = z; build(); }),
+  // Scenes whose maps are picked by a variable (one world per run): choose which one to look at.
+  let variantSel = null;
+  if (varied.length) {
+    const v = varied[0].variants, count = Math.max(...varied.map(i => i.variants.objects.length));
+    const def = Math.max(0, v.objects.indexOf(varied[0].object));
+    const s = h("select", { onchange: () => { L = sceneLayout(sc, parseInt(s.value)); build(); } },
+      [...Array(count).keys()].map(k => h("option", { value: k, selected: k === def ? "selected" : null }, `${v.var} = ${k}: ${nameOf(instObject(varied[0], k))}`)));
+    variantSel = h("label", {}, "Map picked by ", s);
+  }
+  const tb = h("div", { class: "toolbar" }, playButtons(), variantSel, zoomSelect(ov.zoom, z => { ov.zoom = z; build(); }),
     ...[["Tile grid", "grid"], ["Collision", "coll"], ["Hitboxes", "hitbox"], ["Origins", "origin"], ["Labels", "labels"], ["Paths & random spots", "paths"], ["Trigger zones", "zones"], ["Screen frame", "frame"]].map(([l, k]) => toggle(l, ov, k, () => {})));
   const table = h("table", { class: "inst-table" }, h("tr", {}, h("th", {}, "instance"), h("th", {}, "object"), h("th", {}, "x, y"), h("th", {}, "per-instance changes")));
   for (const i of L.insts) table.append(h("tr", {}, h("td", { class: "mono" }, i.id), h("td", {}, nodeLink(i.object)), h("td", { class: "mono" }, i.x === undefined ? "—" : `${i.x}, ${i.y}`),
-    h("td", {}, i.overrides ? Object.entries(i.overrides).map(([b, ps]) => h("div", {}, h("span", { class: "badge over" }, b), " ", Object.entries(ps).map(([k, v]) => k + " = " + JSON.stringify(v)).join(", "))) : "")));
+    h("td", {}, i.overrides ? Object.entries(i.overrides).map(([b, ps]) => h("div", {}, h("span", { class: "badge over" }, b), " ", Object.entries(ps).map(([k, v]) => k + " = " + JSON.stringify(v)).join(", "))) : "",
+      i.variants ? h("div", {}, h("span", { class: "badge over" }, "variants"), ` one of ${i.variants.objects.length}, picked by '${i.variants.var}' when the scene loads: `,
+        i.variants.objects.map((o, k) => [k ? ", " : "", `${k} = `, nodeLink(o)])) : "")));
   const cam = sc.camera || {};
   return [card(`Scene — ${L.W}×${L.H} px world. Click anything to open it.`, tb, stage,
     h("div", { class: "small" }, "Blue frame = what the 240×160 screen shows when the scene starts" + (cam.follow ? ` (following '${cam.follow}')` : "") + ". HUD/menus are drawn inside it.")),
@@ -1935,7 +1954,7 @@ function expandTo(id) {
   for (let cur = id; cur && IDX[cur]; cur = IDX[cur].parent) chain.unshift(cur);
   let key = "o";
   chain.forEach(c => { key = key + "/" + c; ui.open.add(key); });
-  INDEX.filter(e => e.kind === "scene").forEach(s => { if (((NODES[s.id] || {}).instances || []).some(i => i.object === id)) ui.open.add("s/" + s.id); });
+  INDEX.filter(e => e.kind === "scene").forEach(s => { if (((NODES[s.id] || {}).instances || []).some(i => i.object === id || ((i.variants || {}).objects || []).includes(id))) ui.open.add("s/" + s.id); });
 }
 
 // ======================================================================================

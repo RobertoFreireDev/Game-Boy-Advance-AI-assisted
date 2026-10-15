@@ -1,0 +1,20 @@
+{
+  "id": "pal_border_electric",
+  "kind": "object",
+  "type": "palette",
+  "name": "Electric world border colors",
+  "notes": "Colors of the Electric world's border (a ridge of dark storm rock bristling with yellow crystals and sparks), lit from the top-left like the monsters.",
+  "colors": [
+    "#000000",
+    "#181820",
+    "#ffffff",
+    "#fff8a8",
+    "#f8d830",
+    "#c08c18",
+    "#70708a",
+    "#4c4c5e",
+    "#30303c",
+    "#68d0f8",
+    "#d0f4ff"
+  ]
+}

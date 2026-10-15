@@ -28,10 +28,13 @@ typedef struct {
     const SpeciesData *species;
     s16 hp, hp_max;             // wild monsters (the player's live in game variables)
     u8 level, status, team, buff;
+    u8 home;                    // 1: it lives in its home world (home_var = its type): stronger
     u8 flashes, flash_gap;      // a hit's flashes still to come, ticks since the last one ended
     u16 status_ticks, status_clock;     // status_clock: poison's second; paralysis' sparks tick
     u16 tox_step, buff_ticks;
     u16 power;
+    u16 pace;                   // walking speed, x/256 of the walker's own: its species' (+ home_speed at home)
+    u16 recharge;               // recharge time, x/1024: 1024 (- home_charge % at home)
     u16 xp_known;               // player: 1 once the XP bar was worked out (for xp_seen)
     u16 shove_ticks;            // a move's push: ticks of sliding left (it can't move or attack)
     u16 tag_ticks;              // its level tag shows this many more ticks
@@ -80,9 +83,16 @@ int monster_level(const Actor *a) {
     return m ? m->level : 1;
 }
 
-int monster_power(const Actor *a) {
+int monster_power(const Actor *a, int power) {
     const Monster *m = mon(a);
-    return m ? m->power + var_or_0(params_of(a)->power_var) : 100;
+    if (!m) return power ? power : 100;
+    if (!power) power = m->power + var_or_0(params_of(a)->power_var);
+    return m->home ? power * (100 + params_of(a)->home_power) / 100 : power;
+}
+
+u32 monster_recharge(const Actor *a, u32 ticks) {
+    const Monster *m = mon(a);
+    return m && m->home ? (ticks * m->recharge) >> 10 : ticks;
 }
 
 int monster_aim(const Actor *a) {
@@ -91,7 +101,7 @@ int monster_aim(const Actor *a) {
 
 fixed monster_speed(const Actor *a, fixed speed) {
     const Monster *m = mon(a);
-    return m && m->species ? (speed * m->species->speed) >> 8 : speed;
+    return m && m->species ? (speed * m->pace) >> 8 : speed;
 }
 
 int monster_can_act(const Actor *a) {
@@ -487,9 +497,18 @@ void bhv_monster_init(Actor *a, const void *params) {
     m->level = (u8)(p->level_var >= 0 ? vars_get(p->level_var) : p->level);
     m->hp = m->hp_max = (s16)p->hp;
     m->power = (u16)p->power;
+    // At home (the world's type is its own): faster, quicker to recharge (and harder hitting, in monster_power).
+    m->home = p->home_var >= 0 && vars_get(p->home_var) == sp->type;
+    m->pace = sp->speed;
+    m->recharge = 1024;
+    if (m->home) {
+        m->pace = (u16)((sp->speed * (100 + p->home_speed) + 50) / 100);
+        m->recharge = (u16)(((100 - p->home_charge) * 1024 + 99) / 100);
+    }
     actor_set_body(a, sp->body);
     if (p->alpha) a->pal = sp->alpha_palette;
     a->flash_pal = hit_palette(p);
+    if (m->home) scripts_start(p->on_home, a);
 }
 
 void bhv_monster_update(Actor *a, const void *params) {

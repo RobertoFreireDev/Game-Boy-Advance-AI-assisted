@@ -13,6 +13,7 @@
 #include "audio.h"
 #include "ui.h"
 #include "floattext.h"
+#include "vars.h"
 
 static const SceneData *s_scene;
 static s16 s_scene_node = -1;
@@ -73,6 +74,15 @@ Actor *scene_spawn(s16 node, s32 x, s32 y) {
     return actor_spawn(node, x, y, ad->logic, ad->logic_count, -1);
 }
 
+// What an instance places: its object, or the variant its variable picks (a world's map).
+static const void *instance_data(const InstanceData *in) {
+    if (!in->pick_count) return in->data;
+    s32 k = vars_get(in->pick_var);
+    if (k < 0) k = 0;
+    if (k >= in->pick_count) k = in->pick_count - 1;
+    return in->picks[k];
+}
+
 static void load_scene(s16 node) {
     const SceneData *sc = (const SceneData *)g_nodes[node].data;
     // Unload everything from the previous scene.
@@ -98,7 +108,7 @@ static void load_scene(s16 node) {
     for (int i = 0; i < sc->instance_count; i++) {
         const InstanceData *in = &sc->instances[i];
         switch (in->kind) {
-        case INST_TILEMAP:  bg_set_layer((const TilemapData *)in->data); break;
+        case INST_TILEMAP:  bg_set_layer((const TilemapData *)instance_data(in)); break;
         case INST_HUD:      ui_show_hud((const HudData *)in->data); break;
         case INST_MENU:     ui_open_menu((const MenuData *)in->data); break;
         case INST_DIALOG:   ui_show_dialog((const DialogData *)in->data); break;
