@@ -1669,6 +1669,13 @@ PREVIEW.move = (id, n) => {
   const st = n.status || {}, z = n.zone || {}, bf = n.buff || {}, push = n.push || {};
   // Like moves.c: the player's damaging moves that hit at once play only their result sound.
   const resultOnly = n.power > 0 && n.shape !== "zone" && n.shape !== "self";
+  // monster.c walk_dodge: the player's walking dodge (dodge_walk, + dodge_away diagonally away from the user).
+  const plrMon = Object.values(NODES).map(o => o.type === "player" && (o.logic || []).find(l => l.behavior === "monster")).find(e => e) || {};
+  const dw = (plrMon.params || {}).dodge_walk || 0, da = (plrMon.params || {}).dodge_away || 0;
+  const dTicks = (plrMon.params || {}).dodge_ticks || 6, clamp = v => Math.max(0, Math.min(100, v));
+  const walkText = n.shape !== "zone" && n.power && n.accuracy && (dw || da)
+    ? `; against the player it hits ${clamp(n.accuracy - dw)}% when it walked in the last ${dTicks} ticks (${(dTicks / 60).toFixed(1)} s) before the move, ${clamp(n.accuracy - dw - da)}% when it walked diagonally away from the user`
+    : "";
   const typeHit = (BATTLE.player_hit_sounds || {})[n.monster_type], hitSfx = typeHit || (BATTLE.sounds || {}).hit;
   const touched = `and every monster its effect touches (${HIT_MARGIN} px margin)`;
   const shapeText = {
@@ -1693,7 +1700,7 @@ PREVIEW.move = (id, n) => {
     h("div", { class: "k" }, "type"), h("div", {}, String(n.monster_type || "").toUpperCase()),
     h("div", { class: "k" }, "hits"), h("div", {}, shapeText),
     h("div", { class: "k" }, "power"), h("div", {}, n.power ? String(n.power) + (n.shape === "zone" && z.every ? ` per hit (on touch, then every ${(z.every / 60).toFixed(1)} s per monster)` : "") : n.status ? "none (status only)" : "none"),
-    h("div", { class: "k" }, "accuracy"), h("div", {}, n.shape === "zone" ? "never misses (the ground)" : n.power ? (n.accuracy ? n.accuracy + "% (a miss shows MISS)" : "never misses") : "—"),
+    h("div", { class: "k" }, "accuracy"), h("div", {}, n.shape === "zone" ? "never misses (the ground)" : n.power ? (n.accuracy ? n.accuracy + "% (a miss shows MISS)" + walkText : "never misses") : "—"),
     h("div", { class: "k" }, "charge (player)"), h("div", {}, `${n.charge} ticks (${(n.charge / 60).toFixed(1)} s)`),
     h("div", { class: "k" }, "animation"), h("div", {}, [].concat(stepsText, mvSteps ? h("span", { class: "small" }, " — only a picture: the hit lands the moment the move is used") : [])),
     n.status ? h("div", { class: "k" }, "status") : null,

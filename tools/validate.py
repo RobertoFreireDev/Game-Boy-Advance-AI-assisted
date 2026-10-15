@@ -942,6 +942,19 @@ def V_actor(c):
     mon = monster_entry(n)
     if mon is not None and mon.get("level_tag"):
         check_level_tag(c, mon)
+    if mon is not None:
+        check_walk_dodge(c, mon)
+
+
+def check_walk_dodge(c, mon):
+    """A monster's walking dodge: percent points, and a look-back that fits its 16-tick history."""
+    for k in ("dodge_walk", "dodge_away"):
+        v = mon.get(k, 0)
+        if is_int(v) and not 0 <= v <= 100:
+            c.err("'monster.%s' must be 0 to 100 (accuracy points)" % k)
+    ticks = mon.get("dodge_ticks", 6)
+    if is_int(ticks) and not 1 <= ticks <= 16:
+        c.err("'monster.dodge_ticks' must be 1 to 16 ticks (the engine keeps 16 ticks of walking)")
 
 
 def check_level_tag(c, mon):

@@ -420,6 +420,7 @@ static MonsterHit hit_from(Actor *user, const MoveData *m) {
     h.aim = (s16)monster_aim(user);
     h.from_x = fx_to_int(user->x);
     h.from_y = fx_to_int(user->y);
+    body_mid(user, &h.mid_x, &h.mid_y);
     return h;
 }
 
@@ -556,8 +557,8 @@ static void zone_hit_info(const Zone *z, MonsterHit *h) {
     h->roll = 0;
     h->aim = 0;
     h->power = z->power;
-    h->from_x = (z->hl + z->hr) / 2;
-    h->from_y = (z->ht + z->hb) / 2;
+    h->from_x = h->mid_x = (z->hl + z->hr) / 2;
+    h->from_y = h->mid_y = (z->ht + z->hb) / 2;
 }
 
 // The zone's effect on each of its tiles, or in the middle of each cell x cell block of them

@@ -18,6 +18,7 @@ typedef struct {
     u16 power;                      // damage percent of the user (Alpha 150; + the player's power boost)
     s16 aim;                        // accuracy points the user adds to the move's (the player's aim boost)
     s32 from_x, from_y;             // where it came from (the target is pushed away from it)
+    s32 mid_x, mid_y;               // the middle of the user's body (a walking target dodges away from it)
 } MonsterHit;
 
 // Called once when the actor appears.
@@ -45,7 +46,8 @@ int monster_held(const Actor *a);
 int monster_targetable(const Actor *a);
 // True if b is a monster that a's moves can hit (the other team, and targetable).
 int monster_is_foe(const Actor *a, const Actor *b);
-// A move hits monster t: accuracy (the move's + the user's aim - t's dodge), damage, words,
+// A move hits monster t: accuracy (the move's + the user's aim - t's dodge - its walking dodge:
+// dodge_walk if it walked in the last dodge_ticks ticks, + dodge_away diagonally away), damage, words,
 // flash, push, status, XP, fainting, and the move's own push (t slides away from the hit, unable to move or attack until it stops).
 // Returns HIT_*; it plays no sound (the caller plays one per use with monster_hit_sound).
 int monster_hit(Actor *t, const MonsterHit *h);

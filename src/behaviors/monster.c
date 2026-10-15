@@ -22,6 +22,8 @@
 #define FAINT_TICKS   30        // a wild monster flashes and blinks out
 #define PLAYER_FAINT  120
 
+enum { WALK_LEFT, WALK_RIGHT, WALK_UP, WALK_DOWN };
+
 typedef struct {
     const SpeciesData *species;
     s16 hp, hp_max;             // wild monsters (the player's live in game variables)
@@ -35,6 +37,8 @@ typedef struct {
     u16 tag_ticks;              // its level tag shows this many more ticks
     u16 away_ticks;             // ticks out of the tag view since it was last in it
     u8 tag_seen;                // 1: in the tag view lately (the tag showed; it won't show again yet)
+    u16 walked[4];              // per way (WALK_*): bit k = it walked that way k + 1 ticks ago (walking dodge)
+    u32 walk_frame;             // the frame its last step was recorded in
     s32 xp_seen;
     s32 shove_x, shove_y;       // the push's step unit (1/65536 px): the k-th last tick slides k units
 } Monster;
@@ -328,6 +332,37 @@ static void par_look(Actor *a, Monster *m) {
                   f->flip, NULL);
 }
 
+// ---- the walking dodge ---------------------------------------------------------------------
+// Which way it walked in the last tick: its last physics step (x - prev_x), recorded once per
+// frame and before a hit can push it this frame, so only its own walking counts.
+static void walk_record(const Actor *a, const Params_monster *p, Monster *m) {
+    if (!p->dodge_walk && !p->dodge_away) return;       // most monsters don't dodge by walking
+    u32 f = core_frame();
+    if (m->walk_frame == f) return;
+    m->walk_frame = f;
+    fixed dx = a->x - a->prev_x, dy = a->y - a->prev_y;
+    for (int i = 0; i < 4; i++) m->walked[i] <<= 1;
+    if (dx < 0) m->walked[WALK_LEFT] |= 1;
+    if (dx > 0) m->walked[WALK_RIGHT] |= 1;
+    if (dy < 0) m->walked[WALK_UP] |= 1;
+    if (dy > 0) m->walked[WALK_DOWN] |= 1;
+}
+
+// Accuracy points a move loses against t for its walking in the last dodge_ticks ticks before
+// the hit: dodge_walk if it walked at all, + dodge_away if on one of those ticks it walked away
+// from the user on both axes (diagonally away; on an axis where their middles are level, either way).
+static s32 walk_dodge(const Actor *t, const Params_monster *p, const Monster *m, const MonsterHit *h) {
+    if (!p->dodge_walk && !p->dodge_away) return 0;
+    const u16 *w = m->walked;
+    u32 window = (1u << p->dodge_ticks) - 1;
+    if (!((w[WALK_LEFT] | w[WALK_RIGHT] | w[WALK_UP] | w[WALK_DOWN]) & window)) return 0;
+    s32 dx = h->mid_x - (fx_to_int(t->x) + t->hb_x + t->hb_w / 2);    // where the user is
+    s32 dy = h->mid_y - (fx_to_int(t->y) + t->hb_y + t->hb_h / 2);
+    u32 ax = dx > 0 ? w[WALK_LEFT] : dx < 0 ? w[WALK_RIGHT] : (u32)(w[WALK_LEFT] | w[WALK_RIGHT]);
+    u32 ay = dy > 0 ? w[WALK_UP] : dy < 0 ? w[WALK_DOWN] : (u32)(w[WALK_UP] | w[WALK_DOWN]);
+    return p->dodge_walk + ((ax & ay & window) ? p->dodge_away : 0);
+}
+
 int monster_hit(Actor *t, const MonsterHit *h) {
     Monster *m = mon(t);
     const BattleData *b = g_game.battle;
@@ -336,9 +371,12 @@ int monster_hit(Actor *t, const MonsterHit *h) {
     if (!m || !b || !actor_alive(t)) return HIT_NONE;
     tag_off(t, m);
     const Params_monster *tp = params_of(t);
+    walk_record(t, tp, m);              // before this hit (a zone's too) pushes it
     if (mv->power > 0) {
-        // It hits on accuracy %: the move's, + the user's aim, - the target's dodge (zones never miss).
+        // It hits on accuracy %: the move's, + the user's aim, - the target's dodge and walking
+        // dodge (zones never miss).
         s32 acc = (s32)mv->accuracy + h->aim - var_or_0(tp->dodge_var);
+        if (h->roll) acc -= walk_dodge(t, tp, m, h);
         if (h->roll && acc < 100 && rng_range(1, 100) > acc) {
             say(t, BT_MISS, NULL, 0);
             return HIT_MISS;
@@ -458,6 +496,7 @@ void bhv_monster_update(Actor *a, const void *params) {
     const Params_monster *p = params;
     Monster *m = mon(a);
     if (!m) return;
+    walk_record(a, p, m);               // before anything this frame can push it
     moves_tick();                       // ground zones (once per frame, whoever asks first)
     if (p->level_var >= 0) {
         if (p->xp_var >= 0) player_progress(a, p, m);

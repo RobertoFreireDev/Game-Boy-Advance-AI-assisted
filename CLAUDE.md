@@ -369,7 +369,11 @@ groups them for humans. **What an actor does comes only from its `logic` list.**
   `{var.name}` is its order among the species in nodes.json, from 0.
 - **move**: `title` ≤ 13 chars, `monster_type`, `power` (0 = status only), `accuracy` % (a miss shows
   MISS; zones never miss; the user's `monster` `aim_var` adds to it and the target's `dodge_var` takes
-  from it, so a 100 % move can miss a dodging target), `charge` (ticks to recharge for the player; the
+  from it, so a 100 % move can miss a dodging target; a target with the walking dodge loses it
+  `dodge_walk` points more when it walked (its own steps, not a push) in the last `dodge_ticks` ticks
+  before the move was used, and `dodge_away` more on top when on one of those ticks it walked away from
+  the user on both axes, diagonally (a level axis counts either way): the player, 10 / +20 in 0.1 s),
+  `charge` (ticks to recharge for the player; the
   `move_buttons` `charge_var` cuts it by a percent). **A move hurts exactly what its
   effect draws**: every foe whose hitbox comes within `MOVE_HIT_MARGIN` (2) px of the effect's picture —
   the opaque pixels of every frame its animation shows (codegen bakes the box into the move), at every
@@ -636,7 +640,7 @@ Every channel in a pattern has the same number of rows. Missing channels are sil
   `wander`, `locked_door`. Survivors set: `weapon` (auto-fire, level from a variable), `projectile`
   (the shot), `aura`, `swarm` (horde movement with grid-based crowd spreading), `magnet` (pickups fly
   to the player), `spawn_wave` (timed off-screen waves), `run_clock` (`stop_var` freezes it; `on_minute` runs actions at each whole minute), `level_up`.
-  Monster-battle set: `monster` (species, level, HP, statuses, damage by the type chart, XP and
+  Monster-battle set: `monster` (species, level, HP, statuses, damage by the type chart, a walking dodge, XP and
   levels for the player, fainting, a `level_tag` over a wild monster's head for a while when its whole
   body comes `level_tag_margin` px inside the view below the HUD's top panel, gone when a move reaches
   it, shown again after `level_tag_reset` ticks out of that view; the shared combat code is
