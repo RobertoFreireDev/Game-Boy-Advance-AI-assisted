@@ -3,7 +3,7 @@
   "kind": "object",
   "type": "tileset",
   "name": "Flying world ground tiles",
-  "notes": "Every 8x8 ground tile of the Flying world, Sky Isle. Only 'K' is solid (the floor under the border band, never seen); everything else is walked over. 'a' 'b' 'c' plain ground, 'd' / 'e' the patch tiles (laid in alternating rows), 'f' 'g' 'h' small things; the path (i-u) and paving (0 1 2) pieces have the meadow's shapes in this world's colors. Pictures several tiles big: feather ('ABCDEF'), twigs ('GHIJ'), Alpha's den ('LMNOPQRSTUVWXYZ#').",
+  "notes": "Every 8x8 ground tile of the Flying world, Sky Isle. Only 'K' is solid (the band around the edge: see-through, so the border drawn under the ground shows in it); everything else is walked over. 'a' 'b' 'c' plain ground, 'd' / 'e' the patch tiles (laid in alternating rows), 'f' 'g' 'h' small things; the path (i-u) and paving (0 1 2) pieces have the meadow's shapes in this world's colors. Pictures several tiles big: feather ('ABCDEF'), twigs ('GHIJ'), Alpha's den ('LMNOPQRSTUVWXYZ#').",
   "palette": "pal_ground_flying",
   "tiles": {
     "a": {
@@ -380,14 +380,14 @@
     },
     "K": {
       "pixels": [
-        "44444444",
-        "44454444",
-        "44444444",
-        "44444454",
-        "44444444",
-        "45444444",
-        "44444444",
-        "44444444"
+        "........",
+        "........",
+        "........",
+        "........",
+        "........",
+        "........",
+        "........",
+        "........"
       ],
       "solid": true
     },

@@ -3,7 +3,7 @@
   "kind": "object",
   "type": "tileset",
   "name": "Poison world ground tiles",
-  "notes": "Every 8x8 ground tile of the Poison world, Miasma Swamp. Only 'K' is solid (the floor under the border band, never seen); everything else is walked over. 'a' 'b' 'c' plain ground, 'd' / 'e' the patch tiles (laid in alternating rows), 'f' 'g' 'h' small things; the path (i-u) and paving (0 1 2) pieces have the meadow's shapes in this world's colors. Pictures several tiles big: puddle ('ABCDEF'), toadstools ('GHIJ'), Alpha's den ('LMNOPQRSTUVWXYZ#').",
+  "notes": "Every 8x8 ground tile of the Poison world, Miasma Swamp. Only 'K' is solid (the band around the edge: see-through, so the border drawn under the ground shows in it); everything else is walked over. 'a' 'b' 'c' plain ground, 'd' / 'e' the patch tiles (laid in alternating rows), 'f' 'g' 'h' small things; the path (i-u) and paving (0 1 2) pieces have the meadow's shapes in this world's colors. Pictures several tiles big: puddle ('ABCDEF'), toadstools ('GHIJ'), Alpha's den ('LMNOPQRSTUVWXYZ#').",
   "palette": "pal_ground_poison",
   "tiles": {
     "a": {
@@ -380,14 +380,14 @@
     },
     "K": {
       "pixels": [
-        "bbbbbbbb",
-        "bb9bbbbb",
-        "bbbbbbbb",
-        "bbbbbb9b",
-        "bbbbbbbb",
-        "b9bbbbbb",
-        "bbbbbbbb",
-        "bbbbbbbb"
+        "........",
+        "........",
+        "........",
+        "........",
+        "........",
+        "........",
+        "........",
+        "........"
       ],
       "solid": true
     },

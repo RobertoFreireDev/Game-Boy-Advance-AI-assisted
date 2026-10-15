@@ -286,14 +286,16 @@ groups them for humans. **What an actor does comes only from its `logic` list.**
   is a permanent emitter); at most one HUD and one menu-or-dialog; one tilemap per layer. A tilemap
   instance may have `variants {var, objects[]}`: when the scene loads it places `objects[value of var]`
   instead (0 = first, past the end = last), e.g. one world per run; `object` is one of them (the one the
-  visualizer shows first), all take the same layer, `over` and `parallax`, and random spots are checked in each.
+  visualizer shows first), all take the same layer and `parallax` (each keeps its own `over`), and random spots are checked in each.
 - **palette**: `colors[0]` is the transparent slot (its value is ignored).
 - **sprite** frames are listed in order; the art faces **right** (the engine mirrors it).
 - **tileset** keys are one printable ASCII char (not `.` or space); flags `solid`, `one_way`,
   `hazard`, `ladder` (a tile can't be both solid and one-way; `ladder` + `one_way` = ladder top).
 - **tilemap**: layer 1 is the collision layer and must have `parallax` 1; `repeat_x: true` makes a
   background layer wrap sideways; `over: true` (layers 2-3) draws it above the sprites (tree tops
-  you walk behind). The map sides are invisible walls; falling below the map kills.
+  you walk behind). Without `over` a layer 2-3 is drawn under layer 1, so it only shows where layer 1's
+  tiles are see-through: a lava sea or ocean edge at ground level sits under a solid band of see-through
+  tiles and keeps its picture inside that band. The map sides are invisible walls; falling below the map kills.
 - **music**: `loop_from` (index into `order`, default 0): a looping song starts again there, so the
   patterns before it are an intro that plays once.
 - **font**: glyph keys are ASCII 32–126; lowercase falls back to uppercase; space needs no glyph.

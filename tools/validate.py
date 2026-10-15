@@ -456,7 +456,8 @@ def instance_objects(inst):
 
 def check_variants(c, inst, obj, t, node, where):
     """A tilemap instance with 'variants' {var, objects}: one of the objects is placed when the
-    scene loads, picked by the variable (a world's map). They all take the same background layer."""
+    scene loads, picked by the variable (a world's map). They all take the same background layer
+    and parallax; each keeps its own 'over' (a forest's tree tops over the monsters, a lava sea under them)."""
     v = inst["variants"]
     if t != "tilemap":
         c.err("'%s' has variants, but only tilemap instances can have them" % where)
@@ -480,7 +481,7 @@ def check_variants(c, inst, obj, t, node, where):
         if c.ref(o, ["tilemap"], "%s.variants.objects[%d]" % (where, j)) is None:
             continue
         on = c.p.nodes.get(o, {})
-        for f, dflt in (("layer", None), ("over", False), ("parallax", 1)):
+        for f, dflt in (("layer", None), ("parallax", 1)):
             if on.get(f, dflt) != node.get(f, dflt):
                 c.err("'%s' variant '%s' has %s %s, but '%s' has %s: every variant takes the same place"
                       % (where, o, f, on.get(f, dflt), obj, node.get(f, dflt)))
