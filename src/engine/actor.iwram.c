@@ -46,10 +46,19 @@ int actor_has_slot(const Actor *a, u8 slot) {
     return a->body && a->body->anims[slot] != NULL;
 }
 
+// Show the art facing (x, y), noting when it turned.
+static void show_dir(Actor *a, int x, int y) {
+    if (a->show_x != x || a->show_y != y) a->turn_at = (u16)core_frame();
+    a->show_x = (s8)x;
+    a->show_y = (s8)y;
+    a->turn = 0;
+}
+
 void actor_face(Actor *a, int dx, int dy) {
     if (!dx && !dy) return;
     a->look_x = (s8)dx;
     a->look_y = (s8)dy;
+    show_dir(a, dx, dy);
     if (dx) a->facing_left = dx < 0;
     int keep = (dx && a->facing == (dx < 0 ? DIR_LEFT : DIR_RIGHT)) ||
                (dy && a->facing == (dy < 0 ? DIR_UP : DIR_DOWN));
@@ -58,21 +67,57 @@ void actor_face(Actor *a, int dx, int dy) {
     else a->facing = dy < 0 ? DIR_UP : DIR_DOWN;
 }
 
-// The *_up / *_down version of a slot for the way the actor faces, if the body has it.
+void actor_face_walk(Actor *a, int dx, int dy) {
+    if (!dx && !dy) return;
+    s8 sx = a->show_x, sy = a->show_y;
+    u8 turn = a->turn;
+    u16 at = a->turn_at;
+    actor_face(a, dx, dy);
+    if (dx == sx && dy == sy) return;
+    // 8-way steps at a slant alternate between two neighbor directions, and a monster stuck in a
+    // crowd may switch back and forth every tick: the art keeps its own until the other one
+    // lasts. A sharp turn (90 degrees or more) after a steady walk shows at once.
+    int small = sx * dx + sy * dy > 0;
+    int soon = (u16)((u16)core_frame() - at) < TURN_TICKS;
+    if ((small || soon) && ++turn < TURN_TICKS) {
+        a->show_x = sx;
+        a->show_y = sy;
+        a->turn = turn;
+        a->turn_at = at;
+    }
+}
+
+// Slots of each base animation (idle, walk, attack) for the 8 ways of facing: right (the plain
+// slot), left, up-right, up-left, down-right, down-left, up, down.
+static const u8 s_dir_slots[3][8] = {
+    { ANIM_IDLE, ANIM_IDLE_LEFT, ANIM_IDLE_UP_RIGHT, ANIM_IDLE_UP_LEFT,
+      ANIM_IDLE_DOWN_RIGHT, ANIM_IDLE_DOWN_LEFT, ANIM_IDLE_UP, ANIM_IDLE_DOWN },
+    { ANIM_WALK, ANIM_WALK_LEFT, ANIM_WALK_UP_RIGHT, ANIM_WALK_UP_LEFT,
+      ANIM_WALK_DOWN_RIGHT, ANIM_WALK_DOWN_LEFT, ANIM_WALK_UP, ANIM_WALK_DOWN },
+    { ANIM_ATTACK, ANIM_ATTACK_LEFT, ANIM_ATTACK_UP_RIGHT, ANIM_ATTACK_UP_LEFT,
+      ANIM_ATTACK_DOWN_RIGHT, ANIM_ATTACK_DOWN_LEFT, ANIM_ATTACK_UP, ANIM_ATTACK_DOWN } };
+
+// The version of a slot for the way the actor's art faces, if the body has it. A left one
+// without its art uses the right one (mirrored when drawn); a diagonal without any, the
+// up / down / side one `facing` picks.
 static u8 directional_slot(const Actor *a, u8 slot) {
-    static const u8 up[ANIM_SLOT_COUNT] = {
-        [ANIM_IDLE] = ANIM_IDLE_UP, [ANIM_WALK] = ANIM_WALK_UP, [ANIM_RUN] = ANIM_WALK_UP,
-        [ANIM_ATTACK] = ANIM_ATTACK_UP };
-    static const u8 down[ANIM_SLOT_COUNT] = {
-        [ANIM_IDLE] = ANIM_IDLE_DOWN, [ANIM_WALK] = ANIM_WALK_DOWN, [ANIM_RUN] = ANIM_WALK_DOWN,
-        [ANIM_ATTACK] = ANIM_ATTACK_DOWN };
-    if (a->facing != DIR_UP && a->facing != DIR_DOWN) return slot;
-    u8 v = a->facing == DIR_UP ? up[slot] : down[slot];
-    return (v && a->body->anims[v]) ? v : slot;
+    int b = slot == ANIM_IDLE ? 0 : (slot == ANIM_WALK || slot == ANIM_RUN) ? 1 : slot == ANIM_ATTACK ? 2 : -1;
+    if (b < 0) return slot;
+    const u8 *s = s_dir_slots[b];
+    const AnimationData *const *an = a->body->anims;
+    int x = a->show_x, y = a->show_y;
+    int d = !x ? (y < 0 ? 6 : 7) : (y < 0 ? 2 : y > 0 ? 4 : 0) + (x < 0);
+    if (d >= 2 && d < 6) {
+        if (an[s[d]]) return s[d];
+        if ((d & 1) && an[s[d - 1]]) return s[d - 1];
+        d = a->facing == DIR_UP ? 6 : a->facing == DIR_DOWN ? 7 : a->facing == DIR_LEFT;
+    }
+    return (d && an[s[d]]) ? s[d] : slot;
 }
 
 void actor_play_slot(Actor *a, u8 slot) {
     if (!a->body) return;
+    if (slot == ANIM_ATTACK) show_dir(a, a->look_x, a->look_y);    // an attack shows the way it aims
     slot = directional_slot(a, slot);
     const AnimationData *an = a->body->anims[slot];
     if (!an && slot == ANIM_RUN) an = a->body->anims[ANIM_WALK];
@@ -144,7 +189,7 @@ Actor *actor_spawn(s16 node, s32 x, s32 y, const LogicEntry *logic, u8 logic_cou
     a->home_y = y;
     a->riding = -1;
     a->facing = DIR_DOWN;
-    a->look_y = 1;
+    a->look_y = a->show_y = 1;
     if (a->body) {
         actor_set_body(a, a->body);
     } else {

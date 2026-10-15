@@ -306,9 +306,13 @@ groups them for humans. **What an actor does comes only from its `logic` list.**
   (burst only) sends particle i at `angle[0]` + i × (`angle[1]` − `angle[0]` + 1) / `count` degrees instead
   of a random angle (`[0, 359]` = a full, even ring: a move's area is then the same every use).
 - **body** animation slots: `idle walk run jump fall hurt die attack climb`, plus the top-down
-  slots `idle_up idle_down walk_up walk_down attack_up attack_down`. `origin` mirrors with
-  the art when it faces left; the **hitbox does not mirror**. The `*_up` / `*_down` slots are
-  never mirrored (their art is drawn as seen from behind / from the front). `physics.collides_with` categories:
+  slots for the 8 directions: `idle`, `walk` and `attack` followed by `_up _down _left _up_right
+  _up_left _down_right _down_left` (`walk_down_left`…; the plain slot faces right). `origin` mirrors
+  with the art when it faces left; the **hitbox does not mirror**. The plain slots mirror for left,
+  and so do `*_up_right` / `*_down_right` for the left diagonals when the `*_left` ones are missing;
+  `*_up`, `*_down` and the `*_left` slots are never mirrored (their own art: a left view keeps the
+  light top-left, where a mirror would move it). The validator warns when a direction has only part of
+  its idle / walk / attack. `physics.collides_with` categories:
   `tiles player enemy npc prop platform pickup trigger`. Two actors touch (and both get
   `on_touch`) when either lists the other's category. `physics.solid` = others can't walk through
   it and can stand on it (like a crate).
@@ -620,10 +624,18 @@ Every channel in a pattern has the same number of rows. Missing channels are sil
 - Movement behaviors pick body animation slots by convention: `idle`, `walk`, `run`, `jump`,
   `fall`, `hurt`, `die`, `attack`, `climb` (a missing `run` uses `walk` and back, `fall` uses
   `jump`, `die` uses `hurt`, then `default_animation`).
-- **Facing (top-down)**: every actor has a `facing` (right / left / up / down, starts down) set by
-  `actor_face()`. When it faces up or down, asking for `idle`, `walk`/`run` or `attack` plays the
-  matching `*_up` / `*_down` slot if the body has it (a missing `*_up` / `*_down` slot falls back
-  to the plain one). `facing_left` keeps the last horizontal direction and mirrors the side art.
+- **Facing (top-down)**: `actor_face()` turns an actor to one of 8 directions (starts down):
+  `look_x` / `look_y` (where moves aim) and the direction its art shows (`show_x` / `show_y`). Asking
+  for `idle`, `walk`/`run` or `attack` plays that direction's slot if the body has it; a left one
+  without its art plays the right one mirrored, a diagonal without any plays the up / down / side
+  one `facing` picks, and a missing up / down / side slot the plain one. `facing` (right / left / up /
+  down) is what swords, knockback and `weapon` aim use; `facing_left` keeps the last horizontal
+  direction and mirrors the right-facing art. It keeps facing that way when it stops. A walker that
+  steers every tick (`monster_ai`) uses `actor_face_walk()`: a 45° turn of its art, or any turn
+  within `TURN_TICKS` of the last one, waits until the new way has lasted `TURN_TICKS` ticks, so 8-way
+  zigzags and a monster jittering in a crowd don't flicker (an attack shows the aim at once). `topdown_controller` keeps
+  a diagonal when the D-pad lets go of one button a few ticks before the other, so the player stops
+  still facing the diagonal.
 - **Stun**: every actor has a `stun` timer (ticks). `damage_on_touch` with `stun_ticks` sets it when a
   hit lands; while it runs, `swarm`, `chase_player`, `patrol` and `wander` hold still and
   `damage_on_touch` hurts no one (knockback still applies).
@@ -851,11 +863,11 @@ frames.
 | tilemap | Full map render with collision overlay. |
 | animation | Live playback at real speed, frame strip with ticks, play/pause/step, flips, events on a timeline. |
 | particle | Live emitter simulation with restart button. |
-| body | Animation slots as tabs, live playback with hitbox and origin overlay, physics summary. |
+| body | Animation slots as tabs, live playback with hitbox and origin overlay, physics summary; a top-down body also shows its 8 directions (idle / walk / attack) with the slot the engine picks for each. |
 | player, enemy, npc, prop, platform, pickup, trigger | Body preview, hitbox, **logic list** (each behavior: plain description + params), sounds with play buttons, path preview for `follow_path`, zone for triggers. |
 | hud, menu, dialog | Rendered inside a 240×160 GBA screen with the real font and icons. HUD uses variables' initial values; dialog has prev/next line; menu shows the cursor on each option (upgrade menus show sample cards). |
 | upgrade | Its card on the level-up menu with prev/next level, the text per level as wrapped on the GBA, the evolution recipe and what picking it does. |
-| species | Portrait, the body's animations (with an Alpha-colors toggle), its 3 moves, cry player, type matchups and the full type chart. |
+| species | Portrait, the body's animations (with an Alpha-colors toggle) and its 8 directions, its 3 moves, cry player, type matchups and the full type chart. |
 | move | What it does in plain words (with its 3 animation steps), a live pixel diagram of what it hurts (the user facing right, the travel picture and the effect playing in their 3 steps where the engine puts them, a caption naming the step, the orange area = its picture + the margin along each particle's real flight), its effect playing live, sound, a paralyzing move's paralyzed look (live), and its multiplier against each type. |
 | sfx, music | **Audio player**: play/stop/loop + visual (step list for sfx; tracker grid per channel with playhead for music). Web Audio synth approximating the PSG: square with duty, 4-bit wave, noise, 0–15 volume. |
 
@@ -905,6 +917,10 @@ The AI runs the Python scripts directly; the `.bat` files exist for the human.
 
 - **Pixel art**: 4–8 colors per sprite, dark outline, one light source (top-left), readable
   silhouette at 1×, consistent style across the game. Animations 2–6 frames, 4–10 ticks each.
+  Top-down monsters face 8 ways: the three-quarter views turn the face / back toward the side (eyes,
+  snout, ears and tail shifted, the far side showing more body), and every left view is its own art
+  (shapes and face mirrored, shading still lit from the top-left), with the same frames and timing
+  as the front / back / side ones.
 - **Palettes**: share palettes across related objects to save palette slots.
 - **SFX**: short (≤ 30 ticks), distinct per event, and loud: 12–15 for most steps (wave: 4), duty
   25–50 % rather than 12.5 %, notes above C4 / noise pitch above 3 for the main part, so they cut

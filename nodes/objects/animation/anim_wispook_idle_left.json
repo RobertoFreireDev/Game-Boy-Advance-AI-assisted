@@ -1,0 +1,52 @@
+{
+  "id": "anim_wispook_idle_left",
+  "kind": "object",
+  "type": "animation",
+  "name": "Wispook idle left",
+  "notes": "Wispook hovering facing left: it bobs slowly up and down and blinks now and then. Loops.",
+  "sprite": "spr_wispook",
+  "loop": true,
+  "frames": [
+    {
+      "frame": "left",
+      "ticks": 14
+    },
+    {
+      "frame": "left_float_u",
+      "ticks": 18
+    },
+    {
+      "frame": "left",
+      "ticks": 14
+    },
+    {
+      "frame": "left_float_d",
+      "ticks": 18
+    },
+    {
+      "frame": "left",
+      "ticks": 14
+    },
+    {
+      "frame": "left_float_u",
+      "ticks": 18
+    },
+    {
+      "frame": "left",
+      "ticks": 8
+    },
+    {
+      "frame": "left_blink",
+      "ticks": 6
+    },
+    {
+      "frame": "left",
+      "ticks": 8
+    },
+    {
+      "frame": "left_float_d",
+      "ticks": 18
+    }
+  ],
+  "events": []
+}

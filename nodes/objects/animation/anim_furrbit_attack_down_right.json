@@ -1,0 +1,24 @@
+{
+  "id": "anim_furrbit_attack_down_right",
+  "kind": "object",
+  "type": "animation",
+  "name": "Furrbit attack down-right",
+  "notes": "Furrbit using a move facing down-right (its front, turned to the right): it winds up (sinks 1 px) for 3 ticks, lunges (stretches 1 px) with its mouth open for 8, then stands.",
+  "sprite": "spr_furrbit",
+  "loop": false,
+  "frames": [
+    {
+      "frame": "down_right_breathe",
+      "ticks": 3
+    },
+    {
+      "frame": "down_right_lunge",
+      "ticks": 8
+    },
+    {
+      "frame": "down_right",
+      "ticks": 4
+    }
+  ],
+  "events": []
+}

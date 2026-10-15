@@ -11,7 +11,7 @@
     }
   },
   "topdown_controller": {
-    "description": "Top-down control: walk in any direction with the D-pad (no gravity). Faces up, down, left or right and picks the matching idle / walk animations (idle_up, walk_down...). A monster (monster behavior) walks at its species' speed: speed x the species' speed percent, and holds still while paralyzed or frozen.",
+    "description": "Top-down control: walk in any direction with the D-pad (no gravity). Faces any of 8 directions and picks the matching idle / walk animations (idle_up, walk_down_left...); letting go of a diagonal keeps facing it, even when one button is lifted a few ticks before the other. A monster (monster behavior) walks at its species' speed: speed x the species' speed percent, and holds still while paralyzed or frozen.",
     "params": {
       "speed":      {"type": "fixed", "default": 1.0, "description": "Walking speed (pixels per tick)."},
       "eight_way":  {"type": "bool", "default": true, "description": "Allow diagonal movement."},

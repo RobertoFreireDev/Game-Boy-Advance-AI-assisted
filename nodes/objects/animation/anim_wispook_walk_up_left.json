@@ -1,0 +1,28 @@
+{
+  "id": "anim_wispook_walk_up_left",
+  "kind": "object",
+  "type": "animation",
+  "name": "Wispook walk up-left",
+  "notes": "Wispook moving facing up-left (its back, turned to the left): it floats (bobs 1 px up and down), 7 ticks a frame. Loops.",
+  "sprite": "spr_wispook",
+  "loop": true,
+  "frames": [
+    {
+      "frame": "up_left_float_u",
+      "ticks": 7
+    },
+    {
+      "frame": "up_left",
+      "ticks": 7
+    },
+    {
+      "frame": "up_left_float_d",
+      "ticks": 7
+    },
+    {
+      "frame": "up_left",
+      "ticks": 7
+    }
+  ],
+  "events": []
+}

@@ -125,7 +125,7 @@ static int walk_to(Actor *a, s32 x, s32 y, fixed speed) {
     int sy = ay * 2 >= ax && ay > 1 ? fx_sign(dy) : 0;
     steer(&sx, &sy);
     go(a, sx, sy, speed);
-    actor_face(a, sx, sy);
+    actor_face_walk(a, sx, sy);
     actor_play_slot(a, ANIM_WALK);
     return 0;
 }
@@ -135,7 +135,7 @@ static void stand(Actor *a, fixed speed) {
     const s8 *w = s_away[s_me];
     if ((w[0] || w[1]) && !a->anim_lock) {
         go(a, w[0], w[1], speed);
-        actor_face(a, w[0], w[1]);
+        actor_face_walk(a, w[0], w[1]);
         actor_play_slot(a, ANIM_WALK);
         return;
     }
@@ -187,7 +187,7 @@ static void wander(Actor *a, const Params_monster_ai *p, u32 *st, fixed speed) {
     int sx = s_dx[d], sy = s_dy[d];
     steer(&sx, &sy);
     go(a, sx, sy, speed);
-    actor_face(a, sx, sy);
+    actor_face_walk(a, sx, sy);
     actor_play_slot(a, ANIM_WALK);
 }
 

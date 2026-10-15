@@ -3,7 +3,7 @@
   "kind": "object",
   "type": "body",
   "name": "Venomole body",
-  "notes": "How Venomole looks in the world and the box that bumps into walls and other monsters. Its feet stand on the origin; the box covers the whole 16x16 picture, and being solid, monsters never walk through each other or overlap: their pictures stay side by side.",
+  "notes": "How Venomole looks in the world and the box that bumps into walls and other monsters. Its feet stand on the origin; the box covers the whole 16x16 picture, and being solid, monsters never walk through each other or overlap: their pictures stay side by side. It has idle, walk and attack animations for all 8 directions, so it turns the way it walks or aims (diagonals too) and keeps facing that way when it stops.",
   "origin": [
     8,
     15
@@ -28,11 +28,26 @@
     "walk": "anim_venomole_walk",
     "attack": "anim_venomole_attack",
     "idle_up": "anim_venomole_idle_up",
-    "walk_up": "anim_venomole_walk_up",
-    "attack_up": "anim_venomole_attack_up",
     "idle_down": "anim_venomole_idle_down",
+    "walk_up": "anim_venomole_walk_up",
     "walk_down": "anim_venomole_walk_down",
-    "attack_down": "anim_venomole_attack_down"
+    "attack_up": "anim_venomole_attack_up",
+    "attack_down": "anim_venomole_attack_down",
+    "idle_left": "anim_venomole_idle_left",
+    "walk_left": "anim_venomole_walk_left",
+    "attack_left": "anim_venomole_attack_left",
+    "idle_up_right": "anim_venomole_idle_up_right",
+    "walk_up_right": "anim_venomole_walk_up_right",
+    "attack_up_right": "anim_venomole_attack_up_right",
+    "idle_up_left": "anim_venomole_idle_up_left",
+    "walk_up_left": "anim_venomole_walk_up_left",
+    "attack_up_left": "anim_venomole_attack_up_left",
+    "idle_down_right": "anim_venomole_idle_down_right",
+    "walk_down_right": "anim_venomole_walk_down_right",
+    "attack_down_right": "anim_venomole_attack_down_right",
+    "idle_down_left": "anim_venomole_idle_down_left",
+    "walk_down_left": "anim_venomole_walk_down_left",
+    "attack_down_left": "anim_venomole_attack_down_left"
   },
   "default_animation": "idle_down",
   "children": [
@@ -45,6 +60,21 @@
     "anim_venomole_attack_up",
     "anim_venomole_idle_down",
     "anim_venomole_walk_down",
-    "anim_venomole_attack_down"
+    "anim_venomole_attack_down",
+    "anim_venomole_idle_left",
+    "anim_venomole_walk_left",
+    "anim_venomole_attack_left",
+    "anim_venomole_idle_up_right",
+    "anim_venomole_walk_up_right",
+    "anim_venomole_attack_up_right",
+    "anim_venomole_idle_up_left",
+    "anim_venomole_walk_up_left",
+    "anim_venomole_attack_up_left",
+    "anim_venomole_idle_down_right",
+    "anim_venomole_walk_down_right",
+    "anim_venomole_attack_down_right",
+    "anim_venomole_idle_down_left",
+    "anim_venomole_walk_down_left",
+    "anim_venomole_attack_down_left"
   ]
 }

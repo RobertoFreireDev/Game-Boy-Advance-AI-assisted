@@ -59,10 +59,25 @@ SCENE_PREFIX = "scn_"
 INSTANCE_TYPES = ["tilemap"] + ACTOR_TYPES + ["hud", "menu", "dialog", "particle"]
 
 # Order matters: these lists become C enums in generated/node_ids.h.
-# The *_up / *_down slots are for top-down actors: the engine picks them when the actor faces
-# up or down (falling back to the plain slot); the plain slots face right and mirror for left.
+# The directional slots are for top-down actors: the engine picks the one for the way the actor
+# faces (8 ways) and falls back to a similar one (actor_play_slot). The plain slots face right
+# and mirror for left, and so do *_up_right / *_down_right when the *_left ones are missing;
+# *_up, *_down and the *_left slots are never mirrored (they have their own art).
 ANIM_SLOTS = ["idle", "walk", "run", "jump", "fall", "hurt", "die", "attack", "climb",
-              "idle_up", "idle_down", "walk_up", "walk_down", "attack_up", "attack_down"]
+              "idle_up", "idle_down", "walk_up", "walk_down", "attack_up", "attack_down",
+              "idle_left", "walk_left", "attack_left",
+              "idle_up_right", "walk_up_right", "attack_up_right",
+              "idle_up_left", "walk_up_left", "attack_up_left",
+              "idle_down_right", "walk_down_right", "attack_down_right",
+              "idle_down_left", "walk_down_left", "attack_down_left"]
+# The 8 ways an actor can face, as (x, y) steps, and the suffix of their slots ("" = plain, faces right).
+DIRECTIONS = [("", 1, 0), ("_left", -1, 0), ("_up", 0, -1), ("_down", 0, 1),
+              ("_up_right", 1, -1), ("_up_left", -1, -1), ("_down_right", 1, 1), ("_down_left", -1, 1)]
+
+
+def anim_slot_fixed(slot):
+    """True for slots drawn for one direction only (never mirrored): *_up, *_down, *_left."""
+    return slot.endswith(("_up", "_down", "_left"))
 SOUND_EVENTS = ["jump", "land", "hurt", "die", "collect", "stomp", "talk", "attack"]
 CATEGORIES = ["tiles", "player", "enemy", "npc", "prop", "platform", "pickup", "trigger"]
 CHANNELS = ["square1", "square2", "wave", "noise"]

@@ -982,6 +982,14 @@ def V_body(c):
         if slot not in C.ANIM_SLOTS:
             c.err("animation slot '%s' is unknown; use %s" % (slot, ", ".join(C.ANIM_SLOTS)))
         c.ref(a, ["animation"], "animations.%s" % slot)
+    # A direction is drawn with its idle, walk and attack together: a missing one falls back to
+    # another direction's art (the plain slot, or the right one mirrored), which looks like a turn.
+    for suffix, _, _ in C.DIRECTIONS[1:]:
+        have = [b for b in ("idle", "walk", "attack") if b + suffix in anims]
+        if have and len(have) < 3:
+            c.warn("has %s but not %s: that direction falls back to other art" % (
+                ", ".join(b + suffix for b in have),
+                ", ".join(b + suffix for b in ("idle", "walk", "attack") if b not in have)))
     d = n.get("default_animation")
     if d not in anims:
         c.err("'default_animation' must be one of the animation slots (%s)" % ", ".join(anims))

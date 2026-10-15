@@ -1,0 +1,28 @@
+{
+  "id": "anim_wispook_walk_down_right",
+  "kind": "object",
+  "type": "animation",
+  "name": "Wispook walk down-right",
+  "notes": "Wispook moving facing down-right (its front, turned to the right): it floats (bobs 1 px up and down), 7 ticks a frame. Loops.",
+  "sprite": "spr_wispook",
+  "loop": true,
+  "frames": [
+    {
+      "frame": "down_right_float_u",
+      "ticks": 7
+    },
+    {
+      "frame": "down_right",
+      "ticks": 7
+    },
+    {
+      "frame": "down_right_float_d",
+      "ticks": 7
+    },
+    {
+      "frame": "down_right",
+      "ticks": 7
+    }
+  ],
+  "events": []
+}

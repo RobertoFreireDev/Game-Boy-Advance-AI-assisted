@@ -1,0 +1,24 @@
+{
+  "id": "anim_splashell_attack_left",
+  "kind": "object",
+  "type": "animation",
+  "name": "Splashell attack left",
+  "notes": "Splashell using a move facing left: it winds up (sinks 1 px) for 3 ticks, lunges 1 px forward for 8, then stands.",
+  "sprite": "spr_splashell",
+  "loop": false,
+  "frames": [
+    {
+      "frame": "left_breathe",
+      "ticks": 3
+    },
+    {
+      "frame": "left_lunge",
+      "ticks": 8
+    },
+    {
+      "frame": "left",
+      "ticks": 4
+    }
+  ],
+  "events": []
+}

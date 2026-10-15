@@ -16,9 +16,9 @@ void bhv_talk_update(Actor *a, const void *params) {
     if (!near) return;
     if (p->face_player) {
         s32 dx = fx_to_int(pl->x - a->x), dy = fx_to_int(pl->y - a->y);
+        int vertical = fx_abs(dy) > fx_abs(dx);
+        actor_face(a, vertical ? 0 : dx < 0 ? -1 : 1, vertical ? (dy < 0 ? -1 : 1) : 0);
         a->facing_left = dx < 0;
-        if (fx_abs(dy) > fx_abs(dx)) a->facing = dy < 0 ? DIR_UP : DIR_DOWN;
-        else a->facing = dx < 0 ? DIR_LEFT : DIR_RIGHT;
     }
     if (p->dialog && input_pressed(p->button) && !ui_blocking()) {
         actor_sound(a, SND_TALK);

@@ -1,0 +1,52 @@
+{
+  "id": "anim_wispook_idle_down_right",
+  "kind": "object",
+  "type": "animation",
+  "name": "Wispook idle down-right",
+  "notes": "Wispook hovering facing down-right (its front, turned to the right): it bobs slowly up and down and blinks now and then. Loops.",
+  "sprite": "spr_wispook",
+  "loop": true,
+  "frames": [
+    {
+      "frame": "down_right",
+      "ticks": 14
+    },
+    {
+      "frame": "down_right_float_u",
+      "ticks": 18
+    },
+    {
+      "frame": "down_right",
+      "ticks": 14
+    },
+    {
+      "frame": "down_right_float_d",
+      "ticks": 18
+    },
+    {
+      "frame": "down_right",
+      "ticks": 14
+    },
+    {
+      "frame": "down_right_float_u",
+      "ticks": 18
+    },
+    {
+      "frame": "down_right",
+      "ticks": 8
+    },
+    {
+      "frame": "down_right_blink",
+      "ticks": 6
+    },
+    {
+      "frame": "down_right",
+      "ticks": 8
+    },
+    {
+      "frame": "down_right_float_d",
+      "ticks": 18
+    }
+  ],
+  "events": []
+}

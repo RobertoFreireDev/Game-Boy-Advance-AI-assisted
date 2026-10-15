@@ -1,0 +1,24 @@
+{
+  "id": "anim_emberpup_attack_left",
+  "kind": "object",
+  "type": "animation",
+  "name": "Emberpup attack left",
+  "notes": "Emberpup using a move facing left: it winds up (sinks 1 px) for 3 ticks, lunges 1 px forward for 8, then stands.",
+  "sprite": "spr_emberpup",
+  "loop": false,
+  "frames": [
+    {
+      "frame": "left_breathe",
+      "ticks": 3
+    },
+    {
+      "frame": "left_lunge",
+      "ticks": 8
+    },
+    {
+      "frame": "left",
+      "ticks": 4
+    }
+  ],
+  "events": []
+}

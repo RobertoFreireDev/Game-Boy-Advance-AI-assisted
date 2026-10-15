@@ -1,0 +1,44 @@
+{
+  "id": "anim_venomole_idle_down_right",
+  "kind": "object",
+  "type": "animation",
+  "name": "Venomole idle down-right",
+  "notes": "Venomole standing still facing down-right (its front, turned to the right): it breathes (sinks 1 px and back) and blinks now and then. Loops.",
+  "sprite": "spr_venomole",
+  "loop": true,
+  "frames": [
+    {
+      "frame": "down_right",
+      "ticks": 24
+    },
+    {
+      "frame": "down_right_breathe",
+      "ticks": 20
+    },
+    {
+      "frame": "down_right",
+      "ticks": 24
+    },
+    {
+      "frame": "down_right_breathe",
+      "ticks": 20
+    },
+    {
+      "frame": "down_right",
+      "ticks": 12
+    },
+    {
+      "frame": "down_right_blink",
+      "ticks": 6
+    },
+    {
+      "frame": "down_right",
+      "ticks": 10
+    },
+    {
+      "frame": "down_right_breathe",
+      "ticks": 20
+    }
+  ],
+  "events": []
+}

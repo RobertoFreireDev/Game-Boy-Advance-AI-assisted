@@ -6,8 +6,16 @@
 #include "engine/input.h"
 #include "engine/vars.h"
 
+// Letting go of a diagonal rarely lifts both buttons on the same frame: a straight direction
+// that is half of the diagonal it faces turns it only after this many ticks, so it stops
+// still facing the diagonal.
+#define RELEASE_TICKS 5
+
+#define ST_HALF 0           // ticks the D-pad has held half of the diagonal it faces
+
 void bhv_topdown_controller_update(Actor *a, const void *params) {
     const Params_topdown_controller *p = params;
+    u32 *st = bhv_state(a);
     int dx = input_dir_x(), dy = input_dir_y();
     if (!p->eight_way && dx && dy) dy = 0;
     if (a->anim_lock) return;                   // being knocked back
@@ -25,6 +33,11 @@ void bhv_topdown_controller_update(Actor *a, const void *params) {
         a->vx = a->vx * 181 / 256;
         a->vy = a->vy * 181 / 256;
     }
-    actor_face(a, dx, dy);                      // picks the up / down / side animations
+    int half = a->look_x && a->look_y && (!dx || !dy) && (dx == a->look_x || dy == a->look_y);
+    if (half && st[ST_HALF] < RELEASE_TICKS) st[ST_HALF]++;
+    else {
+        st[ST_HALF] = 0;
+        actor_face(a, dx, dy);                  // picks the animations for the 8 ways
+    }
     actor_play_slot(a, (dx || dy) ? ANIM_WALK : ANIM_IDLE);
 }

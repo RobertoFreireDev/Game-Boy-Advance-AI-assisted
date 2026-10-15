@@ -1,0 +1,28 @@
+{
+  "id": "anim_splashell_walk_down_left",
+  "kind": "object",
+  "type": "animation",
+  "name": "Splashell walk down-left",
+  "notes": "Splashell moving facing down-left (its front, turned to the left): it slides (stretches 1 px taller, then squashes 1 px), 8 ticks a frame. Loops.",
+  "sprite": "spr_splashell",
+  "loop": true,
+  "frames": [
+    {
+      "frame": "down_left_stretch",
+      "ticks": 8
+    },
+    {
+      "frame": "down_left",
+      "ticks": 8
+    },
+    {
+      "frame": "down_left_breathe",
+      "ticks": 8
+    },
+    {
+      "frame": "down_left",
+      "ticks": 8
+    }
+  ],
+  "events": []
+}

@@ -1,0 +1,28 @@
+{
+  "id": "anim_splashell_walk_down_right",
+  "kind": "object",
+  "type": "animation",
+  "name": "Splashell walk down-right",
+  "notes": "Splashell moving facing down-right (its front, turned to the right): it slides (stretches 1 px taller, then squashes 1 px), 8 ticks a frame. Loops.",
+  "sprite": "spr_splashell",
+  "loop": true,
+  "frames": [
+    {
+      "frame": "down_right_stretch",
+      "ticks": 8
+    },
+    {
+      "frame": "down_right",
+      "ticks": 8
+    },
+    {
+      "frame": "down_right_breathe",
+      "ticks": 8
+    },
+    {
+      "frame": "down_right",
+      "ticks": 8
+    }
+  ],
+  "events": []
+}

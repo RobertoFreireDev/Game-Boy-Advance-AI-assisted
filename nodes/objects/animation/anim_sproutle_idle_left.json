@@ -1,0 +1,44 @@
+{
+  "id": "anim_sproutle_idle_left",
+  "kind": "object",
+  "type": "animation",
+  "name": "Sproutle idle left",
+  "notes": "Sproutle standing still facing left: it breathes (sinks 1 px and back) and blinks now and then. Loops.",
+  "sprite": "spr_sproutle",
+  "loop": true,
+  "frames": [
+    {
+      "frame": "left",
+      "ticks": 24
+    },
+    {
+      "frame": "left_breathe",
+      "ticks": 20
+    },
+    {
+      "frame": "left",
+      "ticks": 24
+    },
+    {
+      "frame": "left_breathe",
+      "ticks": 20
+    },
+    {
+      "frame": "left",
+      "ticks": 12
+    },
+    {
+      "frame": "left_blink",
+      "ticks": 6
+    },
+    {
+      "frame": "left",
+      "ticks": 10
+    },
+    {
+      "frame": "left_breathe",
+      "ticks": 20
+    }
+  ],
+  "events": []
+}

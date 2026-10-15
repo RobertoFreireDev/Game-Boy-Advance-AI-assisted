@@ -21,6 +21,8 @@
 #define DIR_UP        2
 #define DIR_DOWN      3
 
+#define TURN_TICKS    8     // actor_face_walk: ticks a 45-degree turn of the art waits (no flicker)
+
 typedef struct Actor {
     u8 active, type, category, flags;
     s16 node, inst;                 // node id; scene instance index (-1 = spawned later)
@@ -30,7 +32,10 @@ typedef struct Actor {
     u8 logic_count;
     u8 facing_left;                 // last horizontal direction (mirrors the side-view art)
     u8 facing;                      // DIR_*: which way it looks (picks *_up / *_down animations)
-    s8 look_x, look_y;              // last 8-way direction it faced (-1..1 each; starts down)
+    s8 look_x, look_y;              // last 8-way direction it faced (-1..1 each; starts down): where moves aim
+    s8 show_x, show_y;              // 8-way direction its art shows (picks the directional animations)
+    u8 turn;                        // ticks show_x / show_y have waited to follow look_x / look_y
+    u16 turn_at;                    // frame (low 16 bits) the art last turned
     u8 flash;                       // > 0: drawn with flash_pal for this many more ticks
     s8 draw_dx;                     // drawn this many px right of its x (a paralyzed monster trembles)
     const PaletteData *pal;         // drawn with these colors instead of its sprite's (NULL = own)
@@ -73,14 +78,26 @@ void actor_update_all(void);
 void actor_touch(Actor *a, Actor *other);
 // Play a body animation slot, falling back to similar slots, then the default one.
 void actor_play_slot(Actor *a, u8 slot);
-// Turn to face a movement direction (dx, dy in -1..1); keeps the current facing on diagonals
-// when it is one of the two directions, otherwise prefers left/right. look_x / look_y keep
-// the full 8-way direction.
+// Turn to face a direction (dx, dy in -1..1). look_x / look_y and the art (show_x / show_y)
+// take the full 8-way direction; `facing` keeps the current one of four on diagonals when it
+// is one of the two directions, otherwise prefers left/right.
 void actor_face(Actor *a, int dx, int dy);
-// True for the slots drawn as seen from above/below (*_up, *_down): never mirrored.
-static inline int actor_slot_vertical(u8 slot) {
-    return slot == ANIM_IDLE_UP || slot == ANIM_IDLE_DOWN || slot == ANIM_WALK_UP ||
-           slot == ANIM_WALK_DOWN || slot == ANIM_ATTACK_UP || slot == ANIM_ATTACK_DOWN;
+// Like actor_face, for a walker that steers every tick: a 45-degree turn of the art, or any turn
+// within TURN_TICKS of the last one, waits until the new direction has been asked TURN_TICKS ticks
+// in a row, so an 8-way zigzag or a monster jittering in place doesn't flicker.
+void actor_face_walk(Actor *a, int dx, int dy);
+// True for the slots drawn for one direction only (*_up, *_down and the *_left ones): never mirrored.
+static inline int actor_slot_fixed(u8 slot) {
+    switch (slot) {
+    case ANIM_IDLE_UP: case ANIM_WALK_UP: case ANIM_ATTACK_UP:
+    case ANIM_IDLE_DOWN: case ANIM_WALK_DOWN: case ANIM_ATTACK_DOWN:
+    case ANIM_IDLE_LEFT: case ANIM_WALK_LEFT: case ANIM_ATTACK_LEFT:
+    case ANIM_IDLE_UP_LEFT: case ANIM_WALK_UP_LEFT: case ANIM_ATTACK_UP_LEFT:
+    case ANIM_IDLE_DOWN_LEFT: case ANIM_WALK_DOWN_LEFT: case ANIM_ATTACK_DOWN_LEFT:
+        return 1;
+    default:
+        return 0;
+    }
 }
 // True if the body has an animation in this slot.
 int actor_has_slot(const Actor *a, u8 slot);

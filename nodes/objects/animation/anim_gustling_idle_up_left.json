@@ -1,0 +1,36 @@
+{
+  "id": "anim_gustling_idle_up_left",
+  "kind": "object",
+  "type": "animation",
+  "name": "Gustling idle up-left",
+  "notes": "Gustling standing still facing up-left (its back, turned to the left): it breathes (sinks 1 px and back). Loops.",
+  "sprite": "spr_gustling",
+  "loop": true,
+  "frames": [
+    {
+      "frame": "up_left",
+      "ticks": 24
+    },
+    {
+      "frame": "up_left_breathe",
+      "ticks": 20
+    },
+    {
+      "frame": "up_left",
+      "ticks": 24
+    },
+    {
+      "frame": "up_left_breathe",
+      "ticks": 20
+    },
+    {
+      "frame": "up_left",
+      "ticks": 12
+    },
+    {
+      "frame": "up_left_breathe",
+      "ticks": 20
+    }
+  ],
+  "events": []
+}

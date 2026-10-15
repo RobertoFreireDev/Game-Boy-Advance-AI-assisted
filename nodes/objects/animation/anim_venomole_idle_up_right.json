@@ -1,0 +1,36 @@
+{
+  "id": "anim_venomole_idle_up_right",
+  "kind": "object",
+  "type": "animation",
+  "name": "Venomole idle up-right",
+  "notes": "Venomole standing still facing up-right (its back, turned to the right): it breathes (sinks 1 px and back). Loops.",
+  "sprite": "spr_venomole",
+  "loop": true,
+  "frames": [
+    {
+      "frame": "up_right",
+      "ticks": 24
+    },
+    {
+      "frame": "up_right_breathe",
+      "ticks": 20
+    },
+    {
+      "frame": "up_right",
+      "ticks": 24
+    },
+    {
+      "frame": "up_right_breathe",
+      "ticks": 20
+    },
+    {
+      "frame": "up_right",
+      "ticks": 12
+    },
+    {
+      "frame": "up_right_breathe",
+      "ticks": 20
+    }
+  ],
+  "events": []
+}

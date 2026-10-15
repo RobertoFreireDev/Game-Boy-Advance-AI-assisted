@@ -1,0 +1,44 @@
+{
+  "id": "anim_pebbulk_idle_down_left",
+  "kind": "object",
+  "type": "animation",
+  "name": "Pebbulk idle down-left",
+  "notes": "Pebbulk standing still facing down-left (its front, turned to the left): it breathes (sinks 1 px and back) and blinks now and then. Loops.",
+  "sprite": "spr_pebbulk",
+  "loop": true,
+  "frames": [
+    {
+      "frame": "down_left",
+      "ticks": 24
+    },
+    {
+      "frame": "down_left_breathe",
+      "ticks": 20
+    },
+    {
+      "frame": "down_left",
+      "ticks": 24
+    },
+    {
+      "frame": "down_left_breathe",
+      "ticks": 20
+    },
+    {
+      "frame": "down_left",
+      "ticks": 12
+    },
+    {
+      "frame": "down_left_blink",
+      "ticks": 6
+    },
+    {
+      "frame": "down_left",
+      "ticks": 10
+    },
+    {
+      "frame": "down_left_breathe",
+      "ticks": 20
+    }
+  ],
+  "events": []
+}

@@ -91,6 +91,7 @@ aside.collapsed:hover { background: var(--panel2); }
 .toolbar label { color: var(--dim); }
 .frames { display: flex; flex-wrap: wrap; gap: 12px; }
 .frame { text-align: center; }
+.compass { display: grid; grid-template-columns: repeat(3, max-content); gap: 10px 14px; }
 .frame .cap { color: var(--dim); font-size: 11px; margin-top: 3px; }
 .frame canvas, .stage canvas { background: repeating-conic-gradient(#2a2e38 0% 25%, #22252d 0% 50%) 50% / 16px 16px; border: 1px solid var(--line); }
 .frame.cur canvas { outline: 2px solid var(--accent2); }
@@ -337,13 +338,33 @@ function animAt(animId, tick) {
 function bodyAnim(bodyId, slot) {
   const b = NODES[bodyId];
   if (!b || !b.animations) return null;
-  const fallback = { run: "walk", walk: "run", fall: "jump", die: "hurt",
-    idle_up: "idle", idle_down: "idle", walk_up: "walk", walk_down: "walk", attack_up: "attack", attack_down: "attack" };
-  return b.animations[slot] || b.animations[fallback[slot]] || b.animations[fallback[fallback[slot]]] ||
+  const fallback = { run: "walk", walk: "run", fall: "jump", die: "hurt" };
+  const fb = s => fallback[s] || (dirBase(s) !== s ? dirBase(s) : undefined);   // idle_up_left -> idle
+  return b.animations[slot] || b.animations[fb(slot)] || b.animations[fb(fb(slot))] ||
     b.animations[b.default_animation] || null;
 }
-// Slots seen from above / below (*_up, *_down) are never mirrored, like sprites.c.
-const isVerticalSlot = slot => /_(up|down)$/.test(slot || "");
+// The base animation of a directional slot (walk_down_left -> walk).
+const dirBase = s => (s || "").replace(/_(up_right|up_left|down_right|down_left|up|down|left)$/, "");
+// Slots drawn for one direction only (*_up, *_down and the *_left ones) are never mirrored, like sprites.c.
+const isFixedSlot = slot => /_(up|down|left)$/.test(slot || "");
+// The 8 ways an actor faces, as a 3x3 compass (null = the middle): slot suffix and (x, y) step.
+const DIRS8 = [["up_left", -1, -1], ["up", 0, -1], ["up_right", 1, -1], ["left", -1, 0], null, ["right", 1, 0],
+               ["down_left", -1, 1], ["down", 0, 1], ["down_right", 1, 1]];
+// The slot a body plays for a base animation (idle / walk / attack) facing (x, y), and whether it is
+// mirrored: like actor.iwram.c directional_slot. A left one without its art uses the right one
+// mirrored; a diagonal without any, the side one (what `facing` picks from a standing start).
+function dirSlot(bodyId, base, x, y) {
+  const an = (NODES[bodyId] || {}).animations || {};
+  const pick = s => ({ slot: s, mirror: x < 0 && !isFixedSlot(s) });
+  if (x && y) {
+    const v = (y < 0 ? "up_" : "down_");
+    if (an[base + "_" + v + (x < 0 ? "left" : "right")]) return pick(base + "_" + v + (x < 0 ? "left" : "right"));
+    if (x < 0 && an[base + "_" + v + "right"]) return pick(base + "_" + v + "right");
+    y = 0;
+  }
+  if (!x) return pick(an[base + (y < 0 ? "_up" : "_down")] ? base + (y < 0 ? "_up" : "_down") : base);
+  return pick(x < 0 && an[base + "_left"] ? base + "_left" : base);
+}
 // Draw an actor body like sprites.c: the origin mirrors with the art when flipped.
 function drawBody(ctx, bodyId, slot, wx, wy, tick, facingLeft, palOverride) {
   const b = NODES[bodyId];
@@ -352,7 +373,7 @@ function drawBody(ctx, bodyId, slot, wx, wy, tick, facingLeft, palOverride) {
   if (!b || !st) return null;
   const spr = NODES[st.sprite];
   if (!spr) return null;
-  const fx = !!st.frame.flip_x !== (!!facingLeft && !isVerticalSlot(slot)), fy = !!st.frame.flip_y;
+  const fx = !!st.frame.flip_x !== (!!facingLeft && !isFixedSlot(slot)), fy = !!st.frame.flip_y;
   const o = b.origin || [0, 0];
   const ox = fx ? spr.width - o[0] : o[0], oy = fy ? spr.height - o[1] : o[1];
   blit(ctx, frameCanvas(st.sprite, st.frame.frame, palOverride), wx - ox, wy - oy, fx, fy);
@@ -1095,6 +1116,38 @@ function bodyStage(bodyId, slotGetter, opts) {
   });
   return c;
 }
+// A body in all 8 directions, each with the slot the engine picks for it (dirSlot). Attacks replay
+// every 45 ticks. Only for top-down bodies (with directional slots).
+function compassCard(bodyId, palGetter) {
+  const b = NODES[bodyId] || {};
+  if (!Object.keys(b.animations || {}).some(s => dirBase(s) !== s)) return null;
+  const st = { base: "idle" };
+  const tabs = h("span", { class: "toolbar", style: "margin:0" });
+  const redraw = () => { tabs.innerHTML = ""; ["idle", "walk", "attack"].forEach(k => tabs.append(h("button", { class: k === st.base ? "on" : "", onclick: () => { st.base = k; redraw(); } }, k))); };
+  redraw();
+  let maxW = 16, maxH = 16;
+  Object.values(b.animations).forEach(a => { const s = NODES[(NODES[a] || {}).sprite]; if (s) { maxW = Math.max(maxW, s.width); maxH = Math.max(maxH, s.height); } });
+  const pad = 4, W = maxW + pad * 2, H = maxH + pad * 2, z = maxW > 32 ? 2 : 4, o = b.origin || [0, 0];
+  const grid = h("div", { class: "compass" });
+  DIRS8.forEach(d => {
+    if (!d) { grid.append(h("div")); return; }
+    const [name, x, y] = d;
+    const [c, ctx] = zoomCanvas(W, H, z);
+    const cap = h("div", { class: "cap" });
+    let shown = "";
+    live(tick => {
+      if (!c.isConnected) return;
+      const p = dirSlot(bodyId, st.base, x, y);
+      ctx.fillStyle = "#1a1d24"; ctx.fillRect(0, 0, W, H);
+      drawBody(ctx, bodyId, p.slot, Math.floor(W / 2), pad + o[1], st.base === "attack" ? tick % 45 : tick, p.mirror, palGetter && palGetter());
+      const text = `${name.replace("_", "-")}: ${p.slot}${p.mirror ? " (mirrored)" : ""}`;
+      if (text !== shown) cap.textContent = shown = text;
+    });
+    grid.append(h("div", { class: "frame" }, c, cap));
+  });
+  return card("8 directions", h("div", { class: "toolbar" }, tabs, playButtons()), grid,
+    h("div", { class: "small" }, "What the engine shows for each way the monster faces: it turns to the way it walks (diagonals too), keeps that way when it stops, and attacks the way it aims. The *_left slots have their own art (never mirrored), so the light stays top-left in every direction."));
+}
 PREVIEW.body = (id, n) => {
   const slots = Object.keys(n.animations || {});
   let cur = n.default_animation || slots[0];
@@ -1109,6 +1162,7 @@ PREVIEW.body = (id, n) => {
   const ph = n.physics || {};
   return [card("Animation slots", tabs, h("div", { class: "toolbar" }, playButtons(), toggle("Hitbox", st, "hitbox", () => {}), toggle("Origin", st, "origin", () => {}), toggle("Face left", st, "left", () => {})),
     h("div", { class: "stage" }, stage), h("div", { class: "small" }, "Red box = hitbox (used for collisions). Yellow cross = origin (the point placed at the instance's x, y).")),
+  compassCard(id),
   card("Physics", h("div", { class: "kv" },
     h("div", { class: "k" }, "falls (gravity)"), h("div", {}, ph.gravity ? "yes" : "no"),
     h("div", { class: "k" }, "solid to others"), h("div", {}, ph.solid ? "yes — others can't walk through it" : "no"),
@@ -1370,6 +1424,7 @@ PREVIEW.species = (id, n) => {
       h("div", {}, tabs, h("div", { class: "toolbar" }, playButtons(), toggle("Alpha colors", st, "alpha", () => {}), toggle("Face left", st, "left", () => {}), toggle("Hitbox", st, "hitbox", () => {})),
         h("div", { class: "stage" }, bodyStage(n.body, () => slot, { state: st, facingLeft: () => st.left, pal: () => st.alpha ? n.alpha_palette : null })),
         h("div", { class: "small" }, "In the world (body ", nodeLink(n.body), "). 'Alpha colors' shows how it looks as the Alpha.")))));
+  out.push(compassCard(n.body, () => st.alpha ? n.alpha_palette : null));
   out.push(card("Moves", (n.moves || []).map((m, i) => {
     const mv = NODES[m] || {};
     return h("div", { class: "bhv" }, h("div", { class: "bn" }, SLOT_KEYS[i] + " · ", nodeLink(m)),
