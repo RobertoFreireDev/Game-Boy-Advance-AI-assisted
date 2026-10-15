@@ -3,7 +3,7 @@
   "kind": "object",
   "type": "tileset",
   "name": "Normal world ground tiles",
-  "notes": "Every 8x8 ground tile of the overworld, drawn in the style of the Game Boy Color Pokemon games (Gold/Silver/Crystal): flat light-green grass with small dark tufts, tall grass as rows of outlined clumps on that same light green, crisp dark outlines and a light top-left highlight on rocks and stone. Solid: water, reeds, trunks, the deep forest, boulders, big rocks, fences, ledges, ruin walls, pillars and graves. Grass, tall grass, flowers, paths, stairs and stone floors are walkable. Paths and water have edge and corner pieces. The stone floor is flat paving slabs (light bevel on top and left, dark joint on the right and bottom); the Alpha's stone circle is a round grass bed in a stone curb set into the paving. Tiles: 'a' grass, 'b' grass with tufts, 'c' grass with a few tufts, 'd' tall grass, 'e' tall grass (offset), 'f' red flowers, 'g' white flowers, 'h' yellow flowers, 'i' path C, 'j' path N, 'k' path S, 'l' path E, 'm' path W, 'n' path NE, 'o' path NW, 'p' path SE, 'q' path SW, 'r' path iNE, 's' path iNW, 't' path iSE, 'u' path iSW, 'v' water C, 'w' water N, 'x' water S, 'y' water E, 'z' water W, 'A' water NE, 'B' water NW, 'C' water SE, 'D' water SW, 'E' water iNE, 'F' water iNW, 'G' water iSE, 'H' water iSW, 'I' tree trunk (left), 'J' tree trunk (right), 'K' deep forest floor, 'L' boulder, 'M' rock tl, 'N' rock tr, 'O' rock bl, 'P' rock br, 'Q' fence, 'R' ledge top, 'S' ledge wall, 'T' ledge foot, 'U' stone stairs, 'V' ruin wall top, 'W' ruin wall, 'X' pillar top, 'Y' pillar base, 'Z' grave, '0' stone floor, '1' stone floor (two half slabs), '2' mossy stone floor, '3' circle 0, '4' circle 1, '5' circle 2, '6' circle 3. The other worlds' ground tiles reuse this set's path (i-u) and paving (0 1 2) shapes in their own colors, so their palettes keep this one's slot layout.",
+  "notes": "Every 8x8 ground tile of the overworld, drawn in the style of the Game Boy Color Pokemon games (Gold/Silver/Crystal): flat light-green grass with small dark tufts, tall grass as rows of outlined clumps on that same light green, crisp dark outlines and a light top-left highlight on rocks and stone. Solid: water, reeds, trunks, the deep forest, boulders, big rocks, fences, ledges, ruin walls, pillars and graves. Grass, tall grass, flowers, paths and stairs are walkable. Paths and water have edge and corner pieces. Flowers and other small things stay a pixel inside their tile, so none is cut off where it meets plain grass. The old stone floors are plain grass now ('0' '1' '2': the tufts of 'a' moved about), and the Alpha's stone circle is ten flat stones lying in the grass round a grass bed, a 4x4-tile picture. Tiles: 'a' grass, 'b' grass with tufts, 'c' grass with a few tufts, 'd' tall grass, 'e' tall grass (offset), 'f' red flower and bud, 'g' white flower and bud, 'h' yellow flower and bud, 'i' path C, 'j' path N, 'k' path S, 'l' path E, 'm' path W, 'n' path NE, 'o' path NW, 'p' path SE, 'q' path SW, 'r' path iNE, 's' path iNW, 't' path iSE, 'u' path iSW, 'v' water C, 'w' water N, 'x' water S, 'y' water E, 'z' water W, 'A' water NE, 'B' water NW, 'C' water SE, 'D' water SW, 'E' water iNE, 'F' water iNW, 'G' water iSE, 'H' water iSW, 'I' tree trunk (left), 'J' tree trunk (right), 'K' deep forest floor, 'L' boulder, 'M' rock tl, 'N' rock tr, 'O' rock bl, 'P' rock br, 'Q' fence, 'R' ledge top, 'S' ledge wall, 'T' ledge foot, 'U' stone stairs, 'V' ruin wall top, 'W' ruin wall, 'X' pillar top, 'Y' pillar base, 'Z' grave, '0' '1' '2' grass (where stone floors were), '3' '4' '5' '6' / '7' '8' '9' '!' / '#' '$' '%' '&' / '(' ')' '*' '+' the Alpha's stone circle (4x4 tiles, row by row). The other worlds' ground tiles reuse this set's path (i-u) shapes in their own colors, so their palettes keep this one's slot layout.",
   "palette": "pal_ground_normal",
   "tiles": {
     "a": {
@@ -68,38 +68,38 @@
     },
     "f": {
       "pixels": [
-        "4ff44444",
-        "f22f4444",
-        "f22f4444",
-        "5ff54ff4",
-        "4554f22f",
-        "4444f22f",
-        "44445ff5",
+        "44444444",
+        "44ff4444",
+        "4f22f444",
+        "4f22f444",
+        "45ff5444",
+        "44554ff4",
+        "44444ff4",
         "44444554"
       ]
     },
     "g": {
       "pixels": [
-        "44444224",
-        "44442772",
-        "44442772",
-        "42245225",
-        "27724554",
-        "27724444",
-        "52254444",
+        "44444444",
+        "44442244",
+        "44427724",
+        "44427724",
+        "44452254",
+        "42245544",
+        "42244444",
         "45544444"
       ]
     },
     "h": {
       "pixels": [
-        "44774455",
+        "44444444",
+        "44444774",
+        "44444774",
+        "44774554",
         "47997444",
         "47997444",
         "45775444",
-        "44554477",
-        "74444799",
-        "74444799",
-        "54444577"
+        "44554444"
       ]
     },
     "i": {
@@ -662,86 +662,230 @@
     },
     "0": {
       "pixels": [
-        "2222222e",
-        "2cccccce",
-        "2cccccce",
-        "2ccccdce",
-        "2cccccce",
-        "2cdcccce",
-        "2cccccce",
-        "eeeeeeee"
+        "44444444",
+        "44444444",
+        "44545444",
+        "44454444",
+        "44444444",
+        "44444444",
+        "44444444",
+        "44444444"
       ]
     },
     "1": {
       "pixels": [
-        "222e222e",
-        "2cce2cce",
-        "2cce2cce",
-        "2dce2cce",
-        "2cce2cce",
-        "2cce2cde",
-        "2cce2cce",
-        "eeeeeeee"
+        "44444444",
+        "44445454",
+        "44444544",
+        "44444444",
+        "44444444",
+        "44444444",
+        "44444444",
+        "44444444"
       ]
     },
     "2": {
       "pixels": [
-        "2222222e",
-        "2ccc55ce",
-        "2cc5455e",
-        "2ccc54ce",
-        "2cccccce",
-        "25cccc5e",
-        "455ccc4e",
-        "eee5eeee"
+        "44444444",
+        "44444444",
+        "44444444",
+        "44444444",
+        "44545444",
+        "44454444",
+        "44444444",
+        "44444444"
       ]
     },
     "3": {
       "pixels": [
-        "2222222e",
-        "2cccc111",
-        "2ccc1112",
-        "2cc11222",
-        "2c112255",
-        "21122544",
-        "21125441",
-        "e122441c"
+        "44444444",
+        "44444444",
+        "44444444",
+        "44445444",
+        "44454544",
+        "44444444",
+        "44444441",
+        "44444441"
       ]
     },
     "4": {
       "pixels": [
-        "2222222e",
-        "111cccce",
-        "2111ccce",
-        "2cc11dce",
-        "55cc11ce",
-        "445cc11e",
-        "1445d11e",
-        "c144dd1e"
+        "44444444",
+        "44444444",
+        "44444444",
+        "44444411",
+        "444441cc",
+        "111441cd",
+        "ccc111ce",
+        "cdee1411"
       ]
     },
     "5": {
       "pixels": [
-        "2122441d",
-        "211c5441",
-        "211cc544",
-        "2c11cc44",
-        "2cc11cdd",
-        "2cdc111d",
-        "2cccc111",
-        "eeeeeeee"
+        "44444444",
+        "44444444",
+        "44444444",
+        "11444444",
+        "cc144444",
+        "de144111",
+        "ee111ccc",
+        "1141ccde"
       ]
     },
     "6": {
       "pixels": [
-        "d144dd1e",
-        "1444d11e",
-        "444dd11e",
-        "44dd11ce",
-        "ddd11cce",
-        "d111ccce",
-        "111cccce",
-        "eeeeeeee"
+        "44444444",
+        "44444444",
+        "44454444",
+        "44545444",
+        "44444444",
+        "44444444",
+        "14444444",
+        "14444444"
+      ]
+    },
+    "7": {
+      "pixels": [
+        "44444441",
+        "44444444",
+        "44444114",
+        "44411cc1",
+        "4441ccde",
+        "4441ceee",
+        "44441111",
+        "44444444"
+      ]
+    },
+    "8": {
+      "pixels": [
+        "cee11444",
+        "11144444",
+        "44444444",
+        "14444444",
+        "14444445",
+        "14444444",
+        "44444454",
+        "44444545"
+      ]
+    },
+    "9": {
+      "pixels": [
+        "44411eee",
+        "44444111",
+        "44444444",
+        "54444441",
+        "45444441",
+        "44444441",
+        "44444444",
+        "44444444"
+      ]
+    },
+    "!": {
+      "pixels": [
+        "14444444",
+        "44444444",
+        "41144444",
+        "1cc11444",
+        "ccde1444",
+        "ceee1444",
+        "11114444",
+        "44444444"
+      ]
+    },
+    "#": {
+      "pixels": [
+        "44444444",
+        "44441111",
+        "4441cccc",
+        "4441cdee",
+        "44411ee1",
+        "44444114",
+        "44444444",
+        "44444441"
+      ]
+    },
+    "$": {
+      "pixels": [
+        "44444444",
+        "44444444",
+        "14444444",
+        "14444444",
+        "14444444",
+        "44444444",
+        "11144444",
+        "ccc11444"
+      ]
+    },
+    "%": {
+      "pixels": [
+        "44444444",
+        "44544444",
+        "45454441",
+        "44444441",
+        "44444441",
+        "44444444",
+        "44444111",
+        "44411ccc"
+      ]
+    },
+    "&": {
+      "pixels": [
+        "44444444",
+        "11114444",
+        "cccc1444",
+        "cdee1444",
+        "1ee11444",
+        "41144444",
+        "44444444",
+        "14444444"
+      ]
+    },
+    "(": {
+      "pixels": [
+        "44444441",
+        "44454441",
+        "44545444",
+        "44444444",
+        "44444444",
+        "44444444",
+        "44444444",
+        "44444444"
+      ]
+    },
+    ")": {
+      "pixels": [
+        "cdee1411",
+        "cee111cc",
+        "111441cd",
+        "444441ce",
+        "44444411",
+        "44444444",
+        "44444444",
+        "44444444"
+      ]
+    },
+    "*": {
+      "pixels": [
+        "1141ccde",
+        "cc111eee",
+        "de144111",
+        "ee144444",
+        "11444444",
+        "44444444",
+        "44444444",
+        "44444444"
+      ]
+    },
+    "+": {
+      "pixels": [
+        "14444444",
+        "14444444",
+        "44445444",
+        "44454544",
+        "44444444",
+        "44444444",
+        "44444444",
+        "44444444"
       ]
     }
   }

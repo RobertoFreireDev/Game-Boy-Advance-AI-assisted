@@ -3,7 +3,7 @@
   "kind": "object",
   "type": "tileset",
   "name": "Fire world ground tiles",
-  "notes": "Every 8x8 ground tile of the Fire world, Ember Crater. Only 'K' is solid (the band around the edge: see-through, so the border drawn under the ground shows in it); everything else is walked over. 'a' 'b' 'c' plain ground, 'd' / 'e' the patch tiles (laid in alternating rows), 'f' 'g' 'h' small things; the path (i-u) and paving (0 1 2) pieces have the meadow's shapes in this world's colors. Pictures several tiles big: vent ('ABCD'), crust ('EFGHIJ'), Alpha's den ('LMNOPQRSTUVWXYZ#').",
+  "notes": "Every 8x8 ground tile of the Fire world, Ember Crater. Only 'K' is solid (the band around the edge: see-through, so the border drawn under the ground shows in it); everything else is walked over. 'a' 'b' 'c' plain ground, '0' '1' '2' plain ground too (the specks of 'a' moved about; once stone paving), 'd' / 'e' the patch tiles (laid in alternating rows), 'f' 'g' 'h' small things; every small thing and patch piece stays a pixel inside its tile, so none is cut off where it meets plain ground. The path pieces (i-u) have the meadow's shapes in this world's colors. Pictures several tiles big: vent ('ABCD'), crust ('EFGHIJ'), Alpha's den ('LMNOPQRSTUVWXYZ#').",
   "palette": "pal_ground_fire",
   "tiles": {
     "a": {
@@ -45,24 +45,24 @@
     "d": {
       "pixels": [
         "44444444",
-        "41114444",
-        "1ccc1944",
-        "1cee1444",
-        "41114444",
-        "44441111",
-        "44441111",
+        "44114444",
+        "41cd1494",
+        "41de1444",
+        "44114444",
+        "44444cd4",
+        "44444de4",
         "44444444"
       ]
     },
     "e": {
       "pixels": [
         "44444444",
-        "44441114",
-        "4b41ccc1",
-        "44441114",
-        "44444444",
-        "11114444",
-        "11114494",
+        "4cd44494",
+        "4de44444",
+        "44441144",
+        "4441cd14",
+        "4b41de14",
+        "44441144",
         "44444444"
       ]
     },
@@ -573,38 +573,38 @@
     },
     "0": {
       "pixels": [
-        "2222222e",
-        "2cccccce",
-        "2cccccce",
-        "2ccccdce",
-        "2cccccce",
-        "2cdcccce",
-        "2cccccce",
-        "eeeeeeee"
+        "44444444",
+        "44444444",
+        "43443444",
+        "44444544",
+        "44444444",
+        "44444444",
+        "44444444",
+        "44444444"
       ]
     },
     "1": {
       "pixels": [
-        "222e222e",
-        "2cce2cce",
-        "2cce2cce",
-        "2dce2cce",
-        "2cce2cce",
-        "2cce2cde",
-        "2cce2cce",
-        "eeeeeeee"
+        "44444444",
+        "44344444",
+        "44454444",
+        "44444444",
+        "44444444",
+        "44443444",
+        "44444444",
+        "44444444"
       ]
     },
     "2": {
       "pixels": [
-        "2222222e",
-        "2cccbbce",
-        "2ccb9bbe",
-        "2cccb9ce",
-        "2cccccce",
-        "2bccccbe",
-        "9bbccc9e",
-        "eeebeeee"
+        "44444444",
+        "43444444",
+        "44544444",
+        "44444444",
+        "44444444",
+        "44444444",
+        "43444444",
+        "44444444"
       ]
     },
     "#": {

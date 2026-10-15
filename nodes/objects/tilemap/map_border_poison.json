@@ -3,7 +3,7 @@
   "kind": "object",
   "type": "tilemap",
   "name": "Poison world: Miasma Swamp (border)",
-  "notes": "The Poison world's edge, a bubbling purple sludge bog with cattails and reeds along its rim, drawn at ground level, under the monsters (nothing in it stands tall enough to walk behind). It fills exactly the solid 3-tile band around the field, seen through the ground's see-through 'K' tiles, and nothing of it reaches the field: its shore is the very line where monsters stop walking.",
+  "notes": "The Poison world's edge, a bubbling purple sludge bog with cattails and reeds along its rim, drawn at ground level, under the monsters (nothing in it stands tall enough to walk behind). It fills exactly the solid 3-tile band around the field, seen through the ground's see-through 'K' tiles, and nothing of it reaches the field. The field's ground runs on 1-4 px into the band in a wavy strip with a darker rim, then the shore begins, curving round each corner: the field never ends in a straight line, and monsters stop just short of the shore.",
   "tileset": "ts_border_poison",
   "layer": 2,
   "parallax": 1,

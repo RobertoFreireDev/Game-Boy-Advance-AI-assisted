@@ -3,7 +3,7 @@
   "kind": "object",
   "type": "tileset",
   "name": "Grass world ground tiles",
-  "notes": "Every 8x8 ground tile of the Grass world, Verdant Jungle. Only 'K' is solid (the floor under the border band, never seen); everything else is walked over. 'a' 'b' 'c' plain ground, 'd' / 'e' the patch tiles (laid in alternating rows), 'f' 'g' 'h' small things; the path (i-u) and paving (0 1 2) pieces have the meadow's shapes in this world's colors. Pictures several tiles big: leaf ('ABCDEF'), stump ('GHIJ'), Alpha's den ('LMNOPQRSTUVWXYZ#').",
+  "notes": "Every 8x8 ground tile of the Grass world, Verdant Jungle. Only 'K' is solid (the floor under the border band, never seen); everything else is walked over. 'a' 'b' 'c' plain ground, '0' '1' '2' plain ground too (the specks of 'a' moved about; once stone paving), 'd' / 'e' the patch tiles (laid in alternating rows), 'f' 'g' 'h' small things; every small thing and patch piece stays a pixel inside its tile, so none is cut off where it meets plain ground. The path pieces (i-u) have the meadow's shapes in this world's colors. Pictures several tiles big: leaf ('ABCDEF'), stump ('GHIJ'), Alpha's den ('LMNOPQRSTUVWXYZ#').",
   "palette": "pal_ground_grass",
   "tiles": {
     "a": {
@@ -81,12 +81,12 @@
     "g": {
       "pixels": [
         "44444444",
-        "4f444f44",
-        "fff4fff4",
-        "4f454f44",
-        "44544544",
-        "44444444",
-        "44444444",
+        "44f44444",
+        "4fff4444",
+        "44f44f44",
+        "4454fff4",
+        "44444f44",
+        "44444544",
         "44444444"
       ]
     },
@@ -573,38 +573,38 @@
     },
     "0": {
       "pixels": [
-        "2222222e",
-        "2cccccce",
-        "2cccccce",
-        "2ccccdce",
-        "2cccccce",
-        "2cdcccce",
-        "2cccccce",
-        "eeeeeeee"
+        "44444444",
+        "44454444",
+        "44445444",
+        "44444444",
+        "44444454",
+        "44444544",
+        "44454444",
+        "44444444"
       ]
     },
     "1": {
       "pixels": [
-        "222e222e",
-        "2cce2cce",
-        "2cce2cce",
-        "2dce2cce",
-        "2cce2cce",
-        "2cce2cde",
-        "2cce2cce",
-        "eeeeeeee"
+        "44444444",
+        "44445444",
+        "44544444",
+        "44454444",
+        "44444454",
+        "44444544",
+        "44444444",
+        "44444444"
       ]
     },
     "2": {
       "pixels": [
-        "2222222e",
-        "2ccc55ce",
-        "2cc5455e",
-        "2ccc54ce",
-        "2cccccce",
-        "25cccc5e",
-        "455ccc4e",
-        "eee5eeee"
+        "44444444",
+        "44444454",
+        "44444444",
+        "44544444",
+        "44454444",
+        "44444454",
+        "44444544",
+        "44444444"
       ]
     },
     "#": {

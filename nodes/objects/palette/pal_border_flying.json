@@ -3,7 +3,7 @@
   "kind": "object",
   "type": "palette",
   "name": "Flying world border colors",
-  "notes": "Colors of the Flying world's border (a sea of clouds, puffs piling up on the island's rim), lit from the top-left like the monsters.",
+  "notes": "Colors of the Flying world's border (a sea of clouds, puffs piling up on the island's rim), lit from the top-left like the monsters. The last two are the field's ground and its darker shade, for the strip of ground that runs on into the band before the shore.",
   "colors": [
     "#000000",
     "#5878b8",
@@ -12,6 +12,8 @@
     "#c8dcf8",
     "#a0b8e8",
     "#80c8f8",
-    "#5aa8f0"
+    "#5aa8f0",
+    "#b0e6c0",
+    "#88c8a0"
   ]
 }

@@ -3,7 +3,7 @@
   "kind": "object",
   "type": "tileset",
   "name": "Rock world ground tiles",
-  "notes": "Every 8x8 ground tile of the Rock world, Boulder Canyon. Only 'K' is solid (the band around the edge: see-through, so the border drawn under the ground shows in it); everything else is walked over. 'a' 'b' 'c' plain ground, 'd' / 'e' the patch tiles (laid in alternating rows), 'f' 'g' 'h' small things; the path (i-u) and paving (0 1 2) pieces have the meadow's shapes in this world's colors. Pictures several tiles big: fossil ('ABCD'), rubble ('EFGHIJ'), Alpha's den ('LMNOPQRSTUVWXYZ#').",
+  "notes": "Every 8x8 ground tile of the Rock world, Boulder Canyon. Only 'K' is solid (the band around the edge: see-through, so the border drawn under the ground shows in it); everything else is walked over. 'a' 'b' 'c' plain ground, '0' '1' '2' plain ground too (the specks of 'a' moved about; once stone paving), 'd' / 'e' the patch tiles (laid in alternating rows), 'f' 'g' 'h' small things; every small thing and patch piece stays a pixel inside its tile, so none is cut off where it meets plain ground. The path pieces (i-u) have the meadow's shapes in this world's colors. Pictures several tiles big: fossil ('ABCD'), rubble ('EFGHIJ'), Alpha's den ('LMNOPQRSTUVWXYZ#').",
   "palette": "pal_ground_rock",
   "tiles": {
     "a": {
@@ -96,8 +96,8 @@
         "44444444",
         "44cd4444",
         "44de4444",
-        "444444cd",
-        "444444de",
+        "44444cd4",
+        "44444de4",
         "44444444",
         "44444444"
       ]
@@ -273,24 +273,24 @@
     "B": {
       "pixels": [
         "44444444",
-        "e4e44444",
-        "a111e444",
+        "14444444",
+        "a1111444",
         "ceaa1444",
-        "ccecd1e4",
+        "ccecd144",
         "cccce144",
-        "eeecce4e",
+        "eeecc144",
         "cceecd14"
       ]
     },
     "C": {
       "pixels": [
-        "44eaccee",
+        "441accee",
         "441aecce",
-        "44eacecc",
+        "441acecc",
         "4441deec",
-        "444e111d",
-        "44444e41",
-        "444444e4",
+        "4441111d",
+        "44444441",
+        "44444444",
         "44444444"
       ]
     },
@@ -299,10 +299,10 @@
         "eccece14",
         "eccede14",
         "ccedd144",
-        "eedd1e44",
-        "ddd1e444",
-        "11e44444",
-        "e4444444",
+        "eedd1444",
+        "ddd14444",
+        "11144444",
+        "44444444",
         "44444444"
       ]
     },
@@ -424,7 +424,7 @@
         "1cde1444",
         "1cde1444",
         "1cee1444",
-        "11e11444"
+        "11e11441"
       ]
     },
     "O": {
@@ -435,8 +435,8 @@
         "44444444",
         "44444444",
         "44444444",
-        "44144444",
-        "11c11444"
+        "41444444",
+        "1c114444"
       ]
     },
     "P": {
@@ -465,11 +465,11 @@
     },
     "R": {
       "pixels": [
-        "44144444",
-        "44444444",
-        "44444444",
-        "44444444",
-        "11114444",
+        "44144441",
+        "44444441",
+        "44444441",
+        "44444441",
+        "11114441",
         "cccc1444",
         "ddddd144",
         "ddddde14"
@@ -477,26 +477,26 @@
     },
     "S": {
       "pixels": [
-        "1cce1444",
-        "1cde1444",
-        "1cde1444",
-        "1cee1444",
-        "11e11444",
-        "44144444",
-        "44444444",
-        "44414444"
+        "cce14444",
+        "cde14444",
+        "cde14444",
+        "cee14444",
+        "1e114444",
+        "41444444",
+        "44414444",
+        "411c1144"
       ]
     },
     "T": {
       "pixels": [
         "4411e114",
         "44441444",
-        "44444444",
-        "44444144",
-        "44411c11",
-        "4441cce1",
-        "4441cde1",
-        "4441cde1"
+        "44444414",
+        "444411c1",
+        "44441cce",
+        "44441cde",
+        "44441cde",
+        "44441cee"
       ]
     },
     "U": {
@@ -504,11 +504,11 @@
         "41cddddd",
         "41cddddd",
         "41cddddd",
-        "441ddddd",
-        "4441eeee",
-        "44441111",
-        "44444444",
-        "44444444"
+        "141ddddd",
+        "1441eeee",
+        "14441111",
+        "14444444",
+        "14444144"
       ]
     },
     "V": {
@@ -519,27 +519,27 @@
         "dddee144",
         "eeee1444",
         "11114444",
-        "44444444",
-        "44444414"
+        "44444414",
+        "444411c1"
       ]
     },
     "W": {
       "pixels": [
-        "411c1144",
         "41cce144",
         "41cde144",
         "41cde144",
         "41cee144",
         "411e1144",
         "44414444",
-        "44444444"
+        "44444444",
+        "14444444"
       ]
     },
     "X": {
       "pixels": [
-        "4441cee1",
-        "44411e11",
-        "44444144",
+        "444411e1",
+        "44444414",
+        "44444444",
         "44444444",
         "44444444",
         "44444444",
@@ -549,62 +549,62 @@
     },
     "Y": {
       "pixels": [
-        "44444144",
-        "44411c11",
+        "14411c11",
         "4441cce1",
         "4441cde1",
         "4441cde1",
         "4441cee1",
         "44411e11",
-        "44444144"
+        "44444144",
+        "44444444"
       ]
     },
     "Z": {
       "pixels": [
-        "444411c1",
         "44441cce",
         "44441cde",
         "44441cde",
         "44441cee",
         "444411e1",
         "44444414",
+        "44444444",
         "44444444"
       ]
     },
     "0": {
       "pixels": [
-        "2222222e",
-        "2cccccce",
-        "2cccccce",
-        "2ccccdce",
-        "2cccccce",
-        "2cdcccce",
-        "2cccccce",
-        "eeeeeeee"
+        "44444444",
+        "43444444",
+        "44444454",
+        "44444444",
+        "44444444",
+        "44444444",
+        "44444444",
+        "44444444"
       ]
     },
     "1": {
       "pixels": [
-        "222e222e",
-        "2cce2cce",
-        "2cce2cce",
-        "2dce2cce",
-        "2cce2cce",
-        "2cce2cde",
-        "2cce2cce",
-        "eeeeeeee"
+        "44444444",
+        "44444444",
+        "44443444",
+        "44444444",
+        "44454444",
+        "44444444",
+        "44444444",
+        "44444444"
       ]
     },
     "2": {
       "pixels": [
-        "2222222e",
-        "2cccffce",
-        "2ccfdffe",
-        "2cccfdce",
-        "2cccccce",
-        "2fccccfe",
-        "dffcccde",
-        "eeefeeee"
+        "44444444",
+        "44444444",
+        "44454444",
+        "44444444",
+        "44444444",
+        "44444444",
+        "44444434",
+        "44444444"
       ]
     },
     "#": {
@@ -614,7 +614,7 @@
         "14444444",
         "14444444",
         "14444444",
-        "14444444",
+        "44444444",
         "44444444",
         "44444444"
       ]

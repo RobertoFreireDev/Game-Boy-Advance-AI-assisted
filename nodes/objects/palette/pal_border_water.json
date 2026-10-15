@@ -3,7 +3,7 @@
   "kind": "object",
   "type": "palette",
   "name": "Water world border colors",
-  "notes": "Colors of the Water world's border (the open sea, shallow near the beach, with white surf lapping the sand), lit from the top-left like the monsters.",
+  "notes": "Colors of the Water world's border (the open sea, shallow near the beach, with white surf lapping the sand), lit from the top-left like the monsters. The last two are the field's ground and its darker shade, for the strip of ground that runs on into the band before the shore.",
   "colors": [
     "#000000",
     "#183060",
@@ -12,6 +12,8 @@
     "#78d0f0",
     "#3c98e0",
     "#2468c0",
-    "#1c4c98"
+    "#1c4c98",
+    "#ecd4a0",
+    "#d4b680"
   ]
 }

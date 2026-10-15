@@ -3,7 +3,7 @@
   "kind": "object",
   "type": "tilemap",
   "name": "Grass world: Verdant Jungle (border)",
-  "notes": "The Grass world's edge, drawn over the monsters: a wall of jungle: big glossy leaves, hanging vines and flowers. It covers the solid band and reaches a few pixels into the field, so walking right next to it hides you under it.",
+  "notes": "The Grass world's edge, drawn over the monsters: a wall of jungle: big glossy leaves, hanging vines and flowers. It covers the solid band and reaches a few pixels into the field, so walking right next to it hides you under it; its edge is all leaves and crowns, never a straight line of shade.",
   "tileset": "ts_border_grass",
   "layer": 2,
   "parallax": 1,

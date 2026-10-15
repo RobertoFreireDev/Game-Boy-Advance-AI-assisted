@@ -3,7 +3,7 @@
   "kind": "object",
   "type": "palette",
   "name": "Poison world ground colors",
-  "notes": "Colors of the Poison world's ground (Miasma Swamp). Same slots as the meadow's ground palette (outline, highlight, four ground shades, two path shades, accents, three stone shades), so the shared path, paving and Alpha-ring pieces take this world's colors.",
+  "notes": "Colors of the Poison world's ground (Miasma Swamp). Same slots as the meadow's ground palette (outline, highlight, four ground shades, two path shades, accents, three stone shades), so the shared path pieces take this world's colors.",
   "colors": [
     "#000000",
     "#201828",

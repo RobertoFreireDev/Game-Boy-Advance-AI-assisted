@@ -3,7 +3,7 @@
   "kind": "object",
   "type": "palette",
   "name": "Poison world border colors",
-  "notes": "Colors of the Poison world's border (a bubbling purple sludge bog with cattails and reeds along its rim), lit from the top-left like the monsters.",
+  "notes": "Colors of the Poison world's border (a bubbling purple sludge bog with cattails and reeds along its rim), lit from the top-left like the monsters. The last two are the field's ground and its darker shade, for the strip of ground that runs on into the band before the shore.",
   "colors": [
     "#000000",
     "#180c20",
@@ -16,6 +16,8 @@
     "#58a828",
     "#7c6a48",
     "#b09868",
-    "#4c4030"
+    "#4c4030",
+    "#8a9468",
+    "#6c7450"
   ]
 }

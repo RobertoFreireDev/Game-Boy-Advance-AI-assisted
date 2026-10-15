@@ -3,7 +3,7 @@
   "kind": "object",
   "type": "tilemap",
   "name": "Fire world: Ember Crater (border)",
-  "notes": "The Fire world's edge, a sea of lava with crusted basalt boulders along its shore, drawn at ground level, under the monsters (nothing in it stands tall enough to walk behind). It fills exactly the solid 3-tile band around the field, seen through the ground's see-through 'K' tiles, and nothing of it reaches the field: its shore is the very line where monsters stop walking.",
+  "notes": "The Fire world's edge, a sea of lava with crusted basalt boulders along its shore, drawn at ground level, under the monsters (nothing in it stands tall enough to walk behind). It fills exactly the solid 3-tile band around the field, seen through the ground's see-through 'K' tiles, and nothing of it reaches the field. The field's ground runs on 1-4 px into the band in a wavy strip with a darker rim, then the shore begins, curving round each corner: the field never ends in a straight line, and monsters stop just short of the shore.",
   "tileset": "ts_border_fire",
   "layer": 2,
   "parallax": 1,

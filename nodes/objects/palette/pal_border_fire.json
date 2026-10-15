@@ -3,7 +3,7 @@
   "kind": "object",
   "type": "palette",
   "name": "Fire world border colors",
-  "notes": "Colors of the Fire world's border (a sea of lava with crusted basalt boulders along its shore), lit from the top-left like the monsters.",
+  "notes": "Colors of the Fire world's border (a sea of lava with crusted basalt boulders along its shore), lit from the top-left like the monsters. The last two are the field's ground and its darker shade, for the strip of ground that runs on into the band before the shore.",
   "colors": [
     "#000000",
     "#200c08",
@@ -15,6 +15,8 @@
     "#9c8c90",
     "#685860",
     "#3c3038",
-    "#f87830"
+    "#f87830",
+    "#7a6c64",
+    "#5e524c"
   ]
 }

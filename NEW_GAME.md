@@ -99,12 +99,18 @@ from shapes), `fx.py` (every effect, with a no-edge check), `gen_mons.py` / `gen
 nodes), `bench.py` / `fxview.py` / `pview.py` (PNG previews). Harness additions in `scratchpad/t/`:
 `test_move3.py <species>` (R, screenshot move 3 every 10 frames).
 The 8 other worlds (Ember Crater, Coral Lagoon, Storm Plateau, Verdant Jungle, Miasma Swamp, Sky Isle,
-Haunted Hollow, Boulder Canyon; the meadow is the Normal world) came from a generator in session
-ff69787e, `scratchpad/w/`: `gen.py [--repo] [world…]` writes each world's palettes, tilesets and maps
-(and PNG previews in `out/`); `worlds.py` = ground art (palettes keep the meadow's slot layout so its path
-and paving pieces recolor themselves; `DENS` = the Alpha's 4x4 den per world), `border.py` = the painted
-borders (a 32 px texture + a 2-tile strip per side + 16 px corner blocks keeps each under ~80 tiles),
-`layout.py` = paths between screen hubs (auto-tiled, never 1 tile wide), paving, patches, stamps.
+Haunted Hollow, Boulder Canyon; the meadow is the Normal world) come from a generator; newest copy in
+session 538543de, `scratchpad/w/` (the older ones in 1079b7b2 / ff69787e would undo later fixes):
+`gen.py [--repo] [world…]` writes each world's palettes, tilesets and maps (and PNG previews in `out/`);
+`worlds.py` = ground art (palettes keep the meadow's slot layout so its path pieces recolor themselves;
+`DENS` = the Alpha's 4x4 den per world), `newtiles.py` = pieces redrawn a pixel inside their tile + the
+plain-ground '0' '1' '2' (where stone paving was), `border.py` = the painted borders drawn over the
+monsters (a 32 px texture + a 2-tile strip per side + 16 px corner blocks keeps each under ~80 tiles),
+`flat.py` = the ground-level ones (the field's ground runs on 1-4 px into the band, then the shore),
+`layout.py` = paths between screen hubs (auto-tiled, never 1 tile wide), plazas, patches, stamps.
+`meadow.py [--repo]` rewrites only the Normal world's flowers, '0' '1' '2', den and forest canopy (its map
+is otherwise hand-kept; run it once on a fresh tree). `seams.py` lists things cut off by a tile edge in
+every ground map; `rr.py <world> <out.png> [scale] [x y w h]` renders a world from node JSON.
 `scratchpad/t/test_worlds.py` plays 12 runs + a RESTART in the emulator: maps per world, every
 monster's home bonus, real walking / recharge / damage, the floating words, a screenshot per world.
 
