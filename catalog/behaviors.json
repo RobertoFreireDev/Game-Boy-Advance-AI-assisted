@@ -379,7 +379,7 @@
     }
   },
   "monster_waves": {
-    "description": "Runs a monster-battle run in waves (put it on an invisible director prop). Each wave's monsters appear on the map's outer edge (the dark band around an arena), out of the camera's view when they can, and walk in to hunt the player. Wave w brings count + count_add x (w - 1) monsters (rounded, at most max_count), each at a random level from level + level_add x (w - 1) up to level_spread more, with hp + hp_per_level x level hit points. From wave object_2_from on they are object_2 instead of object (and object_3 from object_3_from): versions that use more moves. The last wave also brings the boss. When every monster of a wave has fainted, the next wave comes after 'pause' ticks; when the last one is cleared, on_clear runs (victory). The wave number and the monsters still to defeat are kept in variables for the HUD.",
+    "description": "Runs a monster-battle run in waves (put it on an invisible director prop). Each wave's monsters appear on the map's outer edge (the dark band around an arena), out of the camera's view when they can, and walk in to hunt the player. Wave w brings count + count_add x (w - 1) monsters (rounded, at most max_count), each at a random level from level + level_add x (w - 1) up to level_spread more, with hp + hp_per_level x level hit points. From wave object_2_from on they are object_2 instead of object (and object_3 from object_3_from): versions that use more moves. The last wave also brings the boss, first. With max_alive, only that many are out at once and the rest of the wave walks in as others faint. When every monster of a wave has fainted, the next wave comes after 'pause' ticks; when the last one is cleared, on_clear runs (victory). The wave number and the monsters still to defeat are kept in variables for the HUD.",
     "params": {
       "waves":         {"type": "int", "default": 10, "description": "How many waves the run has."},
       "object":        {"type": "node:actor", "required": true, "description": "The wave monster (give it the monster behavior with random species and walls off, and monster_ai with hunt)."},
@@ -390,6 +390,7 @@
       "count":         {"type": "int", "default": 3, "description": "Monsters in wave 1."},
       "count_add":     {"type": "fixed", "default": 2.0, "description": "Monsters added with each wave (decimals allowed: 2.3 = 3, 5, 8, 10, 12...)."},
       "max_count":     {"type": "int", "default": 24, "description": "Never more monsters in one wave than this (the boss comes on top)."},
+      "max_alive":     {"type": "int", "default": 0, "description": "At most this many of the wave's monsters (boss included) are out at once; the rest walk in as others faint. 0 = no limit (a big wave all at once can slow the game down)."},
       "level":         {"type": "int", "default": 1, "description": "Lowest level in wave 1."},
       "level_add":     {"type": "fixed", "default": 1.0, "description": "How much the lowest level rises with each wave."},
       "level_spread":  {"type": "int", "default": 2, "description": "Each monster's level is the wave's lowest level plus 0 up to this, at random."},

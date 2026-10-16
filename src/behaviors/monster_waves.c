@@ -3,9 +3,10 @@
 // hunt the player. Wave w brings count + count_add x (w - 1) of them (at most max_count), each at
 // a random level from level + level_add x (w - 1) to that + level_spread, with hp + hp_per_level x
 // level hit points; later waves can bring other versions of the monster (object_2, object_3: more
-// moves). The last wave also brings the boss. When a wave's last monster has fainted the next one
-// comes after `pause` ticks; after the last wave, on_clear runs. At most SPAWN_PER_TICK appear per
-// tick, so a big wave never stalls a frame.
+// moves). The last wave also brings the boss, first. With max_alive, at most that many are out at
+// once (25 hunting monsters cost more than a frame) and the rest walk in as others faint. When a
+// wave's last monster has fainted the next one comes after `pause` ticks; after the last wave,
+// on_clear runs. At most SPAWN_PER_TICK appear per tick, so a big wave never stalls a frame.
 #include "monster_waves.h"
 #include "monster.h"
 #include "behavior_params.h"
@@ -110,20 +111,21 @@ void bhv_monster_waves_update(Actor *a, const void *params) {
     case PH_SPAWN: {
         int w = (int)st[ST_WAVE], lo = wave_level(p, w);
         for (int k = 0; k < SPAWN_PER_TICK && (st[ST_PENDING] || st[ST_BOSS]); k++) {
+            if (p->max_alive > 0 && alive(p) >= p->max_alive) break;   // the rest wait for room
             s32 x, y;
             edge_point(&x, &y);
-            if (st[ST_PENDING]) {
-                Actor *m = scene_spawn(wave_object(p, w), x, y);
-                if (!m) break;                      // the pool is full: try again next tick
-                int lv = rng_range(lo, lo + p->level_spread);
-                monster_set_level(m, lv, p->hp + p->hp_per_level * lv);
-                st[ST_PENDING]--;
-            } else {
+            if (st[ST_BOSS]) {                      // the boss leads the last wave in
                 Actor *m = scene_spawn(p->boss, x, y);
-                if (!m) break;
+                if (!m) break;                      // the pool is full: try again next tick
                 monster_set_level(m, p->boss_level, p->boss_hp);
                 st[ST_BOSS] = 0;
                 run(&p->on_boss, a);
+            } else {
+                Actor *m = scene_spawn(wave_object(p, w), x, y);
+                if (!m) break;
+                int lv = rng_range(lo, lo + p->level_spread);
+                monster_set_level(m, lv, p->hp + p->hp_per_level * lv);
+                st[ST_PENDING]--;
             }
         }
         if (!st[ST_PENDING] && !st[ST_BOSS]) st[ST_PHASE] = PH_FIGHT;

@@ -126,6 +126,7 @@ Build details (owned by `tools/build.py`, no Makefile, no MSYS shell, so it work
 ├── tools/
 │   ├── validate.py  codegen.py  bundle.py  build.py  run.py
 │   ├── common.py            ← shared: node-type registry, loading, text layout (wrap, boxes)
+│   ├── emutest.py           ← AI only: build a test ROM, play it hidden in mGBA under gdb, catch crashes / hangs (NEW_GAME.md §5)
 │   └── config.json          ← local paths (devkitPro, emulator)
 ├── visualizer/
 │   ├── visualizer.html      ← single file: HTML + CSS + JS inline, no dependencies
@@ -675,7 +676,8 @@ Every channel in a pattern has the same number of rows. Missing channels are sil
   `max_hostile` others are hostile it walks up and waits `sight` tiles from the player for its turn),
   `monster_waves` (a wave director: each wave's monsters appear on the map's outer edge out of view and
   hunt the player; count, levels and HP grow by formula per wave, later waves bring other versions of
-  the monster (more moves), the last one a boss; `on_wave` / `on_boss` run as the player, `on_clear` when
+  the monster (more moves), the last one a boss (it comes first); `max_alive` caps how many are out at
+  once, the rest walk in as others faint; `on_wave` / `on_boss` run as the player, `on_clear` when
   all are cleared), `move_buttons` (the player's 3 moves on A, B and R, one press each, with charge
   gauges, a locked-move buzz and a miss sound when a move reaches no one; `charge_var` = a recharge boost),
   `species_select` (the picker's bobbing portrait, Left / Right; species past `unlocked_var` show as a
@@ -786,9 +788,10 @@ frames.
 - Move hot code to IWRAM (ARM mode) only when a measured slowdown requires it: rename the file
   `*.iwram.c` (done for actor, physics, anim, sprites and the `swarm`, `projectile` and `health`
   behaviors after profiling hordes of 60+ monsters). IWRAM is 32 KB shared with the `*.iwram.c` code,
-  **every plain `static` variable** and the stack (~27.5 KB used, ~4.4 KB stack); keep it lean. The
-  linker doesn't count the stack: `build.py` fails when less than 2 KB is left. Pools that aren't hot
-  go in EWRAM (`EWRAM_BSS`).
+  **every plain `static` variable** and the stack (~29.5 KB used, ~2.2 KB left for the stack, of which
+  the busiest scene, wave 10 of the waves mode, uses ~0.8 KB); keep it lean. The linker doesn't count
+  the stack: `build.py` fails when less than 2 KB is left. Pools that aren't hot go in EWRAM
+  (`EWRAM_BSS`).
 - Thumb code (everything not `*.iwram.c`) has no fast divide or 64-bit multiply: in code that
   runs per actor per tick avoid `/`, `%` by a variable and `fx_mul`, or move it to IWRAM.
 - Big pools live in EWRAM (`EWRAM_BSS`, not zeroed at boot: clear them yourself).

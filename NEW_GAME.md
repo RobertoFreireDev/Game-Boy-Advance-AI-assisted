@@ -182,10 +182,36 @@ skips ahead).
 
 ### Headless play-test / profiling harness
 
-Build it in the **session scratchpad**, never in the repo (it is not committed):
+The test itself (scripted input, patches, checks) lives in the **session scratchpad**, never in
+the repo. Building and running it go through **`tools/emutest.py`** (in the repo, game-agnostic,
+stdlib only), never a hand-rolled `Popen` + `sleep`: `build_test_rom(out, input_c, patches)` then
+`run(elf, gba, script_lines, out, done=...)`. `python tools/emutest.py selftest` proves its checks
+work (~1 minute). It turns every way a run goes wrong into an `EmuError` within seconds, instead of
+a test that waits forever while a paused emulator sits on the menu:
 
-1. **Test ROM**: compile all sources with `-g` (`*.iwram.c` with `build.py`'s `IWRAM_FLAGS`),
-   with two test changes:
+| kind | what happened |
+|---|---|
+| `start` | mGBA didn't open the GDB port, gdb couldn't connect, a patch anchor is missing, the build failed |
+| `crash` | the game crashed: mGBA's "The game has crashed" box, or `Jumped to invalid address` in its log |
+| `signal` | the CPU hit an illegal instruction (SIGILL): registers and a backtrace come with it |
+| `gdb` | a gdb command failed (unknown symbol, bad format): the rest of the script never ran |
+| `exit` | mGBA or gdb quit on its own |
+| `stall` | no output for `stall` s (a hang): a second gdb attaches and prints where the CPU is looping |
+| `stuck` | the game sat on one non-level scene (menu, title, game over) for `stuck_frames` frames: the test's input never got past it (a locked entry, a press on the wrong frame). Needs `SCENE_PRINT` |
+| `stack` | the stack came within 128 bytes of the IWRAM variables. Needs `STACK_PRINT` and the input calling `emutest_stack_paint()` on frame 1 and `emutest_stack_check()` each frame |
+| `timeout` | the whole run took longer than `timeout` s |
+
+The emulator runs hidden for the whole run (a test window paused by gdb looks like a frozen game
+to the human, and mGBA's crash box would pop up on their screen) and dies with the Python process
+(a Windows job object), so an interrupted test never leaves an emulator behind. It takes the
+machine-wide lock (`%TEMP%\gba-gdb-2345.lock`, stale when its owner pid is gone) and kills a test
+emulator a dead harness left on port 2345. mGBA's own log goes to `<out>/mgba.log`; run() prints a
+summary of its warnings (bad memory reads, illegal opcodes) at the end. `NULL_CHECK` as
+`extra_cflags` makes every NULL pointer read stop the game with a backtrace.
+
+1. **Test ROM** (`build_test_rom`): all sources with `-g` (`*.iwram.c` with `build.py`'s
+   `IWRAM_FLAGS`), after validate + codegen of the tree it builds (a `git archive` snapshot works
+   too, for old-vs-new replays), with two test changes:
    - `src/engine/input.c` → a scripted-input version: auto-plays (walks long lines in 8
      directions, taps A in menus), counts lag frames with cascaded timers TM2/TM3, and calls an
      empty `test_checkpoint()` every 600 frames. Give it knobs gdb can set at a checkpoint:
@@ -200,14 +226,26 @@ Build it in the **session scratchpad**, never in the repo (it is not committed):
    - Per-call timers cost ~100 cycles each (hundreds per frame in a horde): keep a "light" mode
      with only the per-phase counters for the real numbers.
    Alternatively change a *copy* of `nodes/` (start scene, player position) and build the copy.
-2. **Run**: `mGBA.exe -g test.gba`, then `arm-none-eabi-gdb -batch -x cmds.gdb test.elf`
-   (`target remote :2345`). In `cmds.gdb`: `break test_checkpoint`; at each hit
-   `dump binary memory` VRAM / palette / OAM / IO, print stats (lag, cycle counters, actor count),
-   `set var` to warp the clock or give items, `continue`.
+2. **Run** (`run`): mGBA `-g`, then `arm-none-eabi-gdb -batch` with your script lines (run() adds
+   `target remote :2345` before them and a crash report after them). In them: `break
+   test_checkpoint`; at each hit `dump binary memory` VRAM / palette / OAM / IO, print stats (lag,
+   cycle counters, actor count), `SCENE_PRINT`, `STACK_PRINT`, `set var` to warp the clock or give
+   items, `continue`; the last line is `continue`. `done(line, log)` says when the test has what it
+   needs.
 3. **Render**: a Python script turns the dumps into a PNG (mode-0 BG layers + sprites). BG
    scroll registers are write-only, so read scroll from `bg.c`'s `s_layers` instead.
 
 Pitfalls:
+- **The test's own variables take the stack's room.** Plain statics of the test input live in
+  IWRAM, between the game's variables and the stack. A waves-mode test ROM kept 1.5 KB of arrays
+  there, had 756 bytes of stack left, and crashed in wave 10 (which needs 776): it looked like a game
+  crash, but the game itself has 2.2 KB of room. Put big test arrays in `EWRAM_BSS` (cleared on frame
+  1); `build_test_rom` fails below 1 KB of room and notes when the test ROM has less than the game.
+- Before blaming the game for an `EmuError`, read its kind and the backtrace: a `gdb` or `stuck`
+  error is the test's own fault; a `crash` in a test ROM with less stack room than the game may be too.
+- mGBA's log level words are in the system's language (`[ERRO DO JOGO]`, `[AVISAR]` here), the
+  messages in English. `Bad BIOS Load8` of 0x0-0x3 is gdb reading the PC as it attaches (run()
+  leaves those out); a NULL read by the game shows up as a backtrace in a `NULL_CHECK` build.
 - `set var` on initialized `.data` **before crt0 runs** gets overwritten — change test knobs at
   a checkpoint, not at the start. That includes the checkpoint interval itself: start every 30
   frames and set the real interval at checkpoint 1.
@@ -260,6 +298,15 @@ Monster Survival (25 solid top-down monsters that block each other, measured): n
 under the fade. Solid actors made physics the hog (~200k cycles: every mover tested every solid
 in slow EWRAM, twice); now the solids' hitboxes are cached in IWRAM once per frame (updated as
 each one moves) and checked first, and a body standing still skips movement entirely (~50k).
+
+Monster Survival's waves mode (wave 10: 24 hunting monsters + a boss, all with 3 moves, measured
+2026-10-16): 25 monsters cost ~210k cycles before anyone attacks (AI ~70k, physics ~55k, sprites
+~35k); one wild move use adds 40-120k (its effect is planned particle by particle along each
+flight, and a boss may try moves 3 and 2 before 1), and the HUD redraw after a hit ~34k: 20 frames
+of a 70 s wave went over budget. Fixed with at most 16 out at once (`monster_waves` `max_alive`, the
+rest walk in as others faint), waiting hunters that think every 4th frame with one attack per
+frame, and a HUD that lists its fast-changing elements last (it redraws from the first changed one
+on). Now: worst frame 90-108 % over the 9 species, 0-2 frames over budget per wave 10.
 
 If a new game pushes past this (more actors, bullets, particles), measure with the harness
 (§5) before optimizing, and record the result in the commit message and here.
