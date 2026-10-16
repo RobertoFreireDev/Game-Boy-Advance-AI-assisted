@@ -47,6 +47,7 @@ typedef struct {
 } Monster;
 
 EWRAM_BSS static Monster s_mon[MAX_ACTORS];
+static u32 s_skip_types;        // random species leave out these types (bit = TYPE_*): a wave director's early waves
 
 static const Params_monster *params_of(const Actor *a) {
     if (!a) return NULL;
@@ -88,6 +89,10 @@ void monster_set_level(Actor *a, int level, int hp) {
     if (!m) return;
     m->level = (u8)(level < 1 ? 1 : level > 99 ? 99 : level);
     m->hp = m->hp_max = (s16)(hp < 1 ? 1 : hp > 9999 ? 9999 : hp);
+}
+
+void monster_skip_types(u32 types) {
+    s_skip_types = types;
 }
 
 int monster_power(const Actor *a, int power) {
@@ -487,10 +492,19 @@ static const SpeciesData *pick_species(const Params_monster *p) {
         s32 i = vars_get(p->species_var);
         return i >= 0 && i < n ? b->species[i] : b->species[0];
     }
-    if (p->random) {
-        int k = rng_range(0, (avoid >= 0 && avoid < n ? n - 2 : n - 1));
-        if (avoid >= 0 && k >= avoid) k++;
-        return b->species[k];
+    if (p->random) {                    // any species but the avoided one and the skipped types
+        u32 skip = s_skip_types;
+        int count = 0;
+        for (int i = 0; i < n; i++)
+            if (i != avoid && !((skip >> b->species[i]->type) & 1)) count++;
+        if (!count) {                   // the skipped types would leave none: allow them again
+            skip = 0;
+            count = avoid >= 0 && avoid < n ? n - 1 : n;
+            if (!count) return b->species[0];
+        }
+        int k = rng_range(0, count - 1);
+        for (int i = 0; i < n; i++)
+            if (i != avoid && !((skip >> b->species[i]->type) & 1) && k-- == 0) return b->species[i];
     }
     if (avoid >= 0 && avoid < n && b->species[avoid] == p->species) return NULL;   // the player's kind
     return p->species;
@@ -509,6 +523,14 @@ void bhv_monster_init(Actor *a, const void *params) {
     m->team = a->type == NT_PLAYER ? TEAM_PLAYER : TEAM_WILD;
     m->level = (u8)(p->level_var >= 0 ? vars_get(p->level_var) : p->level);
     m->hp = m->hp_max = (s16)p->hp;
+    // The player's monster at the start of a run (its max HP still the starting value): the
+    // species' extra starting hit points, on the max and the HP alike.
+    if (sp->hp_bonus && p->hp_var >= 0 && p->hp_max_var >= 0
+        && vars_get(p->hp_max_var) == g_var_initial[p->hp_max_var]) {
+        s32 add = (vars_get(p->hp_max_var) * sp->hp_bonus + 50) / 100;
+        vars_add(p->hp_max_var, add);
+        vars_add(p->hp_var, add);
+    }
     m->power = (u16)p->power;
     // At home (the world's type is its own): faster, quicker to recharge (and harder hitting, in monster_power).
     m->home = p->home_var >= 0 && vars_get(p->home_var) == sp->type;

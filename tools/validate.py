@@ -49,7 +49,7 @@ TYPE_FIELDS = {
     "menu": {"font", "title", "options", "upgrades", "cursor", "layout", "on_cancel", "box", "sounds", "texts"},
     "dialog": {"font", "box", "lines", "choices", "on_end", "ticks_per_char"},
     "upgrade": {"category", "title", "icon", "var", "max_level", "descriptions", "requires", "replaces", "on_pick"},
-    "species": {"title", "monster_type", "speed", "body", "alpha_palette", "portrait", "cry", "moves"},
+    "species": {"title", "monster_type", "speed", "hp_bonus", "body", "alpha_palette", "portrait", "cry", "moves"},
     "move": {"title", "monster_type", "shape", "range", "power", "accuracy", "charge", "status", "dash", "zone", "buff",
              "push", "effect", "effect_at", "travel", "sfx", "on_use"},
 }
@@ -207,6 +207,12 @@ class Ctx:
         elif ptype == "text":
             if not isinstance(v, str) or not v or not all(32 <= ord(ch) < 127 for ch in v):
                 self.err("'%s' must be plain text (letters, digits, punctuation)" % label)
+        elif ptype == "types":
+            types = battle_types(self.p)
+            if not isinstance(v, list) or not all(t in types for t in v):
+                self.err("'%s' must be a list of monster types from game.battle.types (%s)" % (label, ", ".join(types)))
+            elif len(set(v)) != len(v):
+                self.err("'%s' lists a type twice" % label)
         elif ptype == "button":
             if v not in C.BUTTONS:
                 self.err("'%s' must be one of %s" % (label, ", ".join(C.BUTTONS)))
@@ -1537,6 +1543,7 @@ def V_species(c):
     if n.get("monster_type") not in battle_types(c.p):
         c.err("'monster_type' must be one of game.battle.types (%s)" % ", ".join(battle_types(c.p)))
     c.get(n, "speed", "int", required=False, lo=C.SPECIES_SPEED[0], hi=C.SPECIES_SPEED[1])
+    c.get(n, "hp_bonus", "int", required=False, lo=0, hi=100)
     body = c.ref(n.get("body"), ["body"], "body")
     if body:
         if c.p.nodes[body].get("physics", {}).get("gravity"):

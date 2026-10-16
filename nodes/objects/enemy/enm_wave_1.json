@@ -3,7 +3,7 @@
   "kind": "object",
   "type": "enemy",
   "name": "Wave monster (move 1)",
-  "notes": "A monster of the waves mode, brought in by the wave director (prop_waves) from wave 1 on up to wave 3: a random species (never the player's own), its level and HP set by its wave. It appears in the dark band around the arena (it walks through the solid edge that holds the player in) and hunts the player anywhere: at most 3 monsters are hostile at once (counting every wave monster), the rest walk up and wait about 5 tiles away until one faints, then the next closes in. It attacks every 5 s with its move 1, keeps 1 tile of room from the others, blinks red 3 times when hit, shows its level when it comes into view, gives 8 XP when it faints and is at home in its own type's world (+10% power and speed, -10% recharge), like every wild monster.",
+  "notes": "A monster of the waves mode, brought in by the wave director (prop_waves) from wave 1 on up to wave 3: a random species (never the player's own, and never Voltail, Pebbulk or Sproutle: the director keeps the long-range Electric, Rock and Grass types out of waves 1-3), its level and HP set by its wave. It appears in the dark band around the arena (it walks through the solid edge that holds the player in) and hunts the player anywhere: at most 3 monsters are hostile at once (counting every wave monster), the rest walk up and wait about 5 tiles away until one faints, then the next closes in. It attacks every 5 s with its move 1, keeps 1 tile of room from the others, blinks red 3 times when hit, shows its level when it comes into view, gives 8 XP when it faints and is at home in its own type's world (+10% power and speed, -10% recharge), like every wild monster.",
   "logic": [
     {
       "behavior": "monster",

@@ -835,6 +835,7 @@ function valueNode(type, v, sep) {
   if (type.startsWith("node:") || (typeof v === "string" && IDX[v])) return v ? nodeLink(v) : h("span", { class: "small" }, "(none)");
   if (type === "actions") return actionList(v);
   if (type === "var") return h("b", {}, v || "(none)");
+  if (type === "types") return (v || []).length ? h("b", {}, v.map(t => t.toUpperCase()).join(", ")) : h("span", { class: "small" }, "(none)");
   if (type === "points") return h("span", { class: "mono" }, (v || []).map(p => `(${p[0]}, ${p[1]})`).join(sep || " → "));
   if (typeof v === "boolean") return h("b", {}, v ? "yes" : "no");
   if (typeof v === "string" && /^#[0-9a-f]{6}$/i.test(v)) return h("span", {}, h("span", { class: "sw", style: "background:" + rgbCss(q15(v)) }), v);
@@ -1423,7 +1424,9 @@ PREVIEW.species = (id, n) => {
       h("div", { class: "frame" }, pc, h("div", { class: "cap" }, "menu portrait")),
       h("div", {}, tabs, h("div", { class: "toolbar" }, playButtons(), toggle("Alpha colors", st, "alpha", () => {}), toggle("Face left", st, "left", () => {}), toggle("Hitbox", st, "hitbox", () => {})),
         h("div", { class: "stage" }, bodyStage(n.body, () => slot, { state: st, facingLeft: () => st.left, pal: () => st.alpha ? n.alpha_palette : null })),
-        h("div", { class: "small" }, "In the world (body ", nodeLink(n.body), "). 'Alpha colors' shows how it looks as the Alpha.")))));
+        h("div", { class: "small" }, "In the world (body ", nodeLink(n.body), "). 'Alpha colors' shows how it looks as the Alpha."),
+        n.hp_bonus ? h("div", { class: "small" }, h("b", {}, `+${n.hp_bonus}% starting HP`),
+          " when the player plays it: added to the player's starting max HP and HP at the start of every run (wild ones are not affected).") : null))));
   out.push(compassCard(n.body, () => st.alpha ? n.alpha_palette : null));
   out.push(card("Moves", (n.moves || []).map((m, i) => {
     const mv = NODES[m] || {};

@@ -219,6 +219,9 @@ class Gen:
             return str(pdef["options"].index(v))
         if ptype in ("string", "text"):
             return cstr(v) if v else "NULL"
+        if ptype == "types":
+            names = self.p.game["battle"]["types"] if v else []
+            return "0x%X" % sum(1 << names.index(t) for t in set(v or []))
         if ptype == "actions":
             return self.actions(v or [], base)
         if ptype == "points":
@@ -601,8 +604,8 @@ class Gen:
 
     def E_species(self, nid, n):
         speed = (n.get("speed", 100) * 256 + 50) // 100        # percent -> x/256
-        self.emit("const SpeciesData node_%s = { %s, %s, 0, %d, %s, %s, %s, %s, { %s } };" % (
-            nid, cstr(n["title"]), self.type_enum(n["monster_type"]), speed, self.ptr(n["body"]), self.ptr(n.get("alpha_palette")),
+        self.emit("const SpeciesData node_%s = { %s, %s, %d, %d, %s, %s, %s, %s, { %s } };" % (
+            nid, cstr(n["title"]), self.type_enum(n["monster_type"]), n.get("hp_bonus", 0), speed, self.ptr(n["body"]), self.ptr(n.get("alpha_palette")),
             self.ptr(n.get("portrait")), self.ptr(n.get("cry")), ", ".join(self.ptr(m) for m in n["moves"])))
 
     def battle(self):
@@ -707,7 +710,7 @@ PARAM_NODE_PTR = {"dialog": "DialogData", "particle": "ParticleData", "sfx": "Sf
 
 C_TYPES = {"int": "s32", "fixed": "fixed", "bool": "u8", "ticks": "s32", "button": "u16",
            "var": "s16", "actions": "ActionList", "points": "PointList", "choice": "u8",
-           "string": "const char *", "text": "const char *"}
+           "string": "const char *", "text": "const char *", "types": "u32"}
 
 STRUCT_OF = {"palette": "PaletteData", "sprite": "SpriteData", "tileset": "TilesetData",
              "tilemap": "TilemapData", "font": "FontData", "icon": "IconData", "sfx": "SfxData",

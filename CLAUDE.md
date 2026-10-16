@@ -273,7 +273,7 @@ Structural rules (enforced by `validate.py`):
 | **Progression** | | | | |
 | `upgrade` | `upg_` | One card of the level-up menu: a weapon, a passive item, an evolution or a bonus filler. | `category`, `title`, `icon`, `var`, `max_level`, `descriptions[]`, `requires[]`, `replaces`, `on_pick[]` | `icon` |
 | **Monster battles** | | | | |
-| `species` | `mon_` | A kind of monster: its look, type and 3 moves. Actors with the `monster` behavior take their body from it. | `title`, `monster_type`, `speed`, `body`, `alpha_palette`, `portrait`, `cry`, `moves[3]` | `body`, `sprite`, `sfx`, `move`, `palette` |
+| `species` | `mon_` | A kind of monster: its look, type and 3 moves. Actors with the `monster` behavior take their body from it. | `title`, `monster_type`, `speed`, `hp_bonus`, `body`, `alpha_palette`, `portrait`, `cry`, `moves[3]` | `body`, `sprite`, `sfx`, `move`, `palette` |
 | `move` | `mov_` | One move a monster uses: what it hits, how hard, how often, what status and effect. | `title`, `monster_type`, `shape`, `range`, `power`, `accuracy`, `charge`, `status`, `dash`, `zone`, `buff`, `push`, `effect`, `effect_at`, `travel`, `sfx`, `on_use[]` | `particle`, `animation`, `sprite`, `sfx` |
 
 Actor types (`player` … `pickup`) share one structure; the type gives sensible defaults and
@@ -373,8 +373,10 @@ groups them for humans. **What an actor does comes only from its `logic` list.**
 - **species**: `title` ≤ 10 chars, `monster_type` one of `game.battle.types`, `speed` (10-200, default
   100: percent of the walker's own speed, the player's `topdown_controller` `speed` or a wild monster's
   `monster_ai` `speed` / `chase_speed`; the farther its move 1 reaches, the slower it walks, and the
-  validator warns when a species reaches farther than another yet walks faster), `body` (its look in the
-  world), `alpha_palette` (the same color slots recolored: the Alpha boss), `portrait` (a sprite for
+  validator warns when a species reaches farther than another yet walks faster), `hp_bonus` (0-100, default 0:
+  percent more starting HP when it is the player's monster, added to its `hp_max_var` and `hp_var` when it
+  appears while the max still holds its starting value, i.e. at the start of a run; wild ones don't get it),
+  `body` (its look in the world), `alpha_palette` (the same color slots recolored: the Alpha boss), `portrait` (a sprite for
   the picker), `cry` (sfx), exactly 3 `moves` (A, B, R). Its number for `species_var` and
   `{var.name}` is its order among the species in nodes.json, from 0.
 - **move**: `title` ≤ 13 chars, `monster_type`, `power` (0 = status only), `accuracy` % (a miss shows
@@ -614,7 +616,8 @@ Every channel in a pattern has the same number of rows. Missing channels are sil
 - Objects enable behaviors in `logic[]`; scenes can override params per instance.
 - Interface: `init(actor, params)`, `update(actor, params)`, optional `on_touch(actor, other, params)`.
 - Param types: `int`, `fixed`, `bool`, `ticks`, `button`, `var`, `node:<type>` (`node:actor` = any actor
-  type), `actions`, `points`, `choice` (one of `options`), `string`. Each param has a `default` or
+  type), `actions`, `points`, `choice` (one of `options`), `string`, `types` (a list of `game.battle.types` names,
+  a bitmask in C). Each param has a `default` or
   `required: true`.
 - A logic list may use the same behavior more than once (several `weapon`s, several `spawn_wave`s);
   a scene instance cannot override a behavior its object lists more than once.
@@ -676,7 +679,8 @@ Every channel in a pattern has the same number of rows. Missing channels are sil
   `max_hostile` others are hostile it walks up and waits `sight` tiles from the player for its turn),
   `monster_waves` (a wave director: each wave's monsters appear on the map's outer edge out of view and
   hunt the player; count, levels and HP grow by formula per wave, later waves bring other versions of
-  the monster (more moves), the last one a boss (it comes first); `max_alive` caps how many are out at
+  the monster (more moves), the last one a boss (it comes first); the first `early_waves` waves leave out
+  the `early_skip` types (long-range attackers held back for the start); `max_alive` caps how many are out at
   once, the rest walk in as others faint; `on_wave` / `on_boss` run as the player, `on_clear` when
   all are cleared), `move_buttons` (the player's 3 moves on A, B and R, one press each, with charge
   gauges, a locked-move buzz and a miss sound when a move reaches no one; `charge_var` = a recharge boost),

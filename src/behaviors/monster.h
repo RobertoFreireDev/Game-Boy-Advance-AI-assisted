@@ -34,6 +34,9 @@ int monster_team(const Actor *a);
 int monster_level(const Actor *a);
 // Give a wild monster that just appeared its level and hit points (a wave director's scaling).
 void monster_set_level(Actor *a, int level, int hp);
+// Monsters that pick a random species from now on leave out these types (bit TYPE_* set; 0 = none),
+// unless that leaves none to pick: a wave director's early waves.
+void monster_skip_types(u32 types);
 // Damage percent of one of its moves: `power` (0 = its own: 100, Alpha 150, plus its power_var
 // boost), + home_power % in its home world.
 int monster_power(const Actor *a, int power);
