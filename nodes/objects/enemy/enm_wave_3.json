@@ -3,7 +3,7 @@
   "kind": "object",
   "type": "enemy",
   "name": "Wave monster (all 3 moves)",
-  "notes": "A monster of the waves mode, brought in by the wave director (prop_waves) from wave 7 on to the end: a random species (never the player's own), its level and HP set by its wave. It appears in the dark band around the arena (it walks through the solid edge that holds the player in) and hunts the player anywhere: at most 5 monsters are hostile at once (counting every wave monster), the rest walk up and wait about 5 tiles away until one faints, then the next closes in. It attacks every 5 s with its move 1; its moves 2 and 3 recharge in twice the player's time, starting when it appears (so only the ones that wait long have move 3 ready), keeps 1 tile of room from the others, blinks red 3 times when hit, shows its level when it comes into view, gives 8 XP when it faints and is at home in its own type's world (+10% power and speed, -10% recharge), like every wild monster.",
+  "notes": "A monster of the waves mode, brought in by the wave director (prop_waves) from wave 7 on to the end: a random species (never the player's own), its level and HP set by its wave. It appears in the dark band around the arena (it walks through the solid edge that holds the player in) and hunts the player anywhere: at most 5 monsters are hostile at once (counting every wave monster), the rest walk up and wait about 5 tiles away until one faints, then the next closes in. It attacks every 5 s with its move 1; its moves 2 and 3 recharge in twice the player's time, starting when it appears (so only the ones that wait long have move 3 ready), keeps 1 tile of room from the others, blinks red 3 times when hit, shows its level when it comes into view, gives 8 XP when it faints and is at home in its own type's world (+10% power and speed, -10% recharge), like every wild monster. When it faints it has a 25% chance to drop one of the classic run's 5 floor items, picked at random (Swift Feather, Power Gem, Aim Charm, Mist Orb or Quick Hourglass: the item_waves_* pickups), at most 3 of each per run: a faint that rolls an item already dropped 3 times drops nothing. The item lands at its feet, or on the nearest lit floor when it fainted in the dark edge; only the player can pick it up.",
   "logic": [
     {
       "behavior": "monster",
@@ -23,7 +23,96 @@
         "level_tag_palette": "pal_txt_cyan",
         "xp_reward": 8,
         "kills_var": "kills",
-        "walls": false
+        "walls": false,
+        "on_death": [
+          {
+            "do": "if_chance",
+            "percent": 25,
+            "then": [
+              {
+                "do": "random_var",
+                "var": "drop_kind",
+                "min": 0,
+                "max": 4
+              },
+              {
+                "do": "if_var",
+                "var": "drops",
+                "index": "drop_kind",
+                "op": "<",
+                "value": 3,
+                "then": [
+                  {
+                    "do": "add_var",
+                    "var": "drops",
+                    "index": "drop_kind",
+                    "value": 1
+                  },
+                  {
+                    "do": "if_var",
+                    "var": "drop_kind",
+                    "op": "==",
+                    "value": 0,
+                    "then": [
+                      {
+                        "do": "spawn",
+                        "object": "item_waves_swift_feather"
+                      }
+                    ]
+                  },
+                  {
+                    "do": "if_var",
+                    "var": "drop_kind",
+                    "op": "==",
+                    "value": 1,
+                    "then": [
+                      {
+                        "do": "spawn",
+                        "object": "item_waves_power_gem"
+                      }
+                    ]
+                  },
+                  {
+                    "do": "if_var",
+                    "var": "drop_kind",
+                    "op": "==",
+                    "value": 2,
+                    "then": [
+                      {
+                        "do": "spawn",
+                        "object": "item_waves_aim_charm"
+                      }
+                    ]
+                  },
+                  {
+                    "do": "if_var",
+                    "var": "drop_kind",
+                    "op": "==",
+                    "value": 3,
+                    "then": [
+                      {
+                        "do": "spawn",
+                        "object": "item_waves_mist_orb"
+                      }
+                    ]
+                  },
+                  {
+                    "do": "if_var",
+                    "var": "drop_kind",
+                    "op": "==",
+                    "value": 4,
+                    "then": [
+                      {
+                        "do": "spawn",
+                        "object": "item_waves_quick_hourglass"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
       }
     },
     {

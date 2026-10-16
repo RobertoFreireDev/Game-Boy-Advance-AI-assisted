@@ -402,6 +402,8 @@ Five items lie on the ground, one of each kind. Each run every item is at a rand
 
 The items share the move effects' palette, drawn like the monsters (dark outline, lit from the top-left), and bob over a small shadow with a twinkle so they stand out on the grass.
 
+**Waves mode drops:** the waves mode has no items on the ground at the start. Instead, every wave monster that faints (the boss too) has a **25% chance to drop one of these 5 items**, picked at random, with the same look, words and boost as above. Each item drops **at most 3 times per run**: a faint that rolls an item already dropped 3 times drops nothing, so drops get rarer late in the run. The item appears at the monster's feet; a monster that fainted in the arena's dark edge (where the player can't walk) leaves it on the nearest spot of lit floor instead. Only the player can pick it up, and it stays until picked up or the run ends. Its boost adds to the level-up card of the same kind (e.g. a Power Gem card and a dropped Power Gem make +20% damage).
+
 ---
 
 ## 8. Map

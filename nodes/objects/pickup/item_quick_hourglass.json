@@ -63,8 +63,5 @@
   ],
   "sounds": {
     "collect": "sfx_item"
-  },
-  "children": [
-    "body_item_quick_hourglass"
-  ]
+  }
 }

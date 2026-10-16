@@ -124,6 +124,12 @@
       "spots":       {"type": "points", "required": true, "description": "The other places it may appear, as [x, y] scene pixels (where its origin goes: an item's feet), up to 32."}
     }
   },
+  "free_spot": {
+    "description": "When it appears with its hitbox on a solid tile, it moves to the nearest spot where its whole hitbox is inside the map and clear of solid tiles, so the player can reach it: an item a monster drops while walking in over an arena's dark edge lands on the floor at the edge instead. Where it appears clear, it stays. Put it first in the logic list.",
+    "params": {
+      "reach":       {"type": "int", "default": 64, "description": "Farthest it may move, in pixels (8-128). With no clear spot that close, it stays where it appeared."}
+    }
+  },
   "trigger_zone": {
     "description": "Runs actions when the player walks into (or out of) its zone.",
     "params": {

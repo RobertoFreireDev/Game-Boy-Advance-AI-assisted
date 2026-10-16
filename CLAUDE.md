@@ -667,7 +667,9 @@ Every channel in a pattern has the same number of rows. Missing channels are sil
   `follow_path`, `solid_platform`, `health`, `damage_on_touch`, `stompable`, `collectible` (`as_player`:
   its `on_collect` runs as the player, so `float_text` pops over the player), `random_spot` (appears at a
   random one of its spots each time: floor items; the validator checks every spot is in the map and off
-  solid and hazard tiles, and warns when one is under an `over` layer),
+  solid and hazard tiles, and warns when one is under an `over` layer), `free_spot` (appearing with its
+  hitbox on a solid tile, it moves to the nearest spot inside the map clear of solid tiles: a monster's drop
+  in an arena's dark edge lands on the floor),
   `trigger_zone`, `talk`, `camera_target`, `spawn_particles`, `button_actions` (a button press runs
   actions, e.g. START opens a pause menu). Top-down set: `sword_attack`,
   `wander`, `locked_door`. Survivors set: `weapon` (auto-fire, level from a variable), `projectile`

@@ -115,10 +115,13 @@ def node_numbers(prefix="NODE_", repo=None):
     text = open(os.path.join(repo or C.ROOT, "generated", "node_ids.h"), encoding="utf-8").read()
     out = {}
     for block in re.findall(r"enum \{(.*?)\};", text, re.S):
-        names = re.findall(r"^\s*(\w+),?", block, re.M)
-        for k, n in enumerate(names):
+        k = 0
+        for n, v in re.findall(r"^\s*(\w+)(?:\s*=\s*(-?\d+))?,?", block, re.M):
+            if v:                       # an explicit number (a list variable's slots come before the next)
+                k = int(v)
             if n.startswith(prefix):
                 out[n] = k
+            k += 1
     return out
 
 

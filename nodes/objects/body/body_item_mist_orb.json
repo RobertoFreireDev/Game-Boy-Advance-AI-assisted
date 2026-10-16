@@ -3,7 +3,7 @@
   "kind": "object",
   "type": "body",
   "name": "Mist Orb body",
-  "notes": "How the Mist Orb looks on the ground (a purple orb with a misty swirl) and the box the player touches to pick it up. Its shadow sits on the origin. Not solid and only touches the player: monsters walk over it and never take it.",
+  "notes": "How the Mist Orb looks on the ground (a purple orb with a misty swirl) and the box the player touches to pick it up. Its shadow sits on the origin. Not solid and only touches the player: monsters walk over it and never take it. Shared by the classic run's floor item (item_mist_orb) and the waves mode's drop (item_waves_mist_orb).",
   "origin": [
     8,
     13

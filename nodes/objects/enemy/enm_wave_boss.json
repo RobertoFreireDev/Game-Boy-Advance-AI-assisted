@@ -3,7 +3,7 @@
   "kind": "object",
   "type": "enemy",
   "name": "Wave boss",
-  "notes": "The Alpha of the waves mode: it joins the last wave (wave 10) with its 24 monsters, coming in from the dark like them. A random species (never the player's), in its rare Alpha colors with a golden crown and sparkles, level 14 with 500 HP; its move 1 hits 1.5x harder and it uses all 3 of its moves like the classic Alpha (an attack every 3.3 s: move 3 when recharged, else move 2, else move 1; moves 2 and 3 recharge twice as slowly as the player's and are ready when it arrives). It is always hostile (it never waits its turn) and never gives up. When it appears it roars, the screen shakes and the boss theme starts. It gives 60 XP; the run is won when it and every other monster of the last wave have fainted.",
+  "notes": "The Alpha of the waves mode: it joins the last wave (wave 10) with its 24 monsters, coming in from the dark like them. A random species (never the player's), in its rare Alpha colors with a golden crown and sparkles, level 14 with 500 HP; its move 1 hits 1.5x harder and it uses all 3 of its moves like the classic Alpha (an attack every 3.3 s: move 3 when recharged, else move 2, else move 1; moves 2 and 3 recharge twice as slowly as the player's and are ready when it arrives). It is always hostile (it never waits its turn) and never gives up. When it appears it roars, the screen shakes and the boss theme starts. It gives 60 XP; the run is won when it and every other monster of the last wave have fainted. Like every wave monster, when it faints it has a 25% chance to drop one of the classic run's 5 floor items, picked at random (Swift Feather, Power Gem, Aim Charm, Mist Orb or Quick Hourglass: the item_waves_* pickups), at most 3 of each per run: a faint that rolls an item already dropped 3 times drops nothing. The item lands at its feet, or on the nearest lit floor when it fainted in the dark edge; only the player can pick it up.",
   "logic": [
     {
       "behavior": "monster",
@@ -28,7 +28,96 @@
         "xp_reward": 60,
         "kills_var": "kills",
         "walls": false,
-        "level": 14
+        "level": 14,
+        "on_death": [
+          {
+            "do": "if_chance",
+            "percent": 25,
+            "then": [
+              {
+                "do": "random_var",
+                "var": "drop_kind",
+                "min": 0,
+                "max": 4
+              },
+              {
+                "do": "if_var",
+                "var": "drops",
+                "index": "drop_kind",
+                "op": "<",
+                "value": 3,
+                "then": [
+                  {
+                    "do": "add_var",
+                    "var": "drops",
+                    "index": "drop_kind",
+                    "value": 1
+                  },
+                  {
+                    "do": "if_var",
+                    "var": "drop_kind",
+                    "op": "==",
+                    "value": 0,
+                    "then": [
+                      {
+                        "do": "spawn",
+                        "object": "item_waves_swift_feather"
+                      }
+                    ]
+                  },
+                  {
+                    "do": "if_var",
+                    "var": "drop_kind",
+                    "op": "==",
+                    "value": 1,
+                    "then": [
+                      {
+                        "do": "spawn",
+                        "object": "item_waves_power_gem"
+                      }
+                    ]
+                  },
+                  {
+                    "do": "if_var",
+                    "var": "drop_kind",
+                    "op": "==",
+                    "value": 2,
+                    "then": [
+                      {
+                        "do": "spawn",
+                        "object": "item_waves_aim_charm"
+                      }
+                    ]
+                  },
+                  {
+                    "do": "if_var",
+                    "var": "drop_kind",
+                    "op": "==",
+                    "value": 3,
+                    "then": [
+                      {
+                        "do": "spawn",
+                        "object": "item_waves_mist_orb"
+                      }
+                    ]
+                  },
+                  {
+                    "do": "if_var",
+                    "var": "drop_kind",
+                    "op": "==",
+                    "value": 4,
+                    "then": [
+                      {
+                        "do": "spawn",
+                        "object": "item_waves_quick_hourglass"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
       }
     },
     {

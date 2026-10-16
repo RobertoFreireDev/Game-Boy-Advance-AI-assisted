@@ -1,0 +1,32 @@
+{
+  "id": "item_waves_quick_hourglass",
+  "kind": "object",
+  "type": "pickup",
+  "name": "Quick Hourglass (waves drop)",
+  "notes": "A drop of the waves mode: the classic run's Quick Hourglass (an hourglass with cream caps and yellow sand running down), with the same look and the same boost. A wave monster that faints has a 25% chance to drop one of the 5 items, picked at random (item 4 of drop_kind; at most 3 Quick Hourglasss per run, see enm_wave_1). It appears at the monster's feet, or, when the monster fainted in the dark edge the player can't walk into, on the nearest spot of lit floor (free_spot). Only the player can pick it up (monsters walk over it): walking into it plays the item chime, floats '-10% RECHARGE' over the player and all 3 of the player's moves recharge in 10% less time for the rest of the run (boost_charge). It adds to the same variable as the Hourglass level-up card, so the two boosts add up. It stays on the floor until it is picked up or the run ends.",
+  "body": "body_item_quick_hourglass",
+  "logic": [
+    {
+      "behavior": "free_spot",
+      "params": {}
+    },
+    {
+      "behavior": "collectible",
+      "params": {
+        "var": "boost_charge",
+        "amount": 10,
+        "as_player": true,
+        "on_collect": [
+          {
+            "do": "float_text",
+            "text": "-10% RECHARGE",
+            "palette": "pal_txt_yellow"
+          }
+        ]
+      }
+    }
+  ],
+  "sounds": {
+    "collect": "sfx_item"
+  }
+}

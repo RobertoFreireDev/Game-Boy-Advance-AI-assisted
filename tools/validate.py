@@ -595,6 +595,9 @@ def scene_budget(c, insts):
             for m in re.findall(r"'do': 'open_menu', [^}]*'menu': '(\w+)'", str(prm)):
                 if p.type_of(m) == "menu":
                     add_object(m)                       # a menu it opens (a pause menu) shows in this scene
+            for s in re.findall(r"'do': 'spawn', [^}]*'object': '(\w+)'", str(prm)):
+                if s in p.nodes and s not in followed:
+                    add_object(s)                       # what its actions spawn (a monster's drop)
             for v in prm.values():                      # sprites and particles a behavior shows
                 if isinstance(v, str) and p.type_of(v) == "sprite":
                     sprites.add(v)
@@ -1026,6 +1029,11 @@ def V_actor(c):
     if mon is not None:
         check_walk_dodge(c, mon)
         check_home(c, mon)
+    for e in n.get("logic", []) or []:
+        if isinstance(e, dict) and e.get("behavior") == "free_spot":
+            reach = (e.get("params") or {}).get("reach", 64)
+            if is_int(reach) and not 8 <= reach <= 128:
+                c.err("'free_spot.reach' must be 8 to 128 pixels")
 
 
 def check_home(c, mon):

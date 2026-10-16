@@ -1,0 +1,32 @@
+{
+  "id": "item_waves_aim_charm",
+  "kind": "object",
+  "type": "pickup",
+  "name": "Aim Charm (waves drop)",
+  "notes": "A drop of the waves mode: the classic run's Aim Charm (a red and white target), with the same look and the same boost. A wave monster that faints has a 25% chance to drop one of the 5 items, picked at random (item 2 of drop_kind; at most 3 Aim Charms per run, see enm_wave_1). It appears at the monster's feet, or, when the monster fainted in the dark edge the player can't walk into, on the nearest spot of lit floor (free_spot). Only the player can pick it up (monsters walk over it): walking into it plays the item chime, floats '-5% MISS' over the player and the player's moves are 5 points more accurate for the rest of the run (boost_aim: a 95% move never misses). It adds to the same variable as the Aim Charm level-up card, so the two boosts add up. It stays on the floor until it is picked up or the run ends.",
+  "body": "body_item_aim_charm",
+  "logic": [
+    {
+      "behavior": "free_spot",
+      "params": {}
+    },
+    {
+      "behavior": "collectible",
+      "params": {
+        "var": "boost_aim",
+        "amount": 5,
+        "as_player": true,
+        "on_collect": [
+          {
+            "do": "float_text",
+            "text": "-5% MISS",
+            "palette": "pal_txt_yellow"
+          }
+        ]
+      }
+    }
+  ],
+  "sounds": {
+    "collect": "sfx_item"
+  }
+}

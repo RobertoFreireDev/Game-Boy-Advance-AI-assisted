@@ -63,8 +63,5 @@
   ],
   "sounds": {
     "collect": "sfx_item"
-  },
-  "children": [
-    "body_item_swift_feather"
-  ]
+  }
 }
