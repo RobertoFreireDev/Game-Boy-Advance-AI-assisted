@@ -348,6 +348,10 @@
         "tox": {
           "text": "TOX",
           "palette": "pal_txt_purple"
+        },
+        "double": {
+          "text": "2X",
+          "palette": "pal_txt_yellow"
         }
       },
       "flash_palette": "pal_flash_white",

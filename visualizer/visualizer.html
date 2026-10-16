@@ -1431,7 +1431,9 @@ PREVIEW.species = (id, n) => {
         n.regen ? h("div", { class: "small" }, h("b", {}, `Heals ${n.regen} HP every second`),
           " up to its max, as the player, a wild monster or the Alpha, in every mode (no word floats up: the HP bar fills).") : null,
         n.evasion ? h("div", { class: "small" }, h("b", {}, `Evasion ${n.evasion}`),
-          `: every move aimed at it has ${n.evasion} points less accuracy (a 100% move hits ${100 - n.evasion}%), the player's and wild ones alike, in every mode; ground zones and status-only moves still never miss.`) : null))));
+          `: every move aimed at it has ${n.evasion} points less accuracy (a 100% move hits ${100 - n.evasion}%), the player's and wild ones alike, in every mode; ground zones and status-only moves still never miss.`) : null,
+        n.double_hit ? h("div", { class: "small" }, h("b", {}, `${n.double_hit}% chance to hit twice`),
+          `: each time one of its damaging moves lands (not a ground zone), every monster it hit that still stands takes the same blow again 12 ticks (0.2 s) later (same damage, never a miss, its own number, flash and hit sound), and ${((BATTLE.texts || {}).double || {}).text || "2X"} floats up over its head; the player's, wild ones and the Alpha alike, in every mode.`) : null))));
   out.push(compassCard(n.body, () => st.alpha ? n.alpha_palette : null));
   out.push(card("Moves", (n.moves || []).map((m, i) => {
     const mv = NODES[m] || {};
@@ -1740,6 +1742,9 @@ PREVIEW.move = (id, n) => {
   const spOwner = SPECIES.find(s => ((NODES[s] || {}).moves || []).includes(id));
   const spPow = spOwner ? (NODES[spOwner].power || 100) : 100;
   const spPowerText = spPow !== 100 ? ` × ${spPow}% (its species' power: every move of ${(NODES[spOwner] || {}).title || spOwner} hits at ${spPow}%)` : "";
+  // monster.c monster_double_hit: the species that knows it may land a damaging move twice (not zones).
+  const spDouble = spOwner && n.shape !== "zone" ? (NODES[spOwner].double_hit || 0) : 0;
+  const doubleText = spDouble ? `; ${spDouble}% chance to hit twice (its species: every monster it hit takes the same blow again 0.2 s later, and ${((BATTLE.texts || {}).double || {}).text || "2X"} floats over ${NODES[spOwner].title || spOwner})` : "";
   const walkText = n.shape !== "zone" && n.power && n.accuracy && (dw || da)
     ? `; against the player it hits ${clamp(n.accuracy - dw)}% when it walked in the last ${dTicks} ticks (${(dTicks / 60).toFixed(1)} s) before the move, ${clamp(n.accuracy - dw - da)}% when it walked diagonally away from the user`
     : "";
@@ -1770,7 +1775,7 @@ PREVIEW.move = (id, n) => {
   const kv = h("div", { class: "kv" },
     h("div", { class: "k" }, "type"), h("div", {}, String(n.monster_type || "").toUpperCase()),
     h("div", { class: "k" }, "hits"), h("div", {}, shapeText),
-    h("div", { class: "k" }, "power"), h("div", {}, n.power ? String(n.power) + (n.shape === "zone" && z.every ? ` per hit (on touch, then every ${(z.every / 60).toFixed(1)} s per monster)` : "") + spPowerText : n.status ? "none (status only)" : "none"),
+    h("div", { class: "k" }, "power"), h("div", {}, n.power ? String(n.power) + (n.shape === "zone" && z.every ? ` per hit (on touch, then every ${(z.every / 60).toFixed(1)} s per monster)` : "") + spPowerText + doubleText : n.status ? "none (status only)" : "none"),
     h("div", { class: "k" }, "accuracy"), h("div", {}, n.shape === "zone" ? "never misses (the ground)" : n.power ? (n.accuracy ? n.accuracy + "% (a miss shows MISS)" + walkText + evasionText : "never misses") : "—"),
     h("div", { class: "k" }, "charge (player)"), h("div", {}, `${n.charge} ticks (${(n.charge / 60).toFixed(1)} s)`),
     h("div", { class: "k" }, "animation"), h("div", {}, [].concat(stepsText, mvSteps ? h("span", { class: "small" }, " — only a picture: the hit lands the moment the move is used") : [])),

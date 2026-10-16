@@ -11,10 +11,15 @@ enum { TEAM_PLAYER, TEAM_WILD };
 // What a hit did, from least to most (a move that hits several keeps the best for its sound).
 enum { HIT_NONE, HIT_MISS, HIT_WEAK, HIT_NORMAL, HIT_SUPER };
 
+// Which blow a hit is: a single one, or the first / second of a double hit (a species' double_hit).
+enum { BLOW_ONE, BLOW_FIRST, BLOW_SECOND };
+
 // What one hit carries (a move used by a monster, or a zone it left on the ground).
 typedef struct {
     const MoveData *move;
     u8 team, level, roll;           // roll: 1 = roll the move's accuracy
+    u8 blow;                        // BLOW_*: a double hit's first blow floats its words a row higher
+                                    // (the second's number comes under them); the second only deals damage
     u16 power;                      // damage percent of the user (Alpha 150; + the player's power boost)
     s16 aim;                        // accuracy points the user adds to the move's (the player's aim boost)
     s32 from_x, from_y;             // where it came from (the target is pushed away from it)
@@ -59,6 +64,13 @@ int monster_is_foe(const Actor *a, const Actor *b);
 int monster_hit(Actor *t, const MonsterHit *h);
 // The sound of a hit result: MISS, or the player's type hit (+ the super ping), or hit / super / weak.
 void monster_hit_sound(const MonsterHit *h, int result);
+// 1 on a roll of its species' double_hit % (0, and no roll, for a species without it): the damaging
+// move it is using hits twice.
+int monster_double_roll(const Actor *a);
+// The first blow of a double hit (h->blow BLOW_FIRST) just hit the `count` monsters in `hit` (not
+// misses): each of them still standing takes the same blow again a moment later, and 2X floats up
+// over the user.
+void monster_double_hit(Actor *user, Actor *const *hit, int count, const MonsterHit *h);
 // Start a buff (BUFF_FLY / BUFF_PHASE) on a monster for `ticks`.
 void monster_buff(Actor *a, int buff, int ticks);
 

@@ -249,6 +249,7 @@ Floating text appears over the target and rises for ~0.75 s:
 - `PAR`, `PSN`, `TOX`
 - `×1.5!` in a bright color when super effective, `×0.75` in grey when not very effective
 - Over the player: `LV UP!`, `NEW MOVE!`
+- Over a Furrbit (the player's, a wild one or the Alpha) whose attack hits twice: `2X` (yellow)
 
 Hit feedback:
 - **Enemy hit by the player:** blinks **red** for 4 frames (clearer than white against the bright map) and gets knocked back 2 px.
@@ -293,9 +294,10 @@ Any of the 9 can be the player. Enemies use the same species.
 | 3 tiles | 80 % | Sproutle (Vine Whip), Gustling (Gust), Pebbulk (Rock Throw) |
 | 4 tiles or more | 70 % | Voltail (Thunder Shock, 5 tiles) |
 
-**Two species have a trait of their own**, in every mode, as the player, a wild monster or the Alpha:
+**Three species have a trait of their own**, in every mode, as the player, a wild monster or the Alpha:
 - **Splashell (Water) heals 1 HP every second**, up to its max HP. It pays for it with the slowest walk of all (50 %).
 - **Gustling (Flying) is harder to hit**: every move aimed at it has 10 points less accuracy (a 100 % move hits 90 %, a 95 % move 85 %). Ground zones and status-only moves still never miss.
+- **Furrbit (Normal) can hit twice**: each time Tackle or Quick Attack lands, a 50 % coin flip makes every monster it hit take the same blow again 0.2 s later (same damage, its own number, flash and hit sound; it never misses), and `2X` floats up over Furrbit's head.
 
 ### 6.2 Enemy population — 25 total
 

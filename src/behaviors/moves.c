@@ -45,6 +45,8 @@ typedef struct {
 } Piece;
 
 EWRAM_BSS static Piece s_pieces[MAX_PARTICLES];
+EWRAM_BSS static Actor *s_hit[MAX_ACTORS];     // the foes the last use hit (not a miss): a double hit's targets
+EWRAM_BSS static int s_hit_count;
 static int s_piece_count;
 static s32 s_strike[4];         // the box around every piece: left, top, right, bottom
 
@@ -378,19 +380,22 @@ static int reaches_a_foe(Actor *user, const MoveData *m) {
 }
 
 // Hurt `first` (the foe the move was aimed at, may be NULL) and every other foe the move
-// reaches. Returns the best result; *n = how many it hurt.
+// reaches. Returns the best result; *n = how many it hurt (s_hit: the ones it didn't miss).
 static int hurt(Actor *user, const MoveData *m, Actor *first, const MonsterHit *h, int *n) {
     int best = HIT_NONE;
     *n = 0;
+    s_hit_count = 0;
     if (first) {
         best = monster_hit(first, h);
         *n = 1;
+        if (best >= HIT_WEAK) s_hit[s_hit_count++] = first;
     }
     for (int i = 0; i < MAX_ACTORS; i++) {
         Actor *t = &g_actors[i];
         if (t == first || !t->active || !monster_is_foe(user, t) || !reaches(m, t)) continue;
         int res = monster_hit(t, h);
         if (res > best) best = res;
+        if (res >= HIT_WEAK) s_hit[s_hit_count++] = t;
         (*n)++;
     }
     return best;
@@ -416,6 +421,7 @@ static MonsterHit hit_from(Actor *user, const MoveData *m) {
     h.team = (u8)monster_team(user);
     h.level = (u8)monster_level(user);
     h.roll = 1;
+    h.blow = BLOW_ONE;
     h.power = (u16)monster_power(user, s_power_now);
     h.aim = (s16)monster_aim(user);
     h.from_x = fx_to_int(user->x);
@@ -555,6 +561,7 @@ static void zone_hit_info(const Zone *z, MonsterHit *h) {
     h->team = z->team;
     h->level = z->level;
     h->roll = 0;
+    h->blow = BLOW_ONE;
     h->aim = 0;
     h->power = z->power;
     h->from_x = h->mid_x = (z->hl + z->hr) / 2;
@@ -717,10 +724,12 @@ int moves_use(Actor *user, const MoveData *m, int always) {
         return USE_NONE;
     }
     strike_show(user, m);
+    if (m->power > 0 && monster_double_roll(user)) h.blow = BLOW_FIRST;     // a species that hits twice (Normal)
     int n;
     int best = hurt(user, m, first, &h, &n);
     if (!n) return result_sound_only(user, m) ? USE_WHIFF : USE_FIRED;     // went off at nothing
     monster_hit_sound(&h, best);
+    monster_double_hit(user, s_hit, s_hit_count, &h);   // ... lands the same blow again on them
     return USE_FIRED;
 }
 

@@ -97,7 +97,7 @@ EFFECT_AT = ["target", "line", "user", "axis", "tiles", "center", "screen"]
 MOVE_EFFECT_AT = {"single": ["target", "line"], "dash": ["target", "line"], "beam": ["axis"],
                   "circle": ["user"], "screen": ["screen", "user"], "zone": ["tiles", "center"],
                   "self": ["user"]}
-BATTLE_TEXTS = ["damage", "miss", "super", "weak", "par", "psn", "tox"]
+BATTLE_TEXTS = ["damage", "miss", "super", "weak", "par", "psn", "tox", "double"]
 BATTLE_SOUNDS = ["hit", "super", "weak", "miss", "faint", "par"]
 SPECIES_FIELDS = ["name", "type", "move1", "move2", "move3"]    # {var.field} placeholders
 SPECIES_TITLE_W = 10     # chars of a species name

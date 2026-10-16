@@ -279,6 +279,7 @@ typedef struct {
     u8 power;                           // damage of its moves, in percent (100 = as each move says)
     u8 regen;                           // hit points it heals every second, up to its max (0 = none)
     u8 evasion;                         // accuracy points every move aimed at it loses (0 = none)
+    u8 double_hit;                      // percent chance a damaging move of its hits twice (0 = never)
     u16 speed;                         // walking speed, x/256 of the walker's own (256 = 100 %)
     const BodyData *body;
     const PaletteData *alpha_palette;   // the Alpha's colors (same slots as the sprite's palette)

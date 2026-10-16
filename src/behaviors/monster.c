@@ -20,6 +20,7 @@
 #define PUSH_PX       2         // knockback when hit
 #define STATUS_EVERY  60        // poison hurts once a second
 #define REGEN_EVERY   60        // a healing species (regen) heals once a second
+#define DOUBLE_DELAY  12        // a double hit's second blow lands this many ticks after the first
 #define FAINT_TICKS   30        // a wild monster flashes and blinks out
 #define PLAYER_FAINT  120
 
@@ -46,6 +47,8 @@ typedef struct {
     u32 walk_frame;             // the frame its last step was recorded in
     s32 xp_seen;
     s32 shove_x, shove_y;       // the push's step unit (1/65536 px): the k-th last tick slides k units
+    u8 again_ticks;             // a double hit's second blow lands on it in this many ticks (0 = none)
+    MonsterHit again;           // ... and what that blow carries
 } Monster;
 
 EWRAM_BSS static Monster s_mon[MAX_ACTORS];
@@ -151,10 +154,10 @@ static int put_number(char *buf, s32 n) {
     return k;
 }
 
-static void say_number(const Actor *t, int bt, s32 n) {
+static void say_number(const Actor *t, int bt, s32 n, int row) {
     char buf[8];
     put_number(buf, n);
-    say(t, bt, buf, 0);
+    say(t, bt, buf, row);
 }
 
 // ---- the level tag ----------------------------------------------------------------------
@@ -426,9 +429,10 @@ int monster_hit(Actor *t, const MonsterHit *h) {
         d = d * pct / 100 * h->power / 100;
         d = (d + 50) / 100;
         if (d < 1) d = 1;
-        say_number(t, BT_DAMAGE, d);
-        if (pct > 100) { say(t, BT_SUPER, NULL, 1); result = HIT_SUPER; }
-        else if (pct < 100) { say(t, BT_WEAK, NULL, 1); result = HIT_WEAK; }
+        int up = h->blow == BLOW_FIRST;         // a double hit: the second blow's number comes under
+        say_number(t, BT_DAMAGE, d, up);
+        if (pct > 100) { if (h->blow != BLOW_SECOND) say(t, BT_SUPER, NULL, 1 + up); result = HIT_SUPER; }
+        else if (pct < 100) { if (h->blow != BLOW_SECOND) say(t, BT_WEAK, NULL, 1 + up); result = HIT_WEAK; }
         else result = HIT_NORMAL;
         t->flash_pal = hit_palette(tp);
         t->flash = (u8)tp->flash_ticks;
@@ -439,9 +443,10 @@ int monster_hit(Actor *t, const MonsterHit *h) {
         hurt(t, d);
         if (!actor_alive(t)) return result;
     }
+    if (h->blow == BLOW_SECOND) return result;     // a double hit's second blow: only the damage
     if (mv->status != STATUS_NONE && rng_range(1, 100) <= mv->status_chance)
         set_status(t, m, mv->status, rng_range(mv->status_min, mv->status_max),
-                   result == HIT_SUPER || result == HIT_WEAK ? 2 : 1);
+                   (result == HIT_SUPER || result == HIT_WEAK ? 2 : 1) + (h->blow == BLOW_FIRST));
     if (mv->push_px) shove(t, m, h->from_x, h->from_y, mv->push_px, mv->push_ticks);
     return result;
 }
@@ -458,6 +463,49 @@ void monster_hit_sound(const MonsterHit *h, int result) {
         return;
     }
     battle_sound(result == HIT_SUPER ? BS_SUPER : result == HIT_WEAK ? BS_WEAK : BS_HIT);
+}
+
+// ---- the double hit ----------------------------------------------------------------------
+// The second blow lands on t (if it can still be hit): the same damage again, never a miss, with
+// its own number, flash, knockback and sound (the type and status words came with the first).
+static void land_again(Actor *t, Monster *m) {
+    m->again_ticks = 0;
+    if (monster_targetable(t)) monster_hit_sound(&m->again, monster_hit(t, &m->again));
+}
+
+// 2X floats up over a monster whose attack hits twice: above its picture (and its crown), where
+// its level tag was (the tag goes away, like when a move reaches it).
+static void say_double(Actor *a, Monster *m) {
+    const BattleData *b = g_game.battle;
+    const Params_monster *p = params_of(a);
+    tag_off(a, m);
+    s32 dy = a->body ? -a->body->origin_y - 1 : -17;
+    if (p->crown) dy -= p->crown->height - 2;
+    ftext_show(fx_to_int(a->x), fx_to_int(a->y) + dy, b->texts[BT_DOUBLE].text, b->font, b->texts[BT_DOUBLE].palette);
+}
+
+int monster_double_roll(const Actor *a) {
+    const Monster *m = mon(a);
+    return m && m->species->double_hit && rng_range(1, 100) <= m->species->double_hit;
+}
+
+void monster_double_hit(Actor *user, Actor *const *hit, int count, const MonsterHit *h) {
+    Monster *um = mon(user);
+    int any = 0;                        // a blow that fainted all it hit has nothing to repeat
+    if (!um || h->blow != BLOW_FIRST) return;
+    for (int i = 0; i < count; i++) {
+        Actor *t = hit[i];
+        Monster *m = mon(t);
+        if (!m || !actor_alive(t)) continue;
+        if (m->again_ticks) land_again(t, m);      // an earlier double hit's blow, still on its way, lands now
+        if (!actor_alive(t)) continue;
+        m->again = *h;
+        m->again.roll = 0;
+        m->again.blow = BLOW_SECOND;
+        m->again_ticks = DOUBLE_DELAY;
+        any = 1;
+    }
+    if (any) say_double(user, um);
 }
 
 // ---- buffs (Fly, Phase) ----------------------------------------------------------------
@@ -560,6 +608,10 @@ void bhv_monster_update(Actor *a, const void *params) {
         if (p->xp_var >= 0) player_progress(a, p, m);
         else m->level = (u8)vars_get(p->level_var);
     }
+    if (m->again_ticks && --m->again_ticks == 0) {     // a double hit's second blow
+        land_again(a, m);
+        if (!actor_alive(a)) return;
+    }
     if (m->flashes && a->flash == 0 && ++m->flash_gap >= p->flash_ticks) {   // a hit's next flash
         m->flashes--;
         m->flash_gap = 0;
@@ -571,7 +623,7 @@ void bhv_monster_update(Actor *a, const void *params) {
             if (++m->status_clock >= STATUS_EVERY) {    // poison: 1 a second; toxic: 1, 2, 3...
                 m->status_clock = 0;
                 s32 d = m->status == STATUS_PSN ? 1 : ++m->tox_step;
-                say_number(a, m->status == STATUS_PSN ? BT_PSN : BT_TOX, d);
+                say_number(a, m->status == STATUS_PSN ? BT_PSN : BT_TOX, d, 0);
                 hurt(a, d);
                 if (!actor_alive(a)) return;
             }

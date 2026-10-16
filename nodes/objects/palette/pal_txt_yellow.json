@@ -3,7 +3,7 @@
   "kind": "object",
   "type": "palette",
   "name": "Floating text: yellow",
-  "notes": "Colors of the floating words for PAR, x1.5! and LV UP!: 1 = outline, 2 = letters, 3 = their lower half.",
+  "notes": "Colors of the floating words for PAR, x1.5!, 2X and LV UP!: 1 = outline, 2 = letters, 3 = their lower half.",
   "colors": [
     "#000000",
     "#382008",

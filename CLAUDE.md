@@ -273,7 +273,7 @@ Structural rules (enforced by `validate.py`):
 | **Progression** | | | | |
 | `upgrade` | `upg_` | One card of the level-up menu: a weapon, a passive item, an evolution or a bonus filler. | `category`, `title`, `icon`, `var`, `max_level`, `descriptions[]`, `requires[]`, `replaces`, `on_pick[]` | `icon` |
 | **Monster battles** | | | | |
-| `species` | `mon_` | A kind of monster: its look, type and 3 moves. Actors with the `monster` behavior take their body from it. | `title`, `monster_type`, `speed`, `hp_bonus`, `power`, `regen`, `evasion`, `body`, `alpha_palette`, `portrait`, `cry`, `moves[3]` | `body`, `sprite`, `sfx`, `move`, `palette` |
+| `species` | `mon_` | A kind of monster: its look, type and 3 moves. Actors with the `monster` behavior take their body from it. | `title`, `monster_type`, `speed`, `hp_bonus`, `power`, `regen`, `evasion`, `double_hit`, `body`, `alpha_palette`, `portrait`, `cry`, `moves[3]` | `body`, `sprite`, `sfx`, `move`, `palette` |
 | `move` | `mov_` | One move a monster uses: what it hits, how hard, how often, what status and effect. | `title`, `monster_type`, `shape`, `range`, `power`, `accuracy`, `charge`, `status`, `dash`, `zone`, `buff`, `push`, `effect`, `effect_at`, `travel`, `sfx`, `on_use[]` | `particle`, `animation`, `sprite`, `sfx` |
 
 Actor types (`player` … `pickup`) share one structure; the type gives sensible defaults and
@@ -382,7 +382,12 @@ groups them for humans. **What an actor does comes only from its `logic` list.**
   `regen` (0-10, default 0: hit points it heals once a second up to its max, the player's (`hp_max_var`)
   and wild ones alike, in every mode; no word floats up), `evasion` (0-50, default 0: accuracy points every
   move aimed at it loses, like the target's `dodge_var`: 10 = a 100 % move hits 90 %; zones and status-only
-  moves still never miss),
+  moves still never miss), `double_hit` (0-100, default 0: percent chance, rolled once per use, that a
+  damaging move that hits at once (not a zone) hits twice, the player's and wild ones alike, in every mode:
+  every foe it hit that still stands takes the same blow again 12 ticks later (never a miss, the same damage,
+  its own number, flash, 2 px knockback and hit sound; no type word, status or move push; the first blow's
+  words float a row higher so the second's number shows under them), and
+  `game.battle.texts.double` floats up over the user's head, above its crown, its level tag taken away),
   `body` (its look in the world), `alpha_palette` (the same color slots recolored: the Alpha boss), `portrait` (a sprite for
   the picker), `cry` (sfx), exactly 3 `moves` (A, B, R). Its number for `species_var` and
   `{var.name}` is its order among the species in nodes.json, from 0.
@@ -452,7 +457,8 @@ groups them for humans. **What an actor does comes only from its `logic` list.**
   which they hurt someone).
 - **game.battle** (nodes.json): `types[]` (names, in order), `chart {attacker: {defender: multiplier}}`
   (missing = 1, 0–2.55), `font` (floating words, drawn as sprites; needs the digits), `texts {damage,
-  miss, super, weak, par, psn, tox: {text, palette}}` (damage has only a palette), `flash_palette`
+  miss, super, weak, par, psn, tox, double: {text, palette}}` (damage has only a palette; `double`
+  floats over a monster whose attack hits twice, the species' `double_hit`), `flash_palette`
   (hit flash), `par_palette` (paralysis flicker), `par_effect` (an animation looped in front of a paralyzed
   monster, centered on its hitbox: sparks), `sounds {hit, super, weak, miss, faint, par}` (`par`: a monster
   got paralyzed; keep it on a channel the hit and move sounds of paralyzing moves don't use),

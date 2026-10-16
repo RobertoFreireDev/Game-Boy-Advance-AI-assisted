@@ -601,9 +601,9 @@ class Gen:
 
     def E_species(self, nid, n):
         speed = (n.get("speed", 100) * 256 + 50) // 100        # percent -> x/256
-        self.emit("const SpeciesData node_%s = { %s, %s, %d, %d, %d, %d, %d, %s, %s, %s, %s, { %s } };" % (
+        self.emit("const SpeciesData node_%s = { %s, %s, %d, %d, %d, %d, %d, %d, %s, %s, %s, %s, { %s } };" % (
             nid, cstr(n["title"]), self.type_enum(n["monster_type"]), n.get("hp_bonus", 0), n.get("power", 100),
-            n.get("regen", 0), n.get("evasion", 0), speed, self.ptr(n["body"]), self.ptr(n.get("alpha_palette")),
+            n.get("regen", 0), n.get("evasion", 0), n.get("double_hit", 0), speed, self.ptr(n["body"]), self.ptr(n.get("alpha_palette")),
             self.ptr(n.get("portrait")), self.ptr(n.get("cry")), ", ".join(self.ptr(m) for m in n["moves"])))
 
     def battle(self):

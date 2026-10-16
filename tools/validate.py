@@ -49,7 +49,7 @@ TYPE_FIELDS = {
     "menu": {"font", "title", "options", "upgrades", "cursor", "layout", "on_cancel", "box", "sounds", "texts"},
     "dialog": {"font", "box", "lines", "choices", "on_end", "ticks_per_char"},
     "upgrade": {"category", "title", "icon", "var", "max_level", "descriptions", "requires", "replaces", "on_pick"},
-    "species": {"title", "monster_type", "speed", "hp_bonus", "power", "regen", "evasion", "body", "alpha_palette", "portrait", "cry", "moves"},
+    "species": {"title", "monster_type", "speed", "hp_bonus", "power", "regen", "evasion", "double_hit", "body", "alpha_palette", "portrait", "cry", "moves"},
     "move": {"title", "monster_type", "shape", "range", "power", "accuracy", "charge", "status", "dash", "zone", "buff",
              "push", "effect", "effect_at", "travel", "sfx", "on_use"},
 }
@@ -1541,6 +1541,7 @@ def V_species(c):
     c.get(n, "power", "int", required=False, lo=50, hi=150)
     c.get(n, "regen", "int", required=False, lo=0, hi=10)
     c.get(n, "evasion", "int", required=False, lo=0, hi=50)
+    c.get(n, "double_hit", "int", required=False, lo=0, hi=100)
     body = c.ref(n.get("body"), ["body"], "body")
     if body:
         if c.p.nodes[body].get("physics", {}).get("gravity"):
