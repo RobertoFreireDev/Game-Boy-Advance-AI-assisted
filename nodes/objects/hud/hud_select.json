@@ -3,27 +3,35 @@
   "kind": "object",
   "type": "hud",
   "name": "Monster picker text",
-  "notes": "Shown once the logo has landed: this monster's best time (its fastest won run) above it, under the logo — BEST TIME --:-- until it wins a run — arrows on both sides of the monster, its name and type centered under it, then a blinking PRESS START and, at the bottom, the SELECT: CLEAR SAVE hint. Browsing to another monster switches the best time to that monster's. On a locked monster the two bottom lines become a blinking LOCKED and WIN WITH A NEW MONSTER (they follow 'sel_locked', which the picker sets): only the first win of a monster that never won a run (BEST TIME --:--) unlocks the next one.",
+  "notes": "Shown once the logo has landed: the best time of the entry on screen above it, under the logo (BEST TIME --:-- until it wins a run; the classic and the waves entry of a monster each keep their own), arrows on both sides of the monster (yellow on the classic entries, red on the waves entries: the only sign of the mode, no label), its name and type centered under it, then a blinking PRESS START and, at the bottom, the SELECT: CLEAR SAVE hint. On a locked entry the two bottom lines become a blinking LOCKED and how to unlock it (they follow 'sel_locked', which the picker sets): WIN WITH A NEW MONSTER on a locked classic monster (only the first win of a monster that never won a run unlocks the next one), WIN WITH ALL 9 MONSTERS on the waves entries until every monster has won a classic run.",
   "font": "font_default",
   "elements": [
     {
       "kind": "text",
       "x": 120,
       "y": 56,
-      "text": "BEST TIME {best_time[chosen]:time}",
+      "text": "BEST TIME {best_time[entry]:time}",
       "align": "center"
     },
     {
-      "kind": "icon",
+      "kind": "gauge",
       "x": 32,
       "y": 88,
-      "icon": "icon_arrow_l"
+      "var": "mode",
+      "icons": [
+        "icon_arrow_l",
+        "icon_arrow_l_waves"
+      ]
     },
     {
-      "kind": "icon",
+      "kind": "gauge",
       "x": 192,
       "y": 88,
-      "icon": "icon_arrow_r"
+      "var": "mode",
+      "icons": [
+        "icon_arrow_r",
+        "icon_arrow_r_waves"
+      ]
     },
     {
       "kind": "text",
@@ -36,7 +44,7 @@
       "kind": "text",
       "x": 120,
       "y": 144,
-      "text": "{sel_locked|PRESS START|LOCKED}",
+      "text": "{sel_locked|PRESS START|LOCKED|LOCKED}",
       "align": "center",
       "blink": 30
     },
@@ -44,12 +52,14 @@
       "kind": "text",
       "x": 120,
       "y": 152,
-      "text": "{sel_locked|SELECT: CLEAR SAVE|WIN WITH A NEW MONSTER}",
+      "text": "{sel_locked|SELECT: CLEAR SAVE|WIN WITH A NEW MONSTER|WIN WITH ALL 9 MONSTERS}",
       "align": "center"
     }
   ],
   "children": [
     "icon_arrow_l",
-    "icon_arrow_r"
+    "icon_arrow_r",
+    "icon_arrow_l_waves",
+    "icon_arrow_r_waves"
   ]
 }

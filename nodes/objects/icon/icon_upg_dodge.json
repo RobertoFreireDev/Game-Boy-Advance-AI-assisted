@@ -1,0 +1,26 @@
+{
+  "id": "icon_upg_dodge",
+  "kind": "object",
+  "type": "icon",
+  "name": "Mist Orb card icon",
+  "notes": "16x16 picture on the Mist Orb level-up card, in the UI colors so the card's box shows around it, redrawn from the classic run's floor item.",
+  "palette": "pal_ui",
+  "pixels": [
+    "................",
+    "................",
+    ".....111111.....",
+    "....1ff2fbb1....",
+    "...1f22ffbbb1...",
+    "..1ff2fbbbbbb1..",
+    "..1ffbbbfffbb1..",
+    "..1fbbbfbbbfb1..",
+    "..1fbbbfffbbd1..",
+    "..1bbbbbbbbbd1..",
+    "...1bbbbbbdd1...",
+    "....1bbdddd1....",
+    ".....111111.....",
+    "................",
+    "................",
+    "................"
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "id": "icon_upg_berry",
+  "kind": "object",
+  "type": "icon",
+  "name": "Sun Berry card icon",
+  "notes": "16x16 picture on the Sun Berry level-up card: a round orange berry with a green leaf, in the UI colors.",
+  "palette": "pal_ui",
+  "pixels": [
+    "................",
+    ".........111....",
+    "........19991...",
+    ".......11111....",
+    ".....11111......",
+    "....1444441.....",
+    "...1444aaaa1....",
+    "..1444aaaaa81...",
+    "..144aaaaaa81...",
+    "..14aaaaaaa81...",
+    "..14aaaaaa881...",
+    "..14aaaaa8881...",
+    "...1aaaa8881....",
+    "....1888881.....",
+    ".....11111......",
+    "................"
+  ]
+}

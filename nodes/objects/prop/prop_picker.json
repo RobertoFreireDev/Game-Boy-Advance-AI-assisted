@@ -3,7 +3,7 @@
   "kind": "object",
   "type": "prop",
   "name": "Monster picker",
-  "notes": "Invisible: shows the chosen monster's big portrait, bobbing. Left / Right pick another (it slides and cries). Only the first 'unlocked' monsters can be played (Furrbit, Emberpup and Splashell at first, then one more, in roster order, for the first win of each monster); a locked one shows as a dark silhouette (pal_locked) without its cry, the text under it says LOCKED / WIN WITH A NEW MONSTER, and START on it buzzes (sfx_error). START on an unlocked one resets the run's variables, draws the run's world at random (any of the 9, never locked), saves the pick and starts the run. SELECT opens the 'clear saved progress' question.",
+  "notes": "Invisible: shows the chosen monster's big portrait, bobbing. Left / Right pick another (it slides and cries), through 18 entries in a loop: the 9 monsters of the classic mode, then the same 9 of the waves mode ('mode' 0 or 1; 'entry' = mode x 9 + monster, the slot of its best time). In the classic half only the first 'unlocked' monsters can be played (Furrbit, Emberpup and Splashell at first, then one more, in roster order, for the first win of each monster); the waves half is locked as a whole until all 9 monsters have won a classic run ('cleared' = 9). A locked entry shows as a dark silhouette (pal_locked) without its cry, the text under it says LOCKED and how to unlock it, and START on it buzzes (sfx_error). START on an open one resets the run's variables, draws the run's world at random (any of the 9), saves the pick and starts the classic run or the waves run. SELECT opens the 'clear saved progress' question.",
   "logic": [
     {
       "behavior": "species_select",
@@ -41,10 +41,29 @@
             "ticks": 20
           },
           {
-            "do": "goto_scene",
-            "scene": "scn_run"
+            "do": "if_var",
+            "var": "mode",
+            "op": "==",
+            "value": 1,
+            "then": [
+              {
+                "do": "goto_scene",
+                "scene": "scn_waves"
+              }
+            ],
+            "else": [
+              {
+                "do": "goto_scene",
+                "scene": "scn_run"
+              }
+            ]
           }
-        ]
+        ],
+        "passes": 2,
+        "pass_var": "mode",
+        "entry_var": "entry",
+        "pass_unlock_var": "cleared",
+        "pass_unlock_at": 9
       }
     },
     {

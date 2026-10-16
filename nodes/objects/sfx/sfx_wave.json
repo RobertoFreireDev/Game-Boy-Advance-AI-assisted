@@ -1,0 +1,37 @@
+{
+  "id": "sfx_wave",
+  "kind": "object",
+  "type": "sfx",
+  "name": "Wave horn",
+  "notes": "A short rising horn call when a new wave of monsters starts (A, D, A an octave up), on square2 so it never cuts the move and hit sounds on square1 and noise.",
+  "channel": "square2",
+  "duty": 2,
+  "priority": 3,
+  "steps": [
+    {
+      "note": "A4",
+      "ticks": 5,
+      "volume": 13
+    },
+    {
+      "note": "..",
+      "ticks": 2,
+      "volume": 0
+    },
+    {
+      "note": "D5",
+      "ticks": 5,
+      "volume": 14
+    },
+    {
+      "note": "..",
+      "ticks": 2,
+      "volume": 0
+    },
+    {
+      "note": "A5",
+      "ticks": 12,
+      "volume": 14
+    }
+  ]
+}

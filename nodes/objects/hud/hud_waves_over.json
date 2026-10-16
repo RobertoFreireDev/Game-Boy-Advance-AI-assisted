@@ -1,0 +1,46 @@
+{
+  "id": "hud_waves_over",
+  "kind": "object",
+  "type": "hud",
+  "name": "Waves game over text",
+  "notes": "GAME OVER and how far the waves run got: the wave reached, the level, kills and time.",
+  "font": "font_default",
+  "elements": [
+    {
+      "kind": "text",
+      "x": 120,
+      "y": 56,
+      "text": "GAME OVER",
+      "align": "center"
+    },
+    {
+      "kind": "text",
+      "x": 120,
+      "y": 72,
+      "text": "REACHED WAVE {wave}/10",
+      "align": "center"
+    },
+    {
+      "kind": "text",
+      "x": 120,
+      "y": 88,
+      "text": "LEVEL {level}   KILLS {kills}",
+      "align": "center"
+    },
+    {
+      "kind": "text",
+      "x": 120,
+      "y": 104,
+      "text": "TIME {time_min:02}:{time_sec:02}",
+      "align": "center"
+    },
+    {
+      "kind": "text",
+      "x": 120,
+      "y": 128,
+      "text": "PRESS START",
+      "align": "center",
+      "blink": 30
+    }
+  ]
+}

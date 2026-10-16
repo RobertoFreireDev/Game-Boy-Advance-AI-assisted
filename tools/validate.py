@@ -578,9 +578,12 @@ def scene_budget(c, insts):
         for mv in sp.get("moves") or []:
             add_particle(p.nodes.get(mv, {}).get("effect"))
 
+    followed = set()
+
     def add_object(o, inst=None):
         node = p.nodes.get(o, {})
         t = p.type_of(o)
+        followed.add(o)
         if t == "particle":
             add_particle(o)
         add_body(node.get("body"))
@@ -600,6 +603,8 @@ def scene_budget(c, insts):
                     add_particle(v)
                 elif isinstance(v, str) and p.type_of(v) == "palette" and e.get("behavior") != "monster":
                     obj_pals.add(v)
+                elif isinstance(v, str) and p.type_of(v) in C.ACTOR_TYPES and v not in followed:
+                    add_object(v)                       # an actor it brings in (a wave director's monsters)
             if e.get("behavior") == "monster":
                 bt = p.game.get("battle") if isinstance(p.game.get("battle"), dict) else {}
                 obj_pals.update([bt.get("flash_palette"), bt.get("par_palette")])

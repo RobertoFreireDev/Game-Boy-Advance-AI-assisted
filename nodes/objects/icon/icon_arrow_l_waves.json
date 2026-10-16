@@ -1,0 +1,26 @@
+{
+  "id": "icon_arrow_l_waves",
+  "kind": "object",
+  "type": "icon",
+  "name": "Arrow left (waves)",
+  "notes": "Points left: press Left for the previous monster. Red: shown instead of the yellow one on the waves entries of the menu.",
+  "palette": "pal_ui",
+  "pixels": [
+    "...........1....",
+    ".........1151...",
+    "........15551...",
+    ".......155551...",
+    "......1555551...",
+    ".....15555551...",
+    "...1155555551...",
+    "..15555555551...",
+    "..18888888881...",
+    "...1188888881...",
+    ".....18888881...",
+    "......1888881...",
+    ".......188881...",
+    "........18881...",
+    ".........1181...",
+    "...........1...."
+  ]
+}

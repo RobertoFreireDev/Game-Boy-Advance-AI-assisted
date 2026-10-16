@@ -1,0 +1,71 @@
+{
+  "id": "scn_waves",
+  "kind": "scene",
+  "type": "level",
+  "name": "Waves run",
+  "notes": "The waves mode's run (the second half of the menu; the classic run is scn_run). A 2 x 2-screen arena in one of the 9 worlds, drawn at random by the picker as in the classic run ('world'): the world's own ground, cut down from its classic map, lit in the middle of the dark; its edge darkens smoothly into black. The player can't step into the dark; the monsters come out of it. A monster whose type is the world's is at home (+10% power and speed, -10% recharge), the player included. No floor items: each level gained instead opens a menu of 3 cards to choose from. The wave director brings 10 waves, growing from 3 monsters to 24 plus the boss (see prop_waves); clear them all to win, about 10 minutes. Music: the waves theme (mus_waves) until the boss comes, then the boss theme.",
+  "backdrop": "#000000",
+  "music": "mus_waves",
+  "camera": {
+    "follow": "player",
+    "bounds": "map"
+  },
+  "instances": [
+    {
+      "id": "edge",
+      "object": "map_arena_edge_normal",
+      "variants": {
+        "var": "world",
+        "objects": [
+          "map_arena_edge_normal",
+          "map_arena_edge_fire",
+          "map_arena_edge_water",
+          "map_arena_edge_electric",
+          "map_arena_edge_grass",
+          "map_arena_edge_poison",
+          "map_arena_edge_flying",
+          "map_arena_edge_ghost",
+          "map_arena_edge_rock"
+        ]
+      }
+    },
+    {
+      "id": "floor",
+      "object": "map_arena_normal",
+      "variants": {
+        "var": "world",
+        "objects": [
+          "map_arena_normal",
+          "map_arena_fire",
+          "map_arena_water",
+          "map_arena_electric",
+          "map_arena_grass",
+          "map_arena_poison",
+          "map_arena_flying",
+          "map_arena_ghost",
+          "map_arena_rock"
+        ]
+      }
+    },
+    {
+      "id": "player",
+      "object": "plr_waves",
+      "x": 272,
+      "y": 192
+    },
+    {
+      "id": "waves",
+      "object": "prop_waves"
+    },
+    {
+      "id": "hud",
+      "object": "hud_waves"
+    }
+  ],
+  "on_start": [
+    {
+      "do": "fade_in",
+      "ticks": 20
+    }
+  ]
+}

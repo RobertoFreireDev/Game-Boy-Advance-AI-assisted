@@ -32,6 +32,8 @@ const SpeciesData *monster_species(const Actor *a);
 int monster_team(const Actor *a);
 // Its level (the player's comes from a variable).
 int monster_level(const Actor *a);
+// Give a wild monster that just appeared its level and hit points (a wave director's scaling).
+void monster_set_level(Actor *a, int level, int hp);
 // Damage percent of one of its moves: `power` (0 = its own: 100, Alpha 150, plus its power_var
 // boost), + home_power % in its home world.
 int monster_power(const Actor *a, int power);

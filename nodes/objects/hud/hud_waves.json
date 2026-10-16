@@ -1,0 +1,140 @@
+{
+  "id": "hud_waves",
+  "kind": "object",
+  "type": "hud",
+  "name": "Waves run HUD",
+  "notes": "The classic run's HUD with the wave instead of the kills: the top panel holds the HP bar, the level, WAVE n/10, the XP bar and the run timer; at the bottom the 3 moves with their charge circles. When a wave starts its name shows in the middle of the screen for 2 s (WAVE 1 ... WAVE 9, then FINAL WAVE!).",
+  "font": "font_default",
+  "box": {
+    "x": 0,
+    "y": 0,
+    "w": 240,
+    "h": 16,
+    "paper": 3,
+    "border": 2
+  },
+  "elements": [
+    {
+      "kind": "text",
+      "x": 8,
+      "y": 0,
+      "text": "HP"
+    },
+    {
+      "kind": "bar",
+      "x": 24,
+      "y": 0,
+      "var": "hp",
+      "max_var": "hp_max",
+      "length": 8,
+      "color": 9,
+      "mid_color": 4,
+      "low_color": 5,
+      "back": 13
+    },
+    {
+      "kind": "text",
+      "x": 96,
+      "y": 0,
+      "text": "LV{level}"
+    },
+    {
+      "kind": "text",
+      "x": 144,
+      "y": 0,
+      "text": "WAVE {wave}/10"
+    },
+    {
+      "kind": "text",
+      "x": 8,
+      "y": 8,
+      "text": "XP"
+    },
+    {
+      "kind": "bar",
+      "x": 24,
+      "y": 8,
+      "var": "xp_pct",
+      "max": 100,
+      "length": 8,
+      "color": 6,
+      "back": 13
+    },
+    {
+      "kind": "text",
+      "x": 144,
+      "y": 8,
+      "text": "TIME {time_min:02}:{time_sec:02}"
+    },
+    {
+      "kind": "icon",
+      "x": 8,
+      "y": 144,
+      "icon": "icon_btn_a"
+    },
+    {
+      "kind": "gauge",
+      "x": 24,
+      "y": 144,
+      "var": "g1",
+      "icons": [
+        "icon_gauge_0",
+        "icon_gauge_1",
+        "icon_gauge_2",
+        "icon_gauge_3",
+        "icon_gauge_4",
+        "icon_gauge_5",
+        "icon_gauge_6"
+      ]
+    },
+    {
+      "kind": "icon",
+      "x": 40,
+      "y": 144,
+      "icon": "icon_btn_b"
+    },
+    {
+      "kind": "gauge",
+      "x": 56,
+      "y": 144,
+      "var": "g2",
+      "icons": [
+        "icon_gauge_0",
+        "icon_gauge_1",
+        "icon_gauge_2",
+        "icon_gauge_3",
+        "icon_gauge_4",
+        "icon_gauge_5",
+        "icon_gauge_6"
+      ]
+    },
+    {
+      "kind": "icon",
+      "x": 72,
+      "y": 144,
+      "icon": "icon_btn_r"
+    },
+    {
+      "kind": "gauge",
+      "x": 88,
+      "y": 144,
+      "var": "g3",
+      "icons": [
+        "icon_gauge_0",
+        "icon_gauge_1",
+        "icon_gauge_2",
+        "icon_gauge_3",
+        "icon_gauge_4",
+        "icon_gauge_5",
+        "icon_gauge_6"
+      ]
+    },
+    {
+      "kind": "text",
+      "x": 120,
+      "y": 56,
+      "align": "center",
+      "text": "{wave_banner||WAVE 1|WAVE 2|WAVE 3|WAVE 4|WAVE 5|WAVE 6|WAVE 7|WAVE 8|WAVE 9|FINAL WAVE!}"
+    }
+  ]
+}

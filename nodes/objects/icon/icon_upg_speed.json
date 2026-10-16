@@ -1,0 +1,26 @@
+{
+  "id": "icon_upg_speed",
+  "kind": "object",
+  "type": "icon",
+  "name": "Swift Feather card icon",
+  "notes": "16x16 picture on the Swift Feather level-up card, in the UI colors so the card's box shows around it, redrawn from the classic run's floor item.",
+  "palette": "pal_ui",
+  "pixels": [
+    "................",
+    "................",
+    "...........11...",
+    ".........11f21..",
+    ".......112f2f1..",
+    "......12ff2f61..",
+    ".....12ff2f661..",
+    "....12ff2f661...",
+    "....12f2f661....",
+    "....1f2f611.....",
+    "....18111.......",
+    "...181..........",
+    "....1...........",
+    "................",
+    "................",
+    "................"
+  ]
+}

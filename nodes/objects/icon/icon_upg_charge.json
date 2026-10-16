@@ -1,0 +1,26 @@
+{
+  "id": "icon_upg_charge",
+  "kind": "object",
+  "type": "icon",
+  "name": "Hourglass card icon",
+  "notes": "16x16 picture on the Hourglass level-up card, in the UI colors so the card's box shows around it, redrawn from the classic run's floor item.",
+  "palette": "pal_ui",
+  "pixels": [
+    "................",
+    "................",
+    "...1111111111...",
+    "...1cccccc881...",
+    "...1111111111...",
+    "....12fffff1....",
+    "....144444a1....",
+    ".....1444a1.....",
+    "......1441......",
+    ".....1ff4f1.....",
+    "....1ff444a1....",
+    "...1111111111...",
+    "...1cccccc881...",
+    "................",
+    "................",
+    "................"
+  ]
+}

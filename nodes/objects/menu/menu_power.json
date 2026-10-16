@@ -1,0 +1,29 @@
+{
+  "id": "menu_power",
+  "kind": "object",
+  "type": "menu",
+  "name": "Level-up cards",
+  "notes": "Opens on every level the player gains in the waves mode (the world freezes) and shows 3 random cards: Power Gem, Swift Feather, Aim Charm, Mist Orb, Hourglass and Vital Seed, each until it reaches its highest level (NEW! the first time, then LV2, LV3...); the Sun Berry fills in once fewer than 3 are left. Up / Down choose, A takes the card (it can't be skipped). Two levels at once open it twice, one after the other.",
+  "font": "font_default",
+  "title": "LEVEL {level}! CHOOSE ONE",
+  "cursor": "icon_cursor",
+  "upgrades": 3,
+  "box": {
+    "x": 0,
+    "y": 16,
+    "w": 240,
+    "h": 128,
+    "paper": 3,
+    "border": 2
+  },
+  "layout": {
+    "x": 48,
+    "y": 40,
+    "spacing": 32,
+    "title_y": 24
+  },
+  "sounds": {
+    "move": "sfx_select",
+    "select": "sfx_confirm"
+  }
+}

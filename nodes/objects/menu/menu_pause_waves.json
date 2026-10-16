@@ -1,0 +1,144 @@
+{
+  "id": "menu_pause_waves",
+  "kind": "object",
+  "type": "menu",
+  "name": "Pause (waves)",
+  "notes": "Opens with START during a waves run (the world freezes). Shows the level (yellow), XP (blue), the wave (red), the timer (green), the kills and the monsters of this wave still to defeat, then the 3 moves (a move not unlocked yet in dark grey). CONTINUE (or B / START) goes back; RESTART starts a new waves run with the same monster in the same world; QUIT returns to the menu.",
+  "font": "font_default",
+  "title": "PAUSED",
+  "cursor": "icon_cursor",
+  "box": {
+    "x": 0,
+    "y": 16,
+    "w": 240,
+    "h": 128,
+    "paper": 3,
+    "border": 2
+  },
+  "texts": [
+    {
+      "x": 16,
+      "y": 48,
+      "text": "LV {level}",
+      "color": "#f8d038"
+    },
+    {
+      "x": 128,
+      "y": 48,
+      "text": "XP {xp}",
+      "color": "#78a8f8"
+    },
+    {
+      "x": 16,
+      "y": 56,
+      "text": "WAVE {wave}/10",
+      "color": "#f86860"
+    },
+    {
+      "x": 128,
+      "y": 56,
+      "text": "TIME {time_min:02}:{time_sec:02}",
+      "color": "#58d058"
+    },
+    {
+      "x": 16,
+      "y": 64,
+      "text": "KILLS {kills}"
+    },
+    {
+      "x": 128,
+      "y": 64,
+      "text": "LEFT {wave_left}"
+    },
+    {
+      "x": 16,
+      "y": 80,
+      "text": "A  {chosen.move1}"
+    },
+    {
+      "x": 16,
+      "y": 88,
+      "text": "B  {chosen.move2}",
+      "color_by": {
+        "var": "moves",
+        "colors": [
+          "#606060",
+          "#606060",
+          "#f8f8f8"
+        ]
+      }
+    },
+    {
+      "x": 16,
+      "y": 96,
+      "text": "R  {chosen.move3}",
+      "color_by": {
+        "var": "moves",
+        "colors": [
+          "#606060",
+          "#606060",
+          "#606060",
+          "#f8f8f8"
+        ]
+      }
+    }
+  ],
+  "layout": {
+    "direction": "row",
+    "x": 24,
+    "y": 128,
+    "spacing": 24,
+    "title_y": 24
+  },
+  "options": [
+    {
+      "label": "CONTINUE",
+      "actions": [
+        {
+          "do": "close_menu"
+        }
+      ]
+    },
+    {
+      "label": "RESTART",
+      "actions": [
+        {
+          "do": "fade_out",
+          "ticks": 20
+        },
+        {
+          "do": "stop_music"
+        },
+        {
+          "do": "reset_vars"
+        },
+        {
+          "do": "goto_scene",
+          "scene": "scn_waves"
+        }
+      ]
+    },
+    {
+      "label": "QUIT",
+      "actions": [
+        {
+          "do": "fade_out",
+          "ticks": 20
+        },
+        {
+          "do": "goto_scene",
+          "scene": "scn_menu"
+        }
+      ]
+    }
+  ],
+  "on_cancel": [
+    {
+      "do": "close_menu"
+    }
+  ],
+  "sounds": {
+    "move": "sfx_select",
+    "select": "sfx_confirm"
+  }
+}

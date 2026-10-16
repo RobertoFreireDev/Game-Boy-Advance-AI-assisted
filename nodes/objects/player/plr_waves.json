@@ -1,0 +1,183 @@
+{
+  "id": "plr_waves",
+  "kind": "object",
+  "type": "player",
+  "name": "Player monster (waves)",
+  "notes": "The monster the human picked on the second half of the menu (the waves mode), its species from 'chosen'. It fights exactly like in the classic run: D-pad walks in 8 directions, A / B / R fire moves 1-3 (move 2 unlocks at level 4, move 3 at level 7), the same walking dodge, the same home-world bonus and the same sounds; START opens the waves pause menu. What differs: it is held inside the lit floor by the arena's dark edge, there are no floor items, and every level gained opens the level-up menu (menu_power), one level at a time, to choose 1 of 3 cards (power, speed, aim, dodge, recharge, max HP). Levels: 1 XP per hit and the wave monsters' XP when they faint; a level costs 20 XP, then 12 more for each level plus 6 more again each time (20, 38, 62, 92, 128 ... a steepening curve, because later waves bring many more monsters), up to level 25. Each level still adds 8 max HP and heals it to full. When its HP runs out the run ends (the waves game over screen).",
+  "logic": [
+    {
+      "behavior": "monster",
+      "params": {
+        "species_var": "chosen",
+        "hp_var": "hp",
+        "hp_max_var": "hp_max",
+        "level_var": "level",
+        "xp_var": "xp",
+        "xp_pct_var": "xp_pct",
+        "max_level": 25,
+        "shadow": "spr_shadow",
+        "power_var": "boost_power",
+        "aim_var": "boost_aim",
+        "dodge_var": "boost_dodge",
+        "dodge_walk": 20,
+        "dodge_away": 30,
+        "dodge_ticks": 6,
+        "home_var": "world",
+        "on_home": [
+          {
+            "do": "wait",
+            "ticks": 30
+          },
+          {
+            "do": "float_text",
+            "text": "+10% POWER",
+            "palette": "pal_txt_cyan"
+          },
+          {
+            "do": "play_sfx",
+            "sfx": "sfx_item"
+          },
+          {
+            "do": "wait",
+            "ticks": 45
+          },
+          {
+            "do": "float_text",
+            "text": "+10% SPEED",
+            "palette": "pal_txt_cyan"
+          },
+          {
+            "do": "play_sfx",
+            "sfx": "sfx_item"
+          },
+          {
+            "do": "wait",
+            "ticks": 45
+          },
+          {
+            "do": "float_text",
+            "text": "-10% RECHARGE",
+            "palette": "pal_txt_cyan"
+          },
+          {
+            "do": "play_sfx",
+            "sfx": "sfx_item"
+          }
+        ],
+        "on_level_up": [
+          {
+            "do": "float_text",
+            "text": "LV UP!",
+            "palette": "pal_txt_yellow"
+          },
+          {
+            "do": "play_sfx",
+            "sfx": "sfx_level_up"
+          },
+          {
+            "do": "open_menu",
+            "menu": "menu_power"
+          }
+        ],
+        "on_hurt": [
+          {
+            "do": "shake_camera",
+            "ticks": 10,
+            "strength": 1
+          }
+        ],
+        "on_death": [
+          {
+            "do": "set_var",
+            "var": "run_over",
+            "value": 1
+          },
+          {
+            "do": "stop_music"
+          },
+          {
+            "do": "wait",
+            "ticks": 110
+          },
+          {
+            "do": "fade_out",
+            "ticks": 30
+          },
+          {
+            "do": "goto_scene",
+            "scene": "scn_waves_over"
+          }
+        ],
+        "xp_first": 20,
+        "xp_step": 12,
+        "xp_grow": 6,
+        "xp_per_hit": 1,
+        "level_by_level": true
+      }
+    },
+    {
+      "behavior": "topdown_controller",
+      "params": {
+        "speed": 1.0,
+        "eight_way": true,
+        "speed_var": "boost_speed"
+      }
+    },
+    {
+      "behavior": "move_buttons",
+      "params": {
+        "level_var": "level",
+        "unlock_2": 4,
+        "unlock_3": 7,
+        "gauge_1": "g1",
+        "gauge_2": "g2",
+        "gauge_3": "g3",
+        "unlocked_var": "moves",
+        "locked_sfx": "sfx_error",
+        "miss_sfx": "sfx_miss",
+        "on_unlock": [
+          {
+            "do": "wait",
+            "ticks": 24
+          },
+          {
+            "do": "float_text",
+            "text": "NEW MOVE!",
+            "palette": "pal_txt_cyan",
+            "height": 34
+          },
+          {
+            "do": "play_sfx",
+            "sfx": "sfx_new_move"
+          }
+        ],
+        "charge_var": "boost_charge"
+      }
+    },
+    {
+      "behavior": "camera_target",
+      "params": {}
+    },
+    {
+      "behavior": "button_actions",
+      "params": {
+        "button": "START",
+        "on_press": [
+          {
+            "do": "open_menu",
+            "menu": "menu_pause_waves"
+          }
+        ]
+      }
+    },
+    {
+      "behavior": "run_clock",
+      "params": {
+        "total_var": "time",
+        "minutes_var": "time_min",
+        "seconds_var": "time_sec",
+        "stop_var": "run_over"
+      }
+    }
+  ]
+}

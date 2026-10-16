@@ -1,0 +1,26 @@
+{
+  "id": "icon_arrow_r_waves",
+  "kind": "object",
+  "type": "icon",
+  "name": "Arrow right (waves)",
+  "notes": "Points right: press Right for the next monster. Red: shown instead of the yellow one on the waves entries of the menu.",
+  "palette": "pal_ui",
+  "pixels": [
+    "....1...........",
+    "...1511.........",
+    "...15551........",
+    "...155551.......",
+    "...1555551......",
+    "...15555551.....",
+    "...1555555511...",
+    "...15555555551..",
+    "...18888888881..",
+    "...1888888811...",
+    "...18888881.....",
+    "...1888881......",
+    "...188881.......",
+    "...18881........",
+    "...1811.........",
+    "....1..........."
+  ]
+}

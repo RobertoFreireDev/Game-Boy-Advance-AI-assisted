@@ -1,0 +1,28 @@
+{
+  "id": "upg_speed",
+  "kind": "object",
+  "type": "upgrade",
+  "name": "Swift Feather",
+  "notes": "Swift Feather: the player walks 10% faster, up to 4 times (+40%). Adds 1 to boost_speed. Offered on the waves mode's level-up menu (menu_power); its level is kept in 'up_speed' (back to 0 each run).",
+  "category": "item",
+  "title": "SWIFT FEATHER",
+  "icon": "icon_upg_speed",
+  "var": "up_speed",
+  "max_level": 4,
+  "descriptions": [
+    "WALK 10% FASTER.",
+    "WALK 10% FASTER (+20% IN ALL)",
+    "WALK 10% FASTER (+30% IN ALL)",
+    "WALK 10% FASTER (+40% IN ALL)"
+  ],
+  "on_pick": [
+    {
+      "do": "add_var",
+      "var": "boost_speed",
+      "value": 1
+    }
+  ],
+  "children": [
+    "icon_upg_speed"
+  ]
+}

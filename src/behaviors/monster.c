@@ -83,6 +83,13 @@ int monster_level(const Actor *a) {
     return m ? m->level : 1;
 }
 
+void monster_set_level(Actor *a, int level, int hp) {
+    Monster *m = mon(a);
+    if (!m) return;
+    m->level = (u8)(level < 1 ? 1 : level > 99 ? 99 : level);
+    m->hp = m->hp_max = (s16)(hp < 1 ? 1 : hp > 9999 ? 9999 : hp);
+}
+
 int monster_power(const Actor *a, int power) {
     const Monster *m = mon(a);
     if (!m) return power ? power : 100;
@@ -199,9 +206,9 @@ static Actor *player_monster(void) {
     return mon(p) ? p : NULL;
 }
 
-// Total XP needed to reach level lv + 1 (0 for level 0).
+// Total XP needed to reach level lv + 1 (0 for level 0): each level costs xp_grow more than the last.
 static s32 xp_needed(const Params_monster *p, s32 lv) {
-    return lv <= 0 ? 0 : p->xp_first + p->xp_step * (lv - 1);
+    return lv <= 0 ? 0 : p->xp_first + p->xp_step * (lv - 1) + p->xp_grow * (lv - 1) * lv / 2;
 }
 
 static void give_xp(s32 amount) {
@@ -210,7 +217,8 @@ static void give_xp(s32 amount) {
     if (p && p->xp_var >= 0 && amount > 0) vars_add(p->xp_var, amount);
 }
 
-// Level ups (as many as the XP pays for) and the XP bar's 0-100 progress.
+// Level ups (as many as the XP pays for, or one per tick with level_by_level) and the XP bar's
+// 0-100 progress.
 static void player_progress(Actor *a, const Params_monster *p, Monster *m) {
     s32 xp = vars_get(p->xp_var);
     s32 lv = vars_get(p->level_var);
@@ -221,6 +229,7 @@ static void player_progress(Actor *a, const Params_monster *p, Monster *m) {
         vars_add(p->hp_max_var, p->hp_per_level);
         if (p->hp_max_var >= 0) vars_set(p->hp_var, vars_get(p->hp_max_var));   // a full heal: fighting pays off
         scripts_start(p->on_level_up, a);
+        if (p->level_by_level) break;   // the next one waits a tick (after the level-up menu it opened)
     }
     m->level = (u8)lv;
     if (xp == m->xp_seen && m->xp_known) return;
@@ -462,6 +471,7 @@ static void buff_update(Actor *a, const Params_monster *p, Monster *m) {
     a->flags &= (u8)~ACTOR_HIDDEN;
     a->solid_mode = a->body && a->body->solid ? SOLID_FULL : SOLID_NONE;
     a->collides = a->body ? a->body->collides : 0;
+    if (!p->walls) a->collides &= (u16)~(1u << CAT_TILES);
 }
 
 // ---- the behavior --------------------------------------------------------------------
@@ -506,6 +516,7 @@ void bhv_monster_init(Actor *a, const void *params) {
         m->recharge = (u16)(((100 - p->home_charge) * 1024 + 99) / 100);
     }
     actor_set_body(a, sp->body);
+    if (!p->walls) a->collides &= (u16)~(1u << CAT_TILES);   // walks through solid tiles (a dark arena edge)
     if (p->alpha) a->pal = sp->alpha_palette;
     a->flash_pal = hit_palette(p);
     if (m->home) scripts_start(p->on_home, a);

@@ -1,0 +1,115 @@
+{
+  "id": "prop_waves",
+  "kind": "object",
+  "type": "prop",
+  "name": "Wave director",
+  "notes": "Invisible: runs the waves mode. 1.5 s after the run starts, wave 1 comes; each wave's monsters appear in the dark band all around the arena (out of the camera's view when they can) and walk in to hunt the player. When every monster of a wave has fainted, the next one comes 3 s later; WAVE 2, WAVE 3 ... FINAL WAVE! shows in the middle of the screen with a horn. 10 waves, about 10 minutes in all: wave 1: 3 monsters, levels 1-3 (23-37 HP), move 1 only; wave 2: 5 monsters, levels 2-4 (30-44 HP), move 1 only; wave 3: 8 monsters, levels 3-5 (37-51 HP), move 1 only; wave 4: 10 monsters, levels 4-6 (44-58 HP), moves 1-2; wave 5: 12 monsters, levels 5-7 (51-65 HP), moves 1-2; wave 6: 15 monsters, levels 6-8 (58-72 HP), moves 1-2; wave 7: 17 monsters, levels 7-9 (65-79 HP), all 3 moves; wave 8: 19 monsters, levels 8-10 (72-86 HP), all 3 moves; wave 9: 21 monsters, levels 9-11 (79-93 HP), all 3 moves; wave 10: 24 monsters + the boss, levels 10-12 (86-100 HP), all 3 moves. The boss (enm_wave_boss) comes with the last wave: its roar, a screen shake and the boss theme. When the last wave is cleared the run is won (the waves victory screen). The level-up cards, not floor items, make the player stronger along the way.",
+  "logic": [
+    {
+      "behavior": "monster_waves",
+      "params": {
+        "waves": 10,
+        "object": "enm_wave_1",
+        "object_2": "enm_wave_2",
+        "object_2_from": 4,
+        "object_3": "enm_wave_3",
+        "object_3_from": 7,
+        "count": 3,
+        "count_add": 2.3,
+        "max_count": 24,
+        "level": 1,
+        "level_add": 1.0,
+        "level_spread": 2,
+        "hp": 16,
+        "hp_per_level": 7,
+        "boss": "enm_wave_boss",
+        "boss_level": 14,
+        "boss_hp": 500,
+        "wave_var": "wave",
+        "left_var": "wave_left",
+        "start_delay": 90,
+        "pause": 180,
+        "on_wave": [
+          {
+            "do": "set_var",
+            "var": "wave_banner",
+            "from": "wave"
+          },
+          {
+            "do": "play_sfx",
+            "sfx": "sfx_wave"
+          },
+          {
+            "do": "wait",
+            "ticks": 120
+          },
+          {
+            "do": "set_var",
+            "var": "wave_banner",
+            "value": 0
+          }
+        ],
+        "on_boss": [
+          {
+            "do": "stop_music"
+          },
+          {
+            "do": "play_sfx",
+            "sfx": "sfx_wake"
+          },
+          {
+            "do": "shake_camera",
+            "ticks": 40,
+            "strength": 2
+          },
+          {
+            "do": "wait",
+            "ticks": 40
+          },
+          {
+            "do": "if_var",
+            "var": "run_over",
+            "op": "==",
+            "value": 0,
+            "then": [
+              {
+                "do": "play_music",
+                "music": "mus_boss"
+              }
+            ]
+          }
+        ],
+        "on_clear": [
+          {
+            "do": "if_var",
+            "var": "run_over",
+            "op": "==",
+            "value": 0,
+            "then": [
+              {
+                "do": "set_var",
+                "var": "run_over",
+                "value": 1
+              },
+              {
+                "do": "stop_music"
+              },
+              {
+                "do": "wait",
+                "ticks": 60
+              },
+              {
+                "do": "fade_out",
+                "ticks": 30
+              },
+              {
+                "do": "goto_scene",
+                "scene": "scn_waves_victory"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

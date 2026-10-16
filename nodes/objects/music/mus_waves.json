@@ -1,0 +1,98 @@
+{
+  "id": "mus_waves",
+  "kind": "object",
+  "type": "music",
+  "name": "Waves theme",
+  "notes": "Original run theme of the waves mode (it plays only in that mode's run, never in the classic run): a marching arena groove in D minor at 150 BPM. A short build-up plays once (a D pedal with the drums coming in), then the loop: a verse over D minor - B flat - C - A, played twice (the second time it rises and closes on A with a drum fill), and a bridge over G minor - D minor - B flat - C that climbs to a high D and falls back through a second fill. Same instrument style and volumes as the other songs (melody on square1 at volume 3, harmony arpeggios on square2 at 2, a pumping octave bass on the wave channel at 1 with a half-height waveform, drums at 2), so every hit and miss is heard over it. The last wave switches to the boss theme (mus_boss) when the boss comes.",
+  "bpm": 150,
+  "rows_per_beat": 4,
+  "loop": true,
+  "loop_from": 1,
+  "instruments": {
+    "square1": {
+      "duty": 1,
+      "volume": 3,
+      "decay": 0
+    },
+    "square2": {
+      "duty": 2,
+      "volume": 2,
+      "decay": 2
+    },
+    "wave": {
+      "wave": "01234567765432100000000000000000",
+      "volume": 1
+    },
+    "noise": {
+      "volume": 2,
+      "decay": 1
+    }
+  },
+  "patterns": {
+    "I1": {
+      "square1": ".. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. | .. .. .. .. .. .. .. .. A4 -- -- -- C#5 -- -- --",
+      "square2": "D4 .. .. .. D4 .. .. .. D4 .. .. .. D4 .. D4 .. | C#4 .. .. .. C#4 .. .. .. E4 .. .. .. E4 .. E4 ..",
+      "wave": "D2 -- -- -- D2 -- -- -- D2 -- -- -- D2 -- D2 -- | A2 -- -- -- A2 -- -- -- A2 -- -- -- A2 -- A2 --",
+      "noise": "X1 .. .. .. Xb .. .. .. X1 .. .. .. Xb .. Xb .. | X1 .. .. .. Xb .. .. .. X1 .. Xb .. Xb Xb Xc Xd"
+    },
+    "A1": {
+      "square1": "D5 -- -- A4 D5 -- F5 -- A5 -- -- G5 F5 -- E5 -- | F5 -- -- D5 A#4 -- D5 -- F5 -- -- -- D5 -- .. ..",
+      "square2": "D4 .. F4 .. A4 .. F4 .. D4 .. F4 .. A4 .. F4 .. | A#3 .. D4 .. F4 .. D4 .. A#3 .. D4 .. F4 .. D4 ..",
+      "wave": "D2 .. D2 D3 D2 .. D2 D3 D2 .. D2 D3 D2 .. D2 D3 | A#2 .. A#2 A#3 A#2 .. A#2 A#3 A#2 .. A#2 A#3 A#2 .. A#2 A#3",
+      "noise": "X1 .. Xe .. Xb .. Xe .. X1 X1 Xe .. Xb .. Xe Xe | X1 .. Xe .. Xb .. Xe .. X1 X1 Xe .. Xb .. Xe Xe"
+    },
+    "A2": {
+      "square1": "E5 -- -- C5 G4 -- C5 -- E5 -- -- F5 G5 -- E5 -- | C#5 -- -- -- E5 -- A5 -- G5 -- F5 -- E5 -- C#5 --",
+      "square2": "C4 .. E4 .. G4 .. E4 .. C4 .. E4 .. G4 .. E4 .. | A3 .. C#4 .. E4 .. C#4 .. A3 .. C#4 .. E4 .. C#4 ..",
+      "wave": "C3 .. C3 C4 C3 .. C3 C4 C3 .. C3 C4 C3 .. C3 C4 | A2 .. A2 A3 A2 .. A2 A3 A2 .. A2 A3 A2 .. A2 A3",
+      "noise": "X1 .. Xe .. Xb .. Xe .. X1 X1 Xe .. Xb .. Xe Xe | X1 .. Xe .. Xb .. Xe .. X1 X1 Xe .. Xb .. Xe Xe"
+    },
+    "A3": {
+      "square1": "D5 -- -- A4 D5 -- F5 -- A5 -- -- G5 F5 -- A5 -- | A#5 -- -- -- A5 -- G5 -- F5 -- D5 -- F5 -- -- --",
+      "square2": "D4 .. F4 .. A4 .. F4 .. D4 .. F4 .. A4 .. F4 .. | A#3 .. D4 .. F4 .. D4 .. A#3 .. D4 .. F4 .. D4 ..",
+      "wave": "D2 .. D2 D3 D2 .. D2 D3 D2 .. D2 D3 D2 .. D2 D3 | A#2 .. A#2 A#3 A#2 .. A#2 A#3 A#2 .. A#2 A#3 A#2 .. A#2 A#3",
+      "noise": "X1 .. Xe .. Xb .. Xe .. X1 X1 Xe .. Xb .. Xe Xe | X1 .. Xe .. Xb .. Xe .. X1 X1 Xe .. Xb .. Xe Xe"
+    },
+    "A4": {
+      "square1": "G5 -- -- E5 C5 -- E5 -- G5 -- A5 -- G5 -- E5 -- | E5 -- -- -- C#5 -- -- -- A4 -- -- -- .. .. .. ..",
+      "square2": "C4 .. E4 .. G4 .. E4 .. C4 .. E4 .. G4 .. E4 .. | A3 .. C#4 .. E4 .. C#4 .. A3 .. C#4 .. E4 .. C#4 ..",
+      "wave": "C3 .. C3 C4 C3 .. C3 C4 C3 .. C3 C4 C3 .. C3 C4 | A2 .. A2 A3 A2 .. A2 A3 A2 .. A2 A3 A2 .. A2 A3",
+      "noise": "X1 .. Xe .. Xb .. Xe .. X1 X1 Xe .. Xb .. Xe Xe | X1 .. Xb .. Xb .. Xb Xb X1 .. Xb Xb Xb Xc Xc Xd"
+    },
+    "B1": {
+      "square1": "G5 -- -- -- A#5 -- A5 -- G5 -- D5 -- -- -- A#4 -- | A4 -- -- -- D5 -- F5 -- A5 -- -- -- -- -- .. ..",
+      "square2": "G3 .. A#3 .. D4 .. A#3 .. G3 .. A#3 .. D4 .. A#3 .. | D4 .. F4 .. A4 .. F4 .. D4 .. F4 .. A4 .. F4 ..",
+      "wave": "G2 .. G2 G3 G2 .. G2 G3 G2 .. G2 G3 G2 .. G2 G3 | D2 .. D2 D3 D2 .. D2 D3 D2 .. D2 D3 D2 .. D2 D3",
+      "noise": "X1 .. Xe .. Xb .. Xe .. X1 X1 Xe .. Xb .. Xe Xe | X1 .. Xe .. Xb .. Xe .. X1 X1 Xe .. Xb .. Xe Xe"
+    },
+    "B2": {
+      "square1": "A#5 -- -- -- A5 -- G5 -- F5 -- -- -- D5 -- F5 -- | G5 -- -- -- E5 -- C5 -- E5 -- G5 -- C6 -- -- --",
+      "square2": "A#3 .. D4 .. F4 .. D4 .. A#3 .. D4 .. F4 .. D4 .. | C4 .. E4 .. G4 .. E4 .. C4 .. E4 .. G4 .. E4 ..",
+      "wave": "A#2 .. A#2 A#3 A#2 .. A#2 A#3 A#2 .. A#2 A#3 A#2 .. A#2 A#3 | C3 .. C3 C4 C3 .. C3 C4 C3 .. C3 C4 C3 .. C3 C4",
+      "noise": "X1 .. Xe .. Xb .. Xe .. X1 X1 Xe .. Xb .. Xe Xe | X1 .. Xe .. Xb .. Xe .. X1 X1 Xe .. Xb .. Xe Xe"
+    },
+    "B3": {
+      "square1": "D6 -- -- -- C6 -- A#5 -- A5 -- G5 -- F5 -- G5 -- | A5 -- -- -- F5 -- D5 -- F5 -- A5 -- D6 -- -- --",
+      "square2": "G3 .. A#3 .. D4 .. A#3 .. G3 .. A#3 .. D4 .. A#3 .. | D4 .. F4 .. A4 .. F4 .. D4 .. F4 .. A4 .. F4 ..",
+      "wave": "G2 .. G2 G3 G2 .. G2 G3 G2 .. G2 G3 G2 .. G2 G3 | D2 .. D2 D3 D2 .. D2 D3 D2 .. D2 D3 D2 .. D2 D3",
+      "noise": "X1 .. Xe .. Xb .. Xe .. X1 X1 Xe .. Xb .. Xe Xe | X1 .. Xe .. Xb .. Xe .. X1 X1 Xe .. Xb .. Xe Xe"
+    },
+    "B4": {
+      "square1": "C6 -- A#5 -- A5 -- G5 -- F5 -- E5 -- D5 -- E5 -- | C#5 -- -- -- E5 -- -- -- A5 -- -- -- C#6 -- -- --",
+      "square2": "A#3 .. D4 .. F4 .. D4 .. A#3 .. D4 .. F4 .. D4 .. | A3 .. C#4 .. E4 .. C#4 .. A3 .. C#4 .. E4 .. C#4 ..",
+      "wave": "A#2 .. A#2 A#3 A#2 .. A#2 A#3 A#2 .. A#2 A#3 A#2 .. A#2 A#3 | A2 .. A2 A3 A2 .. A2 A3 A2 .. A2 A3 A2 .. A2 A3",
+      "noise": "X1 .. Xe .. Xb .. Xe .. X1 X1 Xe .. Xb .. Xe Xe | X1 .. Xb .. Xb .. Xb Xb X1 .. Xb Xb Xb Xc Xc Xd"
+    }
+  },
+  "order": [
+    "I1",
+    "A1",
+    "A2",
+    "A3",
+    "A4",
+    "B1",
+    "B2",
+    "B3",
+    "B4"
+  ]
+}

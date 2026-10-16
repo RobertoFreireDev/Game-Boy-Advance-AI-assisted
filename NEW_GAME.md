@@ -117,6 +117,25 @@ every ground map; `rr.py <world> <out.png> [scale] [x y w h]` renders a world fr
 `scratchpad/t/test_worlds.py` plays 12 runs + a RESTART in the emulator: maps per world, every
 monster's home bonus, real walking / recharge / damage, the floating words, a screenshot per world.
 
+**The waves mode** (Monster Survival's second game mode, session 944e2664): the menu's picker shows the 9
+monsters twice (`species_select` `passes` 2: entries 9-17 = the waves mode, locked until all 9 have won a
+classic run; `entry` indexes the 18 best times). The classic run's nodes are untouched; the mode has its
+own scenes (`scn_waves`, `scn_waves_victory`, `scn_waves_over`), player (`plr_waves`: `level_by_level`,
+`xp_grow`, `on_level_up` opens the upgrade-card menu `menu_power`), monsters (`enm_wave_1/2/3`: `walls`
+false, `monster_ai` `hunt`; `enm_wave_boss`), the director `prop_waves` (`monster_waves`), 7 `upg_*` cards,
+`mus_waves`. The 2x2-screen arena = the world's ground map cut down (`map_arena_<world>`, layer 2, the
+ground tilesets reused as they are) under a collision layer `map_arena_edge_<world>` that fades the
+floor into the black backdrop with the world's own darkest ground shades (5, 6, 1: every ground
+palette has that ramp) and is solid everywhere but the floor. Generator: session 944e2664 scratchpad
+`waves/` (`gen_nodes.py` writes every node + the index + the shared menu edits; `art.py` = edge fade,
+card icons, red arrows; `music.py`; `preview.py` = PNGs; `balance.py` = the rough balance model).
+Tests in its `t/`: `test_classic.py` (the same bot plays the classic mode on a `git archive HEAD` copy
+and on the new tree; per-checkpoint state hashes must match: proof a change left the classic mode
+alone), `test_waves.py` (functional: menu loop / locks / unlock, arena walls, edge spawns out of view,
+pause RESTART, waves, cards, boss, victory best time; `balance <species>`: the bot with no help;
+`perf <species>`: god mode, per-phase and per-behavior CPU of each wave's worst frame; START_WAVE=n
+skips ahead).
+
 **Generic nodes kept across games** (on `main` too; reuse, recolor if needed, don't delete):
 `font_default`, `pal_ui`, `icon_cursor`, `icon_heart`, `sfx_select`, `sfx_confirm`.
 

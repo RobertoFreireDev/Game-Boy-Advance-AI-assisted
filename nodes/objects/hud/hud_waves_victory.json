@@ -1,0 +1,46 @@
+{
+  "id": "hud_waves_victory",
+  "kind": "object",
+  "type": "hud",
+  "name": "Waves victory text",
+  "notes": "ALL WAVES CLEARED! with the final time, level and kills, then this monster's best waves time: NEW BEST TIME! <time> when this run set it, BEST TIME <time> otherwise (best_time[entry], the waves entry of the menu).",
+  "font": "font_default",
+  "elements": [
+    {
+      "kind": "text",
+      "x": 120,
+      "y": 8,
+      "text": "ALL WAVES CLEARED!",
+      "align": "center"
+    },
+    {
+      "kind": "text",
+      "x": 120,
+      "y": 104,
+      "text": "TIME {time_min:02}:{time_sec:02}",
+      "align": "center"
+    },
+    {
+      "kind": "text",
+      "x": 120,
+      "y": 112,
+      "text": "LEVEL {level}   KILLS {kills}",
+      "align": "center"
+    },
+    {
+      "kind": "text",
+      "x": 120,
+      "y": 120,
+      "text": "{new_best|BEST TIME|NEW BEST TIME!} {best_time[entry]:time}",
+      "align": "center"
+    },
+    {
+      "kind": "text",
+      "x": 120,
+      "y": 152,
+      "text": "PRESS START",
+      "align": "center",
+      "blink": 30
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "id": "upg_berry",
+  "kind": "object",
+  "type": "upgrade",
+  "name": "Sun Berry",
+  "notes": "The filler card: +10 maximum HP (and 10 HP back), as many times as it is picked. It is only offered when fewer than 3 other cards are left (the others all at their highest level).",
+  "category": "bonus",
+  "title": "SUN BERRY",
+  "icon": "icon_upg_berry",
+  "descriptions": [
+    "+10 MAX HP, HEALED AT ONCE."
+  ],
+  "on_pick": [
+    {
+      "do": "add_var",
+      "var": "hp_max",
+      "value": 10
+    },
+    {
+      "do": "add_var",
+      "var": "hp",
+      "value": 10,
+      "max_var": "hp_max"
+    }
+  ],
+  "children": [
+    "icon_upg_berry"
+  ]
+}

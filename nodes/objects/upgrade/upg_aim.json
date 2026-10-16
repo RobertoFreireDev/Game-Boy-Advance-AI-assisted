@@ -1,0 +1,28 @@
+{
+  "id": "upg_aim",
+  "kind": "object",
+  "type": "upgrade",
+  "name": "Aim Charm",
+  "notes": "Aim Charm: +5 accuracy points for the player's moves, up to 4 times (+20: a 90% move never misses). Adds 5 to boost_aim. Offered on the waves mode's level-up menu (menu_power); its level is kept in 'up_aim' (back to 0 each run).",
+  "category": "item",
+  "title": "AIM CHARM",
+  "icon": "icon_upg_aim",
+  "var": "up_aim",
+  "max_level": 4,
+  "descriptions": [
+    "YOUR MOVES HIT 5% MORE OFTEN.",
+    "YOUR MOVES HIT 5% MORE OFTEN (+10% IN ALL)",
+    "YOUR MOVES HIT 5% MORE OFTEN (+15% IN ALL)",
+    "YOUR MOVES HIT 5% MORE OFTEN (+20% IN ALL)"
+  ],
+  "on_pick": [
+    {
+      "do": "add_var",
+      "var": "boost_aim",
+      "value": 5
+    }
+  ],
+  "children": [
+    "icon_upg_aim"
+  ]
+}

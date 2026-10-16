@@ -1,0 +1,27 @@
+{
+  "id": "upg_dodge",
+  "kind": "object",
+  "type": "upgrade",
+  "name": "Mist Orb",
+  "notes": "Mist Orb: wild monsters' moves lose 8 accuracy points against the player, up to 3 times (-24), on top of the walking dodge. Adds 8 to boost_dodge. Offered on the waves mode's level-up menu (menu_power); its level is kept in 'up_dodge' (back to 0 each run).",
+  "category": "item",
+  "title": "MIST ORB",
+  "icon": "icon_upg_dodge",
+  "var": "up_dodge",
+  "max_level": 3,
+  "descriptions": [
+    "WILD MOVES MISS YOU 8% MORE.",
+    "WILD MOVES MISS YOU 8% MORE (+16% IN ALL)",
+    "WILD MOVES MISS YOU 8% MORE (+24% IN ALL)"
+  ],
+  "on_pick": [
+    {
+      "do": "add_var",
+      "var": "boost_dodge",
+      "value": 8
+    }
+  ],
+  "children": [
+    "icon_upg_dodge"
+  ]
+}

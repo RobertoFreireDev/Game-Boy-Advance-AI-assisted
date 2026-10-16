@@ -3,7 +3,9 @@
 // home when the player gets away. It keeps some room from the other wild monsters, so a pack
 // spreads out. Can sleep until a variable reaches a value (a boss). A boss can also use its
 // moves 2 and 3: each recharges on its own timer, and an attack is the highest one ready
-// (they can hit at their own power and recharge slower than the player's).
+// (they can hit at their own power and recharge slower than the player's). A hunter (`hunt`, the
+// waves mode) has no home: while too many others are hostile it walks up to the player and waits
+// `sight` tiles away, then attacks as soon as there is room; it never gives up.
 #include "monster_ai.h"
 #include "monster.h"
 #include "moves.h"
@@ -20,6 +22,7 @@ enum { MODE_SLEEP, MODE_WANDER, MODE_HOSTILE, MODE_RETURN };
 #define DIR_REST 8
 #define SPREAD_HOSTILE 3        // looks at its neighbors every 4th frame while hostile (a power of 2, minus 1)
 #define SPREAD_CALM 15          // and every 16th while wandering or going home (each monster on its own frame)
+#define HUNT_THINK 3            // a waiting hunter decides every 4th frame (a power of 2, minus 1)
 
 static const s8 s_dx[9] = { 1, 1, 0, -1, -1, -1, 0, 1, 0 };
 static const s8 s_dy[9] = { 0, 1, 1, 1, 0, -1, -1, -1, 0 };
@@ -36,6 +39,7 @@ static u8 s_crowd_n[2], s_fill;                 // s_crowd[s_fill] is being writ
 EWRAM_BSS static s8 s_away[MAX_ACTORS][2];      // per pool index: its way out of the crowd (-1..1 each)
 EWRAM_BSS static u16 s_extra[MAX_ACTORS][2];    // per pool index: ticks since moves 2 and 3 were used
 static int s_me;                                // pool index of the monster updating now
+static u32 s_hunt_attack = 0xFFFFFFFF;          // the frame a hunter last attacked in
 
 // A new frame: last frame's list and hostile count become the ones everybody reads.
 static void new_frame(void) {
@@ -164,6 +168,22 @@ static void face_point(Actor *a, s32 x, s32 y) {
     actor_face(a, ax * 2 >= ay ? fx_sign(dx) : 0, ay * 2 >= ax ? fx_sign(dy) : 0);
 }
 
+// A hunter waiting for its turn (too many are hostile): walk up to the player, then wait `sight`
+// tiles away, looking at it. Returns 1 when it may turn hostile now.
+static int hunt(Actor *a, const Params_monster_ai *p, const Actor *pl, int seen, fixed speed) {
+    if (seen && s_hostile < p->max_hostile) return 1;
+    if (!pl) { stand(a, speed); return 0; }
+    s32 px = fx_to_int(pl->x), py = fx_to_int(pl->y);
+    s32 fx = fx_abs(px - fx_to_int(a->x)), fy = fx_abs(py - fx_to_int(a->y));
+    if ((fx > fy ? fx : fy) > (p->sight + 3) * 8 || !moves_within(a, pl, p->sight)) {
+        walk_to(a, px, py, speed);
+        return 0;
+    }
+    stand(a, speed);
+    face_point(a, px, py);
+    return 0;
+}
+
 static void wander(Actor *a, const Params_monster_ai *p, u32 *st, fixed speed) {
     if (st[ST_TIMER] == 0 || a->hit_wall) {
         if (st[ST_DIR] != DIR_REST) {               // rest often
@@ -235,7 +255,8 @@ void bhv_monster_ai_init(Actor *a, const void *params) {
     st[ST_CHARGE] = 0;
     st[ST_STUCK] = 0;
     s_away[actor_index(a)][0] = s_away[actor_index(a)][1] = 0;
-    s_extra[actor_index(a)][0] = s_extra[actor_index(a)][1] = 0xFFFF;   // moves 2 and 3 start ready
+    // Moves 2 and 3 start ready (a boss opens with them), or start recharging when it appears.
+    s_extra[actor_index(a)][0] = s_extra[actor_index(a)][1] = p->moves_ready ? 0xFFFF : 0;
 }
 
 void bhv_monster_ai_update(Actor *a, const void *params) {
@@ -261,9 +282,12 @@ void bhv_monster_ai_update(Actor *a, const void *params) {
         a->vx = a->vy = 0;
         return;
     }
-    const SpeciesData *sp = monster_species(a);
     for (int i = 0; i < 2; i++)                     // moves 2 and 3 recharge while it can act
         if (s_extra[s_me][i] < 0xFFFF) s_extra[s_me][i]++;
+    // A hunter waiting for its turn decides every 4th frame (each on its own frame) and keeps
+    // walking or standing in between: a wave of 24 would otherwise cost a frame's worth.
+    if (p->hunt && st[ST_MODE] == MODE_WANDER && ((s_count_frame + (u32)s_me) & HUNT_THINK)) return;
+    const SpeciesData *sp = monster_species(a);
     const MoveData *m = sp ? aimed_move(a, p, sp) : NULL;
     u32 charge = monster_recharge(a, (u32)p->charge);  // the wait between attacks (shorter at home)
     fixed walk = monster_speed(a, p->speed), chase = monster_speed(a, p->chase_speed);   // its species' pace
@@ -276,6 +300,13 @@ void bhv_monster_ai_update(Actor *a, const void *params) {
     }
     switch (st[ST_MODE]) {
     case MODE_WANDER:
+        if (p->hunt) {
+            if (hunt(a, p, pl, seen, chase)) {
+                turn_hostile(st);
+                st[ST_CHARGE] = charge / 2;         // first attack comes a bit sooner
+            }
+            break;
+        }
         if (near && moves_within(a, pl, p->sight) && s_hostile < p->max_hostile) {
             turn_hostile(st);
             st[ST_CHARGE] = charge / 2;             // first attack comes a bit sooner
@@ -284,8 +315,8 @@ void bhv_monster_ai_update(Actor *a, const void *params) {
         wander(a, p, st, walk);
         break;
     case MODE_HOSTILE: {
-        if (!pl || !actor_alive(pl) || !near || !moves_within(a, pl, p->give_up)) {
-            st[ST_MODE] = MODE_RETURN;
+        if (p->hunt ? !pl || !actor_alive(pl) : !pl || !actor_alive(pl) || !near || !moves_within(a, pl, p->give_up)) {
+            st[ST_MODE] = p->hunt ? MODE_WANDER : MODE_RETURN;     // a hunter never goes home
             break;
         }
         if (st[ST_CHARGE] < charge) st[ST_CHARGE]++;
@@ -307,8 +338,13 @@ void bhv_monster_ai_update(Actor *a, const void *params) {
         if (s_away[s_me][0] || s_away[s_me][1]) slide_around(a, pl, walk);
         else stand(a, walk);
         face_point(a, fx_to_int(pl->x), fx_to_int(pl->y));
-        if (st[ST_CHARGE] >= charge && m) {
-            if (attack(a, p, sp)) st[ST_CHARGE] = 0;
+        // Hunters take turns: at most one of them attacks per frame (a move is the costliest thing
+        // a monster does), the others wait a frame with their charge full.
+        if (st[ST_CHARGE] >= charge && m && !(p->hunt && s_hunt_attack == s_count_frame)) {
+            if (attack(a, p, sp)) {
+                st[ST_CHARGE] = 0;
+                if (p->hunt) s_hunt_attack = s_count_frame;
+            }
             else walk_to(a, fx_to_int(pl->x), fx_to_int(pl->y), chase);  // a beam off its line: step closer
         }
         break;

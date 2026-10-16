@@ -1,0 +1,35 @@
+{
+  "id": "upg_vital",
+  "kind": "object",
+  "type": "upgrade",
+  "name": "Vital Seed",
+  "notes": "Vital Seed: +20 maximum HP (and 20 HP back), up to 5 times (+100). Offered on the waves mode's level-up menu (menu_power); its level is kept in 'up_vital' (back to 0 each run).",
+  "category": "item",
+  "title": "VITAL SEED",
+  "icon": "icon_upg_vital",
+  "var": "up_vital",
+  "max_level": 5,
+  "descriptions": [
+    "+20 MAX HP, HEALED AT ONCE.",
+    "+20 MAX HP, HEALED AT ONCE (+40 IN ALL)",
+    "+20 MAX HP, HEALED AT ONCE (+60 IN ALL)",
+    "+20 MAX HP, HEALED AT ONCE (+80 IN ALL)",
+    "+20 MAX HP, HEALED AT ONCE (+100 IN ALL)"
+  ],
+  "on_pick": [
+    {
+      "do": "add_var",
+      "var": "hp_max",
+      "value": 20
+    },
+    {
+      "do": "add_var",
+      "var": "hp",
+      "value": 20,
+      "max_var": "hp_max"
+    }
+  ],
+  "children": [
+    "icon_upg_vital"
+  ]
+}

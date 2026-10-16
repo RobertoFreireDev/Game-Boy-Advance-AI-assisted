@@ -1,0 +1,26 @@
+{
+  "id": "icon_upg_aim",
+  "kind": "object",
+  "type": "icon",
+  "name": "Aim Charm card icon",
+  "notes": "16x16 picture on the Aim Charm level-up card, in the UI colors so the card's box shows around it, redrawn from the classic run's floor item.",
+  "palette": "pal_ui",
+  "pixels": [
+    "................",
+    "................",
+    ".....111111.....",
+    "....12222221....",
+    "...1255555521...",
+    "..122522225271..",
+    "..125255552571..",
+    "..125252552571..",
+    "..125255552571..",
+    "..122522225271..",
+    "...1255558571...",
+    "....17777771....",
+    ".....111111.....",
+    "................",
+    "................",
+    "................"
+  ]
+}

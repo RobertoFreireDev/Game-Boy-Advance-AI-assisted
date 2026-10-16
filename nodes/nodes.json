@@ -32,9 +32,9 @@
       },
       {
         "name": "sel_locked",
-        "type": "flag",
-        "initial": false,
-        "notes": "Set by the menu picker while the monster on screen is locked (the HUD then says LOCKED / WIN A RUN TO UNLOCK)."
+        "type": "int",
+        "initial": 0,
+        "notes": "Set by the menu picker: 0 while the entry on screen can be picked, 1 on a locked monster of the classic list (the HUD says LOCKED / WIN WITH A NEW MONSTER), 2 on the waves list while it is still locked (LOCKED / WIN WITH ALL 9 MONSTERS)."
       },
       {
         "name": "new_mon",
@@ -135,9 +135,9 @@
       {
         "name": "best_time",
         "type": "int",
-        "count": 9,
+        "count": 18,
         "initial": -1,
-        "notes": "Fastest won run of each monster, in seconds: one value per monster, in roster order (best_time[chosen] = the picked one's). -1 = never won with it, shown as --:--. The victory screen keeps the smaller of it and the run's time; shown above the monster on the menu. Saved on the cartridge; clearing the saved progress erases them.",
+        "notes": "Fastest won run of each menu entry, in seconds: slots 0-8 = the 9 monsters' classic runs, in roster order (best_time[chosen] on the classic victory screen), slots 9-17 = their waves runs (best_time[entry]). -1 = never won, shown as --:--. Each victory screen keeps the smaller of it and the run's time; the menu shows the entry's one above the monster. Saved on the cartridge; clearing the saved progress erases them all.",
         "persistent": true
       },
       {
@@ -175,6 +175,86 @@
         "type": "int",
         "initial": 0,
         "notes": "Percent cut from the recharge time of all the player's moves, from the Quick Hourglass (+10). Back to 0 each run."
+      },
+      {
+        "name": "mode",
+        "type": "int",
+        "initial": 0,
+        "persistent": true,
+        "notes": "The game mode of the menu entry picked: 0 = the classic run (the first 9 entries of the menu), 1 = the waves run (the same 9 monsters again, after them). Set by the picker, kept between runs and saved, so the last pick is still selected."
+      },
+      {
+        "name": "entry",
+        "type": "int",
+        "initial": 0,
+        "persistent": true,
+        "notes": "Position of the picked entry on the menu: mode x 9 + chosen (0-8 classic, 9-17 waves). Picks the best_time slot the menu and the waves victory screen show and keep."
+      },
+      {
+        "name": "cleared",
+        "type": "int",
+        "initial": 0,
+        "notes": "How many of the 9 monsters have won a classic run (their classic best time is set), counted by the menu when it opens. At 9 the waves entries of the menu unlock."
+      },
+      {
+        "name": "scan",
+        "type": "int",
+        "initial": 0,
+        "notes": "Helper for the menu's count of 'cleared': the monster number being checked."
+      },
+      {
+        "name": "wave",
+        "type": "int",
+        "initial": 0,
+        "notes": "The wave being fought in the waves mode (1-10; 0 before the first). Set by the wave director."
+      },
+      {
+        "name": "wave_left",
+        "type": "int",
+        "initial": 0,
+        "notes": "Monsters of the current wave still to defeat (the boss included), for the waves pause menu."
+      },
+      {
+        "name": "wave_banner",
+        "type": "int",
+        "initial": 0,
+        "notes": "The wave whose name shows in the middle of the screen (WAVE 3, FINAL WAVE!) for 2 s when it starts; 0 = none."
+      },
+      {
+        "name": "up_power",
+        "type": "int",
+        "initial": 0,
+        "notes": "Level of the Power Gem level-up card in this waves run (0 = not taken yet, up to 5)."
+      },
+      {
+        "name": "up_speed",
+        "type": "int",
+        "initial": 0,
+        "notes": "Level of the Swift Feather level-up card in this waves run (0 = not taken yet, up to 4)."
+      },
+      {
+        "name": "up_aim",
+        "type": "int",
+        "initial": 0,
+        "notes": "Level of the Aim Charm level-up card in this waves run (0 = not taken yet, up to 4)."
+      },
+      {
+        "name": "up_dodge",
+        "type": "int",
+        "initial": 0,
+        "notes": "Level of the Mist Orb level-up card in this waves run (0 = not taken yet, up to 3)."
+      },
+      {
+        "name": "up_charge",
+        "type": "int",
+        "initial": 0,
+        "notes": "Level of the Hourglass level-up card in this waves run (0 = not taken yet, up to 5)."
+      },
+      {
+        "name": "up_vital",
+        "type": "int",
+        "initial": 0,
+        "notes": "Level of the Vital Seed level-up card in this waves run (0 = not taken yet, up to 5)."
       }
     ],
     "battle": {
@@ -299,6 +379,9 @@
     {"id": "scn_run", "kind": "scene", "type": "level", "path": "scenes/scn_run.json", "parent": null},
     {"id": "scn_game_over", "kind": "scene", "type": "game_over", "path": "scenes/scn_game_over.json", "parent": null},
     {"id": "scn_victory", "kind": "scene", "type": "credits", "path": "scenes/scn_victory.json", "parent": null},
+    {"id": "scn_waves", "kind": "scene", "type": "level", "path": "scenes/scn_waves.json", "parent": null},
+    {"id": "scn_waves_victory", "kind": "scene", "type": "credits", "path": "scenes/scn_waves_victory.json", "parent": null},
+    {"id": "scn_waves_over", "kind": "scene", "type": "game_over", "path": "scenes/scn_waves_over.json", "parent": null},
     {"id": "pal_ui", "kind": "object", "type": "palette", "path": "objects/palette/pal_ui.json", "parent": null},
     {"id": "font_default", "kind": "object", "type": "font", "path": "objects/font/font_default.json", "parent": null},
     {"id": "icon_cursor", "kind": "object", "type": "icon", "path": "objects/icon/icon_cursor.json", "parent": null},
@@ -866,6 +949,62 @@
     {"id": "anim_item_mist_orb", "kind": "object", "type": "animation", "path": "objects/animation/anim_item_mist_orb.json", "parent": "body_item_mist_orb"},
     {"id": "item_quick_hourglass", "kind": "object", "type": "pickup", "path": "objects/pickup/item_quick_hourglass.json", "parent": null},
     {"id": "body_item_quick_hourglass", "kind": "object", "type": "body", "path": "objects/body/body_item_quick_hourglass.json", "parent": "item_quick_hourglass"},
-    {"id": "anim_item_quick_hourglass", "kind": "object", "type": "animation", "path": "objects/animation/anim_item_quick_hourglass.json", "parent": "body_item_quick_hourglass"}
+    {"id": "anim_item_quick_hourglass", "kind": "object", "type": "animation", "path": "objects/animation/anim_item_quick_hourglass.json", "parent": "body_item_quick_hourglass"},
+    {"id": "map_arena_edge_normal", "kind": "object", "type": "tilemap", "path": "objects/tilemap/map_arena_edge_normal.json", "parent": null},
+    {"id": "ts_arena_edge_normal", "kind": "object", "type": "tileset", "path": "objects/tileset/ts_arena_edge_normal.json", "parent": "map_arena_edge_normal"},
+    {"id": "map_arena_normal", "kind": "object", "type": "tilemap", "path": "objects/tilemap/map_arena_normal.json", "parent": null},
+    {"id": "map_arena_edge_fire", "kind": "object", "type": "tilemap", "path": "objects/tilemap/map_arena_edge_fire.json", "parent": null},
+    {"id": "ts_arena_edge_fire", "kind": "object", "type": "tileset", "path": "objects/tileset/ts_arena_edge_fire.json", "parent": "map_arena_edge_fire"},
+    {"id": "map_arena_fire", "kind": "object", "type": "tilemap", "path": "objects/tilemap/map_arena_fire.json", "parent": null},
+    {"id": "map_arena_edge_water", "kind": "object", "type": "tilemap", "path": "objects/tilemap/map_arena_edge_water.json", "parent": null},
+    {"id": "ts_arena_edge_water", "kind": "object", "type": "tileset", "path": "objects/tileset/ts_arena_edge_water.json", "parent": "map_arena_edge_water"},
+    {"id": "map_arena_water", "kind": "object", "type": "tilemap", "path": "objects/tilemap/map_arena_water.json", "parent": null},
+    {"id": "map_arena_edge_electric", "kind": "object", "type": "tilemap", "path": "objects/tilemap/map_arena_edge_electric.json", "parent": null},
+    {"id": "ts_arena_edge_electric", "kind": "object", "type": "tileset", "path": "objects/tileset/ts_arena_edge_electric.json", "parent": "map_arena_edge_electric"},
+    {"id": "map_arena_electric", "kind": "object", "type": "tilemap", "path": "objects/tilemap/map_arena_electric.json", "parent": null},
+    {"id": "map_arena_edge_grass", "kind": "object", "type": "tilemap", "path": "objects/tilemap/map_arena_edge_grass.json", "parent": null},
+    {"id": "ts_arena_edge_grass", "kind": "object", "type": "tileset", "path": "objects/tileset/ts_arena_edge_grass.json", "parent": "map_arena_edge_grass"},
+    {"id": "map_arena_grass", "kind": "object", "type": "tilemap", "path": "objects/tilemap/map_arena_grass.json", "parent": null},
+    {"id": "map_arena_edge_poison", "kind": "object", "type": "tilemap", "path": "objects/tilemap/map_arena_edge_poison.json", "parent": null},
+    {"id": "ts_arena_edge_poison", "kind": "object", "type": "tileset", "path": "objects/tileset/ts_arena_edge_poison.json", "parent": "map_arena_edge_poison"},
+    {"id": "map_arena_poison", "kind": "object", "type": "tilemap", "path": "objects/tilemap/map_arena_poison.json", "parent": null},
+    {"id": "map_arena_edge_flying", "kind": "object", "type": "tilemap", "path": "objects/tilemap/map_arena_edge_flying.json", "parent": null},
+    {"id": "ts_arena_edge_flying", "kind": "object", "type": "tileset", "path": "objects/tileset/ts_arena_edge_flying.json", "parent": "map_arena_edge_flying"},
+    {"id": "map_arena_flying", "kind": "object", "type": "tilemap", "path": "objects/tilemap/map_arena_flying.json", "parent": null},
+    {"id": "map_arena_edge_ghost", "kind": "object", "type": "tilemap", "path": "objects/tilemap/map_arena_edge_ghost.json", "parent": null},
+    {"id": "ts_arena_edge_ghost", "kind": "object", "type": "tileset", "path": "objects/tileset/ts_arena_edge_ghost.json", "parent": "map_arena_edge_ghost"},
+    {"id": "map_arena_ghost", "kind": "object", "type": "tilemap", "path": "objects/tilemap/map_arena_ghost.json", "parent": null},
+    {"id": "map_arena_edge_rock", "kind": "object", "type": "tilemap", "path": "objects/tilemap/map_arena_edge_rock.json", "parent": null},
+    {"id": "ts_arena_edge_rock", "kind": "object", "type": "tileset", "path": "objects/tileset/ts_arena_edge_rock.json", "parent": "map_arena_edge_rock"},
+    {"id": "map_arena_rock", "kind": "object", "type": "tilemap", "path": "objects/tilemap/map_arena_rock.json", "parent": null},
+    {"id": "plr_waves", "kind": "object", "type": "player", "path": "objects/player/plr_waves.json", "parent": null},
+    {"id": "enm_wave_1", "kind": "object", "type": "enemy", "path": "objects/enemy/enm_wave_1.json", "parent": null},
+    {"id": "enm_wave_2", "kind": "object", "type": "enemy", "path": "objects/enemy/enm_wave_2.json", "parent": null},
+    {"id": "enm_wave_3", "kind": "object", "type": "enemy", "path": "objects/enemy/enm_wave_3.json", "parent": null},
+    {"id": "enm_wave_boss", "kind": "object", "type": "enemy", "path": "objects/enemy/enm_wave_boss.json", "parent": null},
+    {"id": "prop_waves", "kind": "object", "type": "prop", "path": "objects/prop/prop_waves.json", "parent": null},
+    {"id": "hud_waves", "kind": "object", "type": "hud", "path": "objects/hud/hud_waves.json", "parent": null},
+    {"id": "menu_pause_waves", "kind": "object", "type": "menu", "path": "objects/menu/menu_pause_waves.json", "parent": null},
+    {"id": "menu_power", "kind": "object", "type": "menu", "path": "objects/menu/menu_power.json", "parent": null},
+    {"id": "hud_waves_victory", "kind": "object", "type": "hud", "path": "objects/hud/hud_waves_victory.json", "parent": null},
+    {"id": "hud_waves_over", "kind": "object", "type": "hud", "path": "objects/hud/hud_waves_over.json", "parent": null},
+    {"id": "upg_power", "kind": "object", "type": "upgrade", "path": "objects/upgrade/upg_power.json", "parent": null},
+    {"id": "icon_upg_power", "kind": "object", "type": "icon", "path": "objects/icon/icon_upg_power.json", "parent": "upg_power"},
+    {"id": "upg_speed", "kind": "object", "type": "upgrade", "path": "objects/upgrade/upg_speed.json", "parent": null},
+    {"id": "icon_upg_speed", "kind": "object", "type": "icon", "path": "objects/icon/icon_upg_speed.json", "parent": "upg_speed"},
+    {"id": "upg_aim", "kind": "object", "type": "upgrade", "path": "objects/upgrade/upg_aim.json", "parent": null},
+    {"id": "icon_upg_aim", "kind": "object", "type": "icon", "path": "objects/icon/icon_upg_aim.json", "parent": "upg_aim"},
+    {"id": "upg_dodge", "kind": "object", "type": "upgrade", "path": "objects/upgrade/upg_dodge.json", "parent": null},
+    {"id": "icon_upg_dodge", "kind": "object", "type": "icon", "path": "objects/icon/icon_upg_dodge.json", "parent": "upg_dodge"},
+    {"id": "upg_charge", "kind": "object", "type": "upgrade", "path": "objects/upgrade/upg_charge.json", "parent": null},
+    {"id": "icon_upg_charge", "kind": "object", "type": "icon", "path": "objects/icon/icon_upg_charge.json", "parent": "upg_charge"},
+    {"id": "upg_vital", "kind": "object", "type": "upgrade", "path": "objects/upgrade/upg_vital.json", "parent": null},
+    {"id": "icon_upg_vital", "kind": "object", "type": "icon", "path": "objects/icon/icon_upg_vital.json", "parent": "upg_vital"},
+    {"id": "upg_berry", "kind": "object", "type": "upgrade", "path": "objects/upgrade/upg_berry.json", "parent": null},
+    {"id": "icon_upg_berry", "kind": "object", "type": "icon", "path": "objects/icon/icon_upg_berry.json", "parent": "upg_berry"},
+    {"id": "mus_waves", "kind": "object", "type": "music", "path": "objects/music/mus_waves.json", "parent": null},
+    {"id": "sfx_wave", "kind": "object", "type": "sfx", "path": "objects/sfx/sfx_wave.json", "parent": null},
+    {"id": "icon_arrow_l_waves", "kind": "object", "type": "icon", "path": "objects/icon/icon_arrow_l_waves.json", "parent": "hud_select"},
+    {"id": "icon_arrow_r_waves", "kind": "object", "type": "icon", "path": "objects/icon/icon_arrow_r_waves.json", "parent": "hud_select"}
   ]
 }

@@ -662,15 +662,26 @@ Every channel in a pattern has the same number of rows. Missing channels are sil
   body comes `level_tag_margin` px inside the view below the HUD's top panel, gone when a move reaches
   it, shown again after `level_tag_reset` ticks out of that view; a home world: `home_var` holds the
   world's type, and a monster of that type hits `home_power` % harder, walks `home_speed` % faster,
-  recharges `home_charge` % sooner and runs `on_home` when it appears; the shared combat code is
+  recharges `home_charge` % sooner and runs `on_home` when it appears; `walls` false = it walks through
+  solid tiles (wave monsters crossing an arena's dark edge that holds the player in); the player's
+  `xp_grow` makes each level cost more than the last and `level_by_level` gains one level per tick, so an
+  `on_level_up` that opens a level-up menu shows it once per level; the shared combat code is
   `src/behaviors/monster.c` + `moves.c`),
   `monster_ai` (wander at home, hostile near the player with a cap, attack with move 1, go home; a
   sleeping boss that with `moves` 3 also uses moves 2 and 3, each on its own recharge (`moves_charge` % of
-  the player's) and at its own damage (`moves_power`), an attack being the highest one ready that reaches; keeps `spread` tiles from other wild monsters, walking around them and sliding
-  sideways around the player, so a pack spreads out), `move_buttons` (the player's 3 moves on A, B and R, one press each, with charge
+  the player's) and at its own damage (`moves_power`), an attack being the highest one ready that reaches
+  (`moves_ready` false: they start recharging instead of ready); keeps `spread` tiles from other wild monsters, walking around them and sliding
+  sideways around the player, so a pack spreads out; `hunt`: no home, never gives up, and while
+  `max_hostile` others are hostile it walks up and waits `sight` tiles from the player for its turn),
+  `monster_waves` (a wave director: each wave's monsters appear on the map's outer edge out of view and
+  hunt the player; count, levels and HP grow by formula per wave, later waves bring other versions of
+  the monster (more moves), the last one a boss; `on_wave` / `on_boss` run as the player, `on_clear` when
+  all are cleared), `move_buttons` (the player's 3 moves on A, B and R, one press each, with charge
   gauges, a locked-move buzz and a miss sound when a move reaches no one; `charge_var` = a recharge boost),
   `species_select` (the picker's bobbing portrait, Left / Right; species past `unlocked_var` show as a
-  silhouette and can't be picked), `drop_in` (a logo or layer that
+  silhouette and can't be picked; `passes` 2 shows the whole list again for a second game mode, the pass
+  in `pass_var`, `entry_var` = pass x species count + species for per-entry lists, the later passes locked
+  as a whole until `pass_unlock_var` reaches `pass_unlock_at`), `drop_in` (a logo or layer that
   falls in and bounces). Add more as games need them.
 - Prefer a new reusable behavior over custom code.
 

@@ -1,0 +1,29 @@
+{
+  "id": "upg_charge",
+  "kind": "object",
+  "type": "upgrade",
+  "name": "Hourglass",
+  "notes": "Hourglass: all 3 moves recharge 8% sooner, up to 5 times (-40%). Adds 8 to boost_charge. Offered on the waves mode's level-up menu (menu_power); its level is kept in 'up_charge' (back to 0 each run).",
+  "category": "item",
+  "title": "HOURGLASS",
+  "icon": "icon_upg_charge",
+  "var": "up_charge",
+  "max_level": 5,
+  "descriptions": [
+    "MOVES RECHARGE 8% SOONER.",
+    "MOVES RECHARGE 8% SOONER (-16% IN ALL)",
+    "MOVES RECHARGE 8% SOONER (-24% IN ALL)",
+    "MOVES RECHARGE 8% SOONER (-32% IN ALL)",
+    "MOVES RECHARGE 8% SOONER (-40% IN ALL)"
+  ],
+  "on_pick": [
+    {
+      "do": "add_var",
+      "var": "boost_charge",
+      "value": 8
+    }
+  ],
+  "children": [
+    "icon_upg_charge"
+  ]
+}

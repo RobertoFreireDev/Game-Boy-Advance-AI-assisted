@@ -1,0 +1,46 @@
+{
+  "id": "enm_wave_3",
+  "kind": "object",
+  "type": "enemy",
+  "name": "Wave monster (all 3 moves)",
+  "notes": "A monster of the waves mode, brought in by the wave director (prop_waves) from wave 7 on to the end: a random species (never the player's own), its level and HP set by its wave. It appears in the dark band around the arena (it walks through the solid edge that holds the player in) and hunts the player anywhere: at most 5 monsters are hostile at once (counting every wave monster), the rest walk up and wait about 5 tiles away until one faints, then the next closes in. It attacks every 5 s with its move 1; its moves 2 and 3 recharge in twice the player's time, starting when it appears (so only the ones that wait long have move 3 ready), keeps 1 tile of room from the others, blinks red 3 times when hit, shows its level when it comes into view, gives 8 XP when it faints and is at home in its own type's world (+10% power and speed, -10% recharge), like every wild monster.",
+  "logic": [
+    {
+      "behavior": "monster",
+      "params": {
+        "random": true,
+        "avoid_var": "chosen",
+        "level": 1,
+        "hp": 23,
+        "flash_palette": "pal_flash_red",
+        "flash_ticks": 4,
+        "flashes": 3,
+        "home_var": "world",
+        "level_tag": 180,
+        "level_tag_reset": 300,
+        "level_tag_margin": 32,
+        "level_tag_text": "LV",
+        "level_tag_palette": "pal_txt_cyan",
+        "xp_reward": 8,
+        "kills_var": "kills",
+        "walls": false
+      }
+    },
+    {
+      "behavior": "monster_ai",
+      "params": {
+        "speed": 0.5,
+        "chase_speed": 0.75,
+        "sight": 5,
+        "give_up": 99,
+        "max_hostile": 5,
+        "charge": 300,
+        "spread": 1,
+        "hunt": true,
+        "moves": 3,
+        "moves_charge": 200,
+        "moves_ready": false
+      }
+    }
+  ]
+}

@@ -1,0 +1,102 @@
+{
+  "id": "scn_waves_victory",
+  "kind": "scene",
+  "type": "credits",
+  "name": "Waves victory",
+  "notes": "ALL WAVES CLEARED! over the meadow sky, with the winning monster bobbing, the final time, level and kills. The run's time is checked against this monster's best waves time (best_time[entry]): if it never won a waves run before, or this run was faster, it becomes the new best and the screen says NEW BEST TIME! with a jingle, otherwise it shows the best time to beat. The best time is saved at once. Waves wins unlock nothing. START goes back to the menu.",
+  "backdrop": "#58a8f0",
+  "music": "mus_victory",
+  "camera": {
+    "x": 0,
+    "y": 0,
+    "bounds": "none"
+  },
+  "instances": [
+    {
+      "id": "sky",
+      "object": "map_sky"
+    },
+    {
+      "id": "hud",
+      "object": "hud_waves_victory"
+    },
+    {
+      "id": "trophy",
+      "object": "prop_trophy",
+      "x": 120,
+      "y": 60
+    }
+  ],
+  "on_start": [
+    {
+      "do": "set_var",
+      "var": "new_best",
+      "value": 0
+    },
+    {
+      "do": "if_var",
+      "var": "best_time",
+      "index": "entry",
+      "op": "<",
+      "value": 0,
+      "then": [
+        {
+          "do": "set_var",
+          "var": "best_time",
+          "index": "entry",
+          "from": "time"
+        },
+        {
+          "do": "set_var",
+          "var": "new_best",
+          "value": 1
+        }
+      ],
+      "else": [
+        {
+          "do": "if_var",
+          "var": "best_time",
+          "index": "entry",
+          "op": ">",
+          "from": "time",
+          "then": [
+            {
+              "do": "set_var",
+              "var": "best_time",
+              "index": "entry",
+              "from": "time"
+            },
+            {
+              "do": "set_var",
+              "var": "new_best",
+              "value": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "do": "save_game"
+    },
+    {
+      "do": "fade_in",
+      "ticks": 20
+    },
+    {
+      "do": "if_var",
+      "var": "new_best",
+      "op": "==",
+      "value": 1,
+      "then": [
+        {
+          "do": "wait",
+          "ticks": 20
+        },
+        {
+          "do": "play_sfx",
+          "sfx": "sfx_new_move"
+        }
+      ]
+    }
+  ]
+}
