@@ -3,7 +3,7 @@
   "kind": "object",
   "type": "tileset",
   "name": "Flying world ground tiles",
-  "notes": "Every 8x8 ground tile of the Flying world, Sky Isle. Only 'K' is solid (the band around the edge: see-through, so the border drawn under the ground shows in it); everything else is walked over. 'a' 'b' 'c' plain ground, '0' '1' '2' plain ground too (the specks of 'a' moved about; once stone paving), 'd' / 'e' the patch tiles (laid in alternating rows), 'f' 'g' 'h' small things; every small thing and patch piece stays a pixel inside its tile, so none is cut off where it meets plain ground. The path pieces (i-u) have the meadow's shapes in this world's colors. Pictures several tiles big: feather ('ABCDEF'), twigs ('GHIJ'), Alpha's den ('LMNOPQRSTUVWXYZ#').",
+  "notes": "Every 8x8 ground tile of the Flying world, Sky Isle. Only 'K' is solid (the band around the edge: see-through, so the border drawn under the ground shows in it); everything else is walked over. 'a' 'b' 'c' plain ground, '0' '1' '2' plain ground too (the specks of 'a' moved about; once stone paving), 'd' / 'e' the patch tiles (laid in alternating rows), 'f' 'g' 'h' small things; every small thing and patch piece stays a pixel inside its tile, so none is cut off where it meets plain ground. The path pieces (i-u) have the meadow's shapes in this world's colors. Pictures several tiles big: clover ('ABCDEF'), twigs ('GHIJ'), Alpha's den ('LMNOPQRSTUVWXYZ#').",
   "palette": "pal_ground_flying",
   "tiles": {
     "a": {
@@ -264,10 +264,10 @@
         "44444444",
         "44444444",
         "44444444",
-        "44444444",
-        "44444444",
-        "44444444",
-        "44444444"
+        "44444454",
+        "44454555",
+        "44555355",
+        "44453635"
       ]
     },
     "B": {
@@ -276,10 +276,10 @@
         "44444444",
         "44444444",
         "44444444",
-        "44444444",
-        "44444447",
-        "44447777",
-        "4777777d"
+        "54545454",
+        "55555355",
+        "2c553635",
+        "de555555"
       ]
     },
     "C": {
@@ -288,43 +288,43 @@
         "44444444",
         "44444444",
         "44444444",
-        "44777774",
-        "77777dd4",
-        "77ddd884",
-        "dd888444"
+        "54544444",
+        "55534444",
+        "55363444",
+        "55555544"
       ]
     },
     "D": {
       "pixels": [
-        "44444477",
-        "44444477",
-        "444777dd",
-        "444ddd88",
-        "44988888",
-        "49444444",
+        "44555555",
+        "44455555",
+        "445552c3",
+        "44454de6",
+        "44444454",
+        "44444444",
         "44444444",
         "44444444"
       ]
     },
     "E": {
       "pixels": [
-        "7777ddd8",
-        "7ddd8888",
-        "d8888884",
-        "88884444",
-        "84444444",
-        "44444444",
+        "53555552",
+        "3635555d",
+        "5552c555",
+        "355de555",
+        "54536355",
+        "44444545",
         "44444444",
         "44444444"
       ]
     },
     "F": {
       "pixels": [
-        "88888444",
-        "88444444",
-        "44444444",
-        "44444444",
-        "44444444",
+        "c3555444",
+        "e6354444",
+        "55544444",
+        "552c4444",
+        "54de4444",
         "44444444",
         "44444444",
         "44444444"

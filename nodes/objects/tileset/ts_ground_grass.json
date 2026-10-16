@@ -3,7 +3,7 @@
   "kind": "object",
   "type": "tileset",
   "name": "Grass world ground tiles",
-  "notes": "Every 8x8 ground tile of the Grass world, Verdant Jungle. Only 'K' is solid (the floor under the border band, never seen); everything else is walked over. 'a' 'b' 'c' plain ground, '0' '1' '2' plain ground too (the specks of 'a' moved about; once stone paving), 'd' / 'e' the patch tiles (laid in alternating rows), 'f' 'g' 'h' small things; every small thing and patch piece stays a pixel inside its tile, so none is cut off where it meets plain ground. The path pieces (i-u) have the meadow's shapes in this world's colors. Pictures several tiles big: leaf ('ABCDEF'), stump ('GHIJ'), Alpha's den ('LMNOPQRSTUVWXYZ#').",
+  "notes": "Every 8x8 ground tile of the Grass world, Verdant Jungle. Only 'K' is solid (the floor under the border band, never seen); everything else is walked over. 'a' 'b' 'c' plain ground, '0' '1' '2' plain ground too (the specks of 'a' moved about; once stone paving), 'd' / 'e' the patch tiles (laid in alternating rows), 'f' 'g' 'h' small things; every small thing and patch piece stays a pixel inside its tile, so none is cut off where it meets plain ground. The path pieces (i-u) have the meadow's shapes in this world's colors. Pictures several tiles big: moss ('ABCDEF'), stump ('GHIJ'), Alpha's den ('LMNOPQRSTUVWXYZ#').",
   "palette": "pal_ground_grass",
   "tiles": {
     "a": {
@@ -263,11 +263,11 @@
         "44444444",
         "44444444",
         "44444444",
-        "44444411",
-        "44441133",
-        "44413333",
-        "44133633",
-        "44133355"
+        "44444445",
+        "44445455",
+        "44455555",
+        "44535595",
+        "44465555"
       ]
     },
     "B": {
@@ -275,11 +275,11 @@
         "44444444",
         "44444444",
         "44444444",
-        "11111111",
-        "33333333",
-        "33333333",
-        "56555655",
-        "55555555"
+        "44444545",
+        "54545553",
+        "35555556",
+        "65535355",
+        "35565655"
       ]
     },
     "C": {
@@ -287,20 +287,20 @@
         "44444444",
         "44444444",
         "44444444",
-        "11444444",
-        "33114444",
-        "33331444",
-        "56563144",
-        "55566144"
+        "45444444",
+        "53544444",
+        "56354444",
+        "59635444",
+        "55664444"
       ]
     },
     "D": {
       "pixels": [
-        "44166666",
-        "44133555",
-        "44413666",
-        "44441166",
-        "44444411",
+        "44555563",
+        "44455556",
+        "44445555",
+        "44444545",
+        "44444444",
         "44444444",
         "44444444",
         "44444444"
@@ -308,23 +308,23 @@
     },
     "E": {
       "pixels": [
-        "66666665",
-        "55555556",
-        "66666666",
-        "66666666",
-        "11111111",
-        "44444444",
+        "66536353",
+        "63565656",
+        "56355665",
+        "55655635",
+        "54545564",
+        "44444544",
         "44444444",
         "44444444"
       ]
     },
     "F": {
       "pixels": [
-        "55666144",
-        "66666144",
-        "66661444",
-        "66114444",
-        "11444444",
+        "55355444",
+        "55654444",
+        "55544444",
+        "55444444",
+        "54444444",
         "44444444",
         "44444444",
         "44444444"

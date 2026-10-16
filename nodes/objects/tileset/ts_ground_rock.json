@@ -3,7 +3,7 @@
   "kind": "object",
   "type": "tileset",
   "name": "Rock world ground tiles",
-  "notes": "Every 8x8 ground tile of the Rock world, Boulder Canyon. Only 'K' is solid (the band around the edge: see-through, so the border drawn under the ground shows in it); everything else is walked over. 'a' 'b' 'c' plain ground, '0' '1' '2' plain ground too (the specks of 'a' moved about; once stone paving), 'd' / 'e' the patch tiles (laid in alternating rows), 'f' 'g' 'h' small things; every small thing and patch piece stays a pixel inside its tile, so none is cut off where it meets plain ground. The path pieces (i-u) have the meadow's shapes in this world's colors. Pictures several tiles big: fossil ('ABCD'), rubble ('EFGHIJ'), Alpha's den ('LMNOPQRSTUVWXYZ#').",
+  "notes": "Every 8x8 ground tile of the Rock world, Boulder Canyon. Only 'K' is solid (the band around the edge: see-through, so the border drawn under the ground shows in it); everything else is walked over. 'a' 'b' 'c' plain ground, '0' '1' '2' plain ground too (the specks of 'a' moved about; once stone paving), 'd' / 'e' the patch tiles (laid in alternating rows), 'f' 'g' 'h' small things; every small thing and patch piece stays a pixel inside its tile, so none is cut off where it meets plain ground. The path pieces (i-u) have the meadow's shapes in this world's colors. Pictures several tiles big: cracked earth ('ABCD'), rubble ('EFGHIJ'), Alpha's den ('LMNOPQRSTUVWXYZ#').",
   "palette": "pal_ground_rock",
   "tiles": {
     "a": {
@@ -261,47 +261,47 @@
     "A": {
       "pixels": [
         "44444444",
-        "44444111",
-        "44441aea",
-        "4441eacc",
-        "441eacee",
-        "41aacecc",
-        "41ececce",
-        "441cecee"
+        "44444444",
+        "44444444",
+        "44444343",
+        "44443333",
+        "44433333",
+        "44336333",
+        "44433663"
       ]
     },
     "B": {
       "pixels": [
         "44444444",
-        "14444444",
-        "a1111444",
-        "ceaa1444",
-        "ccecd144",
-        "cccce144",
-        "eeecc144",
-        "cceecd14"
+        "44444444",
+        "34444444",
+        "33434444",
+        "33333444",
+        "33336344",
+        "33336444",
+        "33663344"
       ]
     },
     "C": {
       "pixels": [
-        "441accee",
-        "441aecce",
-        "441acecc",
-        "4441deec",
-        "4441111d",
-        "44444441",
+        "44333666",
+        "44466356",
+        "44335563",
+        "44433365",
+        "44443465",
+        "44444443",
         "44444444",
         "44444444"
       ]
     },
     "D": {
       "pixels": [
-        "eccece14",
-        "eccede14",
-        "ccedd144",
-        "eedd1444",
-        "ddd14444",
-        "11144444",
+        "66365444",
+        "55536344",
+        "53336444",
+        "33336344",
+        "33663444",
+        "43434444",
         "44444444",
         "44444444"
       ]

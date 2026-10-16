@@ -3,7 +3,7 @@
   "kind": "object",
   "type": "tileset",
   "name": "Poison world ground tiles",
-  "notes": "Every 8x8 ground tile of the Poison world, Miasma Swamp. Only 'K' is solid (the band around the edge: see-through, so the border drawn under the ground shows in it); everything else is walked over. 'a' 'b' 'c' plain ground, '0' '1' '2' plain ground too (the specks of 'a' moved about; once stone paving), 'd' / 'e' the patch tiles (laid in alternating rows), 'f' 'g' 'h' small things; every small thing and patch piece stays a pixel inside its tile, so none is cut off where it meets plain ground. The path pieces (i-u) have the meadow's shapes in this world's colors. Pictures several tiles big: puddle ('ABCDEF'), toadstools ('GHIJ'), Alpha's den ('LMNOPQRSTUVWXYZ#').",
+  "notes": "Every 8x8 ground tile of the Poison world, Miasma Swamp. Only 'K' is solid (the band around the edge: see-through, so the border drawn under the ground shows in it); everything else is walked over. 'a' 'b' 'c' plain ground, '0' '1' '2' plain ground too (the specks of 'a' moved about; once stone paving), 'd' / 'e' the patch tiles (laid in alternating rows), 'f' 'g' 'h' small things; every small thing and patch piece stays a pixel inside its tile, so none is cut off where it meets plain ground. The path pieces (i-u) have the meadow's shapes in this world's colors. Pictures several tiles big: bog ('ABCDEF'), toadstools ('GHIJ'), Alpha's den ('LMNOPQRSTUVWXYZ#').",
   "palette": "pal_ground_poison",
   "tiles": {
     "a": {
@@ -263,11 +263,11 @@
         "44444444",
         "44444444",
         "44444444",
-        "44444411",
-        "44444199",
-        "44411999",
-        "44419999",
-        "4419999b"
+        "44444444",
+        "44445454",
+        "44444555",
+        "4444555e",
+        "444555e6"
       ]
     },
     "B": {
@@ -275,11 +275,11 @@
         "44444444",
         "44444444",
         "44444444",
-        "11111111",
-        "99999999",
-        "99999999",
-        "bfffffff",
-        "ffffffff"
+        "45454544",
+        "55555554",
+        "5e5ee5ee",
+        "e6666666",
+        "66666666"
       ]
     },
     "C": {
@@ -287,45 +287,45 @@
         "44444444",
         "44444444",
         "44444444",
-        "11444444",
-        "99144444",
-        "99911444",
-        "fbbb1444",
-        "ffbbb144"
+        "44454444",
+        "54544444",
+        "5e554444",
+        "66555444",
+        "666e5544"
       ]
     },
     "D": {
       "pixels": [
-        "441999bf",
-        "44199bbf",
-        "44419bbb",
-        "44411bbb",
-        "444441bb",
-        "44444411",
+        "44555e6a",
+        "44455669",
+        "44445566",
+        "44444555",
+        "44454454",
+        "44444444",
         "44444444",
         "44444444"
       ]
     },
     "E": {
       "pixels": [
-        "f2afffff",
-        "ffffffff",
-        "ffffffff",
-        "bfffffff",
-        "bbbbbbbb",
-        "11111111",
+        "63336666",
+        "66666a66",
+        "66666966",
+        "66566565",
+        "55555554",
+        "45454544",
         "44444444",
         "44444444"
       ]
     },
     "F": {
       "pixels": [
-        "fffbb144",
-        "fffbb144",
-        "2abb1444",
-        "fbb11444",
-        "bb144444",
-        "11444444",
+        "66655444",
+        "33554444",
+        "65544444",
+        "55444444",
+        "54445444",
+        "44444444",
         "44444444",
         "44444444"
       ]

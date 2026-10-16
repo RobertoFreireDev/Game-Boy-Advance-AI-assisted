@@ -100,13 +100,16 @@ nodes), `bench.py` / `fxview.py` / `pview.py` (PNG previews). Harness additions 
 `test_move3.py <species>` (R, screenshot move 3 every 10 frames).
 The 8 other worlds (Ember Crater, Coral Lagoon, Storm Plateau, Verdant Jungle, Miasma Swamp, Sky Isle,
 Haunted Hollow, Boulder Canyon; the meadow is the Normal world) come from a generator; newest copy in
-session 538543de, `scratchpad/w/` (the older ones in 1079b7b2 / ff69787e would undo later fixes):
+session f1a15eff, `scratchpad/w/` (the older ones in 538543de / 1079b7b2 / ff69787e would undo later fixes;
+538543de's would bring back the leaf, puddle, feather and fossil pictures):
 `gen.py [--repo] [world…]` writes each world's palettes, tilesets and maps (and PNG previews in `out/`);
 `worlds.py` = ground art (palettes keep the meadow's slot layout so its path pieces recolor themselves;
 `DENS` = the Alpha's 4x4 den per world), `newtiles.py` = pieces redrawn a pixel inside their tile + the
 plain-ground '0' '1' '2' (where stone paving was), `border.py` = the painted borders drawn over the
 monsters (a 32 px texture + a 2-tile strip per side + 16 px corner blocks keeps each under ~80 tiles),
-`flat.py` = the ground-level ones (the field's ground runs on 1-4 px into the band, then the shore),
+`softstamps.py` = the first pictures of grass / poison / flying / rock (moss, bog, white clover, cracked
+earth: no outline, a dithered rim, ground shades, so they read as part of the ground), `flat.py` = the
+ground-level borders (the field's ground runs on 1-4 px into the band, then the shore),
 `layout.py` = paths between screen hubs (auto-tiled, never 1 tile wide), plazas, patches, stamps.
 `meadow.py [--repo]` rewrites only the Normal world's flowers, '0' '1' '2', den and forest canopy (its map
 is otherwise hand-kept; run it once on a fresh tree). `seams.py` lists things cut off by a tile edge in
