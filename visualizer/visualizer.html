@@ -1374,7 +1374,7 @@ function typeChartCard(highlightAtt, highlightDef) {
     return h("td", { style }, m === 1 ? "·" : "×" + m);
   })));
   return card("Type chart (game.battle) — damage multiplier of an attack on a defender", tb,
-    h("div", { class: "small" }, "Damage = power × (1 + 0.15 × (level − 1)) × type multiplier × the user's power %, rounded, at least 1. A super effective hit shows its word in yellow; a weak one in grey."));
+    h("div", { class: "small" }, "Damage = power × (1 + 0.15 × (level − 1)) × type multiplier × the user's power % × its species' power %, rounded, at least 1. A super effective hit shows its word in yellow; a weak one in grey."));
 }
 function matchups(type) {
   const strong = TYPES.filter(d => chartMult(type, d) > 1), weak = TYPES.filter(d => chartMult(type, d) < 1);
@@ -1425,12 +1425,14 @@ PREVIEW.species = (id, n) => {
         h("div", { class: "stage" }, bodyStage(n.body, () => slot, { state: st, facingLeft: () => st.left, pal: () => st.alpha ? n.alpha_palette : null })),
         h("div", { class: "small" }, "In the world (body ", nodeLink(n.body), "). 'Alpha colors' shows how it looks as the Alpha."),
         n.hp_bonus ? h("div", { class: "small" }, h("b", {}, `+${n.hp_bonus}% starting HP`),
-          " when the player plays it: added to the player's starting max HP and HP at the start of every run (wild ones are not affected).") : null))));
+          " when the player plays it: added to the player's starting max HP and HP at the start of every run (wild ones are not affected).") : null,
+        (n.power || 100) !== 100 ? h("div", { class: "small" }, h("b", {}, `Moves hit at ${n.power}% power`),
+          ` (${n.power > 100 ? "+" : ""}${n.power - 100}% damage on every move), the player's and wild ones alike, in every mode.`) : null))));
   out.push(compassCard(n.body, () => st.alpha ? n.alpha_palette : null));
   out.push(card("Moves", (n.moves || []).map((m, i) => {
     const mv = NODES[m] || {};
     return h("div", { class: "bhv" }, h("div", { class: "bn" }, SLOT_KEYS[i] + " · ", nodeLink(m)),
-      h("div", { class: "bd" }, `${mv.shape || "?"}${mv.range !== undefined ? ", " + mv.range + " tiles" : ""}, power ${mv.power || 0}, charge ${((mv.charge || 0) / 60).toFixed(0)} s`));
+      h("div", { class: "bd" }, `${mv.shape || "?"}${mv.range !== undefined ? ", " + mv.range + " tiles" : ""}, power ${mv.power || 0}${mv.power && (n.power || 100) !== 100 ? " × " + n.power + "%" : ""}, charge ${((mv.charge || 0) / 60).toFixed(0)} s`));
   }), h("div", { class: "small" }, "Move 2 and move 3 unlock with the player's level (move_buttons). Wild monsters only use move 1, unless their monster_ai `moves` says 2 or 3 (a boss).")));
   out.push(speedCard(id));
   out.push(card("Cry", h("div", { class: "toolbar" }, h("button", { onclick: () => playSfx(n.cry) }, "▶ Play"), nodeLink(n.cry))));
@@ -1730,6 +1732,10 @@ PREVIEW.move = (id, n) => {
   const plrMon = Object.values(NODES).map(o => o.type === "player" && (o.logic || []).find(l => l.behavior === "monster")).find(e => e) || {};
   const dw = (plrMon.params || {}).dodge_walk || 0, da = (plrMon.params || {}).dodge_away || 0;
   const dTicks = (plrMon.params || {}).dodge_ticks || 6, clamp = v => Math.max(0, Math.min(100, v));
+  // monster.c monster_power: the species that knows it scales the damage of all its moves.
+  const spOwner = SPECIES.find(s => ((NODES[s] || {}).moves || []).includes(id));
+  const spPow = spOwner ? (NODES[spOwner].power || 100) : 100;
+  const spPowerText = spPow !== 100 ? ` × ${spPow}% (its species' power: every move of ${(NODES[spOwner] || {}).title || spOwner} hits at ${spPow}%)` : "";
   const walkText = n.shape !== "zone" && n.power && n.accuracy && (dw || da)
     ? `; against the player it hits ${clamp(n.accuracy - dw)}% when it walked in the last ${dTicks} ticks (${(dTicks / 60).toFixed(1)} s) before the move, ${clamp(n.accuracy - dw - da)}% when it walked diagonally away from the user`
     : "";
@@ -1756,7 +1762,7 @@ PREVIEW.move = (id, n) => {
   const kv = h("div", { class: "kv" },
     h("div", { class: "k" }, "type"), h("div", {}, String(n.monster_type || "").toUpperCase()),
     h("div", { class: "k" }, "hits"), h("div", {}, shapeText),
-    h("div", { class: "k" }, "power"), h("div", {}, n.power ? String(n.power) + (n.shape === "zone" && z.every ? ` per hit (on touch, then every ${(z.every / 60).toFixed(1)} s per monster)` : "") : n.status ? "none (status only)" : "none"),
+    h("div", { class: "k" }, "power"), h("div", {}, n.power ? String(n.power) + (n.shape === "zone" && z.every ? ` per hit (on touch, then every ${(z.every / 60).toFixed(1)} s per monster)` : "") + spPowerText : n.status ? "none (status only)" : "none"),
     h("div", { class: "k" }, "accuracy"), h("div", {}, n.shape === "zone" ? "never misses (the ground)" : n.power ? (n.accuracy ? n.accuracy + "% (a miss shows MISS)" + walkText : "never misses") : "—"),
     h("div", { class: "k" }, "charge (player)"), h("div", {}, `${n.charge} ticks (${(n.charge / 60).toFixed(1)} s)`),
     h("div", { class: "k" }, "animation"), h("div", {}, [].concat(stepsText, mvSteps ? h("span", { class: "small" }, " — only a picture: the hit lands the moment the move is used") : [])),

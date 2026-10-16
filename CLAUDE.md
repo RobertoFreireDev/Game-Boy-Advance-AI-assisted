@@ -273,7 +273,7 @@ Structural rules (enforced by `validate.py`):
 | **Progression** | | | | |
 | `upgrade` | `upg_` | One card of the level-up menu: a weapon, a passive item, an evolution or a bonus filler. | `category`, `title`, `icon`, `var`, `max_level`, `descriptions[]`, `requires[]`, `replaces`, `on_pick[]` | `icon` |
 | **Monster battles** | | | | |
-| `species` | `mon_` | A kind of monster: its look, type and 3 moves. Actors with the `monster` behavior take their body from it. | `title`, `monster_type`, `speed`, `hp_bonus`, `body`, `alpha_palette`, `portrait`, `cry`, `moves[3]` | `body`, `sprite`, `sfx`, `move`, `palette` |
+| `species` | `mon_` | A kind of monster: its look, type and 3 moves. Actors with the `monster` behavior take their body from it. | `title`, `monster_type`, `speed`, `hp_bonus`, `power`, `body`, `alpha_palette`, `portrait`, `cry`, `moves[3]` | `body`, `sprite`, `sfx`, `move`, `palette` |
 | `move` | `mov_` | One move a monster uses: what it hits, how hard, how often, what status and effect. | `title`, `monster_type`, `shape`, `range`, `power`, `accuracy`, `charge`, `status`, `dash`, `zone`, `buff`, `push`, `effect`, `effect_at`, `travel`, `sfx`, `on_use[]` | `particle`, `animation`, `sprite`, `sfx` |
 
 Actor types (`player` … `pickup`) share one structure; the type gives sensible defaults and
@@ -376,6 +376,8 @@ groups them for humans. **What an actor does comes only from its `logic` list.**
   validator warns when a species reaches farther than another yet walks faster), `hp_bonus` (0-100, default 0:
   percent more starting HP when it is the player's monster, added to its `hp_max_var` and `hp_var` when it
   appears while the max still holds its starting value, i.e. at the start of a run; wild ones don't get it),
+  `power` (50-150, default 100: percent of the damage all its moves deal, the player's and wild ones alike,
+  in every mode; on top of the `monster` behavior's own power: 90 = every move hits 10 % softer),
   `body` (its look in the world), `alpha_palette` (the same color slots recolored: the Alpha boss), `portrait` (a sprite for
   the picker), `cry` (sfx), exactly 3 `moves` (A, B, R). Its number for `species_var` and
   `{var.name}` is its order among the species in nodes.json, from 0.
@@ -452,7 +454,7 @@ groups them for humans. **What an actor does comes only from its `logic` list.**
   `player_hit_sounds {type: sfx}` (the player's hits sound like their move's type, plus `super` on top
   when super effective, so keep `super` on a channel the type sounds don't use; a missing type uses
   `hit`; wild monsters' hits use `hit` / `super` / `weak`). Damage =
-  power × (1 + 0.15 × (level − 1)) × multiplier × user power % (`power` + its `power_var`), rounded, at
+  power × (1 + 0.15 × (level − 1)) × multiplier × user power % (`power` + its `power_var`) × its species' `power` %, rounded, at
   least 1 (a wild monster with `level_var` reads its level every tick: a boss that grows); a hit flashes the
   target (`flash_palette`, white, or the monster behavior's own `flash_palette`) `flashes` times for
   `flash_ticks` frames each, with gaps as long (default once for 4: wild monsters blink red 3 times), runs

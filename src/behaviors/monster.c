@@ -94,7 +94,8 @@ int monster_power(const Actor *a, int power) {
     const Monster *m = mon(a);
     if (!m) return power ? power : 100;
     if (!power) power = m->power + var_or_0(params_of(a)->power_var);
-    return m->home ? power * (100 + params_of(a)->home_power) / 100 : power;
+    if (m->home) power = power * (100 + params_of(a)->home_power) / 100;
+    return m->species ? (power * m->species->power + 50) / 100 : power;    // its species' damage percent, for everyone
 }
 
 u32 monster_recharge(const Actor *a, u32 ticks) {

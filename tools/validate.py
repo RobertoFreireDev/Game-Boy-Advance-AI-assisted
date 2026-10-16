@@ -49,7 +49,7 @@ TYPE_FIELDS = {
     "menu": {"font", "title", "options", "upgrades", "cursor", "layout", "on_cancel", "box", "sounds", "texts"},
     "dialog": {"font", "box", "lines", "choices", "on_end", "ticks_per_char"},
     "upgrade": {"category", "title", "icon", "var", "max_level", "descriptions", "requires", "replaces", "on_pick"},
-    "species": {"title", "monster_type", "speed", "hp_bonus", "body", "alpha_palette", "portrait", "cry", "moves"},
+    "species": {"title", "monster_type", "speed", "hp_bonus", "power", "body", "alpha_palette", "portrait", "cry", "moves"},
     "move": {"title", "monster_type", "shape", "range", "power", "accuracy", "charge", "status", "dash", "zone", "buff",
              "push", "effect", "effect_at", "travel", "sfx", "on_use"},
 }
@@ -1538,6 +1538,7 @@ def V_species(c):
         c.err("'monster_type' must be one of game.battle.types (%s)" % ", ".join(battle_types(c.p)))
     c.get(n, "speed", "int", required=False, lo=C.SPECIES_SPEED[0], hi=C.SPECIES_SPEED[1])
     c.get(n, "hp_bonus", "int", required=False, lo=0, hi=100)
+    c.get(n, "power", "int", required=False, lo=50, hi=150)
     body = c.ref(n.get("body"), ["body"], "body")
     if body:
         if c.p.nodes[body].get("physics", {}).get("gravity"):
