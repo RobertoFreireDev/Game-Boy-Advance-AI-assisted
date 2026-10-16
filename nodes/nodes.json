@@ -1005,6 +1005,14 @@
     {"id": "mus_waves", "kind": "object", "type": "music", "path": "objects/music/mus_waves.json", "parent": null},
     {"id": "sfx_wave", "kind": "object", "type": "sfx", "path": "objects/sfx/sfx_wave.json", "parent": null},
     {"id": "icon_arrow_l_waves", "kind": "object", "type": "icon", "path": "objects/icon/icon_arrow_l_waves.json", "parent": "hud_select"},
-    {"id": "icon_arrow_r_waves", "kind": "object", "type": "icon", "path": "objects/icon/icon_arrow_r_waves.json", "parent": "hud_select"}
+    {"id": "icon_arrow_r_waves", "kind": "object", "type": "icon", "path": "objects/icon/icon_arrow_r_waves.json", "parent": "hud_select"},
+    {"id": "icon_label_classic_1", "kind": "object", "type": "icon", "path": "objects/icon/icon_label_classic_1.json", "parent": "hud_select"},
+    {"id": "icon_label_classic_2", "kind": "object", "type": "icon", "path": "objects/icon/icon_label_classic_2.json", "parent": "hud_select"},
+    {"id": "icon_label_classic_3", "kind": "object", "type": "icon", "path": "objects/icon/icon_label_classic_3.json", "parent": "hud_select"},
+    {"id": "icon_label_classic_4", "kind": "object", "type": "icon", "path": "objects/icon/icon_label_classic_4.json", "parent": "hud_select"},
+    {"id": "icon_label_waves_1", "kind": "object", "type": "icon", "path": "objects/icon/icon_label_waves_1.json", "parent": "hud_select"},
+    {"id": "icon_label_waves_2", "kind": "object", "type": "icon", "path": "objects/icon/icon_label_waves_2.json", "parent": "hud_select"},
+    {"id": "icon_label_waves_3", "kind": "object", "type": "icon", "path": "objects/icon/icon_label_waves_3.json", "parent": "hud_select"},
+    {"id": "icon_label_waves_4", "kind": "object", "type": "icon", "path": "objects/icon/icon_label_waves_4.json", "parent": "hud_select"}
   ]
 }

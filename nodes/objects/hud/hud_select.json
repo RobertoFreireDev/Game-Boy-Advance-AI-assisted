@@ -3,13 +3,53 @@
   "kind": "object",
   "type": "hud",
   "name": "Monster picker text",
-  "notes": "Shown once the logo has landed: the best time of the entry on screen above it, under the logo (BEST TIME --:-- until it wins a run; the classic and the waves entry of a monster each keep their own), arrows on both sides of the monster (yellow on the classic entries, red on the waves entries: the only sign of the mode, no label), its name and type centered under it, then a blinking PRESS START and, at the bottom, the SELECT: CLEAR SAVE hint. On a locked entry the two bottom lines become a blinking LOCKED and how to unlock it (they follow 'sel_locked', which the picker sets): WIN WITH A NEW MONSTER on a locked classic monster (only the first win of a monster that never won a run unlocks the next one), WIN WITH ALL 9 MONSTERS on the waves entries until every monster has won a classic run.",
+  "notes": "Shown once the logo has landed. Right under the logo, the mode of the entry on screen in big letters: CLASSIC in the logo's gold lettering on the classic entries, WAVES in red slanted lettering on the waves entries (4 icon pieces that switch with 'mode'), so it is always clear which mode START begins. Arrows on both sides of the monster (yellow on the classic entries, red on the waves entries), its name and type centered under it, then the best time of that entry (BEST TIME --:-- until it wins a run; the classic and the waves entry of a monster each keep their own), a blinking PRESS START and, at the bottom, the SELECT: CLEAR SAVE hint. On a locked entry the two bottom lines become a blinking LOCKED and how to unlock it (they follow 'sel_locked', which the picker sets): WIN WITH A NEW MONSTER on a locked classic monster (only the first win of a monster that never won a run unlocks the next one), WIN WITH ALL 9 MONSTERS on the waves entries until every monster has won a classic run.",
   "font": "font_default",
   "elements": [
     {
+      "kind": "gauge",
+      "x": 88,
+      "y": 48,
+      "var": "mode",
+      "icons": [
+        "icon_label_classic_1",
+        "icon_label_waves_1"
+      ]
+    },
+    {
+      "kind": "gauge",
+      "x": 104,
+      "y": 48,
+      "var": "mode",
+      "icons": [
+        "icon_label_classic_2",
+        "icon_label_waves_2"
+      ]
+    },
+    {
+      "kind": "gauge",
+      "x": 120,
+      "y": 48,
+      "var": "mode",
+      "icons": [
+        "icon_label_classic_3",
+        "icon_label_waves_3"
+      ]
+    },
+    {
+      "kind": "gauge",
+      "x": 136,
+      "y": 48,
+      "var": "mode",
+      "icons": [
+        "icon_label_classic_4",
+        "icon_label_waves_4"
+      ]
+    },
+    {
       "kind": "text",
       "x": 120,
-      "y": 56,
+      "y": 136,
       "text": "BEST TIME {best_time[entry]:time}",
       "align": "center"
     },
@@ -60,6 +100,14 @@
     "icon_arrow_l",
     "icon_arrow_r",
     "icon_arrow_l_waves",
-    "icon_arrow_r_waves"
+    "icon_arrow_r_waves",
+    "icon_label_classic_1",
+    "icon_label_classic_2",
+    "icon_label_classic_3",
+    "icon_label_classic_4",
+    "icon_label_waves_1",
+    "icon_label_waves_2",
+    "icon_label_waves_3",
+    "icon_label_waves_4"
   ]
 }

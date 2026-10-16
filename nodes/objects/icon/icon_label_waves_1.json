@@ -1,0 +1,26 @@
+{
+  "id": "icon_label_waves_1",
+  "kind": "object",
+  "type": "icon",
+  "name": "WAVES label, part 1 of 4",
+  "notes": "Part 1 (from the left) of the WAVES word over the monster picker, under the title logo: the menu shows it on the waves entries so the two modes can't be mixed up. Drawn in red slanted lettering (a white glint on top, red, then brown, dark outline and a brown shadow), the red of the waves arrows. The word is cut into 4 pieces of 16x16 because a HUD icon is at most 16x16; the HUD switches all 4 pieces with 'mode'. The letters use the bottom 12 rows only, so they clear the logo.",
+  "palette": "pal_ui",
+  "pixels": [
+    "................",
+    "................",
+    "................",
+    "................",
+    "..........1111..",
+    "..........1221..",
+    "..........1551..",
+    ".........1155111",
+    ".........1551551",
+    ".........1551551",
+    "........11555555",
+    "........18888888",
+    "........11881188",
+    "........81811118",
+    ".........1118811",
+    ".........888..88"
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "id": "icon_label_classic_2",
+  "kind": "object",
+  "type": "icon",
+  "name": "CLASSIC label, part 2 of 4",
+  "notes": "Part 2 (from the left) of the CLASSIC word over the monster picker, under the title logo: the menu shows it on the classic entries so the two modes can't be mixed up. Drawn in the gold lettering of the title logo (cream top, yellow to orange, navy outline, blue shadow), upright like the logo. The word is cut into 4 pieces of 16x16 because a HUD icon is at most 16x16; the HUD switches all 4 pieces with 'mode'. The letters use the bottom 12 rows only, so they clear the logo.",
+  "palette": "pal_logo",
+  "pixels": [
+    "................",
+    "................",
+    "................",
+    "................",
+    "11.....111111..1",
+    "41....1144441111",
+    "51....1555555115",
+    "51....1551155115",
+    "61....1661166116",
+    "61....1666666111",
+    "61....1666666121",
+    "7111111771177111",
+    "7777711771177117",
+    "8888811881188118",
+    "1111111111111111",
+    "2222222222222222"
+  ]
+}
