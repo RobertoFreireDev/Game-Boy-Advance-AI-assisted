@@ -1399,14 +1399,14 @@ function moveReach(m) {
 function speedCard(id) {
   const rows = SPECIES.map(s => {
     const sn = NODES[s] || {}, m1 = NODES[(sn.moves || [])[0]] || {};
-    return { s, m1, reach: moveReach(m1), speed: sn.speed === undefined ? 100 : sn.speed };
+    return { s, m1, reach: moveReach(m1), speed: sn.speed === undefined ? 100 : sn.speed, regen: sn.regen || 0 };
   });
   const me = rows.find(r => r.s === id) || { speed: 100 };
   const tb = h("table", { class: "grid" }, h("tr", {}, h("th", {}, "species"), h("th", {}, "move 1"), h("th", {}, "reaches"), h("th", {}, "speed")),
     rows.map(r => h("tr", { style: r.s === id ? "background:#2d3a52;font-weight:700;" : "" },
-      h("td", {}, nodeLink(r.s)), h("td", {}, r.m1.title || "?"), h("td", {}, r.reach + (r.reach === 1 ? " tile" : " tiles")), h("td", {}, r.speed + " %"))));
+      h("td", {}, nodeLink(r.s)), h("td", {}, r.m1.title || "?"), h("td", {}, r.reach + (r.reach === 1 ? " tile" : " tiles")), h("td", {}, r.speed + " %" + (r.regen ? ` (heals ${r.regen} HP/s)` : "")))));
   return card(`Walking speed — ${me.speed} %`, tb,
-    h("div", { class: "small" }, "The farther a species' move 1 reaches, the slower it walks. The percent scales the walker's own speed: the player's (topdown_controller speed) and a wild monster's (monster_ai speed and chase_speed)."));
+    h("div", { class: "small" }, "The farther a species' move 1 reaches, the slower it walks; a species that heals (regen) is slower still, paying for its healing. The percent scales the walker's own speed: the player's (topdown_controller speed) and a wild monster's (monster_ai speed and chase_speed)."));
 }
 PREVIEW.species = (id, n) => {
   const out = [];
@@ -1427,7 +1427,11 @@ PREVIEW.species = (id, n) => {
         n.hp_bonus ? h("div", { class: "small" }, h("b", {}, `+${n.hp_bonus}% starting HP`),
           " when the player plays it: added to the player's starting max HP and HP at the start of every run (wild ones are not affected).") : null,
         (n.power || 100) !== 100 ? h("div", { class: "small" }, h("b", {}, `Moves hit at ${n.power}% power`),
-          ` (${n.power > 100 ? "+" : ""}${n.power - 100}% damage on every move), the player's and wild ones alike, in every mode.`) : null))));
+          ` (${n.power > 100 ? "+" : ""}${n.power - 100}% damage on every move), the player's and wild ones alike, in every mode.`) : null,
+        n.regen ? h("div", { class: "small" }, h("b", {}, `Heals ${n.regen} HP every second`),
+          " up to its max, as the player, a wild monster or the Alpha, in every mode (no word floats up: the HP bar fills).") : null,
+        n.evasion ? h("div", { class: "small" }, h("b", {}, `Evasion ${n.evasion}`),
+          `: every move aimed at it has ${n.evasion} points less accuracy (a 100% move hits ${100 - n.evasion}%), the player's and wild ones alike, in every mode; ground zones and status-only moves still never miss.`) : null))));
   out.push(compassCard(n.body, () => st.alpha ? n.alpha_palette : null));
   out.push(card("Moves", (n.moves || []).map((m, i) => {
     const mv = NODES[m] || {};
@@ -1739,6 +1743,10 @@ PREVIEW.move = (id, n) => {
   const walkText = n.shape !== "zone" && n.power && n.accuracy && (dw || da)
     ? `; against the player it hits ${clamp(n.accuracy - dw)}% when it walked in the last ${dTicks} ticks (${(dTicks / 60).toFixed(1)} s) before the move, ${clamp(n.accuracy - dw - da)}% when it walked diagonally away from the user`
     : "";
+  // monster.c monster_hit: a target species' evasion takes from the accuracy too (Gustling).
+  const evasionText = n.shape !== "zone" && n.power && n.accuracy
+    ? SPECIES.filter(s => (NODES[s] || {}).evasion).map(s => `; against ${NODES[s].title || s} (evasion ${NODES[s].evasion}) ${clamp(n.accuracy - NODES[s].evasion)}%`).join("")
+    : "";
   const typeHit = (BATTLE.player_hit_sounds || {})[n.monster_type], hitSfx = typeHit || (BATTLE.sounds || {}).hit;
   const touched = `and every monster its effect touches (${HIT_MARGIN} px margin)`;
   const shapeText = {
@@ -1763,7 +1771,7 @@ PREVIEW.move = (id, n) => {
     h("div", { class: "k" }, "type"), h("div", {}, String(n.monster_type || "").toUpperCase()),
     h("div", { class: "k" }, "hits"), h("div", {}, shapeText),
     h("div", { class: "k" }, "power"), h("div", {}, n.power ? String(n.power) + (n.shape === "zone" && z.every ? ` per hit (on touch, then every ${(z.every / 60).toFixed(1)} s per monster)` : "") + spPowerText : n.status ? "none (status only)" : "none"),
-    h("div", { class: "k" }, "accuracy"), h("div", {}, n.shape === "zone" ? "never misses (the ground)" : n.power ? (n.accuracy ? n.accuracy + "% (a miss shows MISS)" + walkText : "never misses") : "—"),
+    h("div", { class: "k" }, "accuracy"), h("div", {}, n.shape === "zone" ? "never misses (the ground)" : n.power ? (n.accuracy ? n.accuracy + "% (a miss shows MISS)" + walkText + evasionText : "never misses") : "—"),
     h("div", { class: "k" }, "charge (player)"), h("div", {}, `${n.charge} ticks (${(n.charge / 60).toFixed(1)} s)`),
     h("div", { class: "k" }, "animation"), h("div", {}, [].concat(stepsText, mvSteps ? h("span", { class: "small" }, " — only a picture: the hit lands the moment the move is used") : [])),
     n.status ? h("div", { class: "k" }, "status") : null,

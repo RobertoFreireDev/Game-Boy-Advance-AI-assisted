@@ -273,7 +273,7 @@ Structural rules (enforced by `validate.py`):
 | **Progression** | | | | |
 | `upgrade` | `upg_` | One card of the level-up menu: a weapon, a passive item, an evolution or a bonus filler. | `category`, `title`, `icon`, `var`, `max_level`, `descriptions[]`, `requires[]`, `replaces`, `on_pick[]` | `icon` |
 | **Monster battles** | | | | |
-| `species` | `mon_` | A kind of monster: its look, type and 3 moves. Actors with the `monster` behavior take their body from it. | `title`, `monster_type`, `speed`, `hp_bonus`, `power`, `body`, `alpha_palette`, `portrait`, `cry`, `moves[3]` | `body`, `sprite`, `sfx`, `move`, `palette` |
+| `species` | `mon_` | A kind of monster: its look, type and 3 moves. Actors with the `monster` behavior take their body from it. | `title`, `monster_type`, `speed`, `hp_bonus`, `power`, `regen`, `evasion`, `body`, `alpha_palette`, `portrait`, `cry`, `moves[3]` | `body`, `sprite`, `sfx`, `move`, `palette` |
 | `move` | `mov_` | One move a monster uses: what it hits, how hard, how often, what status and effect. | `title`, `monster_type`, `shape`, `range`, `power`, `accuracy`, `charge`, `status`, `dash`, `zone`, `buff`, `push`, `effect`, `effect_at`, `travel`, `sfx`, `on_use[]` | `particle`, `animation`, `sprite`, `sfx` |
 
 Actor types (`player` … `pickup`) share one structure; the type gives sensible defaults and
@@ -373,17 +373,22 @@ groups them for humans. **What an actor does comes only from its `logic` list.**
 - **species**: `title` ≤ 10 chars, `monster_type` one of `game.battle.types`, `speed` (10-200, default
   100: percent of the walker's own speed, the player's `topdown_controller` `speed` or a wild monster's
   `monster_ai` `speed` / `chase_speed`; the farther its move 1 reaches, the slower it walks, and the
-  validator warns when a species reaches farther than another yet walks faster), `hp_bonus` (0-100, default 0:
+  validator warns when a species reaches farther than another yet walks faster; a species with `regen` is left
+  out of that check, slow on purpose), `hp_bonus` (0-100, default 0:
   percent more starting HP when it is the player's monster, added to its `hp_max_var` and `hp_var` when it
   appears while the max still holds its starting value, i.e. at the start of a run; wild ones don't get it),
   `power` (50-150, default 100: percent of the damage all its moves deal, the player's and wild ones alike,
   in every mode; on top of the `monster` behavior's own power: 90 = every move hits 10 % softer),
+  `regen` (0-10, default 0: hit points it heals once a second up to its max, the player's (`hp_max_var`)
+  and wild ones alike, in every mode; no word floats up), `evasion` (0-50, default 0: accuracy points every
+  move aimed at it loses, like the target's `dodge_var`: 10 = a 100 % move hits 90 %; zones and status-only
+  moves still never miss),
   `body` (its look in the world), `alpha_palette` (the same color slots recolored: the Alpha boss), `portrait` (a sprite for
   the picker), `cry` (sfx), exactly 3 `moves` (A, B, R). Its number for `species_var` and
   `{var.name}` is its order among the species in nodes.json, from 0.
 - **move**: `title` ≤ 13 chars, `monster_type`, `power` (0 = status only), `accuracy` % (a miss shows
   MISS; zones never miss; the user's `monster` `aim_var` adds to it and the target's `dodge_var` takes
-  from it, so a 100 % move can miss a dodging target; a target with the walking dodge loses it
+  from it, and so does the target species' `evasion`, so a 100 % move can miss a dodging target; a target with the walking dodge loses it
   `dodge_walk` points more when it walked (its own steps, not a push) in the last `dodge_ticks` ticks
   before the move was used, and `dodge_away` more on top when on one of those ticks it walked away from
   the user on both axes, diagonally (a level axis counts either way): the player, 20 / +30 in 0.1 s),

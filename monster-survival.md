@@ -289,9 +289,13 @@ Any of the 9 can be the player. Enemies use the same species.
 | Move 1 reaches | Speed | Species |
 |---|---|---|
 | 1 tile (melee) | 100 % | Furrbit (Tackle), Emberpup (Ember, the tile in front), Venomole (Poison Sting), Wispook (Lick) |
-| 2 tiles | 90 % | Splashell (Water Gun) |
+| 2 tiles | 50 % | Splashell (Water Gun): slower than its reach asks, because it heals (below) |
 | 3 tiles | 80 % | Sproutle (Vine Whip), Gustling (Gust), Pebbulk (Rock Throw) |
 | 4 tiles or more | 70 % | Voltail (Thunder Shock, 5 tiles) |
+
+**Two species have a trait of their own**, in every mode, as the player, a wild monster or the Alpha:
+- **Splashell (Water) heals 1 HP every second**, up to its max HP. It pays for it with the slowest walk of all (50 %).
+- **Gustling (Flying) is harder to hit**: every move aimed at it has 10 points less accuracy (a 100 % move hits 90 %, a 95 % move 85 %). Ground zones and status-only moves still never miss.
 
 ### 6.2 Enemy population — 25 total
 

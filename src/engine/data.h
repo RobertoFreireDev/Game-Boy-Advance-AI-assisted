@@ -277,7 +277,9 @@ typedef struct {
     u8 type;
     u8 hp_bonus;                        // the player's monster: extra starting hit points, in percent
     u8 power;                           // damage of its moves, in percent (100 = as each move says)
-    u16 speed;                          // walking speed, x/256 of the walker's own (256 = 100 %)
+    u8 regen;                           // hit points it heals every second, up to its max (0 = none)
+    u8 evasion;                         // accuracy points every move aimed at it loses (0 = none)
+    u16 speed;                         // walking speed, x/256 of the walker's own (256 = 100 %)
     const BodyData *body;
     const PaletteData *alpha_palette;   // the Alpha's colors (same slots as the sprite's palette)
     const SpriteData *portrait;

@@ -52,7 +52,7 @@ int monster_held(const Actor *a);
 int monster_targetable(const Actor *a);
 // True if b is a monster that a's moves can hit (the other team, and targetable).
 int monster_is_foe(const Actor *a, const Actor *b);
-// A move hits monster t: accuracy (the move's + the user's aim - t's dodge - its walking dodge:
+// A move hits monster t: accuracy (the move's + the user's aim - t's dodge - its species' evasion - its walking dodge:
 // dodge_walk if it walked in the last dodge_ticks ticks, + dodge_away diagonally away), damage, words,
 // flash, push, status, XP, fainting, and the move's own push (t slides away from the hit, unable to move or attack until it stops).
 // Returns HIT_*; it plays no sound (the caller plays one per use with monster_hit_sound).

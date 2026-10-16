@@ -19,6 +19,7 @@
 #define PAR_TREMBLE   1         // px a paralyzed monster trembles sideways (every 2 frames)
 #define PUSH_PX       2         // knockback when hit
 #define STATUS_EVERY  60        // poison hurts once a second
+#define REGEN_EVERY   60        // a healing species (regen) heals once a second
 #define FAINT_TICKS   30        // a wild monster flashes and blinks out
 #define PLAYER_FAINT  120
 
@@ -40,6 +41,7 @@ typedef struct {
     u16 tag_ticks;              // its level tag shows this many more ticks
     u16 away_ticks;             // ticks out of the tag view since it was last in it
     u8 tag_seen;                // 1: in the tag view lately (the tag showed; it won't show again yet)
+    u8 regen_clock;             // ticks since its species' last heal (regen)
     u16 walked[4];              // per way (WALK_*): bit k = it walked that way k + 1 ticks ago (walking dodge)
     u32 walk_frame;             // the frame its last step was recorded in
     s32 xp_seen;
@@ -289,6 +291,20 @@ static void hurt(Actor *a, s32 amount) {
     if (hp == 0) faint(a, p, m);
 }
 
+// Its species' healing: `regen` hit points once a second, up to its max (the player's hp_max_var).
+static void regen(const Actor *a, const Params_monster *p, Monster *m) {
+    if (!m->species->regen || ++m->regen_clock < REGEN_EVERY) return;
+    m->regen_clock = 0;
+    if (!actor_alive(a)) return;
+    s32 max = p->hp_var < 0 ? m->hp_max : p->hp_max_var >= 0 ? vars_get(p->hp_max_var) : 0;
+    s32 hp = hp_of(p, m);
+    if (hp <= 0 || hp >= max) return;
+    hp += m->species->regen;
+    if (hp > max) hp = max;
+    if (p->hp_var >= 0) vars_set(p->hp_var, hp);
+    else m->hp = (s16)hp;
+}
+
 // Push a monster up to `px` pixels away from (fx, fy), stopping at walls and other monsters.
 static void push(Actor *a, s32 fx, s32 fy, int px) {
     s32 dx = fx_to_int(a->x) - fx, dy = fx_to_int(a->y) - fy;
@@ -396,9 +412,9 @@ int monster_hit(Actor *t, const MonsterHit *h) {
     const Params_monster *tp = params_of(t);
     walk_record(t, tp, m);              // before this hit (a zone's too) pushes it
     if (mv->power > 0) {
-        // It hits on accuracy %: the move's, + the user's aim, - the target's dodge and walking
-        // dodge (zones never miss).
-        s32 acc = (s32)mv->accuracy + h->aim - var_or_0(tp->dodge_var);
+        // It hits on accuracy %: the move's, + the user's aim, - the target's dodge, its species'
+        // evasion and its walking dodge (zones never miss).
+        s32 acc = (s32)mv->accuracy + h->aim - var_or_0(tp->dodge_var) - m->species->evasion;
         if (h->roll) acc -= walk_dodge(t, tp, m, h);
         if (h->roll && acc < 100 && rng_range(1, 100) > acc) {
             say(t, BT_MISS, NULL, 0);
@@ -568,6 +584,7 @@ void bhv_monster_update(Actor *a, const void *params) {
         }
         if (m->status_ticks && --m->status_ticks == 0) m->status = STATUS_NONE;
     }
+    regen(a, p, m);
     if (m->status == STATUS_PAR) par_look(a, m);
     else if (a->flags & ACTOR_STILL) par_off(a);
     if (m->shove_ticks) shove_step(a, m);

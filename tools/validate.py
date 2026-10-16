@@ -49,7 +49,7 @@ TYPE_FIELDS = {
     "menu": {"font", "title", "options", "upgrades", "cursor", "layout", "on_cancel", "box", "sounds", "texts"},
     "dialog": {"font", "box", "lines", "choices", "on_end", "ticks_per_char"},
     "upgrade": {"category", "title", "icon", "var", "max_level", "descriptions", "requires", "replaces", "on_pick"},
-    "species": {"title", "monster_type", "speed", "hp_bonus", "power", "body", "alpha_palette", "portrait", "cry", "moves"},
+    "species": {"title", "monster_type", "speed", "hp_bonus", "power", "regen", "evasion", "body", "alpha_palette", "portrait", "cry", "moves"},
     "move": {"title", "monster_type", "shape", "range", "power", "accuracy", "charge", "status", "dash", "zone", "buff",
              "push", "effect", "effect_at", "travel", "sfx", "on_use"},
 }
@@ -1539,6 +1539,8 @@ def V_species(c):
     c.get(n, "speed", "int", required=False, lo=C.SPECIES_SPEED[0], hi=C.SPECIES_SPEED[1])
     c.get(n, "hp_bonus", "int", required=False, lo=0, hi=100)
     c.get(n, "power", "int", required=False, lo=50, hi=150)
+    c.get(n, "regen", "int", required=False, lo=0, hi=10)
+    c.get(n, "evasion", "int", required=False, lo=0, hi=50)
     body = c.ref(n.get("body"), ["body"], "body")
     if body:
         if c.p.nodes[body].get("physics", {}).get("gravity"):
@@ -1559,10 +1561,13 @@ def V_species(c):
         c.err("'moves' must list exactly 3 moves (A, B, R)")
     for i, m in enumerate(moves):
         c.ref(m, ["move"], "moves[%d]" % i)
-    # Balance: a species whose move 1 reaches farther must not walk faster.
+    # Balance: a species whose move 1 reaches farther must not walk faster (than one that isn't
+    # slow on purpose: a species that heals, regen, pays for it with its speed).
     mine = species_pace(c.p, n)
-    if mine:
+    if mine and not n.get("regen"):
         for sid, other in species_nodes(c.p).items():
+            if other.get("regen"):
+                continue
             theirs = species_pace(c.p, other)
             if theirs and mine[0] > theirs[0] and mine[1] > theirs[1]:
                 c.warn("its move 1 reaches %d tiles, farther than '%s' (%d), but it walks faster (speed %d > %d)"
