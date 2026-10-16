@@ -3,33 +3,25 @@
   "kind": "object",
   "type": "animation",
   "name": "Gustling idle up-right",
-  "notes": "Gustling standing still facing up-right (its back, turned to the right): it breathes (sinks 1 px and back). Loops.",
+  "notes": "Gustling hovering in place facing up-right (its back, turned to the right): it flaps its wings (raised 8 ticks, level 6, down 8, level 6) with its feet tucked away, and its body stays at the same height (no bobbing). Loops.",
   "sprite": "spr_gustling",
   "loop": true,
   "frames": [
     {
-      "frame": "up_right",
-      "ticks": 24
-    },
-    {
-      "frame": "up_right_breathe",
-      "ticks": 20
+      "frame": "up_right_wings_up",
+      "ticks": 8
     },
     {
       "frame": "up_right",
-      "ticks": 24
+      "ticks": 6
     },
     {
-      "frame": "up_right_breathe",
-      "ticks": 20
+      "frame": "up_right_wings_down",
+      "ticks": 8
     },
     {
       "frame": "up_right",
-      "ticks": 12
-    },
-    {
-      "frame": "up_right_breathe",
-      "ticks": 20
+      "ticks": 6
     }
   ],
   "events": []

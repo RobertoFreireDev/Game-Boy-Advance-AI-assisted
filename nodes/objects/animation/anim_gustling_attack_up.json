@@ -3,16 +3,16 @@
   "kind": "object",
   "type": "animation",
   "name": "Gustling attack up",
-  "notes": "Gustling using a move facing up (its back): it winds up (sinks 1 px) for 3 ticks, lunges (stretches 1 px) for 8, then stands.",
+  "notes": "Gustling using a move facing up (its back): wings raised for 3 ticks, a hard downstroke for 8, then wings level. Same length as before (15 ticks); it only changes the look.",
   "sprite": "spr_gustling",
   "loop": false,
   "frames": [
     {
-      "frame": "up_breathe",
+      "frame": "up_wings_up",
       "ticks": 3
     },
     {
-      "frame": "up_lunge",
+      "frame": "up_wings_down",
       "ticks": 8
     },
     {

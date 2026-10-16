@@ -3,25 +3,25 @@
   "kind": "object",
   "type": "animation",
   "name": "Gustling walk up-left",
-  "notes": "Gustling moving facing up-left (its back, turned to the left): it steps (back or left foot up, passing pose 1 px higher, other foot up, passing pose), 7 ticks a frame. Loops.",
+  "notes": "Gustling flying along facing up-left (its back, turned to the left): quicker wing beats than when it hovers (raised 5 ticks, level 4, down 5, level 4), feet tucked away, its body at the same height the whole time. Loops.",
   "sprite": "spr_gustling",
   "loop": true,
   "frames": [
     {
-      "frame": "up_left_step_l",
-      "ticks": 7
+      "frame": "up_left_wings_up",
+      "ticks": 5
     },
     {
-      "frame": "up_left_pass",
-      "ticks": 7
+      "frame": "up_left",
+      "ticks": 4
     },
     {
-      "frame": "up_left_step_r",
-      "ticks": 7
+      "frame": "up_left_wings_down",
+      "ticks": 5
     },
     {
-      "frame": "up_left_pass",
-      "ticks": 7
+      "frame": "up_left",
+      "ticks": 4
     }
   ],
   "events": []

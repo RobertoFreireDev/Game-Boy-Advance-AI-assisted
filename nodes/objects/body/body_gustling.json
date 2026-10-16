@@ -3,7 +3,7 @@
   "kind": "object",
   "type": "body",
   "name": "Gustling body",
-  "notes": "How Gustling looks in the world and the box that bumps into walls and other monsters. Its feet stand on the origin; the box covers the whole 16x16 picture, and being solid, monsters never walk through each other or overlap: their pictures stay side by side. It has idle, walk and attack animations for all 8 directions, so it turns the way it walks or aims (diagonals too) and keeps facing that way when it stops.",
+  "notes": "How Gustling looks in the world and the box that bumps into walls and other monsters. It flies with its feet tucked away, but the origin is still the spot under its belly where its feet stood, so it sits exactly where it did (nothing moved up or down); the box covers the whole 16x16 picture, and being solid, monsters never walk through each other or overlap: their pictures stay side by side. It has idle (hovering), walk (flying along) and attack animations for all 8 directions, all flapping its wings, so it turns the way it walks or aims (diagonals too) and keeps facing that way when it stops.",
   "origin": [
     8,
     15

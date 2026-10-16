@@ -28,7 +28,7 @@ All monsters, names, sprites, tiles and music are **original**. The style may ev
 | Map size | 3×3 screens = 720×480 px = **90×60 tiles** |
 | Frame rate | 60 FPS — all timers are counted in frames (1 s = 60 frames) |
 | Video mode | Mode 0, tiled backgrounds + sprites (OAM) |
-| Monster sprites | 16×16 px (2×2 tiles), GBA monster-game overworld style (dark closed outline, 3 shades lit from the top-left, eyes with a glint). Per direction: an idle loop (breathing 1 px, a blink), a 4-frame walk (step, passing pose 1 px higher, other step, passing pose; Splashell slides, Wispook floats) and an attack (wind-up, lunge). Every frame stays inside the 16×16 box with its outline closed: nothing is ever cut at the edges. Move effects keep a 1 px empty border for the same reason. |
+| Monster sprites | 16×16 px (2×2 tiles), GBA monster-game overworld style (dark closed outline, 3 shades lit from the top-left, eyes with a glint). Per direction: an idle loop (breathing 1 px, a blink), a 4-frame walk (step, passing pose 1 px higher, other step, passing pose; Splashell slides, Wispook floats) and an attack (wind-up, lunge). Gustling (Flying) always flies instead: feet tucked, every animation flaps its wings (raised, level, down; quicker when it moves, a downstroke with the beak open to attack), and its body never moves up or down in the picture. Every frame stays inside the 16×16 box with its outline closed: nothing is ever cut at the edges. Move effects keep a 1 px empty border for the same reason. |
 | Math | Fixed-point (no floats) |
 | Distances | Measured in tiles, using Chebyshev distance (8-direction grid), `dist = max(|dx|, |dy|)` |
 

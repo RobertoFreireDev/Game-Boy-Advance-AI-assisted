@@ -3,12 +3,12 @@
   "kind": "object",
   "type": "animation",
   "name": "Gustling attack down",
-  "notes": "Gustling using a move facing down (its front): it winds up (sinks 1 px) for 3 ticks, lunges (stretches 1 px) with its mouth open for 8, then stands.",
+  "notes": "Gustling using a move facing down (its front): wings raised for 3 ticks, a hard downstroke with its beak open for 8, then wings level. Same length as before (15 ticks); it only changes the look.",
   "sprite": "spr_gustling",
   "loop": false,
   "frames": [
     {
-      "frame": "down_breathe",
+      "frame": "down_wings_up",
       "ticks": 3
     },
     {

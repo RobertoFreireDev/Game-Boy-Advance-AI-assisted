@@ -3,41 +3,73 @@
   "kind": "object",
   "type": "animation",
   "name": "Gustling idle down-left",
-  "notes": "Gustling standing still facing down-left (its front, turned to the left): it breathes (sinks 1 px and back) and blinks now and then. Loops.",
+  "notes": "Gustling hovering in place facing down-left (its front, turned to the left): it flaps its wings (raised 8 ticks, level 6, down 8, level 6) with its feet tucked away, and its body stays at the same height (no bobbing), and blinks now and then. Loops.",
   "sprite": "spr_gustling",
   "loop": true,
   "frames": [
     {
-      "frame": "down_left",
-      "ticks": 24
-    },
-    {
-      "frame": "down_left_breathe",
-      "ticks": 20
+      "frame": "down_left_wings_up",
+      "ticks": 8
     },
     {
       "frame": "down_left",
-      "ticks": 24
+      "ticks": 6
     },
     {
-      "frame": "down_left_breathe",
-      "ticks": 20
+      "frame": "down_left_wings_down",
+      "ticks": 8
     },
     {
       "frame": "down_left",
-      "ticks": 12
+      "ticks": 6
+    },
+    {
+      "frame": "down_left_wings_up",
+      "ticks": 8
+    },
+    {
+      "frame": "down_left",
+      "ticks": 6
+    },
+    {
+      "frame": "down_left_wings_down",
+      "ticks": 8
+    },
+    {
+      "frame": "down_left",
+      "ticks": 6
+    },
+    {
+      "frame": "down_left_wings_up",
+      "ticks": 8
+    },
+    {
+      "frame": "down_left",
+      "ticks": 6
+    },
+    {
+      "frame": "down_left_wings_down",
+      "ticks": 8
+    },
+    {
+      "frame": "down_left",
+      "ticks": 6
+    },
+    {
+      "frame": "down_left_wings_up",
+      "ticks": 8
     },
     {
       "frame": "down_left_blink",
       "ticks": 6
     },
     {
-      "frame": "down_left",
-      "ticks": 10
+      "frame": "down_left_wings_down",
+      "ticks": 8
     },
     {
-      "frame": "down_left_breathe",
-      "ticks": 20
+      "frame": "down_left",
+      "ticks": 6
     }
   ],
   "events": []
