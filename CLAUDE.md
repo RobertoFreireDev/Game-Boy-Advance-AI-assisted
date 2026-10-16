@@ -616,8 +616,7 @@ Every channel in a pattern has the same number of rows. Missing channels are sil
 - Objects enable behaviors in `logic[]`; scenes can override params per instance.
 - Interface: `init(actor, params)`, `update(actor, params)`, optional `on_touch(actor, other, params)`.
 - Param types: `int`, `fixed`, `bool`, `ticks`, `button`, `var`, `node:<type>` (`node:actor` = any actor
-  type), `actions`, `points`, `choice` (one of `options`), `string`, `types` (a list of `game.battle.types` names,
-  a bitmask in C). Each param has a `default` or
+  type), `actions`, `points`, `choice` (one of `options`), `string`. Each param has a `default` or
   `required: true`.
 - A logic list may use the same behavior more than once (several `weapon`s, several `spawn_wave`s);
   a scene instance cannot override a behavior its object lists more than once.
@@ -679,8 +678,7 @@ Every channel in a pattern has the same number of rows. Missing channels are sil
   `max_hostile` others are hostile it walks up and waits `sight` tiles from the player for its turn),
   `monster_waves` (a wave director: each wave's monsters appear on the map's outer edge out of view and
   hunt the player; count, levels and HP grow by formula per wave, later waves bring other versions of
-  the monster (more moves), the last one a boss (it comes first); the first `early_waves` waves leave out
-  the `early_skip` types (long-range attackers held back for the start); `max_alive` caps how many are out at
+  the monster (more moves), the last one a boss (it comes first); `max_alive` caps how many are out at
   once, the rest walk in as others faint; `on_wave` / `on_boss` run as the player, `on_clear` when
   all are cleared), `move_buttons` (the player's 3 moves on A, B and R, one press each, with charge
   gauges, a locked-move buzz and a miss sound when a move reaches no one; `charge_var` = a recharge boost),

@@ -3,8 +3,7 @@
 // hunt the player. Wave w brings count + count_add x (w - 1) of them (at most max_count), each at
 // a random level from level + level_add x (w - 1) to that + level_spread, with hp + hp_per_level x
 // level hit points; later waves can bring other versions of the monster (object_2, object_3: more
-// moves); the first early_waves waves bring no monster of the early_skip types (those that attack
-// from far away). The last wave also brings the boss, first. With max_alive, at most that many are out at
+// moves). The last wave also brings the boss, first. With max_alive, at most that many are out at
 // once (25 hunting monsters cost more than a frame) and the rest walk in as others faint. When a
 // wave's last monster has fainted the next one comes after `pause` ticks; after the last wave,
 // on_clear runs. At most SPAWN_PER_TICK appear per tick, so a big wave never stalls a frame.
@@ -122,9 +121,7 @@ void bhv_monster_waves_update(Actor *a, const void *params) {
                 st[ST_BOSS] = 0;
                 run(&p->on_boss, a);
             } else {
-                monster_skip_types(w <= p->early_waves ? p->early_skip : 0);   // no far reachers at first
                 Actor *m = scene_spawn(wave_object(p, w), x, y);
-                monster_skip_types(0);
                 if (!m) break;
                 int lv = rng_range(lo, lo + p->level_spread);
                 monster_set_level(m, lv, p->hp + p->hp_per_level * lv);

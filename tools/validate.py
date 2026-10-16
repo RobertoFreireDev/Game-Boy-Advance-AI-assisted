@@ -207,12 +207,6 @@ class Ctx:
         elif ptype == "text":
             if not isinstance(v, str) or not v or not all(32 <= ord(ch) < 127 for ch in v):
                 self.err("'%s' must be plain text (letters, digits, punctuation)" % label)
-        elif ptype == "types":
-            types = battle_types(self.p)
-            if not isinstance(v, list) or not all(t in types for t in v):
-                self.err("'%s' must be a list of monster types from game.battle.types (%s)" % (label, ", ".join(types)))
-            elif len(set(v)) != len(v):
-                self.err("'%s' lists a type twice" % label)
         elif ptype == "button":
             if v not in C.BUTTONS:
                 self.err("'%s' must be one of %s" % (label, ", ".join(C.BUTTONS)))

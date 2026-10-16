@@ -835,7 +835,6 @@ function valueNode(type, v, sep) {
   if (type.startsWith("node:") || (typeof v === "string" && IDX[v])) return v ? nodeLink(v) : h("span", { class: "small" }, "(none)");
   if (type === "actions") return actionList(v);
   if (type === "var") return h("b", {}, v || "(none)");
-  if (type === "types") return (v || []).length ? h("b", {}, v.map(t => t.toUpperCase()).join(", ")) : h("span", { class: "small" }, "(none)");
   if (type === "points") return h("span", { class: "mono" }, (v || []).map(p => `(${p[0]}, ${p[1]})`).join(sep || " → "));
   if (typeof v === "boolean") return h("b", {}, v ? "yes" : "no");
   if (typeof v === "string" && /^#[0-9a-f]{6}$/i.test(v)) return h("span", {}, h("span", { class: "sw", style: "background:" + rgbCss(q15(v)) }), v);

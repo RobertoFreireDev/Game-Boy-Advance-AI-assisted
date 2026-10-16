@@ -219,9 +219,6 @@ class Gen:
             return str(pdef["options"].index(v))
         if ptype in ("string", "text"):
             return cstr(v) if v else "NULL"
-        if ptype == "types":
-            names = self.p.game["battle"]["types"] if v else []
-            return "0x%X" % sum(1 << names.index(t) for t in set(v or []))
         if ptype == "actions":
             return self.actions(v or [], base)
         if ptype == "points":
@@ -710,7 +707,7 @@ PARAM_NODE_PTR = {"dialog": "DialogData", "particle": "ParticleData", "sfx": "Sf
 
 C_TYPES = {"int": "s32", "fixed": "fixed", "bool": "u8", "ticks": "s32", "button": "u16",
            "var": "s16", "actions": "ActionList", "points": "PointList", "choice": "u8",
-           "string": "const char *", "text": "const char *", "types": "u32"}
+           "string": "const char *", "text": "const char *"}
 
 STRUCT_OF = {"palette": "PaletteData", "sprite": "SpriteData", "tileset": "TilesetData",
              "tilemap": "TilemapData", "font": "FontData", "icon": "IconData", "sfx": "SfxData",

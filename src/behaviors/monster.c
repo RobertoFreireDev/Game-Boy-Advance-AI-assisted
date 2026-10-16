@@ -47,7 +47,6 @@ typedef struct {
 } Monster;
 
 EWRAM_BSS static Monster s_mon[MAX_ACTORS];
-static u32 s_skip_types;        // random species leave out these types (bit = TYPE_*): a wave director's early waves
 
 static const Params_monster *params_of(const Actor *a) {
     if (!a) return NULL;
@@ -89,10 +88,6 @@ void monster_set_level(Actor *a, int level, int hp) {
     if (!m) return;
     m->level = (u8)(level < 1 ? 1 : level > 99 ? 99 : level);
     m->hp = m->hp_max = (s16)(hp < 1 ? 1 : hp > 9999 ? 9999 : hp);
-}
-
-void monster_skip_types(u32 types) {
-    s_skip_types = types;
 }
 
 int monster_power(const Actor *a, int power) {
@@ -492,19 +487,10 @@ static const SpeciesData *pick_species(const Params_monster *p) {
         s32 i = vars_get(p->species_var);
         return i >= 0 && i < n ? b->species[i] : b->species[0];
     }
-    if (p->random) {                    // any species but the avoided one and the skipped types
-        u32 skip = s_skip_types;
-        int count = 0;
-        for (int i = 0; i < n; i++)
-            if (i != avoid && !((skip >> b->species[i]->type) & 1)) count++;
-        if (!count) {                   // the skipped types would leave none: allow them again
-            skip = 0;
-            count = avoid >= 0 && avoid < n ? n - 1 : n;
-            if (!count) return b->species[0];
-        }
-        int k = rng_range(0, count - 1);
-        for (int i = 0; i < n; i++)
-            if (i != avoid && !((skip >> b->species[i]->type) & 1) && k-- == 0) return b->species[i];
+    if (p->random) {
+        int k = rng_range(0, (avoid >= 0 && avoid < n ? n - 2 : n - 1));
+        if (avoid >= 0 && k >= avoid) k++;
+        return b->species[k];
     }
     if (avoid >= 0 && avoid < n && b->species[avoid] == p->species) return NULL;   // the player's kind
     return p->species;
