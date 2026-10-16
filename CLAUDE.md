@@ -699,7 +699,8 @@ the three take `index` on a list variable, §5.2), `if_chance` (`percent`,
 `close_menu`, `spawn`, `destroy_self`, `shake_camera`, `save_game`, `load_game`, `call` (custom C, §7.3),
 `show_hud` (switch HUD, e.g. after an intro), `flash_screen` (white flash), `cover_screen` (a drifting
 pattern hides the world, HUD on top: a sandstorm), `float_text` (words float up over the object; the
-battle font).
+battle font), `pause_world` (the world holds still for `ticks` as under a menu, the HUD, sounds and other
+lists go on, and the list waits: a beat before the waves mode's level-up cards).
 Each catalog entry has a `sentence` the visualizer reads aloud ("Go to scene {scene}").
 Codegen maps every action to the generic `Action` struct (`src/engine/data.h`); a new action
 needs a case in `codegen.py` (`Gen.action`) and in `src/engine/actions.c`.
@@ -760,7 +761,7 @@ src/engine/
 8. `audio_update`
 9. Build the OAM shadow for the next VBlank
 
-Steps 3 (actor logic), 4 and 5 are skipped while a menu or dialog is open; action lists, fades,
+Steps 3 (actor logic), 4 and 5 are skipped while a menu or dialog is open or a `pause_world` runs; action lists, fades,
 camera, UI and audio keep running. A scene switch (`goto_scene`) happens at the start of the next
 frame's `scene_update`; the new scene's `on_start` runs in that same frame (so `fade_in` never
 flashes).

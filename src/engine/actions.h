@@ -1,5 +1,5 @@
 // actions.h - action list interpreter. A running list is a "script": it runs actions in
-// order and pauses on wait / fade_in / fade_out, then continues on later frames.
+// order and pauses on wait / fade_in / fade_out / pause_world, then continues on later frames.
 #ifndef ENGINE_ACTIONS_H
 #define ENGINE_ACTIONS_H
 
@@ -15,5 +15,7 @@ void scripts_start(ActionList list, struct Actor *self);
 void scripts_update(void);
 // An actor is being removed: scripts that belong to it keep running without a 'self'.
 void scripts_forget_actor(struct Actor *a);
+// A pause_world action is running: the world holds still (like under a menu), the HUD does not.
+int scripts_pausing_world(void);
 
 #endif

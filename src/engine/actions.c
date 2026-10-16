@@ -19,6 +19,7 @@ typedef struct {
     u8 active;
     s8 depth;
     u16 wait;
+    u8 pausing;             // the wait is a pause_world: the world holds still until it ends
     struct Actor *self;
     Frame stack[SCRIPT_DEPTH];
 } Script;
@@ -32,6 +33,12 @@ void scripts_clear(void) {
 void scripts_forget_actor(struct Actor *a) {
     for (int i = 0; i < MAX_SCRIPTS; i++)
         if (s_scripts[i].active && s_scripts[i].self == a) s_scripts[i].self = NULL;
+}
+
+int scripts_pausing_world(void) {
+    for (int i = 0; i < MAX_SCRIPTS; i++)
+        if (s_scripts[i].active && s_scripts[i].pausing) return 1;
+    return 0;
 }
 
 static int compare(s32 v, u8 cmp, s32 w) {
@@ -180,6 +187,9 @@ static int run(Script *s) {
                 ftext_show(fx_to_int(self->x), fx_to_int(self->y) - a->a, a->text, g_game.battle->font,
                            a->node >= 0 ? (const PaletteData *)g_nodes[a->node].data : NULL);
             break;
+        case ACT_PAUSE_WORLD:
+            if (a->a > 0) { s->wait = (u16)a->a; s->pausing = 1; return 1; }
+            break;
         }
     }
     return 0;
@@ -193,6 +203,7 @@ void scripts_start(ActionList list, struct Actor *self) {
         s->active = 1;
         s->self = self;
         s->wait = 0;
+        s->pausing = 0;
         s->depth = 0;
         s->stack[0].items = list.items;
         s->stack[0].count = list.count;
@@ -207,6 +218,7 @@ void scripts_update(void) {
         Script *s = &s_scripts[i];
         if (!s->active) continue;
         if (s->wait > 0 && --s->wait > 0) continue;
+        s->pausing = 0;
         s->active = (u8)run(s);
     }
 }

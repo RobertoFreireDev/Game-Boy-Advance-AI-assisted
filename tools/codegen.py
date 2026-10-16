@@ -138,7 +138,7 @@ class Gen:
         text = "NULL"
         if do == "goto_scene":
             node = self.node_enum(val("scene"))
-        elif do in ("fade_in", "fade_out", "wait"):
+        elif do in ("fade_in", "fade_out", "wait", "pause_world"):
             va = int(val("ticks") or 0)
         elif do == "play_sfx":
             node = self.node_enum(val("sfx"))

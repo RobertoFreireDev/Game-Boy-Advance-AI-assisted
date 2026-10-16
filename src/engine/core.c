@@ -20,6 +20,7 @@
 #include "audio.h"
 #include "ui.h"
 #include "save.h"
+#include "actions.h"
 
 static u32 s_frame;
 static u32 s_rng = 0x2545F491;
@@ -67,10 +68,10 @@ void core_run(void) {
         s_rng ^= s_frame;
         // 2. Buttons.
         input_update();
-        s_paused = ui_blocking();
+        s_paused = ui_blocking() || scripts_pausing_world();
         // 3. Scene (pending scene switch, action lists) and actor logic.
         scene_update();
-        s_paused = ui_blocking();
+        s_paused = ui_blocking() || scripts_pausing_world();
         if (!s_paused) {
             // 4. Movement and collisions.
             physics_update();

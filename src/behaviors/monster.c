@@ -229,7 +229,10 @@ static void player_progress(Actor *a, const Params_monster *p, Monster *m) {
         vars_add(p->hp_max_var, p->hp_per_level);
         if (p->hp_max_var >= 0) vars_set(p->hp_var, vars_get(p->hp_max_var));   // a full heal: fighting pays off
         scripts_start(p->on_level_up, a);
-        if (p->level_by_level) break;   // the next one waits a tick (after the level-up menu it opened)
+        if (p->level_by_level) {        // the next one waits a tick (after the level-up menu it opened)
+            m->xp_known = 0;            // the XP bar shows this level's share, even when no XP came in
+            break;
+        }
     }
     m->level = (u8)lv;
     if (xp == m->xp_seen && m->xp_known) return;

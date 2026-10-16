@@ -193,5 +193,12 @@
       "palette":  {"type": "node:palette", "default": "", "description": "Colors of the words. Empty = the font's."},
       "height":   {"type": "int", "default": 26, "description": "Pixels above the object's origin (its feet)."}
     }
+  },
+  "pause_world": {
+    "description": "Freeze the world for a moment, as an open menu does: actors, physics, animations, particles and floating words hold still, while the HUD, music, sounds, camera and other action lists go on. The list waits until the pause ends (a beat before the level-up cards, so the player sees what happened).",
+    "sentence": "Freeze the world for {ticks} ticks (the HUD keeps going)",
+    "params": {
+      "ticks":  {"type": "ticks", "required": true, "description": "How long the world holds still."}
+    }
   }
 }
