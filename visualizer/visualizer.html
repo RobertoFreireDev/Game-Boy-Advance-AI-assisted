@@ -1011,7 +1011,7 @@ function collisionOverlay(ctx, mapId, ox, oy) {
   }));
 }
 PREVIEW.tilemap = (id, n) => {
-  const st = { zoom: 2, coll: true, grid: false };
+  const st = { zoom: 1, coll: true, grid: false };
   const stage = h("div", { class: "stage" });
   const src = mapCanvas(id);
   const draw = () => {
@@ -1929,7 +1929,7 @@ function drawScene(ctx, sc, L, tick, ov, layersOnScreen) {
 function PREVIEW_scene(id, sc) {
   const varied = (sc.instances || []).filter(i => i.variants && Array.isArray(i.variants.objects) && i.variants.objects.length);
   let L = sceneLayout(sc, null);
-  const ov = { zoom: L.W > 400 ? 2 : 3, grid: false, hitbox: false, origin: false, labels: false, paths: true, zones: true, frame: true, coll: false };
+  const ov = { zoom: 1, grid: false, hitbox: false, origin: false, labels: false, paths: true, zones: true, frame: true, coll: false };
   const stage = h("div", { class: "stage" });
   let canvas, ctx, hits = [];
   const build = () => {
