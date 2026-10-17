@@ -1,0 +1,283 @@
+{
+  "id": "scn_prizes",
+  "kind": "scene",
+  "type": "cutscene",
+  "name": "Items won",
+  "notes": "Opens after every victory screen (classic and waves, any monster, even a run won before): YOU WON 3 ITEMS! over the meadow sky, with the 3 items the win gave (prize_1-3, rolled by the victory screen: 3 different of the 5 floor items), each bobbing and twinkling as on the ground, with its name and its boost, and a chime for each. They boost the next run, whatever its monster and mode: when it starts they are used up and their boosts last that whole run (see prop_picker). Winning again gives 3 new ones; they never add up. The victory song keeps playing. START goes on to the shiny screen when the win made a monster shiny (new_shiny is 0 or more), otherwise back to the menu.",
+  "backdrop": "#58a8f0",
+  "music": "mus_victory",
+  "camera": {
+    "x": 0,
+    "y": 0,
+    "bounds": "none"
+  },
+  "instances": [
+    {
+      "id": "sky",
+      "object": "map_sky"
+    },
+    {
+      "id": "hud",
+      "object": "hud_prizes"
+    },
+    {
+      "id": "next",
+      "object": "prop_prizes"
+    }
+  ],
+  "on_start": [
+    {
+      "do": "if_var",
+      "var": "prize_1",
+      "op": "==",
+      "value": 1,
+      "then": [
+        {
+          "do": "spawn",
+          "object": "prop_prize_swift_feather",
+          "x": 56,
+          "y": 69,
+          "relative": false
+        }
+      ]
+    },
+    {
+      "do": "if_var",
+      "var": "prize_1",
+      "op": "==",
+      "value": 2,
+      "then": [
+        {
+          "do": "spawn",
+          "object": "prop_prize_power_gem",
+          "x": 56,
+          "y": 69,
+          "relative": false
+        }
+      ]
+    },
+    {
+      "do": "if_var",
+      "var": "prize_1",
+      "op": "==",
+      "value": 3,
+      "then": [
+        {
+          "do": "spawn",
+          "object": "prop_prize_aim_charm",
+          "x": 56,
+          "y": 69,
+          "relative": false
+        }
+      ]
+    },
+    {
+      "do": "if_var",
+      "var": "prize_1",
+      "op": "==",
+      "value": 4,
+      "then": [
+        {
+          "do": "spawn",
+          "object": "prop_prize_mist_orb",
+          "x": 56,
+          "y": 69,
+          "relative": false
+        }
+      ]
+    },
+    {
+      "do": "if_var",
+      "var": "prize_1",
+      "op": "==",
+      "value": 5,
+      "then": [
+        {
+          "do": "spawn",
+          "object": "prop_prize_quick_hourglass",
+          "x": 56,
+          "y": 69,
+          "relative": false
+        }
+      ]
+    },
+    {
+      "do": "if_var",
+      "var": "prize_2",
+      "op": "==",
+      "value": 1,
+      "then": [
+        {
+          "do": "spawn",
+          "object": "prop_prize_swift_feather",
+          "x": 56,
+          "y": 93,
+          "relative": false
+        }
+      ]
+    },
+    {
+      "do": "if_var",
+      "var": "prize_2",
+      "op": "==",
+      "value": 2,
+      "then": [
+        {
+          "do": "spawn",
+          "object": "prop_prize_power_gem",
+          "x": 56,
+          "y": 93,
+          "relative": false
+        }
+      ]
+    },
+    {
+      "do": "if_var",
+      "var": "prize_2",
+      "op": "==",
+      "value": 3,
+      "then": [
+        {
+          "do": "spawn",
+          "object": "prop_prize_aim_charm",
+          "x": 56,
+          "y": 93,
+          "relative": false
+        }
+      ]
+    },
+    {
+      "do": "if_var",
+      "var": "prize_2",
+      "op": "==",
+      "value": 4,
+      "then": [
+        {
+          "do": "spawn",
+          "object": "prop_prize_mist_orb",
+          "x": 56,
+          "y": 93,
+          "relative": false
+        }
+      ]
+    },
+    {
+      "do": "if_var",
+      "var": "prize_2",
+      "op": "==",
+      "value": 5,
+      "then": [
+        {
+          "do": "spawn",
+          "object": "prop_prize_quick_hourglass",
+          "x": 56,
+          "y": 93,
+          "relative": false
+        }
+      ]
+    },
+    {
+      "do": "if_var",
+      "var": "prize_3",
+      "op": "==",
+      "value": 1,
+      "then": [
+        {
+          "do": "spawn",
+          "object": "prop_prize_swift_feather",
+          "x": 56,
+          "y": 117,
+          "relative": false
+        }
+      ]
+    },
+    {
+      "do": "if_var",
+      "var": "prize_3",
+      "op": "==",
+      "value": 2,
+      "then": [
+        {
+          "do": "spawn",
+          "object": "prop_prize_power_gem",
+          "x": 56,
+          "y": 117,
+          "relative": false
+        }
+      ]
+    },
+    {
+      "do": "if_var",
+      "var": "prize_3",
+      "op": "==",
+      "value": 3,
+      "then": [
+        {
+          "do": "spawn",
+          "object": "prop_prize_aim_charm",
+          "x": 56,
+          "y": 117,
+          "relative": false
+        }
+      ]
+    },
+    {
+      "do": "if_var",
+      "var": "prize_3",
+      "op": "==",
+      "value": 4,
+      "then": [
+        {
+          "do": "spawn",
+          "object": "prop_prize_mist_orb",
+          "x": 56,
+          "y": 117,
+          "relative": false
+        }
+      ]
+    },
+    {
+      "do": "if_var",
+      "var": "prize_3",
+      "op": "==",
+      "value": 5,
+      "then": [
+        {
+          "do": "spawn",
+          "object": "prop_prize_quick_hourglass",
+          "x": 56,
+          "y": 117,
+          "relative": false
+        }
+      ]
+    },
+    {
+      "do": "fade_in",
+      "ticks": 20
+    },
+    {
+      "do": "wait",
+      "ticks": 6
+    },
+    {
+      "do": "play_sfx",
+      "sfx": "sfx_item"
+    },
+    {
+      "do": "wait",
+      "ticks": 14
+    },
+    {
+      "do": "play_sfx",
+      "sfx": "sfx_item"
+    },
+    {
+      "do": "wait",
+      "ticks": 14
+    },
+    {
+      "do": "play_sfx",
+      "sfx": "sfx_item"
+    }
+  ]
+}

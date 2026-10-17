@@ -637,7 +637,7 @@ void bhv_monster_init(Actor *a, const void *params) {
         if (sh) a->pal = sh;
     }
     a->flash_pal = hit_palette(p, m);
-    if (m->home) scripts_start(p->on_home, a);
+    scripts_start(m->home ? p->on_home : p->on_away, a);
 }
 
 void bhv_monster_update(Actor *a, const void *params) {

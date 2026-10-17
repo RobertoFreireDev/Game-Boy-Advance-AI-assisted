@@ -1,0 +1,9 @@
+{
+  "id": "prop_prize_swift_feather",
+  "kind": "object",
+  "type": "prop",
+  "name": "Swift Feather (items screen)",
+  "notes": "The Swift Feather as the items screen (scn_prizes) shows it: the floor item's own look, bobbing and twinkling (body_item_swift_feather), left of its name and boost (+10% SPEED). Only a picture: the scene places it on the row of the item that holds it (prize_1-3), and nothing touches it there.",
+  "body": "body_item_swift_feather",
+  "logic": []
+}

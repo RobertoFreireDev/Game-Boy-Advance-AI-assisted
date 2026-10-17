@@ -3,7 +3,7 @@
   "kind": "object",
   "type": "body",
   "name": "Swift Feather body",
-  "notes": "How the Swift Feather looks on the ground (a pale blue feather with a grey shaft) and the box the player touches to pick it up. Its shadow sits on the origin. Not solid and only touches the player: monsters walk over it and never take it. Shared by the classic run's floor item (item_swift_feather) and the waves mode's drop (item_waves_swift_feather).",
+  "notes": "How the Swift Feather looks on the ground (a pale blue feather with a grey shaft) and the box the player touches to pick it up. Its shadow sits on the origin. Not solid and only touches the player: monsters walk over it and never take it. Shared by the classic run's floor item (item_swift_feather) the waves mode's drop (item_waves_swift_feather) and its picture on the items screen after a win (prop_prize_swift_feather).",
   "origin": [
     8,
     13

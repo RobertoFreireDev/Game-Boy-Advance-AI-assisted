@@ -676,7 +676,7 @@ Every channel in a pattern has the same number of rows. Missing channels are sil
   hitbox on a solid tile, it moves to the nearest spot inside the map clear of solid tiles: a monster's drop
   in an arena's dark edge lands on the floor),
   `trigger_zone`, `talk`, `camera_target`, `spawn_particles`, `button_actions` (a button press runs
-  actions, e.g. START opens a pause menu). Top-down set: `sword_attack`,
+  actions, e.g. START opens a pause menu; `once`: only the first press counts). Top-down set: `sword_attack`,
   `wander`, `locked_door`. Survivors set: `weapon` (auto-fire, level from a variable), `projectile`
   (the shot), `aura`, `swarm` (horde movement with grid-based crowd spreading), `magnet` (pickups fly
   to the player), `spawn_wave` (timed off-screen waves), `run_clock` (`stop_var` freezes it; `on_minute` runs actions at each whole minute), `level_up`.
@@ -685,7 +685,7 @@ Every channel in a pattern has the same number of rows. Missing channels are sil
   body comes `level_tag_margin` px inside the view below the HUD's top panel, gone when a move reaches
   it, shown again after `level_tag_reset` ticks out of that view; a home world: `home_var` holds the
   world's type, and a monster of that type hits `home_power` % harder, walks `home_speed` % faster,
-  recharges `home_charge` % sooner and runs `on_home` when it appears; `walls` false = it walks through
+  recharges `home_charge` % sooner and runs `on_home` when it appears (`on_away` when it appears away from home); `walls` false = it walks through
   solid tiles (wave monsters crossing an arena's dark edge that holds the player in); the player's
   `xp_grow` makes each level cost more than the last and `level_by_level` gains one level per tick, so an
   `on_level_up` that opens a level-up menu shows it once per level; a shiny one: `shiny_var` is a list

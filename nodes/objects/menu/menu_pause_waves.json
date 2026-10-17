@@ -3,7 +3,7 @@
   "kind": "object",
   "type": "menu",
   "name": "Pause (waves)",
-  "notes": "Opens with START during a waves run (the world freezes). Shows the level (yellow), XP (blue), the wave (red), the timer (green), the kills and the monsters of this wave still to defeat, then the 3 moves (a move not unlocked yet in dark grey). CONTINUE (or B / START) goes back; RESTART starts a new waves run with the same monster in the same world; QUIT returns to the menu.",
+  "notes": "Opens with START during a waves run (the world freezes). Shows the level (yellow), XP (blue), the wave (red), the timer (green), the kills and the monsters of this wave still to defeat, then the 3 moves (a move not unlocked yet in dark grey). CONTINUE (or B / START) goes back; RESTART starts a new waves run with the same monster in the same world; QUIT returns to the menu. A RESTART is a new run: the items the last win gave were used up by the run it ends, so it starts without them.",
   "font": "font_default",
   "title": "PAUSED",
   "cursor": "icon_cursor",

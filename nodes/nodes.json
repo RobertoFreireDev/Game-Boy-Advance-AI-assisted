@@ -310,6 +310,51 @@
         "type": "int",
         "initial": 0,
         "notes": "Helper for picking a random monster to make shiny (when the winner already is): counts down over the monsters that aren't shiny yet; the one it reaches 0 on is picked. -1 = no roll."
+      },
+      {
+        "name": "prize_1",
+        "type": "int",
+        "initial": 0,
+        "persistent": true,
+        "notes": "Item 1 of the 3 items the last won run gave (any mode, any monster, every win, even a run won before), waiting for the next run: 0 = none, 1 Swift Feather, 2 Power Gem, 3 Aim Charm, 4 Mist Orb, 5 Quick Hourglass. Rolled by the victory screen (3 different ones, prize_1 < prize_2 < prize_3), shown by the items screen, used up when the next run starts (set back to 0 then, the boosts kept for that run). Saved; a new win replaces them, they never add up."
+      },
+      {
+        "name": "prize_2",
+        "type": "int",
+        "initial": 0,
+        "persistent": true,
+        "notes": "Item 2 of the 3 items the last won run gave (any mode, any monster, every win, even a run won before), waiting for the next run: 0 = none, 1 Swift Feather, 2 Power Gem, 3 Aim Charm, 4 Mist Orb, 5 Quick Hourglass. Rolled by the victory screen (3 different ones, prize_1 < prize_2 < prize_3), shown by the items screen, used up when the next run starts (set back to 0 then, the boosts kept for that run). Saved; a new win replaces them, they never add up."
+      },
+      {
+        "name": "prize_3",
+        "type": "int",
+        "initial": 0,
+        "persistent": true,
+        "notes": "Item 3 of the 3 items the last won run gave (any mode, any monster, every win, even a run won before), waiting for the next run: 0 = none, 1 Swift Feather, 2 Power Gem, 3 Aim Charm, 4 Mist Orb, 5 Quick Hourglass. Rolled by the victory screen (3 different ones, prize_1 < prize_2 < prize_3), shown by the items screen, used up when the next run starts (set back to 0 then, the boosts kept for that run). Saved; a new win replaces them, they never add up."
+      },
+      {
+        "name": "prize_roll",
+        "type": "int",
+        "initial": 0,
+        "notes": "Helper for the victory screen's roll of the 3 items: which of the 10 ways to pick 3 different items out of 5 (0-9)."
+      },
+      {
+        "name": "used1",
+        "type": "int",
+        "initial": 0,
+        "notes": "Item 1 this run started with (the last win's prize_1, same numbers, 0 = none): its boost was added when the run started; the player's monster floats its words when it appears. Back to 0 each run."
+      },
+      {
+        "name": "used2",
+        "type": "int",
+        "initial": 0,
+        "notes": "Item 2 this run started with (the last win's prize_2, same numbers, 0 = none): its boost was added when the run started; the player's monster floats its words when it appears. Back to 0 each run."
+      },
+      {
+        "name": "used3",
+        "type": "int",
+        "initial": 0,
+        "notes": "Item 3 this run started with (the last win's prize_3, same numbers, 0 = none): its boost was added when the run started; the player's monster floats its words when it appears. Back to 0 each run."
       }
     ],
     "battle": {
@@ -442,6 +487,7 @@
     {"id": "scn_waves_victory", "kind": "scene", "type": "credits", "path": "scenes/scn_waves_victory.json", "parent": null},
     {"id": "scn_waves_over", "kind": "scene", "type": "game_over", "path": "scenes/scn_waves_over.json", "parent": null},
     {"id": "scn_shiny", "kind": "scene", "type": "cutscene", "path": "scenes/scn_shiny.json", "parent": null},
+    {"id": "scn_prizes", "kind": "scene", "type": "cutscene", "path": "scenes/scn_prizes.json", "parent": null},
     {"id": "pal_ui", "kind": "object", "type": "palette", "path": "objects/palette/pal_ui.json", "parent": null},
     {"id": "font_default", "kind": "object", "type": "font", "path": "objects/font/font_default.json", "parent": null},
     {"id": "icon_cursor", "kind": "object", "type": "icon", "path": "objects/icon/icon_cursor.json", "parent": null},
@@ -1082,6 +1128,13 @@
     {"id": "sfx_shiny", "kind": "object", "type": "sfx", "path": "objects/sfx/sfx_shiny.json", "parent": null},
     {"id": "spr_shiny_star", "kind": "object", "type": "sprite", "path": "objects/sprite/spr_shiny_star.json", "parent": null},
     {"id": "ptc_shiny_stars", "kind": "object", "type": "particle", "path": "objects/particle/ptc_shiny_stars.json", "parent": null},
-    {"id": "anim_shiny_star", "kind": "object", "type": "animation", "path": "objects/animation/anim_shiny_star.json", "parent": "ptc_shiny_stars"}
+    {"id": "anim_shiny_star", "kind": "object", "type": "animation", "path": "objects/animation/anim_shiny_star.json", "parent": "ptc_shiny_stars"},
+    {"id": "hud_prizes", "kind": "object", "type": "hud", "path": "objects/hud/hud_prizes.json", "parent": null},
+    {"id": "prop_prizes", "kind": "object", "type": "prop", "path": "objects/prop/prop_prizes.json", "parent": null},
+    {"id": "prop_prize_swift_feather", "kind": "object", "type": "prop", "path": "objects/prop/prop_prize_swift_feather.json", "parent": null},
+    {"id": "prop_prize_power_gem", "kind": "object", "type": "prop", "path": "objects/prop/prop_prize_power_gem.json", "parent": null},
+    {"id": "prop_prize_aim_charm", "kind": "object", "type": "prop", "path": "objects/prop/prop_prize_aim_charm.json", "parent": null},
+    {"id": "prop_prize_mist_orb", "kind": "object", "type": "prop", "path": "objects/prop/prop_prize_mist_orb.json", "parent": null},
+    {"id": "prop_prize_quick_hourglass", "kind": "object", "type": "prop", "path": "objects/prop/prop_prize_quick_hourglass.json", "parent": null}
   ]
 }

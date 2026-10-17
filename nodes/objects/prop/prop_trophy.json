@@ -3,7 +3,7 @@
   "kind": "object",
   "type": "prop",
   "name": "Winner portrait",
-  "notes": "Invisible: shows the winning monster's portrait bobbing and plays its cry; a shiny monster's portrait shimmers through the rainbow. START goes to the shiny screen when this win made a monster shiny (new_shiny is 0 or more), otherwise back to the menu.",
+  "notes": "Invisible: shows the winning monster's portrait bobbing and plays its cry; a shiny monster's portrait shimmers through the rainbow. START goes to the items screen (scn_prizes: the 3 items this win gave), which then goes on to the shiny screen or the menu.",
   "logic": [
     {
       "behavior": "species_select",
@@ -22,22 +22,8 @@
             "ticks": 20
           },
           {
-            "do": "if_var",
-            "var": "new_shiny",
-            "op": ">=",
-            "value": 0,
-            "then": [
-              {
-                "do": "goto_scene",
-                "scene": "scn_shiny"
-              }
-            ],
-            "else": [
-              {
-                "do": "goto_scene",
-                "scene": "scn_menu"
-              }
-            ]
+            "do": "goto_scene",
+            "scene": "scn_prizes"
           }
         ],
         "shiny_var": "shiny"

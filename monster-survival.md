@@ -98,7 +98,7 @@ All monsters, names, sprites, tiles and music are **original**. The style may ev
 - Run music: a separate original, upbeat loop (same channel setup, faster ~155 BPM). A short jingle plays on level-up and when a new move unlocks.
 
 **End conditions:**
-- **Victory:** all 25 enemies defeated → "YOU SURVIVED!" screen with final time, level and kills, plus **NEW MONSTER: <name>** (with a jingle) when the win unlocked one (section 3.1) → press Start → Menu (or first the shiny screen, when the win made a monster shiny: section 7.5).
+- **Victory:** all 25 enemies defeated → "YOU SURVIVED!" screen with final time, level and kills, plus **NEW MONSTER: <name>** (with a jingle) when the win unlocked one (section 3.1) → press Start → the items screen (**YOU WON 3 ITEMS!**, section 7.6) → press Start → Menu (or first the shiny screen, when the win made a monster shiny: section 7.5).
 - **Game Over:** player HP = 0 → player sprite blinks and fades → "GAME OVER" → after 3 s (or Start) → Menu.
 
 **Pause:** Start during the run pauses (shows level, XP, kills, timer, and which moves are unlocked). Start again resumes.
@@ -412,6 +412,16 @@ There are **18 different runs**: the 9 monsters' classic runs and their 9 waves 
 - **Looks:** wherever it shows (every animation in the run, the menu portrait, the victory screens), it **shimmers through the rainbow**: 8 hues, a new one every 4 frames (the whole rainbow about twice a second), each color half its own and half the hue, lighter colors a little further along the rainbow (a sheen), the dark outline kept. Its moves' effects keep their colors. When a wild monster's move hurts it, it blinks **red 3 times** (like the wild monsters) instead of the shimmer, so every hit is easy to see.
 - **The shiny screen:** after the victory screen of the win that made a monster shiny, START opens **A SHINY MONSTER!**: the monster's portrait shimmering in a night sky with stars spraying out, its name (`<NAME> NOW SHINES!`) and its bonuses, with a sparkling jingle. Only then is it made shiny and saved. START goes back to the menu. Wins that make no monster shiny go straight back to the menu as before.
 - Saved on the cartridge; clearing the saved progress makes every monster plain again and forgets the runs counted.
+
+### 7.6 Items won
+
+**Every won run gives 3 items for the next run**, in both modes, with any monster, even a run already won before.
+
+- **Which:** 3 different items out of the 5 floor items (section 7.4), picked at random (every set of 3 equally likely), with the same boosts: Swift Feather `+10% SPEED`, Power Gem `+10% POWER`, Aim Charm `-5% MISS`, Mist Orb `+10% DODGE`, Quick Hourglass `-10% RECHARGE`.
+- **The items screen:** after the victory screen, START opens **YOU WON 3 ITEMS!** (THEY BOOST YOUR NEXT RUN) over the meadow sky: the 3 items bobbing and twinkling as on the ground, each with its name and its boost, a chime for each. Only after a win. START goes on to the shiny screen when the win made a monster shiny (section 7.5), otherwise to the menu.
+- **Used on the next run:** when the next run starts (any monster, any mode), the 3 boosts are added for that whole run and the items are used up, so the run after it doesn't get them again. Their words float up over the player one after the other at the start, in yellow, with the item chime, like the home world's bonus; in its home world the player gets both: the home world's 3 words, then the 3 items' (6 in a row). The boosts add to the home world, to floor items picked up and to the waves cards.
+- **They never add up:** a win always replaces them with 3 new ones; to have items again the next run must be won. A run lost, quit or restarted from the pause menu has already used them.
+- Saved on the cartridge with the win (they survive switching the game off); clearing the saved progress drops them.
 
 ---
 

@@ -1,0 +1,44 @@
+{
+  "id": "prop_prizes",
+  "kind": "object",
+  "type": "prop",
+  "name": "Items screen START",
+  "notes": "Invisible: START (only the first press counts) goes on to the shiny screen when the win made a monster shiny (new_shiny is 0 or more), otherwise back to the menu.",
+  "logic": [
+    {
+      "behavior": "button_actions",
+      "params": {
+        "button": "START",
+        "once": true,
+        "on_press": [
+          {
+            "do": "play_sfx",
+            "sfx": "sfx_confirm"
+          },
+          {
+            "do": "fade_out",
+            "ticks": 20
+          },
+          {
+            "do": "if_var",
+            "var": "new_shiny",
+            "op": ">=",
+            "value": 0,
+            "then": [
+              {
+                "do": "goto_scene",
+                "scene": "scn_shiny"
+              }
+            ],
+            "else": [
+              {
+                "do": "goto_scene",
+                "scene": "scn_menu"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

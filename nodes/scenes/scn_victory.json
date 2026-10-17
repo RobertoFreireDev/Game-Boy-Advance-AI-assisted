@@ -3,7 +3,7 @@
   "kind": "scene",
   "type": "credits",
   "name": "Victory",
-  "notes": "YOU SURVIVED! over the meadow, with the winning monster bobbing, the final time, level and kills. The run's time is checked against this monster's best time (best_time[chosen]): if it never won before, or this run was faster, it becomes the new best and the screen says NEW BEST TIME!, otherwise it shows the best time to beat. The first win with a monster (its best time was still --:--) also unlocks the next locked monster of the roster (while any is left): its name shows under the stats. Winning again with a monster that already won a run unlocks nothing. A jingle plays for a new monster or a new best time, and the progress (unlocks and best times) is saved at once. Every 5 different runs won make a monster shiny (the 18 menu entries, 9 classic and 9 waves runs, each count once until the next shiny; winning the same run again counts nothing): on the 5th, this screen picks the winner if it isn't shiny yet, otherwise a random monster that isn't (new_shiny), never one twice, until all 9 shine. It only picks: START then opens the shiny screen (scn_shiny), which makes it shiny and saves, instead of going back to the menu. A winner that already was shiny shimmers here too.",
+  "notes": "YOU SURVIVED! over the meadow, with the winning monster bobbing, the final time, level and kills. The run's time is checked against this monster's best time (best_time[chosen]): if it never won before, or this run was faster, it becomes the new best and the screen says NEW BEST TIME!, otherwise it shows the best time to beat. The first win with a monster (its best time was still --:--) also unlocks the next locked monster of the roster (while any is left): its name shows under the stats. Winning again with a monster that already won a run unlocks nothing. A jingle plays for a new monster or a new best time, and the progress (unlocks and best times) is saved at once. Every 5 different runs won make a monster shiny (the 18 menu entries, 9 classic and 9 waves runs, each count once until the next shiny; winning the same run again counts nothing): on the 5th, this screen picks the winner if it isn't shiny yet, otherwise a random monster that isn't (new_shiny), never one twice, until all 9 shine. It only picks: the shiny screen (scn_shiny), after the items screen, makes it shiny and saves. A winner that already was shiny shimmers here too. Every win also gives 3 items for the next run, picked at random, never the same one twice (3 different of the 5 floor items: prize_1-3), replacing any not used yet, and saves them with the rest; START opens the items screen (scn_prizes), which shows them and then goes on to the shiny screen or the menu.",
   "backdrop": "#58a8f0",
   "music": "mus_victory",
   "camera": {
@@ -570,6 +570,242 @@
           "do": "add_var",
           "var": "scan",
           "value": 1
+        }
+      ]
+    },
+    {
+      "do": "random_var",
+      "var": "prize_roll",
+      "min": 0,
+      "max": 9
+    },
+    {
+      "do": "if_var",
+      "var": "prize_roll",
+      "op": "==",
+      "value": 0,
+      "then": [
+        {
+          "do": "set_var",
+          "var": "prize_1",
+          "value": 1
+        },
+        {
+          "do": "set_var",
+          "var": "prize_2",
+          "value": 2
+        },
+        {
+          "do": "set_var",
+          "var": "prize_3",
+          "value": 3
+        }
+      ]
+    },
+    {
+      "do": "if_var",
+      "var": "prize_roll",
+      "op": "==",
+      "value": 1,
+      "then": [
+        {
+          "do": "set_var",
+          "var": "prize_1",
+          "value": 1
+        },
+        {
+          "do": "set_var",
+          "var": "prize_2",
+          "value": 2
+        },
+        {
+          "do": "set_var",
+          "var": "prize_3",
+          "value": 4
+        }
+      ]
+    },
+    {
+      "do": "if_var",
+      "var": "prize_roll",
+      "op": "==",
+      "value": 2,
+      "then": [
+        {
+          "do": "set_var",
+          "var": "prize_1",
+          "value": 1
+        },
+        {
+          "do": "set_var",
+          "var": "prize_2",
+          "value": 2
+        },
+        {
+          "do": "set_var",
+          "var": "prize_3",
+          "value": 5
+        }
+      ]
+    },
+    {
+      "do": "if_var",
+      "var": "prize_roll",
+      "op": "==",
+      "value": 3,
+      "then": [
+        {
+          "do": "set_var",
+          "var": "prize_1",
+          "value": 1
+        },
+        {
+          "do": "set_var",
+          "var": "prize_2",
+          "value": 3
+        },
+        {
+          "do": "set_var",
+          "var": "prize_3",
+          "value": 4
+        }
+      ]
+    },
+    {
+      "do": "if_var",
+      "var": "prize_roll",
+      "op": "==",
+      "value": 4,
+      "then": [
+        {
+          "do": "set_var",
+          "var": "prize_1",
+          "value": 1
+        },
+        {
+          "do": "set_var",
+          "var": "prize_2",
+          "value": 3
+        },
+        {
+          "do": "set_var",
+          "var": "prize_3",
+          "value": 5
+        }
+      ]
+    },
+    {
+      "do": "if_var",
+      "var": "prize_roll",
+      "op": "==",
+      "value": 5,
+      "then": [
+        {
+          "do": "set_var",
+          "var": "prize_1",
+          "value": 1
+        },
+        {
+          "do": "set_var",
+          "var": "prize_2",
+          "value": 4
+        },
+        {
+          "do": "set_var",
+          "var": "prize_3",
+          "value": 5
+        }
+      ]
+    },
+    {
+      "do": "if_var",
+      "var": "prize_roll",
+      "op": "==",
+      "value": 6,
+      "then": [
+        {
+          "do": "set_var",
+          "var": "prize_1",
+          "value": 2
+        },
+        {
+          "do": "set_var",
+          "var": "prize_2",
+          "value": 3
+        },
+        {
+          "do": "set_var",
+          "var": "prize_3",
+          "value": 4
+        }
+      ]
+    },
+    {
+      "do": "if_var",
+      "var": "prize_roll",
+      "op": "==",
+      "value": 7,
+      "then": [
+        {
+          "do": "set_var",
+          "var": "prize_1",
+          "value": 2
+        },
+        {
+          "do": "set_var",
+          "var": "prize_2",
+          "value": 3
+        },
+        {
+          "do": "set_var",
+          "var": "prize_3",
+          "value": 5
+        }
+      ]
+    },
+    {
+      "do": "if_var",
+      "var": "prize_roll",
+      "op": "==",
+      "value": 8,
+      "then": [
+        {
+          "do": "set_var",
+          "var": "prize_1",
+          "value": 2
+        },
+        {
+          "do": "set_var",
+          "var": "prize_2",
+          "value": 4
+        },
+        {
+          "do": "set_var",
+          "var": "prize_3",
+          "value": 5
+        }
+      ]
+    },
+    {
+      "do": "if_var",
+      "var": "prize_roll",
+      "op": "==",
+      "value": 9,
+      "then": [
+        {
+          "do": "set_var",
+          "var": "prize_1",
+          "value": 3
+        },
+        {
+          "do": "set_var",
+          "var": "prize_2",
+          "value": 4
+        },
+        {
+          "do": "set_var",
+          "var": "prize_3",
+          "value": 5
         }
       ]
     },

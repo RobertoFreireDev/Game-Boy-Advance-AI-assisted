@@ -3,7 +3,7 @@
   "kind": "object",
   "type": "menu",
   "name": "Clear saved progress",
-  "notes": "Opens with SELECT on the menu screen. Asks before wiping the saved progress; the cursor starts on NO so it is never cleared by accident. YES locks every monster again except the first three (Furrbit, Emberpup, Splashell), erases every best time (classic and waves; so the waves mode is locked again too), makes every shiny monster plain again and forgets the runs counted toward the next one, selects Furrbit's classic entry and saves that. NO, B or START close it and keep everything.",
+  "notes": "Opens with SELECT on the menu screen. Asks before wiping the saved progress; the cursor starts on NO so it is never cleared by accident. YES locks every monster again except the first three (Furrbit, Emberpup, Splashell), erases every best time (classic and waves; so the waves mode is locked again too), makes every shiny monster plain again and forgets the runs counted toward the next one, drops the 3 items waiting for the next run, selects Furrbit's classic entry and saves that. NO, B or START close it and keep everything.",
   "font": "font_default",
   "title": "CLEAR SAVED PROGRESS?",
   "cursor": "icon_cursor",
@@ -93,6 +93,21 @@
         {
           "do": "set_var",
           "var": "shinies",
+          "value": 0
+        },
+        {
+          "do": "set_var",
+          "var": "prize_1",
+          "value": 0
+        },
+        {
+          "do": "set_var",
+          "var": "prize_2",
+          "value": 0
+        },
+        {
+          "do": "set_var",
+          "var": "prize_3",
           "value": 0
         },
         {
