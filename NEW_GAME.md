@@ -308,6 +308,27 @@ rest walk in as others faint), waiting hunters that think every 4th frame with o
 frame, and a HUD that lists its fast-changing elements last (it redraws from the first changed one
 on). Now: worst frame 90-108 % over the 9 species, 0-2 frames over budget per wave 10.
 
+Monster Survival perf pass (2026-10-17, Rock Slide felt slow; the game must play exactly the same):
+a PC sampler (timer 0 interrupt every ~3000 cycles, chained in front of libtonc's `isr_master`; the
+interrupted PC is the BIOS-saved `lr_irq` at `[sp_irq + 20]`, the caller of a leaf is the system-mode
+`lr`; each sample tagged with the frame phase / running behavior) found the costs in minutes, where
+per-function timers had only said "the scene phase". Findings: ~20 % of busy time was Thumb calls
+through veneers into one-line IWRAM helpers (`actor_logic_index`, `actor_index`... each `mon()` asks
+two), ~5-12 % software division (`/ 100` by a constant is a ROM library call of ~300 cycles: damage,
+damage numbers, recharge), `touch_tiles` scanning every actor's tiles for hazard / ladder flags no
+tileset had, and the IWRAM full of behaviors the game never uses (swarm's 2 KB grid, projectile,
+health). Fixes: the helpers inline in actor.h, codegen registers only the behaviors nodes use (6.6 KB
+of IWRAM back), `monster_ai` moved to IWRAM (it was the biggest share; ARM also divides by a constant
+with a multiply) and caches what never changes while a monster lives, `physics_free_at` (every
+knockback) in IWRAM, exact `fx_div100` / `fx_div10`, `touch_tiles` skipped on maps without such
+tiles. Result (25 monsters, Pebbulk firing Rock Slide every 150 frames): classic ordinary frames
+44 % -> 33 % on average, worst 113 % -> 84 % (21 frames over 85 % -> 0), Rock Slide's press 97 % ->
+66 % and landing 89 % -> 66 % at worst; waves wave 8 worst 85 % -> 69 %; a hit 13k -> 8k cycles,
+`monster_ai` 35k -> 15-17k a frame. Proof that nothing changed: the same bot played 18 runs (every
+monster, both modes, 90,000 frames) on the old and new builds, folding every actor, variable,
+particle, the random generator and the sprite list into a hash each frame: identical at every
+checkpoint (a 3 px instead of 2 px knockback differs by frame 600).
+
 If a new game pushes past this (more actors, bullets, particles), measure with the harness
 (§5) before optimizing, and record the result in the commit message and here.
 

@@ -121,9 +121,9 @@ static void toward(const Actor *u, const Actor *t, int *lx, int *ly) {
     *ly = ay * 2 >= ax ? fx_sign(dy) : 0;
 }
 
-// Is a monster's middle in the camera view? (where screen zones aim)
-static int on_screen(const Actor *t) {
-    s32 x = fx_to_int(t->x) - camera_x(), y = fx_to_int(t->y) - camera_y();
+// Is a monster's middle in the camera view at (cx, cy)? (where screen zones aim)
+static int on_screen(const Actor *t, s32 cx, s32 cy) {
+    s32 x = fx_to_int(t->x) - cx, y = fx_to_int(t->y) - cy;
     return x >= 0 && x < 240 && y >= 8 && y < 168;
 }
 
@@ -149,9 +149,11 @@ static Actor *nearest_foe(Actor *user, int range) {
     return best;
 }
 
+// (The cheap test first: most actors are off screen or not monsters.)
 static int any_foe_on_screen(Actor *user) {
+    s32 cx = camera_x(), cy = camera_y();
     for (int i = 0; i < MAX_ACTORS; i++)
-        if (g_actors[i].active && monster_is_foe(user, &g_actors[i]) && on_screen(&g_actors[i])) return 1;
+        if (g_actors[i].active && on_screen(&g_actors[i], cx, cy) && monster_is_foe(user, &g_actors[i])) return 1;
     return 0;
 }
 
@@ -539,8 +541,9 @@ static void zones_place(Actor *user, const MoveData *m) {
     }
     Actor *seen[MAX_TARGETS];
     int n = 0;
+    s32 cx = camera_x(), cy = camera_y();
     for (int i = 0; i < MAX_ACTORS && n < MAX_TARGETS; i++)
-        if (g_actors[i].active && monster_is_foe(user, &g_actors[i]) && on_screen(&g_actors[i])) seen[n++] = &g_actors[i];
+        if (g_actors[i].active && on_screen(&g_actors[i], cx, cy) && monster_is_foe(user, &g_actors[i])) seen[n++] = &g_actors[i];
     for (int k = 0; k < m->zone_count; k++) {
         s32 tx, ty;
         if (n) {

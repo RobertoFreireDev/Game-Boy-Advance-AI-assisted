@@ -25,7 +25,7 @@ void bhv_topdown_controller_update(Actor *a, const void *params) {
         return;
     }
     fixed speed = p->speed;
-    if (p->speed_var >= 0) speed = speed * (10 + vars_get(p->speed_var)) / 10;   // +10% per point
+    if (p->speed_var >= 0) speed = fx_div10(speed * (10 + vars_get(p->speed_var)));   // +10% per point
     speed = monster_speed(a, speed);
     a->vx = dx * speed;
     a->vy = dy * speed;

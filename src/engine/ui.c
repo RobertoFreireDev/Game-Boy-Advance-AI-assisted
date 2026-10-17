@@ -216,7 +216,7 @@ static int put_num(char *out, int n, int cap, s32 v, int digits) {
     char buf[12];
     int k = 0, neg = v < 0;
     u32 u = neg ? (u32)-v : (u32)v;
-    do { buf[k++] = (char)('0' + u % 10); u /= 10; } while ((u || k < digits) && k < 10);
+    do { u32 q = fx_udiv10(u); buf[k++] = (char)('0' + (u - q * 10)); u = q; } while ((u || k < digits) && k < 10);
     if (neg) buf[k++] = '-';
     while (k && n < cap) out[n++] = buf[--k];
     return n;

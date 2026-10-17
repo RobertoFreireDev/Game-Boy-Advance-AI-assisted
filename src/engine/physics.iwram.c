@@ -5,6 +5,8 @@
 #define CAT_BIT(c) (1u << (c))
 
 static const TilemapData *s_map;
+static const TilemapData *s_touch_map;  // the map s_touch_any was worked out for
+static u8 s_touch_any;                  // its tileset has hazard or ladder tiles (else touch_tiles finds none)
 
 // Built once per physics_update so hordes stay fast: the solid actors (others can stand on /
 // bump into them) and every live actor grouped by collision category.
@@ -271,9 +273,10 @@ static void touch_tiles(Actor *a) {
     s32 l, t, r, b;
     actor_rect(a, &l, &t, &r, &b);
     u8 f = 0;
-    for (s32 ty = t >> 3; ty <= b >> 3; ty++)
-        for (s32 tx = l >> 3; tx <= r >> 3; tx++)
-            f |= tile_flags(tx, ty);
+    if (s_touch_any)                    // a map without hazard or ladder tiles has nothing to touch
+        for (s32 ty = t >> 3; ty <= b >> 3; ty++)
+            for (s32 tx = l >> 3; tx <= r >> 3; tx++)
+                f |= tile_flags(tx, ty);
     a->tile_touch = f & (TILE_HAZARD | TILE_LADDER);
     if (s_map && t > s_map->height * 8 + 32) a->flags |= ACTOR_FELL;
 }
@@ -359,6 +362,13 @@ static const Grid *grid_of(int c) {
 
 void physics_update(void) {
     s_map = bg_collision_map();
+    if (s_map != s_touch_map) {         // a new map: has it any tile an actor can touch?
+        s_touch_map = s_map;
+        s_touch_any = 0;
+        if (s_map)
+            for (int k = 0; k < s_map->tileset->tile_count; k++)
+                s_touch_any |= s_map->tileset->flags[k] & (TILE_HAZARD | TILE_LADDER);
+    }
     s_solid_n = 0;
     for (int i = 0; i < MAX_ACTORS; i++) {
         Actor *a = &g_actors[i];
@@ -435,4 +445,22 @@ void physics_update(void) {
         }
     next:;
     }
+}
+
+// Asked now and then by behaviors (a hit's knockback, a dash, a push sliding every tick), but a
+// move that hits a crowd asks it for each monster it hurts: ARM here is twice as fast as in ROM.
+int physics_free_at(const Actor *a, fixed x, fixed y) {
+    s32 l = fx_to_int(x) + a->hb_x, t = fx_to_int(y) + a->hb_y;
+    s32 r = l + a->hb_w - 1, b = t + a->hb_h - 1;
+    u32 want = a->collides;
+    if (want & (1u << CAT_TILES))
+        for (s32 py = t & ~7; py <= b; py += 8)
+            for (s32 px = l & ~7; px <= r; px += 8)
+                if (physics_tile_at(px, py) & TILE_SOLID) return 0;
+    for (const Actor *s = g_actors; s < g_actors + MAX_ACTORS; s++) {
+        if (!s->active || s->solid_mode != SOLID_FULL || s == a || !(want & (1u << s->category))) continue;
+        s32 sl = fx_to_int(s->x) + s->hb_x, st = fx_to_int(s->y) + s->hb_y;
+        if (l < sl + s->hb_w && sl <= r && t < st + s->hb_h && st <= b) return 0;
+    }
+    return 1;
 }

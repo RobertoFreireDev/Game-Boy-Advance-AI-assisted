@@ -46,6 +46,26 @@ static inline fixed fx_sin_deg(s32 deg) {
 // Cosine of an angle in whole degrees, as fixed.
 static inline fixed fx_cos_deg(s32 deg) { return fx_sin_deg(deg + 90); }
 
+// Whole-number division by 100 and by 10 without a divide: Thumb code (ROM) has no divide
+// instruction and the library call costs ~300 cycles (a hit's damage, every number drawn).
+// Exact for every value: x is split into 16-bit halves (65536 = 655 * 100 + 36 = 6553 * 10 + 6)
+// until a 32-bit multiply-and-shift is exact (/ 10) or off by at most one (/ 100, corrected).
+static inline u32 fx_udiv100(u32 x) {
+    u32 h = x >> 16, y = h * 36 + (x & 0xFFFF);        // x / 100 = 655 h + y / 100
+    u32 h2 = y >> 16, z = h2 * 36 + (y & 0xFFFF);      // y / 100 = 655 h2 + z / 100, z < 66868
+    u32 q = (z * 5243) >> 19;                           // z / 100, or one more
+    if (q * 100 > z) q--;
+    return (h + h2) * 655 + q;
+}
+static inline u32 fx_udiv10(u32 x) {
+    u32 h = x >> 16, y = h * 6 + (x & 0xFFFF);         // x / 10 = 6553 h + y / 10
+    u32 h2 = y >> 16, z = h2 * 6 + (y & 0xFFFF);       // y / 10 = 6553 h2 + z / 10, z < 65578
+    return (h + h2) * 6553 + ((z * 52429) >> 19);       // exact below 262144
+}
+// Signed: like C's x / 100 and x / 10 (a negative x, never seen in the hot spots, divides as usual).
+static inline s32 fx_div100(s32 x) { return x >= 0 ? (s32)fx_udiv100((u32)x) : x / 100; }
+static inline s32 fx_div10(s32 x) { return x >= 0 ? (s32)fx_udiv10((u32)x) : x / 10; }
+
 // Integer square root.
 static inline u32 fx_isqrt(u32 n) {
     u32 r = 0, bit = 1u << 30;

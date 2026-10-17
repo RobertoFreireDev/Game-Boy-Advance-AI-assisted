@@ -1,4 +1,5 @@
-// monster_ai - a wild monster's mind: it wanders around its home, turns hostile when the player
+// monster_ai.iwram.c - (hot code: ARM in IWRAM; every wild monster runs it every frame, measured
+// as the biggest share of a frame) a wild monster's mind: it wanders around its home, turns hostile when the player
 // comes close (only a few at once), walks up and uses its first move on a timer, and walks
 // home when the player gets away. It keeps some room from the other wild monsters, so a pack
 // spreads out. Can sleep until a variable reaches a value (a boss). A boss can also use its
@@ -40,6 +41,33 @@ EWRAM_BSS static s8 s_away[MAX_ACTORS][2];      // per pool index: its way out o
 EWRAM_BSS static u16 s_extra[MAX_ACTORS][2];    // per pool index: ticks since moves 2 and 3 were used
 static int s_me;                                // pool index of the monster updating now
 static u32 s_hunt_attack = 0xFFFFFFFF;          // the frame a hunter last attacked in
+
+// What never changes while a monster lives (its species, home and pace are picked when it
+// appears), worked out on its first update: asking the monster behavior for them every frame
+// was a big share of a crowd's frame.
+typedef struct {
+    const SpeciesData *sp;                      // its species
+    fixed walk, chase;                          // its pace at speed / chase_speed
+    u32 wait;                                   // the wait between attacks (shorter at home)
+    u32 need[2];                                // ticks its moves 2 and 3 take to recharge
+    u8 known;                                   // 0 until worked out (a new monster in this pool slot)
+} Traits;
+EWRAM_BSS static Traits s_traits[MAX_ACTORS];
+
+static const Traits *traits(const Actor *a, const Params_monster_ai *p) {
+    Traits *t = &s_traits[s_me];
+    if (t->known) return t;
+    t->known = 1;
+    t->sp = monster_species(a);
+    t->walk = monster_speed(a, p->speed);
+    t->chase = monster_speed(a, p->chase_speed);
+    t->wait = monster_recharge(a, (u32)p->charge);
+    for (int i = 1; i <= 2; i++) {              // moves_charge % of the player's time (less at home)
+        const MoveData *mv = t->sp ? t->sp->moves[i] : NULL;
+        t->need[i - 1] = mv ? monster_recharge(a, (u32)mv->charge * (u32)p->moves_charge / 100) : 0;
+    }
+    return t;
+}
 
 // A new frame: last frame's list and hostile count become the ones everybody reads.
 static void new_frame(void) {
@@ -218,22 +246,22 @@ static int move_count(const Params_monster_ai *p) {
 
 // Is its move `i` (1 = move 2, 2 = move 3) recharged? It takes moves_charge % of the player's time
 // (less in its home world).
-static int extra_ready(const Actor *a, const Params_monster_ai *p, const SpeciesData *sp, int i) {
-    return sp->moves[i] && s_extra[s_me][i - 1] >= monster_recharge(a, (u32)sp->moves[i]->charge * (u32)p->moves_charge / 100);
+static int extra_ready(const SpeciesData *sp, int i) {
+    return sp->moves[i] && s_extra[s_me][i - 1] >= s_traits[s_me].need[i - 1];
 }
 
 // The move it walks up to the player for: its highest ready move 2 or 3 (not one it uses on
 // itself, which reaches no one), else move 1.
-static const MoveData *aimed_move(const Actor *a, const Params_monster_ai *p, const SpeciesData *sp) {
+static const MoveData *aimed_move(const Params_monster_ai *p, const SpeciesData *sp) {
     for (int i = move_count(p) - 1; i >= 1; i--)
-        if (extra_ready(a, p, sp, i) && sp->moves[i]->shape != SHAPE_SELF) return sp->moves[i];
+        if (extra_ready(sp, i) && sp->moves[i]->shape != SHAPE_SELF) return sp->moves[i];
     return sp->moves[0];
 }
 
 // One attack: its highest ready move 3 or 2 that goes off, else move 1. Returns 1 if one did.
 static int attack(Actor *a, const Params_monster_ai *p, const SpeciesData *sp) {
     for (int i = move_count(p) - 1; i >= 1; i--) {
-        if (extra_ready(a, p, sp, i) && moves_use_power(a, sp->moves[i], 0, p->moves_power)) {
+        if (extra_ready(sp, i) && moves_use_power(a, sp->moves[i], 0, p->moves_power)) {
             s_extra[s_me][i - 1] = 0;
             return 1;
         }
@@ -255,6 +283,7 @@ void bhv_monster_ai_init(Actor *a, const void *params) {
     st[ST_CHARGE] = 0;
     st[ST_STUCK] = 0;
     s_away[actor_index(a)][0] = s_away[actor_index(a)][1] = 0;
+    s_traits[actor_index(a)].known = 0;             // a new monster: its traits are worked out again
     // Moves 2 and 3 start ready (a boss opens with them), or start recharging when it appears.
     s_extra[actor_index(a)][0] = s_extra[actor_index(a)][1] = p->moves_ready ? 0xFFFF : 0;
 }
@@ -287,10 +316,11 @@ void bhv_monster_ai_update(Actor *a, const void *params) {
     // A hunter waiting for its turn decides every 4th frame (each on its own frame) and keeps
     // walking or standing in between: a wave of 24 would otherwise cost a frame's worth.
     if (p->hunt && st[ST_MODE] == MODE_WANDER && ((s_count_frame + (u32)s_me) & HUNT_THINK)) return;
-    const SpeciesData *sp = monster_species(a);
-    const MoveData *m = sp ? aimed_move(a, p, sp) : NULL;
-    u32 charge = monster_recharge(a, (u32)p->charge);  // the wait between attacks (shorter at home)
-    fixed walk = monster_speed(a, p->speed), chase = monster_speed(a, p->chase_speed);   // its species' pace
+    const Traits *tr = traits(a, p);
+    const SpeciesData *sp = tr->sp;
+    const MoveData *m = sp ? aimed_move(p, sp) : NULL;
+    u32 charge = tr->wait;                          // the wait between attacks (shorter at home)
+    fixed walk = tr->walk, chase = tr->chase;       // its species' pace
     Actor *pl = actor_player();
     int seen = pl && monster_targetable(pl);
     int near = 0;                                   // close enough to measure (moves_within)

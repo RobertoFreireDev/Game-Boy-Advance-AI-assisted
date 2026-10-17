@@ -8,7 +8,7 @@
 #include "core.h"
 
 EWRAM_BSS Actor g_actors[MAX_ACTORS];   // too big for IWRAM with hordes; EWRAM has room
-static int s_slot;              // logic entry currently running (for bhv_state)
+int g_logic_slot;               // logic entry currently running (for bhv_state)
 
 // Bookkeeping kept up to date on spawn / die / destroy, so the questions waves and weapons ask
 // every tick ("how many bats are alive?", "is the pool full?", "where is the player?") don't
@@ -21,26 +21,6 @@ static u32 s_no_player_frame;   // frame in which a search found no live player 
 
 #define DIE_FALL_TICKS 90
 #define DIE_STAY_TICKS 30
-
-int actor_index(const Actor *a) { return (int)(a - g_actors); }
-
-u32 *actor_state_of(Actor *a, int index) { return a->state[index]; }
-u32 *bhv_state(Actor *a) { return a->state[s_slot]; }
-
-int actor_alive(const Actor *a) { return a && a->active && !(a->flags & ACTOR_DYING); }
-
-void actor_rect(const Actor *a, s32 *l, s32 *t, s32 *r, s32 *b) {
-    *l = fx_to_int(a->x) + a->hb_x;
-    *t = fx_to_int(a->y) + a->hb_y;
-    *r = *l + a->hb_w - 1;
-    *b = *t + a->hb_h - 1;
-}
-
-int actor_logic_index(const Actor *a, u8 behavior) {
-    for (int i = 0; i < a->logic_count; i++)
-        if (a->logic[i].behavior == behavior) return i;
-    return -1;
-}
 
 int actor_has_slot(const Actor *a, u8 slot) {
     return a->body && a->body->anims[slot] != NULL;
@@ -202,7 +182,7 @@ Actor *actor_spawn(s16 node, s32 x, s32 y, const LogicEntry *logic, u8 logic_cou
     // run): the rest don't start, and the caller gets NULL.
     for (int i = 0; i < a->logic_count && a->active; i++) {
         const BehaviorDef *b = &g_behaviors[a->logic[i].behavior];
-        s_slot = i;
+        g_logic_slot = i;
         if (b->init) b->init(a, a->logic[i].params);
     }
     if (a->active && d->on_start) d->on_start(a);
@@ -284,7 +264,7 @@ void actor_touch(Actor *a, Actor *other) {
     for (int i = 0; i < a->logic_count && a->active; i++) {
         const BehaviorDef *b = &g_behaviors[a->logic[i].behavior];
         if (!b->on_touch) continue;
-        s_slot = i;
+        g_logic_slot = i;
         b->on_touch(a, other, a->logic[i].params);
     }
 }
@@ -316,7 +296,7 @@ void actor_update_all(void) {
         }
         for (int i = 0; i < a->logic_count && a->active && !(a->flags & ACTOR_DYING); i++) {
             const BehaviorDef *b = &g_behaviors[a->logic[i].behavior];
-            s_slot = i;
+            g_logic_slot = i;
             if (b->update) b->update(a, a->logic[i].params);
         }
         if (!a->active) continue;

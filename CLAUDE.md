@@ -639,7 +639,8 @@ Every channel in a pattern has the same number of rows. Missing channels are sil
   a scene instance cannot override a behavior its object lists more than once.
 - Codegen turns the catalog into one C struct per behavior (`Params_<name>` in
   `generated/behavior_params.h`, choices as `<BEHAVIOR>_<PARAM>_<OPTION>` defines) and registers
-  the `bhv_<name>_init/update/on_touch` functions it finds in the `.c` file. Behaviors keep
+  the `bhv_<name>_init/update/on_touch` functions it finds in the `.c` file, for the behaviors some
+  node's logic uses (the others are left out of the ROM, and their IWRAM code and buffers with them). Behaviors keep
   private per-actor state in `bhv_state(actor)` (`BSTATE_WORDS` words each).
 - Movement behaviors pick body animation slots by convention: `idle`, `walk`, `run`, `jump`,
   `fall`, `hurt`, `die`, `attack`, `climb` (a missing `run` uses `walk` and back, `fall` uses
@@ -746,15 +747,15 @@ src/engine/
 ├── config.h       pool sizes and limits (MAX_ACTORS, MAX_PARTICLES, …, MOVE_HIT_MARGIN) — validate.py reads them
 ├── core.c/.h      main loop, VBlank wait, frame counter
 ├── input.c/.h     pressed / held / released for every button
-├── fixed.h        fixed-point 24.8 math, sin/cos table, rng
+├── fixed.h        fixed-point 24.8 math, sin/cos table, rng, exact / 100 and / 10 without a divide
 ├── vars.c/.h      game variables (get / set / add by id; a list variable's slots follow its id)
 ├── scene.c/.h     load / unload scenes, spawn instances, transitions and fades
 ├── actor.iwram.c/.h   actor pool (in EWRAM), runs each actor's logic list every tick
 ├── physics.iwram.c/.h gravity, tile collision (solid/one_way/hazard/ladder), actor overlaps
 │                      (contacts only test the categories an actor lists, via per-frame buckets;
 │                       big buckets many actors look into are binned in a 32 px grid); top-down
-│                       solid bodies found inside each other are pushed apart
-├── physics.c          physics questions asked now and then, kept in ROM (can an actor stand here?)
+│                       solid bodies found inside each other are pushed apart; can an actor stand
+│                       here? (physics_free_at: every knockback, dash and push asks it)
 ├── anim.iwram.c/.h    animation players and frame events (an ACTOR_STILL actor holds its frame)
 ├── particles.c/.h particle pool (front / back of the actors); aim a particle first, shoot it later (moves see its flight);
 │                  staged shots for a move's 3 steps (wait hidden, drawn behind, sped-up flight, a two-leg travel picture)
@@ -809,13 +810,17 @@ frames.
 - One module, one job. Each public function has a one-line comment in plain English.
 - Move hot code to IWRAM (ARM mode) only when a measured slowdown requires it: rename the file
   `*.iwram.c` (done for actor, physics, anim, sprites and the `swarm`, `projectile` and `health`
-  behaviors after profiling hordes of 60+ monsters). IWRAM is 32 KB shared with the `*.iwram.c` code,
-  **every plain `static` variable** and the stack (~29.5 KB used, ~2.2 KB left for the stack, of which
-  the busiest scene, wave 10 of the waves mode, uses ~0.8 KB); keep it lean. The linker doesn't count
+  behaviors after profiling hordes of 60+ monsters, and `monster_ai` after profiling Monster
+  Survival). IWRAM is 32 KB shared with the `*.iwram.c` code of the behaviors the game uses,
+  **every plain `static` variable** and the stack (Monster Survival: ~29.4 KB used, ~2.7 KB left for
+  the stack, of which its busiest scenes use ~1.1 KB); keep it lean. The linker doesn't count
   the stack: `build.py` fails when less than 2 KB is left. Pools that aren't hot go in EWRAM
   (`EWRAM_BSS`).
 - Thumb code (everything not `*.iwram.c`) has no fast divide or 64-bit multiply: in code that
-  runs per actor per tick avoid `/`, `%` by a variable and `fx_mul`, or move it to IWRAM.
+  runs per actor per tick avoid `/`, `%` by a variable and `fx_mul`, or move it to IWRAM. A `/` or
+  `%` by a constant is a ~300-cycle library call too: use `fx_div100` / `fx_div10` (fixed.h, exact).
+  The small actor questions (`actor_alive`, `actor_index`, `actor_logic_index`, `actor_rect`,
+  `bhv_state`) are inline in actor.h: a Thumb call into IWRAM code goes through a slow veneer.
 - Big pools live in EWRAM (`EWRAM_BSS`, not zeroed at boot: clear them yourself).
 - Zero warnings in our code.
 

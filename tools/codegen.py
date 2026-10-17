@@ -850,8 +850,14 @@ def gen_game_data(p):
 
 def gen_behaviors_table(p):
     out = [HEADER, '#include "engine/data.h"\n']
+    # Only the behaviors some node's logic uses are registered: the linker then leaves the others
+    # out of the ROM, and out of IWRAM (a game without hordes doesn't carry swarm's grid).
+    used = {e["behavior"] for n in p.nodes.values() for e in (n.get("logic") or []) if isinstance(e, dict)}
     rows = []
     for b in p.behaviors:
+        if b not in used:
+            rows.append("    [BHV_%s] = { NULL, NULL, NULL },   // no node uses it" % up(b))
+            continue
         path = C.behavior_source(b)
         src = open(path, "r", encoding="utf-8").read() if path else ""
         fns = []

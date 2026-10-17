@@ -118,21 +118,33 @@ static inline void actor_flash(Actor *a, const PaletteData *pal, int ticks, int 
     a->flash_len = (u8)ticks;
     a->flash_gap = 0;
 }
+// The small questions below are inline: monsters and moves ask them many times a frame, and a
+// call from Thumb code (ROM) into the actor code in IWRAM goes through a slow veneer.
 // True if the actor exists and is not dying.
-int actor_alive(const Actor *a);
+static inline int actor_alive(const Actor *a) { return a && a->active && !(a->flags & ACTOR_DYING); }
 // Position of the behavior in the actor's logic list, or -1.
-int actor_logic_index(const Actor *a, u8 behavior);
+static inline int actor_logic_index(const Actor *a, u8 behavior) {
+    for (int i = 0; i < a->logic_count; i++)
+        if (a->logic[i].behavior == behavior) return i;
+    return -1;
+}
 // Private state words of the behavior that is running right now.
-u32 *bhv_state(Actor *a);
+extern int g_logic_slot;            // logic entry running now (actor_update_all / actor_spawn)
+static inline u32 *bhv_state(Actor *a) { return a->state[g_logic_slot]; }
 // Private state words of logic entry `index`.
-u32 *actor_state_of(Actor *a, int index);
+static inline u32 *actor_state_of(Actor *a, int index) { return a->state[index]; }
 // Live (not dying) actors made from this node.
 int actor_count_node(s16 node);
 // Free slots in the actor pool.
 int actor_free_slots(void);
 // Index of the actor in the pool.
-int actor_index(const Actor *a);
+static inline int actor_index(const Actor *a) { return (int)(a - g_actors); }
 // Hitbox in world pixels (left, top, right, bottom are inclusive).
-void actor_rect(const Actor *a, s32 *l, s32 *t, s32 *r, s32 *b);
+static inline void actor_rect(const Actor *a, s32 *l, s32 *t, s32 *r, s32 *b) {
+    *l = fx_to_int(a->x) + a->hb_x;
+    *t = fx_to_int(a->y) + a->hb_y;
+    *r = *l + a->hb_w - 1;
+    *b = *t + a->hb_h - 1;
+}
 
 #endif

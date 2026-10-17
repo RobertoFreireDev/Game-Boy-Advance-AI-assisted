@@ -99,8 +99,8 @@ int monster_power(const Actor *a, int power) {
     const Monster *m = mon(a);
     if (!m) return power ? power : 100;
     if (!power) power = m->power + var_or_0(params_of(a)->power_var);
-    if (m->home) power = power * (100 + params_of(a)->home_power) / 100;
-    return m->species ? (power * m->species->power + 50) / 100 : power;    // its species' damage percent, for everyone
+    if (m->home) power = fx_div100(power * (100 + params_of(a)->home_power));
+    return m->species ? fx_div100(power * m->species->power + 50) : power;    // its species' damage percent, for everyone
 }
 
 u32 monster_recharge(const Actor *a, u32 ticks) {
@@ -133,7 +133,8 @@ int monster_targetable(const Actor *a) {
 }
 
 int monster_is_foe(const Actor *a, const Actor *b) {
-    return a != b && monster_targetable(b) && monster_team(a) != monster_team(b);
+    // A targetable b is a monster: its team is read straight from it (moves ask this of every actor).
+    return a != b && monster_targetable(b) && monster_team(a) != mon(b)->team;
 }
 
 // ---- floating words ------------------------------------------------------------------
@@ -148,7 +149,7 @@ static void say(const Actor *t, int bt, const char *text, int row) {
 static int put_number(char *buf, s32 n) {
     int k = 0;
     char digits[8];
-    do { digits[k++] = (char)('0' + n % 10); n /= 10; } while (n && k < 6);
+    do { s32 q = fx_div10(n); digits[k++] = (char)('0' + (n - q * 10)); n = q; } while (n && k < 6);
     for (int i = 0; i < k; i++) buf[i] = digits[k - 1 - i];
     buf[k] = 0;
     return k;
@@ -427,8 +428,8 @@ int monster_hit(Actor *t, const MonsterHit *h) {
         // damage = power x (1 + 0.15 x (level - 1)) x type x user power, rounded, at least 1
         int pct = b->chart[mv->type * b->type_count + m->species->type];
         s32 d = (s32)mv->power * (100 + 15 * (h->level - 1));          // x 100
-        d = d * pct / 100 * h->power / 100;
-        d = (d + 50) / 100;
+        d = fx_div100(fx_div100(d * pct) * h->power);
+        d = fx_div100(d + 50);
         if (m->buff == BUFF_DEFENSE) d -= m->buff_move->buff_amount;   // hardened: a 60 blow, defense 50 -> 10
         if (d < 1) d = 1;
         int up = h->blow == BLOW_FIRST;         // a double hit: the second blow's number comes under

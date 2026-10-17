@@ -22,7 +22,10 @@ enum { ST_C1, ST_C2, ST_C3, ST_MISC };     // misc: unlocked | blink timers << 8
 static s32 gauge(u32 charge, u32 full, int unlocked, int blink) {
     if (!unlocked) return 0;
     if (charge >= full) return blink ? 6 : 5;
-    return 1 + (s32)(charge * 4 / (full ? full : 1));
+    // 1 + charge * 4 / full, without a divide (a slow library call in Thumb code, 3 a frame):
+    // charge < full here, so the quotient is 0-3.
+    u32 c4 = charge * 4;
+    return 1 + (c4 >= full) + (c4 >= full * 2) + (c4 >= full * 3);
 }
 
 // Ticks a move takes to recharge: its charge, cut by charge_var percent (at most 90 %), then
@@ -32,7 +35,7 @@ static u32 full_charge(const Actor *a, const Params_move_buttons *p, const MoveD
     u32 full = m->charge;
     s32 cut = p->charge_var >= 0 ? vars_get(p->charge_var) : 0;
     if (cut > 90) cut = 90;
-    if (cut > 0) full = full * (u32)(100 - cut) / 100;
+    if (cut > 0) full = fx_udiv100(full * (u32)(100 - cut));
     full = monster_recharge(a, full);
     return full ? full : 1;
 }
