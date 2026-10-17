@@ -1072,7 +1072,7 @@ def check_shiny(c, n):
                   % (b, var, len(species_nodes(c.p))))
         if b != "monster":
             continue
-        for k, default, hi in (("shiny_power", 10, 100), ("shiny_hp", 20, 100), ("shiny_flashes", 0, 10)):
+        for k, default, hi in (("shiny_power", 20, 100), ("shiny_hp", 40, 100), ("shiny_flashes", 0, 10)):
             v = prm.get(k, default)
             if is_int(v) and not 0 <= v <= hi:
                 c.err("'monster.%s' must be 0 to %d" % (k, hi))

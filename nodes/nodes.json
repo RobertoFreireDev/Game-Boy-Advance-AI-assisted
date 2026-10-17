@@ -275,7 +275,7 @@
         "count": 9,
         "initial": 0,
         "persistent": true,
-        "notes": "Which monsters are shiny, one slot per monster in roster order (0 Furrbit ... 8 Pebbulk): 1 = shiny. A shiny monster shimmers through the rainbow wherever it shows (in the run, on the menu, on the victory screens), its moves hit 10% harder and it starts each run with 20% more HP. Every 5 different runs won make one more monster shiny (see shiny_count), never the same one twice, until all 9 are. Saved on the cartridge; clearing the saved progress makes them all plain again."
+        "notes": "Which monsters are shiny, one slot per monster in roster order (0 Furrbit ... 8 Pebbulk): 1 = shiny. A shiny monster shimmers through the rainbow wherever it shows (in the run, on the menu, on the victory screens), its moves hit 20% harder and it starts each run with 40% more HP. Every 5 different runs won make one more monster shiny (see shiny_count), never the same one twice, until all 9 are. Saved on the cartridge; clearing the saved progress makes them all plain again."
       },
       {
         "name": "shiny_runs",
