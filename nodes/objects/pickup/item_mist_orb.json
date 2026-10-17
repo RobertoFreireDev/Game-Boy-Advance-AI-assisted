@@ -3,7 +3,7 @@
   "kind": "object",
   "type": "pickup",
   "name": "Mist Orb",
-  "notes": "A floor item (a purple orb with a misty swirl). Only the player can pick it up: walking into it plays the item chime, floats '+10% DODGE' over the player and keeps the boost until the run ends. Wild monsters' moves miss the player 10% more for the rest of the run: their accuracy against it drops 10 points, so a 95% move hits 85% of the time and even the Alpha's 100% moves can miss. Ground zones (Ember, Acid, Toxic, Rock Slide, Sandstorm) never miss (monster dodge_var). It lies at a random one of 9 spots each run (one per screen of the map, all reachable and out from under the tree tops, away from the start, the monsters' homes and the sleeping Alpha); the scene places it at the first.",
+  "notes": "A floor item (a purple orb with a misty swirl). Only the player can pick it up: walking into it plays the item chime, floats '+10% DODGE' over the player and keeps the boost until the run ends. Wild monsters' moves miss the player 10% more for the rest of the run: their accuracy against it drops 10 points, so a 95% move hits 85% of the time and even the Alpha's 100% moves can miss. Ground zones (Ember, Acid, Toxic, Rock Slide) never miss (monster dodge_var). It lies at a random one of 9 spots each run (one per screen of the map, all reachable and out from under the tree tops, away from the start, the monsters' homes and the sleeping Alpha); the scene places it at the first.",
   "body": "body_item_mist_orb",
   "logic": [
     {

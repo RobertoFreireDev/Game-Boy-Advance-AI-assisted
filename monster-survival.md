@@ -36,7 +36,7 @@ All monsters, names, sprites, tiles and music are **original**. The style may ev
 
 **Background layers:**
 - BG0 — HUD / text
-- BG1 — overlays (Sandstorm, screen flashes)
+- BG1 — overlays (screen flashes)
 - BG2 — map decoration above ground (tree tops)
 - BG3 — map ground
 
@@ -176,7 +176,7 @@ Moves unlock one at a time, in order, by level (section 7). Tuned so a normal ru
 | **Poison** | **Poison Sting** — single target ≤1 tile, 50% chance to **poison** | **Acid** — acid on a 3×3 tile area in front of the player for 3 s (ground zone) | **Toxic** — single target ≤4 tiles, 50% chance to **badly poison** |
 | **Flying** | **Gust** — beam 3 tiles | **Peck** — single target ≤1 tile | **Fly** — 3 s untouchable; player sprite replaced by a shadow, can move freely. No damage |
 | **Ghost** | **Lick** — single target ≤1 tile | **Night Shade** — beam 3 tiles | **Phase** (Ghost) — 16 ghost rings burst out all around the player; every enemy within 32 px is shoved 32 px straight away from the player (can't move or attack while it slides). No damage |
-| **Rock** | **Rock Throw** — single target ≤3 tiles | **Sandstorm** — 5 s: all enemies on screen freeze (no move, no attack); screen covered by a sand overlay so the player can't see | **Rock Slide** — 3 random 2×2 tile spots on the visible screen get hit by falling rocks |
+| **Rock** | **Rock Throw** — single target ≤3 tiles | **Harden** — self, 3 s: defense 50 (every blow it takes does 50 less damage: a 60 hit does 10; at least 1); never misses; flickers dark grey; metallic clang; 10 s charge | **Rock Slide** — 3 random 2×2 tile spots on the visible screen get hit by falling rocks |
 
 ### 5.5 Move power and accuracy
 
@@ -186,7 +186,7 @@ Moves unlock one at a time, in order, by level (section 7). Tuned so a normal ru
 | Move 2 | 18 | 90% |
 | Move 3 (damaging) | 40 | 100% |
 | Ground zones (Ember, Acid) | 4 per hit (on touch, then every 0.5 s per enemy) | 100% |
-| Status-only moves (Growl, Fly, Phase, Sandstorm) | 0 | — |
+| Status-only moves (Growl, Fly, Phase, Harden) | 0 | — |
 
 Accuracy roll fails → "MISS" over the target, no damage, no XP.
 
@@ -222,7 +222,6 @@ Empty cell = ×1.0.
 | Paralyzed | Can't move or attack for the duration. Sprite flashes yellow | `PAR` |
 | Poisoned | 1 damage per second for 5 s | `PSN` |
 | Badly poisoned | Damage per second grows: 1, 2, 3, 4… for 8 s | `TOX` |
-| Frozen by Sandstorm | Can't move or attack | (sand overlay) |
 
 A new status replaces the old one. Poison damage gives XP like a hit (section 7).
 
@@ -235,13 +234,13 @@ Every move has its own animation (sprite effect, 4–8 frames): e.g. Ember = fli
 2. **On its way** (20 %): it flies to where the effect plays — the target, the end of a trail or beam (the trail or beam lights up as it passes), or the middle of a ground zone.
 3. **At the destination** (60 %): the move's effect plays there, sped up so it ends when it always did.
 
-Bursts and self moves (Fire Spin, Growl, Fly, Phase) come out from behind the monster and fly out (steps 1–2), then stay around it (step 3). Anything that would cover the user is drawn behind it. Whole-screen moves (Surf, Sandstorm) and Rock Slide (rocks falling from the sky on screen spots) play as before: nothing comes from the user. **This is only a picture**: what a move hits, and when, is unchanged — the hit (flash, number, push) lands the moment the move is used, and the travel picture hurts no one.
+Bursts and self moves (Fire Spin, Growl, Fly, Phase) come out from behind the monster and fly out (steps 1–2), then stay around it (step 3). Anything that would cover the user is drawn behind it. Whole-screen moves (Surf) and Rock Slide (rocks falling from the sky on screen spots) play as before: nothing comes from the user. **This is only a picture**: what a move hits, and when, is unchanged — the hit (flash, number, push) lands the moment the move is used, and the travel picture hurts no one.
 
 **The animation plays every time the player uses a move**, not only when it hits: on a hit, on a MISS, and when it reaches no enemy at all.
 - Single target: on the target, or straight ahead at full range when no enemy is in range.
 - Beam, burst, whole screen: over the whole area (that is what they hit).
 - Ground zones: on their tiles, for as long as they last.
-- Status / self moves (Growl, Fly, Phase, Sandstorm): around the player or across the screen.
+- Status / self moves (Growl, Fly, Phase): around the player or across the screen. Harden has no effect picture: the user flickers dark grey while it lasts.
 
 Floating text appears over the target and rises for ~0.75 s:
 - Damage number (e.g. `12`)
@@ -499,7 +498,7 @@ These points weren't specified, so this doc picks a value:
 1. **9 species, 25 enemies** — 3 of each of the 8 enemy types (24) + 1 Alpha boss as the 25th.
 2. **No type immunities** — otherwise some player picks could never win.
 3. **Single-target moves auto-aim** at the nearest enemy in range.
-4. **Toxic** range = 4 tiles; **Sandstorm** lasts 5 s; **Acid** lasts 3 s.
+4. **Toxic** range = 4 tiles; **Harden** lasts 3 s; **Acid** lasts 3 s.
 5. **Growl** rolls 33% for each enemy its notes touch.
 6. Enemies use only **Move 1**, with a 4 s charge; at most 3 hostile at once.
 7. Level-up is a full heal (to the new max HP), to reward fighting over running.

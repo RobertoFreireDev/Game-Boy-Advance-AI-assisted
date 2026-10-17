@@ -3,7 +3,7 @@
   "kind": "object",
   "type": "species",
   "name": "Pebbulk",
-  "notes": "Pebbulk: a grumpy grey boulder with a mossy cap and stubby feet. Type ROCK. Moves: Rock Throw (A), Sandstorm (B) and Rock Slide (R). Walks at 80 % speed: its move 1 (Rock Throw) reaches 3 tiles, and the farther a monster's move 1 reaches, the slower it walks. Its moves hit 10 % softer than their power says (power 90 %), whether it is the player or a wild one, in every mode. It can be the player, and the 8 species that aren't picked live on the map.",
+  "notes": "Pebbulk: a grumpy grey boulder with a mossy cap and stubby feet. Type ROCK. Moves: Rock Throw (A), Harden (B: 3 s of defense 50) and Rock Slide (R). Walks at 80 % speed: its move 1 (Rock Throw) reaches 3 tiles, and the farther a monster's move 1 reaches, the slower it walks. Its moves hit 10 % softer than their power says (power 90 %), whether it is the player or a wild one, in every mode. It can be the player, and the 8 species that aren't picked live on the map.",
   "title": "PEBBULK",
   "monster_type": "rock",
   "speed": 80,
@@ -14,7 +14,7 @@
   "cry": "sfx_cry_pebbulk",
   "moves": [
     "mov_rock_throw",
-    "mov_sandstorm",
+    "mov_harden",
     "mov_rock_slide"
   ],
   "children": [
@@ -23,7 +23,7 @@
     "pal_alpha_pebbulk",
     "sfx_cry_pebbulk",
     "mov_rock_throw",
-    "mov_sandstorm",
+    "mov_harden",
     "mov_rock_slide"
   ]
 }

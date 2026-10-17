@@ -256,6 +256,7 @@ typedef struct {
     u16 charge;                         // ticks to recharge after use (the player's moves)
     u16 status_min, status_max;         // how long the status lasts (ticks)
     u16 ticks_min, ticks_max;           // how long a zone or buff lasts (ticks)
+    u8 buff_amount;                     // defense buff: damage points every blow it takes loses (at least 1 still hurts)
     u8 dash;                            // dash: tiles moved toward the target first
     u8 zone_w, zone_h, zone_place;      // zone: size in tiles; ZONE_FRONT / ZONE_SCREEN / ZONE_AROUND
     u8 zone_cell;                       // zone: tiles each piece of its effect covers (cell x cell block; 1 = each tile)
@@ -269,6 +270,7 @@ typedef struct {
     const ParticleData *effect;         // NULL = none
     const AnimationData *travel;        // steps 1-2: what flies from the user to the effect (NULL = none)
     const SfxData *sfx;                 // NULL = silent
+    const PaletteData *buff_palette;    // defense buff: the colors it flickers in while it lasts (NULL = none)
     ActionList on_use;                  // runs (as the user) each time the move fires
 } MoveData;
 

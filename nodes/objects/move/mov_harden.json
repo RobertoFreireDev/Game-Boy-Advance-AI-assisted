@@ -1,0 +1,20 @@
+{
+  "id": "mov_harden",
+  "kind": "object",
+  "type": "move",
+  "name": "Harden",
+  "notes": "Pebbulk's move 2 (B). Pebbulk tenses up and its rocky hide hardens for 3 s: every blow it takes in that time does 50 less damage (defense 50: a 60-damage hit does only 10), though a blow always does at least 1. Poison and toxic still hurt as usual. It hits no one, so it never misses: it only works on the user (a self move, nothing else is hurt or paralyzed). While hardened it flickers dark grey (pal_flash_steel), and a ringing metallic clang plays when it hardens. A wild monster that uses its move 2 (the Alpha, later waves) hardens as soon as it is ready and attacks; the player's goes off at once. Charge: 10 s.",
+  "title": "HARDEN",
+  "monster_type": "rock",
+  "shape": "self",
+  "power": 0,
+  "charge": 600,
+  "buff": {
+    "kind": "defense",
+    "ticks": 180,
+    "amount": 50,
+    "palette": "pal_flash_steel"
+  },
+  "effect_at": "user",
+  "sfx": "sfx_mv_harden"
+}

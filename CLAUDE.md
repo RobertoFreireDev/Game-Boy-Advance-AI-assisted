@@ -424,9 +424,11 @@ groups them for humans. **What an actor does comes only from its `logic` list.**
   middle of each cell×cell block, a picture that covers its whole block but the hit margin (Toxic's 9×9 cloud:
   `cell` 3, 32×32 gas pieces 24 px apart, its haze repeating every 24 px so the pieces join without seams).
   When w or h isn't a multiple of `cell`, the blocks are centered on the zone and the outer ones overhang it
-  equally (Sandstorm's 9×9: `cell` 2, a 16×16 swirl on every other tile, 5×5 of them, half a tile past each side).
-  `self` = `buff {kind: fly|phase, ticks}` (fly: only a `shadow` shows, can't be hit, passes over monsters;
-  phase: passes through them). `status {kind: par|psn|tox|freeze, chance %, ticks [min,max]}` (paralysis:
+  equally (a 9×9 zone with `cell` 2: a 16×16 picture on every other tile, 5×5 of them, half a tile past each side).
+  `self` = `buff {kind: fly|phase|defense, ticks, amount, palette}` (fly: only a `shadow` shows, can't be hit,
+  passes over monsters; phase: passes through them; defense (Harden): every blow it takes does `amount` less
+  damage, at least 1 (poison still hurts as usual), and it flickers in `palette` (a dark grey) like paralysis
+  flickers yellow, never over a hit's flashes; `amount` and `palette` are only for defense). `status {kind: par|psn|tox|freeze, chance %, ticks [min,max]}` (paralysis:
   no moving or attacking, plain to see the whole time: it stops dead in its pose (its animation holds),
   trembles 1 px, flickers yellow and `game.battle.par_effect` loops over its middle, and the player's move
   buttons buzz; poison: 1 damage a second; toxic: 1, 2, 3… a second; freeze: no moving or attacking). A
@@ -465,8 +467,8 @@ groups them for humans. **What an actor does comes only from its `logic` list.**
   `player_hit_sounds {type: sfx}` (the player's hits sound like their move's type, plus `super` on top
   when super effective, so keep `super` on a channel the type sounds don't use; a missing type uses
   `hit`; wild monsters' hits use `hit` / `super` / `weak`). Damage =
-  power × (1 + 0.15 × (level − 1)) × multiplier × user power % (`power` + its `power_var`) × its species' `power` %, rounded, at
-  least 1 (a wild monster with `level_var` reads its level every tick: a boss that grows); a hit flashes the
+  power × (1 + 0.15 × (level − 1)) × multiplier × user power % (`power` + its `power_var`) × its species' `power` %, rounded, minus a hardened
+  target's defense `amount` (`buff` defense), at least 1 (a wild monster with `level_var` reads its level every tick: a boss that grows); a hit flashes the
   target (`flash_palette`, white, or the monster behavior's own `flash_palette`) `flashes` times for
   `flash_ticks` frames each, with gaps as long (default once for 4: wild monsters blink red 3 times; poison and
   toxic damage flash it too, a killing blow's flashes play out before the fainting monster blinks out, and a

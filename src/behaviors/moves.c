@@ -718,7 +718,7 @@ int moves_use(Actor *user, const MoveData *m, int always) {
         begin(user, m);
         plan_area(user, m);
         strike_show(user, m);
-        monster_buff(user, m->buff, rng_range(m->ticks_min, m->ticks_max));
+        monster_buff(user, m, rng_range(m->ticks_min, m->ticks_max));
         return USE_FIRED;
     default:
         return USE_NONE;

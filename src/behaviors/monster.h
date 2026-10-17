@@ -71,7 +71,7 @@ int monster_double_roll(const Actor *a);
 // misses): each of them still standing takes the same blow again a moment later, and 2X floats up
 // over the user.
 void monster_double_hit(Actor *user, Actor *const *hit, int count, const MonsterHit *h);
-// Start a buff (BUFF_FLY / BUFF_PHASE) on a monster for `ticks`.
-void monster_buff(Actor *a, int buff, int ticks);
+// Start a self move's buff (BUFF_FLY / BUFF_PHASE / BUFF_DEFENSE) on a monster for `ticks`.
+void monster_buff(Actor *a, const MoveData *mv, int ticks);
 
 #endif

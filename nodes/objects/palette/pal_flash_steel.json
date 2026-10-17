@@ -1,0 +1,25 @@
+{
+  "id": "pal_flash_steel",
+  "kind": "object",
+  "type": "palette",
+  "name": "Harden flash",
+  "notes": "Dark grey, like iron: a monster hardened by Harden flickers in these colors for as long as it lasts. Each color is a darker grey of the same slot of the monsters' palette pal_mon_1 (Pebbulk's), light parts staying lighter, so its shading and face still show while it flickers.",
+  "colors": [
+    "#000000",
+    "#101018",
+    "#909098",
+    "#909098",
+    "#808088",
+    "#68686c",
+    "#747478",
+    "#585860",
+    "#404048",
+    "#808088",
+    "#686870",
+    "#505058",
+    "#787880",
+    "#606068",
+    "#484850",
+    "#686870"
+  ]
+}

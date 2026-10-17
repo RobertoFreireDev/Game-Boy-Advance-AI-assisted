@@ -3,7 +3,7 @@
   "kind": "object",
   "type": "sfx",
   "name": "Paralyzed",
-  "notes": "Plays when a monster gets paralyzed (game.battle sounds.par), yours or a wild one: a buzzing zap jumping high and low that stutters and fizzles out. On the wave channel, so it doesn't cut the hit sounds or Growl's and Sandstorm's own sounds.",
+  "notes": "Plays when a monster gets paralyzed (game.battle sounds.par), yours or a wild one: a buzzing zap jumping high and low that stutters and fizzles out. On the wave channel, so it doesn't cut the hit sounds or Growl's own sound.",
   "channel": "wave",
   "priority": 2,
   "steps": [

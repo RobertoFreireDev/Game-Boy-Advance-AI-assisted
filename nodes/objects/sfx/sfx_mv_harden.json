@@ -1,0 +1,62 @@
+{
+  "id": "sfx_mv_harden",
+  "kind": "object",
+  "type": "sfx",
+  "name": "Harden",
+  "notes": "Harden's metallic clang: a short clank, then two high, clashing notes ringing fast against each other and fading out, like a struck steel plate. On square2 like the other status moves' sounds, so it never cuts the hit sounds (noise) or the super-effective ping (square1).",
+  "channel": "square2",
+  "duty": 1,
+  "priority": 1,
+  "steps": [
+    {
+      "note": "C6",
+      "ticks": 1,
+      "volume": 15
+    },
+    {
+      "note": "A#6",
+      "ticks": 1,
+      "volume": 15
+    },
+    {
+      "note": "E7",
+      "ticks": 1,
+      "volume": 14
+    },
+    {
+      "note": "A#6",
+      "ticks": 1,
+      "volume": 13
+    },
+    {
+      "note": "E7",
+      "ticks": 2,
+      "volume": 12
+    },
+    {
+      "note": "A#6",
+      "ticks": 2,
+      "volume": 11
+    },
+    {
+      "note": "E7",
+      "ticks": 2,
+      "volume": 9
+    },
+    {
+      "note": "A#6",
+      "ticks": 3,
+      "volume": 7
+    },
+    {
+      "note": "E7",
+      "ticks": 3,
+      "volume": 5
+    },
+    {
+      "note": "A#6",
+      "ticks": 4,
+      "volume": 3
+    }
+  ]
+}

@@ -33,6 +33,7 @@ typedef struct {
     u8 home;                    // 1: it lives in its home world (home_var = its type): stronger
     u16 status_ticks, status_clock;     // status_clock: poison's second; paralysis' sparks tick
     u16 tox_step, buff_ticks;
+    const MoveData *buff_move;  // the self move whose buff it has (a defense buff's amount and colors)
     u16 power;
     u16 pace;                   // walking speed, x/256 of the walker's own: its species' (+ home_speed at home)
     u16 recharge;               // recharge time, x/1024: 1024 (- home_charge % at home)
@@ -428,6 +429,7 @@ int monster_hit(Actor *t, const MonsterHit *h) {
         s32 d = (s32)mv->power * (100 + 15 * (h->level - 1));          // x 100
         d = d * pct / 100 * h->power / 100;
         d = (d + 50) / 100;
+        if (m->buff == BUFF_DEFENSE) d -= m->buff_move->buff_amount;   // hardened: a 60 blow, defense 50 -> 10
         if (d < 1) d = 1;
         int up = h->blow == BLOW_FIRST;         // a double hit: the second blow's number comes under
         say_number(t, BT_DAMAGE, d, up);
@@ -504,15 +506,17 @@ void monster_double_hit(Actor *user, Actor *const *hit, int count, const Monster
     if (any) say_double(user, um);
 }
 
-// ---- buffs (Fly, Phase) ----------------------------------------------------------------
-void monster_buff(Actor *a, int buff, int ticks) {
+// ---- buffs (Fly, Phase, Defense) -------------------------------------------------------
+void monster_buff(Actor *a, const MoveData *mv, int ticks) {
     Monster *m = mon(a);
-    if (!m || buff == BUFF_NONE) return;
-    m->buff = (u8)buff;
+    if (!m || mv->buff == BUFF_NONE) return;
+    m->buff = mv->buff;
+    m->buff_move = mv;
     m->buff_ticks = (u16)ticks;
+    if (mv->buff == BUFF_DEFENSE) return;               // only takes softer blows (monster_hit) and flickers
     a->solid_mode = SOLID_NONE;                         // walks through monsters
     a->collides &= (u16)~(1u << CAT_ENEMY);
-    if (buff == BUFF_FLY) a->flags |= ACTOR_HIDDEN;     // only its shadow shows
+    if (mv->buff == BUFF_FLY) a->flags |= ACTOR_HIDDEN; // only its shadow shows
 }
 
 static int overlaps_foe(const Actor *a) {
@@ -523,11 +527,29 @@ static int overlaps_foe(const Actor *a) {
     return 0;
 }
 
+// Hardened (a defense buff): it flickers in its move's colors (dark grey) like paralysis flickers
+// yellow, but never over a hit's flashes or the paralysis flicker, and the last one ends with it.
+static void defense_look(Actor *a, const Monster *m) {
+    const PaletteData *pal = m->buff_move->buff_palette;
+    if (pal && m->status != STATUS_PAR && (core_frame() & 7) == 0 && !a->flash && !a->flash_more
+        && m->buff_ticks > FLASH_TICKS) {
+        a->flash_pal = pal;
+        a->flash = FLASH_TICKS;
+    }
+}
+
 static void buff_update(Actor *a, const Params_monster *p, Monster *m) {
     if (m->buff == BUFF_FLY && p->shadow)
         sprites_queue(p->shadow, 0, a, -p->shadow->width / 2, -p->shadow->height + 1, 0, NULL);
     if (m->buff == BUFF_PHASE) a->blink = (core_frame() & 8) ? 4 : 0;     // ghostly flicker
+    if (m->buff == BUFF_DEFENSE) defense_look(a, m);
     if (m->buff_ticks > 1) { m->buff_ticks--; return; }
+    if (m->buff == BUFF_DEFENSE) {                      // it stayed solid: nothing else to undo
+        if (a->flash_pal == m->buff_move->buff_palette) { a->flash = 0; a->flash_pal = hit_palette(p); }
+        m->buff = 0;
+        m->buff_ticks = 0;
+        return;
+    }
     if (overlaps_foe(a)) return;                        // land beside the monsters, not inside one
     m->buff = 0;
     m->buff_ticks = 0;

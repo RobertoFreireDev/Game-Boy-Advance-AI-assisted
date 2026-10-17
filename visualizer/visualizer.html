@@ -1464,6 +1464,20 @@ function parStage(bodyId) {
   });
   return c;
 }
+// How a hardened monster looks (monster.c defense_look): it keeps moving and flickers in the defense
+// buff's colors (3 frames of every 8, like the paralysis flicker) for the buff's ticks; here it then
+// shows its own colors for a second before it hardens again.
+function hardenStage(bodyId, pal, ticks) {
+  const W = 56, H = 48, z = 5, wx = 28, wy = 32;
+  const [c, ctx] = zoomCanvas(W, H, z);
+  live(tick => {
+    if (!c.isConnected) return;
+    ctx.fillStyle = "#1a1d24"; ctx.fillRect(0, 0, W, H);
+    const hard = tick % (ticks + 60) < ticks;
+    drawBody(ctx, bodyId, "idle", wx, wy, tick, false, hard && (tick & 7) < 3 ? pal : null);
+  });
+  return c;
+}
 // A move hurts what its effect draws (moves.c): the effect's picture box (every frame of its
 // animation, worked out by tools/common.py) around each particle, at every spot of its flight,
 // grown by MOVE_HIT_MARGIN px. Whole-screen moves hurt everything in view; self moves no one.
@@ -1766,7 +1780,7 @@ PREVIEW.move = (id, n) => {
   }[n.shape] || n.shape;
   // Its animation in 3 steps (moves.c strike_show): only a picture, the hit lands at once.
   const mvSteps = (((D.derived || {}).moves || {})[id] || {}).steps, effLife = (NODES[n.effect] || {}).lifetime || 0;
-  const stepsText = !n.effect ? "no effect" : !mvSteps
+  const stepsText = !n.effect ? (bf.kind === "defense" && bf.palette ? "no effect picture: the user flickers in its colors for as long as it lasts (see Hardened look)" : "no effect") : !mvSteps
     ? `plays as it is over ${effLife} ticks${n.shape === "zone" && z.every ? " (each flicker)" : ""} (${n.shape === "screen" ? "it covers the whole screen" : z.place === "around" ? "it rises from the ground all around the user" : "its rocks fall from the sky"}: nothing comes from the user)`
     : n.effect_at === "user"
       ? `3 steps over ${effLife} ticks: its effect comes out from behind the user and flies its whole way (steps 1-2: ${mvSteps[0] + mvSteps[1]} frames, drawn behind the user), then stays there (step 3: ${effLife - mvSteps[0] - mvSteps[1]} frames)`
@@ -1776,7 +1790,7 @@ PREVIEW.move = (id, n) => {
     h("div", { class: "k" }, "type"), h("div", {}, String(n.monster_type || "").toUpperCase()),
     h("div", { class: "k" }, "hits"), h("div", {}, shapeText),
     h("div", { class: "k" }, "power"), h("div", {}, n.power ? String(n.power) + (n.shape === "zone" && z.every ? ` per hit (on touch, then every ${(z.every / 60).toFixed(1)} s per monster)` : "") + spPowerText + doubleText : n.status ? "none (status only)" : "none"),
-    h("div", { class: "k" }, "accuracy"), h("div", {}, n.shape === "zone" ? "never misses (the ground)" : n.power ? (n.accuracy ? n.accuracy + "% (a miss shows MISS)" + walkText + evasionText : "never misses") : "—"),
+    h("div", { class: "k" }, "accuracy"), h("div", {}, n.shape === "zone" ? "never misses (the ground)" : n.shape === "self" ? "never misses (it only works on the user)" : n.power ? (n.accuracy ? n.accuracy + "% (a miss shows MISS)" + walkText + evasionText : "never misses") : "—"),
     h("div", { class: "k" }, "charge (player)"), h("div", {}, `${n.charge} ticks (${(n.charge / 60).toFixed(1)} s)`),
     h("div", { class: "k" }, "animation"), h("div", {}, [].concat(stepsText, mvSteps ? h("span", { class: "small" }, " — only a picture: the hit lands the moment the move is used") : [])),
     n.status ? h("div", { class: "k" }, "status") : null,
@@ -1786,7 +1800,8 @@ PREVIEW.move = (id, n) => {
     n.push ? h("div", { class: "k" }, "push") : null,
     n.push ? h("div", {}, `every monster it reaches slides ${push.px} px straight away from the user in ${push.ticks} ticks (${(push.ticks / 60).toFixed(2)} s), fast at first, then slowing down; walls and other monsters stop it, and it can't move or attack while it slides`) : null,
     n.buff ? h("div", { class: "k" }, "buff") : null,
-    n.buff ? h("div", {}, `${bf.kind === "fly" ? "Fly: only a shadow shows, it can't be hit and passes over monsters" : "Phase: passes through monsters"} for ${(bf.ticks / 60).toFixed(1)} s`) : null,
+    n.buff ? h("div", {}, `${{ fly: "Fly: only a shadow shows, it can't be hit and passes over monsters", phase: "Phase: passes through monsters",
+      defense: `Defense ${bf.amount}: every blow it takes does ${bf.amount} less damage (a ${bf.amount + 10} hit does 10; a blow always does at least 1; poison still hurts as usual)${bf.palette ? " and it flickers in its colors (see Hardened look)" : ""}` }[bf.kind] || bf.kind} for ${(bf.ticks / 60).toFixed(1)} s`) : null,
     h("div", { class: "k" }, "sound"), h("div", {}, n.sfx ? [h("button", { onclick: () => playSfx(n.sfx) }, "▶"), " ", nodeLink(n.sfx),
       resultOnly ? h("span", { class: "small" }, " — wild monsters only: the player's use plays just the hit or miss sound") : null] : "silent"),
     n.power ? h("div", { class: "k" }, "hit sound (player)") : null,
@@ -1801,6 +1816,12 @@ PREVIEW.move = (id, n) => {
         nodeLink(BATTLE.par_palette), ") and the sparks (", BATTLE.par_effect ? nodeLink(BATTLE.par_effect) : "none", ") crackle over its middle. When it lands, PAR floats up and the zap plays: ",
         parSfx ? [h("button", { onclick: () => playSfx(parSfx) }, "▶"), " ", nodeLink(parSfx)] : "silent",
         ". The player's move buttons buzz while it can't move.")));
+  }
+  if (bf.kind === "defense") {
+    out.push(card("Hardened look", h("div", { class: "stage" }, hardenStage(moveUser(id).body, bf.palette, bf.ticks)),
+      h("div", { class: "small" }, `How the user looks while hardened (the player's monster or a wild one): it moves as usual and flickers in `,
+        bf.palette ? nodeLink(bf.palette) : "nothing (no palette: it doesn't flicker)",
+        ` for ${(bf.ticks / 60).toFixed(1)} s, then shows its own colors again (here: hardened, then a second as usual). A hit's flash and the paralysis flicker show over it. Every blow in that time does ${bf.amount} less damage, at least 1.`)));
   }
   // What it hurts: the effect playing where the engine puts it, and the area it hurts in orange.
   if (n.shape === "screen" || n.shape === "self") {

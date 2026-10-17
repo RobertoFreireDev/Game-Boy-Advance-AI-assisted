@@ -577,6 +577,9 @@ def scene_budget(c, insts):
             obj_pals.add("(alpha colors)")        # one Alpha (of any species) at a time
         for mv in sp.get("moves") or []:
             add_particle(p.nodes.get(mv, {}).get("effect"))
+            bf = p.nodes.get(mv, {}).get("buff")
+            if isinstance(bf, dict) and p.type_of(bf.get("palette")) == "palette":
+                obj_pals.add(bf["palette"])            # a defense buff's flicker colors
 
     followed = set()
 
@@ -1652,9 +1655,16 @@ def V_move(c):
             c.err("a self move needs 'buff' {kind: %s, ticks}" % " or ".join(C.BUFFS[1:]))
         else:
             for k in bf:
-                if k not in ("kind", "ticks"):
+                if k not in ("kind", "ticks", "amount", "palette"):
                     c.err("'buff' has unknown field '%s'" % k)
             c.get(bf, "ticks", "int", "buff.ticks", lo=1, hi=3600)
+            if bf.get("kind") == "defense":
+                c.get(bf, "amount", "int", "buff.amount", lo=1, hi=255)
+                c.ref(bf.get("palette"), ["palette"], "buff.palette", allow_empty=True)
+            else:
+                for k in ("amount", "palette"):
+                    if k in bf:
+                        c.err("'buff.%s' is only for the defense buff" % k)
     elif bf is not None:
         c.err("'buff' is only for the self shape")
     push = c.get(n, "push", "dict", required=False)
