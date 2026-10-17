@@ -1,0 +1,78 @@
+{
+  "id": "scn_shiny",
+  "kind": "scene",
+  "type": "cutscene",
+  "name": "Shiny monster",
+  "notes": "Opens after a victory screen, only when that win made a monster shiny (new_shiny is 0 or more). The new shiny monster's portrait bobs in the middle of a night sky, shimmering through the rainbow, with stars spraying out from behind it, under A SHINY MONSTER! and over its name and what being shiny gives it (+10% power on its moves, +20% starting HP). It shows the monster even if it is still locked on the menu. When it starts it makes the monster shiny for good (its slot of 'shiny' = 1, one more in 'shinies'), starts the count toward the next one over (shiny_count 0, every run in shiny_runs can count again) and saves, then a sparkling jingle plays. The victory song keeps playing. START goes back to the menu.",
+  "backdrop": "#101838",
+  "music": "mus_victory",
+  "camera": {
+    "x": 0,
+    "y": 0,
+    "bounds": "none"
+  },
+  "instances": [
+    {
+      "id": "stars",
+      "object": "ptc_shiny_stars",
+      "x": 120,
+      "y": 68
+    },
+    {
+      "id": "hud",
+      "object": "hud_shiny"
+    },
+    {
+      "id": "monster",
+      "object": "prop_shiny",
+      "x": 120,
+      "y": 68
+    }
+  ],
+  "on_start": [
+    {
+      "do": "if_var",
+      "var": "new_shiny",
+      "op": ">=",
+      "value": 0,
+      "then": [
+        {
+          "do": "set_var",
+          "var": "shiny",
+          "index": "new_shiny",
+          "value": 1
+        },
+        {
+          "do": "add_var",
+          "var": "shinies",
+          "value": 1
+        },
+        {
+          "do": "set_var",
+          "var": "shiny_count",
+          "value": 0
+        },
+        {
+          "do": "set_var",
+          "var": "shiny_runs",
+          "value": 0
+        }
+      ]
+    },
+    {
+      "do": "save_game"
+    },
+    {
+      "do": "fade_in",
+      "ticks": 20
+    },
+    {
+      "do": "wait",
+      "ticks": 24
+    },
+    {
+      "do": "play_sfx",
+      "sfx": "sfx_shiny"
+    }
+  ]
+}

@@ -19,6 +19,8 @@ void sprites_queue(const SpriteData *s, u16 frame, const struct Actor *anchor, s
 void sprites_queue_clear(void);
 // OBJ palette bank (0-15) holding this palette; loads it on first use.
 int sprites_palette(const PaletteData *p);
+// OBJ palette bank holding this palette, or -1 when nothing drew with it yet (never loads it).
+int sprites_palette_bank(const PaletteData *p);
 // Copy raw 4bpp tiles into OBJ VRAM. Returns the first tile number, or -1 if VRAM is full.
 int sprites_upload(const u32 *tiles, int count);
 // Add one 8x8 hardware sprite of an uploaded tile (floating text glyphs).

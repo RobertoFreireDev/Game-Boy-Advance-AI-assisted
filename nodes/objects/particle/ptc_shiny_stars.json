@@ -1,0 +1,24 @@
+{
+  "id": "ptc_shiny_stars",
+  "kind": "object",
+  "type": "particle",
+  "name": "Shiny stars",
+  "notes": "Placed behind the new shiny monster's portrait on the shiny screen: a star every 4 ticks flies out in a random direction (39-60 px in its half-second life, so most of it is out from behind the 64x64 portrait), about 7 twinkling around the monster at once.",
+  "animation": "anim_shiny_star",
+  "mode": "stream",
+  "rate": 4,
+  "lifetime": 30,
+  "speed": [
+    1.3,
+    2.0
+  ],
+  "angle": [
+    0,
+    359
+  ],
+  "gravity": 0,
+  "on_top": true,
+  "children": [
+    "anim_shiny_star"
+  ]
+}

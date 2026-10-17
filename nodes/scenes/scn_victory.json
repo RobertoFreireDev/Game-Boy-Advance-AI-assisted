@@ -3,7 +3,7 @@
   "kind": "scene",
   "type": "credits",
   "name": "Victory",
-  "notes": "YOU SURVIVED! over the meadow, with the winning monster bobbing, the final time, level and kills. The run's time is checked against this monster's best time (best_time[chosen]): if it never won before, or this run was faster, it becomes the new best and the screen says NEW BEST TIME!, otherwise it shows the best time to beat. The first win with a monster (its best time was still --:--) also unlocks the next locked monster of the roster (while any is left): its name shows under the stats. Winning again with a monster that already won a run unlocks nothing. A jingle plays for a new monster or a new best time, and the progress (unlocks and best times) is saved at once. START goes back to the menu.",
+  "notes": "YOU SURVIVED! over the meadow, with the winning monster bobbing, the final time, level and kills. The run's time is checked against this monster's best time (best_time[chosen]): if it never won before, or this run was faster, it becomes the new best and the screen says NEW BEST TIME!, otherwise it shows the best time to beat. The first win with a monster (its best time was still --:--) also unlocks the next locked monster of the roster (while any is left): its name shows under the stats. Winning again with a monster that already won a run unlocks nothing. A jingle plays for a new monster or a new best time, and the progress (unlocks and best times) is saved at once. Every 5 different runs won make a monster shiny (the 18 menu entries, 9 classic and 9 waves runs, each count once until the next shiny; winning the same run again counts nothing): on the 5th, this screen picks the winner if it isn't shiny yet, otherwise a random monster that isn't (new_shiny), never one twice, until all 9 shine. It only picks: START then opens the shiny screen (scn_shiny), which makes it shiny and saves, instead of going back to the menu. A winner that already was shiny shimmers here too.",
   "backdrop": "#58a8f0",
   "music": "mus_victory",
   "camera": {
@@ -28,6 +28,16 @@
     }
   ],
   "on_start": [
+    {
+      "do": "set_var",
+      "var": "new_shiny",
+      "value": -1
+    },
+    {
+      "do": "set_var",
+      "var": "shiny_roll",
+      "value": -1
+    },
     {
       "do": "set_var",
       "var": "new_mon",
@@ -95,6 +105,471 @@
               "value": 1
             }
           ]
+        }
+      ]
+    },
+    {
+      "do": "if_var",
+      "var": "shinies",
+      "op": "<",
+      "value": 9,
+      "then": [
+        {
+          "do": "if_var",
+          "var": "shiny_runs",
+          "index": "entry",
+          "op": "==",
+          "value": 0,
+          "then": [
+            {
+              "do": "set_var",
+              "var": "shiny_runs",
+              "index": "entry",
+              "value": 1
+            },
+            {
+              "do": "add_var",
+              "var": "shiny_count",
+              "value": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "do": "if_var",
+      "var": "shiny_count",
+      "op": ">=",
+      "value": 5,
+      "then": [
+        {
+          "do": "if_var",
+          "var": "shiny",
+          "index": "chosen",
+          "op": "==",
+          "value": 0,
+          "then": [
+            {
+              "do": "set_var",
+              "var": "new_shiny",
+              "from": "chosen"
+            }
+          ],
+          "else": [
+            {
+              "do": "if_var",
+              "var": "shinies",
+              "op": "==",
+              "value": 1,
+              "then": [
+                {
+                  "do": "random_var",
+                  "var": "shiny_roll",
+                  "min": 0,
+                  "max": 7
+                }
+              ]
+            },
+            {
+              "do": "if_var",
+              "var": "shinies",
+              "op": "==",
+              "value": 2,
+              "then": [
+                {
+                  "do": "random_var",
+                  "var": "shiny_roll",
+                  "min": 0,
+                  "max": 6
+                }
+              ]
+            },
+            {
+              "do": "if_var",
+              "var": "shinies",
+              "op": "==",
+              "value": 3,
+              "then": [
+                {
+                  "do": "random_var",
+                  "var": "shiny_roll",
+                  "min": 0,
+                  "max": 5
+                }
+              ]
+            },
+            {
+              "do": "if_var",
+              "var": "shinies",
+              "op": "==",
+              "value": 4,
+              "then": [
+                {
+                  "do": "random_var",
+                  "var": "shiny_roll",
+                  "min": 0,
+                  "max": 4
+                }
+              ]
+            },
+            {
+              "do": "if_var",
+              "var": "shinies",
+              "op": "==",
+              "value": 5,
+              "then": [
+                {
+                  "do": "random_var",
+                  "var": "shiny_roll",
+                  "min": 0,
+                  "max": 3
+                }
+              ]
+            },
+            {
+              "do": "if_var",
+              "var": "shinies",
+              "op": "==",
+              "value": 6,
+              "then": [
+                {
+                  "do": "random_var",
+                  "var": "shiny_roll",
+                  "min": 0,
+                  "max": 2
+                }
+              ]
+            },
+            {
+              "do": "if_var",
+              "var": "shinies",
+              "op": "==",
+              "value": 7,
+              "then": [
+                {
+                  "do": "random_var",
+                  "var": "shiny_roll",
+                  "min": 0,
+                  "max": 1
+                }
+              ]
+            },
+            {
+              "do": "if_var",
+              "var": "shinies",
+              "op": "==",
+              "value": 8,
+              "then": [
+                {
+                  "do": "random_var",
+                  "var": "shiny_roll",
+                  "min": 0,
+                  "max": 0
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "do": "if_var",
+      "var": "shiny_roll",
+      "op": ">=",
+      "value": 0,
+      "then": [
+        {
+          "do": "set_var",
+          "var": "scan",
+          "value": 0
+        },
+        {
+          "do": "if_var",
+          "var": "shiny",
+          "index": "scan",
+          "op": "==",
+          "value": 0,
+          "then": [
+            {
+              "do": "if_var",
+              "var": "shiny_roll",
+              "op": "==",
+              "value": 0,
+              "then": [
+                {
+                  "do": "set_var",
+                  "var": "new_shiny",
+                  "from": "scan"
+                }
+              ]
+            },
+            {
+              "do": "add_var",
+              "var": "shiny_roll",
+              "value": -1
+            }
+          ]
+        },
+        {
+          "do": "add_var",
+          "var": "scan",
+          "value": 1
+        },
+        {
+          "do": "if_var",
+          "var": "shiny",
+          "index": "scan",
+          "op": "==",
+          "value": 0,
+          "then": [
+            {
+              "do": "if_var",
+              "var": "shiny_roll",
+              "op": "==",
+              "value": 0,
+              "then": [
+                {
+                  "do": "set_var",
+                  "var": "new_shiny",
+                  "from": "scan"
+                }
+              ]
+            },
+            {
+              "do": "add_var",
+              "var": "shiny_roll",
+              "value": -1
+            }
+          ]
+        },
+        {
+          "do": "add_var",
+          "var": "scan",
+          "value": 1
+        },
+        {
+          "do": "if_var",
+          "var": "shiny",
+          "index": "scan",
+          "op": "==",
+          "value": 0,
+          "then": [
+            {
+              "do": "if_var",
+              "var": "shiny_roll",
+              "op": "==",
+              "value": 0,
+              "then": [
+                {
+                  "do": "set_var",
+                  "var": "new_shiny",
+                  "from": "scan"
+                }
+              ]
+            },
+            {
+              "do": "add_var",
+              "var": "shiny_roll",
+              "value": -1
+            }
+          ]
+        },
+        {
+          "do": "add_var",
+          "var": "scan",
+          "value": 1
+        },
+        {
+          "do": "if_var",
+          "var": "shiny",
+          "index": "scan",
+          "op": "==",
+          "value": 0,
+          "then": [
+            {
+              "do": "if_var",
+              "var": "shiny_roll",
+              "op": "==",
+              "value": 0,
+              "then": [
+                {
+                  "do": "set_var",
+                  "var": "new_shiny",
+                  "from": "scan"
+                }
+              ]
+            },
+            {
+              "do": "add_var",
+              "var": "shiny_roll",
+              "value": -1
+            }
+          ]
+        },
+        {
+          "do": "add_var",
+          "var": "scan",
+          "value": 1
+        },
+        {
+          "do": "if_var",
+          "var": "shiny",
+          "index": "scan",
+          "op": "==",
+          "value": 0,
+          "then": [
+            {
+              "do": "if_var",
+              "var": "shiny_roll",
+              "op": "==",
+              "value": 0,
+              "then": [
+                {
+                  "do": "set_var",
+                  "var": "new_shiny",
+                  "from": "scan"
+                }
+              ]
+            },
+            {
+              "do": "add_var",
+              "var": "shiny_roll",
+              "value": -1
+            }
+          ]
+        },
+        {
+          "do": "add_var",
+          "var": "scan",
+          "value": 1
+        },
+        {
+          "do": "if_var",
+          "var": "shiny",
+          "index": "scan",
+          "op": "==",
+          "value": 0,
+          "then": [
+            {
+              "do": "if_var",
+              "var": "shiny_roll",
+              "op": "==",
+              "value": 0,
+              "then": [
+                {
+                  "do": "set_var",
+                  "var": "new_shiny",
+                  "from": "scan"
+                }
+              ]
+            },
+            {
+              "do": "add_var",
+              "var": "shiny_roll",
+              "value": -1
+            }
+          ]
+        },
+        {
+          "do": "add_var",
+          "var": "scan",
+          "value": 1
+        },
+        {
+          "do": "if_var",
+          "var": "shiny",
+          "index": "scan",
+          "op": "==",
+          "value": 0,
+          "then": [
+            {
+              "do": "if_var",
+              "var": "shiny_roll",
+              "op": "==",
+              "value": 0,
+              "then": [
+                {
+                  "do": "set_var",
+                  "var": "new_shiny",
+                  "from": "scan"
+                }
+              ]
+            },
+            {
+              "do": "add_var",
+              "var": "shiny_roll",
+              "value": -1
+            }
+          ]
+        },
+        {
+          "do": "add_var",
+          "var": "scan",
+          "value": 1
+        },
+        {
+          "do": "if_var",
+          "var": "shiny",
+          "index": "scan",
+          "op": "==",
+          "value": 0,
+          "then": [
+            {
+              "do": "if_var",
+              "var": "shiny_roll",
+              "op": "==",
+              "value": 0,
+              "then": [
+                {
+                  "do": "set_var",
+                  "var": "new_shiny",
+                  "from": "scan"
+                }
+              ]
+            },
+            {
+              "do": "add_var",
+              "var": "shiny_roll",
+              "value": -1
+            }
+          ]
+        },
+        {
+          "do": "add_var",
+          "var": "scan",
+          "value": 1
+        },
+        {
+          "do": "if_var",
+          "var": "shiny",
+          "index": "scan",
+          "op": "==",
+          "value": 0,
+          "then": [
+            {
+              "do": "if_var",
+              "var": "shiny_roll",
+              "op": "==",
+              "value": 0,
+              "then": [
+                {
+                  "do": "set_var",
+                  "var": "new_shiny",
+                  "from": "scan"
+                }
+              ]
+            },
+            {
+              "do": "add_var",
+              "var": "shiny_roll",
+              "value": -1
+            }
+          ]
+        },
+        {
+          "do": "add_var",
+          "var": "scan",
+          "value": 1
         }
       ]
     },

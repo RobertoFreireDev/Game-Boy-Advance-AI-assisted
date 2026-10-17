@@ -1,0 +1,57 @@
+{
+  "id": "sfx_shiny",
+  "kind": "object",
+  "type": "sfx",
+  "name": "Shiny jingle",
+  "notes": "A high sparkling arpeggio up to G#7 when the shiny screen opens: twinkly and higher than the new move and level-up jingles, so a shiny monster sounds special. On square1 (25% duty), loud like the other sound effects, 28 ticks.",
+  "channel": "square1",
+  "duty": 1,
+  "priority": 4,
+  "steps": [
+    {
+      "note": "E6",
+      "ticks": 2,
+      "volume": 13
+    },
+    {
+      "note": "G#6",
+      "ticks": 2,
+      "volume": 13
+    },
+    {
+      "note": "B6",
+      "ticks": 2,
+      "volume": 13
+    },
+    {
+      "note": "E7",
+      "ticks": 3,
+      "volume": 13
+    },
+    {
+      "note": "..",
+      "ticks": 1,
+      "volume": 0
+    },
+    {
+      "note": "B6",
+      "ticks": 2,
+      "volume": 12
+    },
+    {
+      "note": "E7",
+      "ticks": 2,
+      "volume": 13
+    },
+    {
+      "note": "G#7",
+      "ticks": 8,
+      "volume": 13
+    },
+    {
+      "note": "G#7",
+      "ticks": 6,
+      "volume": 6
+    }
+  ]
+}

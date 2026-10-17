@@ -555,6 +555,7 @@ def scene_budget(c, insts):
     """GBA limits for one scene: OBJ VRAM, palettes, BG tiles."""
     p = c.p
     sprites, obj_pals, bg_pals, icons = set(), set(), set(), set()
+    flash_sets = []                                     # per monster: (its plain hit flash, its shiny colors or None)
 
     def add_anim(a):
         an = p.nodes.get(a, {})
@@ -611,9 +612,23 @@ def scene_budget(c, insts):
                     obj_pals.add(v)
                 elif isinstance(v, str) and p.type_of(v) in C.ACTOR_TYPES and v not in followed:
                     add_object(v)                       # an actor it brings in (a wave director's monsters)
+            if e.get("behavior") == "species_select":     # the portraits it shows (and their shimmering copies)
+                for s in species_nodes(p):
+                    pal = p.nodes.get(p.nodes[s].get("portrait"), {}).get("palette")
+                    obj_pals.add(pal)
+                    if prm.get("shiny_var") and pal:
+                        obj_pals.add("%s (shiny copy)" % pal)
             if e.get("behavior") == "monster":
                 bt = p.game.get("battle") if isinstance(p.game.get("battle"), dict) else {}
-                obj_pals.update([bt.get("flash_palette"), bt.get("par_palette")])
+                obj_pals.add(bt.get("par_palette"))
+                # Its hit flash: its own colors, else the game's. A shiny one flashes in its shiny colors
+                # (when it has them) and is drawn in a shimmering copy instead: counted in both states.
+                own = prm["flash_palette"] if p.type_of(prm.get("flash_palette")) == "palette" else bt.get("flash_palette")
+                shiny = None
+                if prm.get("shiny_var"):
+                    sf = prm["shiny_flash_palette"] if p.type_of(prm.get("shiny_flash_palette")) == "palette" else own
+                    shiny = {"(shiny colors)", sf}         # one shiny monster (the player's) at a time
+                flash_sets.append(({own}, shiny))
                 if p.type_of(bt.get("par_effect")) == "animation":
                     add_anim(bt["par_effect"])          # the sparks over a paralyzed monster
                 obj_pals.update(t.get("palette") for t in (bt.get("texts") or {}).values() if isinstance(t, dict))
@@ -676,6 +691,11 @@ def scene_budget(c, insts):
     tiles += limits.get("STREAM_SLOTS", 0) * C.stream_slot_tiles(all_sprites, limits)
     if tiles > 1024:
         c.err("sprites in this scene need %d OBJ tiles; the GBA has 1024" % tiles)
+    # Palette banks only load when something draws with them: count the worse of the shiny-capable
+    # monsters all plain (their plain flash) or all shiny (their shimmering copy and shiny flash).
+    plain = set().union(*(f[0] for f in flash_sets))
+    shiny = set().union(*(f[1] or f[0] for f in flash_sets))
+    obj_pals = max(obj_pals | plain, obj_pals | shiny, key=lambda s: len(s - {None}))
     obj_pals.discard(None)
     bg_pals.discard(None)
     if len(obj_pals) > 16:
@@ -1032,11 +1052,32 @@ def V_actor(c):
     if mon is not None:
         check_walk_dodge(c, mon)
         check_home(c, mon)
+    check_shiny(c, n)
     for e in n.get("logic", []) or []:
         if isinstance(e, dict) and e.get("behavior") == "free_spot":
             reach = (e.get("params") or {}).get("reach", 64)
             if is_int(reach) and not 8 <= reach <= 128:
                 c.err("'free_spot.reach' must be 8 to 128 pixels")
+
+
+def check_shiny(c, n):
+    """Shiny monsters and portraits: shiny_var holds one flag per species; the bonuses are percents."""
+    for e in n.get("logic", []) or []:
+        if not isinstance(e, dict) or e.get("behavior") not in ("monster", "species_select"):
+            continue
+        prm, b = e.get("params") or {}, e["behavior"]
+        var = prm.get("shiny_var")
+        if var and var in c.p.var_names() and c.p.var_count(var) < len(species_nodes(c.p)):
+            c.err("'%s.shiny_var' names '%s', which needs one slot per species: give it \"count\": %d"
+                  % (b, var, len(species_nodes(c.p))))
+        if b != "monster":
+            continue
+        for k, default, hi in (("shiny_power", 10, 100), ("shiny_hp", 20, 100), ("shiny_flashes", 0, 10)):
+            v = prm.get(k, default)
+            if is_int(v) and not 0 <= v <= hi:
+                c.err("'monster.%s' must be 0 to %d" % (k, hi))
+        if not var and any(k in prm for k in ("shiny_power", "shiny_hp", "shiny_flash_palette", "shiny_flashes")):
+            c.warn("'monster' shiny params do nothing without 'shiny_var'")
 
 
 def check_home(c, mon):

@@ -268,6 +268,48 @@
         "count": 5,
         "initial": 0,
         "notes": "How many of each item the wave monsters have dropped in this waves run, in the order of drop_kind. Each item drops at most 3 times per run: a faint that rolls an item already at 3 drops nothing. Back to 0 each run."
+      },
+      {
+        "name": "shiny",
+        "type": "int",
+        "count": 9,
+        "initial": 0,
+        "persistent": true,
+        "notes": "Which monsters are shiny, one slot per monster in roster order (0 Furrbit ... 8 Pebbulk): 1 = shiny. A shiny monster shimmers through the rainbow wherever it shows (in the run, on the menu, on the victory screens), its moves hit 10% harder and it starts each run with 20% more HP. Every 5 different runs won make one more monster shiny (see shiny_count), never the same one twice, until all 9 are. Saved on the cartridge; clearing the saved progress makes them all plain again."
+      },
+      {
+        "name": "shiny_runs",
+        "type": "int",
+        "count": 18,
+        "initial": 0,
+        "persistent": true,
+        "notes": "Which of the 18 runs (the menu entries: 0-8 the classic runs of the 9 monsters, 9-17 their waves runs, like best_time) were won since the last monster became shiny: 1 = already counted. Winning a run whose slot is 0 sets it to 1 and adds 1 to shiny_count; winning the same run again counts nothing. All go back to 0 when a monster becomes shiny, so every run can count again toward the next one. Saved."
+      },
+      {
+        "name": "shiny_count",
+        "type": "int",
+        "initial": 0,
+        "persistent": true,
+        "notes": "Different runs won since the last monster became shiny (0-5). At 5 the victory screen picks the next shiny monster (new_shiny) and the shiny screen that follows makes it shiny and puts this back to 0. Saved."
+      },
+      {
+        "name": "shinies",
+        "type": "int",
+        "initial": 0,
+        "persistent": true,
+        "notes": "How many monsters are shiny (0-9). At 9 every monster is shiny and won runs count nothing more. Saved."
+      },
+      {
+        "name": "new_shiny",
+        "type": "int",
+        "initial": -1,
+        "notes": "The monster (roster number) that becomes shiny after this win: picked by the victory screen when shiny_count reaches 5, shown and made shiny by the shiny screen that START opens. -1 = none (START goes straight back to the menu)."
+      },
+      {
+        "name": "shiny_roll",
+        "type": "int",
+        "initial": 0,
+        "notes": "Helper for picking a random monster to make shiny (when the winner already is): counts down over the monsters that aren't shiny yet; the one it reaches 0 on is picked. -1 = no roll."
       }
     ],
     "battle": {
@@ -399,6 +441,7 @@
     {"id": "scn_waves", "kind": "scene", "type": "level", "path": "scenes/scn_waves.json", "parent": null},
     {"id": "scn_waves_victory", "kind": "scene", "type": "credits", "path": "scenes/scn_waves_victory.json", "parent": null},
     {"id": "scn_waves_over", "kind": "scene", "type": "game_over", "path": "scenes/scn_waves_over.json", "parent": null},
+    {"id": "scn_shiny", "kind": "scene", "type": "cutscene", "path": "scenes/scn_shiny.json", "parent": null},
     {"id": "pal_ui", "kind": "object", "type": "palette", "path": "objects/palette/pal_ui.json", "parent": null},
     {"id": "font_default", "kind": "object", "type": "font", "path": "objects/font/font_default.json", "parent": null},
     {"id": "icon_cursor", "kind": "object", "type": "icon", "path": "objects/icon/icon_cursor.json", "parent": null},
@@ -1033,6 +1076,12 @@
     {"id": "icon_label_waves_1", "kind": "object", "type": "icon", "path": "objects/icon/icon_label_waves_1.json", "parent": "hud_select"},
     {"id": "icon_label_waves_2", "kind": "object", "type": "icon", "path": "objects/icon/icon_label_waves_2.json", "parent": "hud_select"},
     {"id": "icon_label_waves_3", "kind": "object", "type": "icon", "path": "objects/icon/icon_label_waves_3.json", "parent": "hud_select"},
-    {"id": "icon_label_waves_4", "kind": "object", "type": "icon", "path": "objects/icon/icon_label_waves_4.json", "parent": "hud_select"}
+    {"id": "icon_label_waves_4", "kind": "object", "type": "icon", "path": "objects/icon/icon_label_waves_4.json", "parent": "hud_select"},
+    {"id": "hud_shiny", "kind": "object", "type": "hud", "path": "objects/hud/hud_shiny.json", "parent": null},
+    {"id": "prop_shiny", "kind": "object", "type": "prop", "path": "objects/prop/prop_shiny.json", "parent": null},
+    {"id": "sfx_shiny", "kind": "object", "type": "sfx", "path": "objects/sfx/sfx_shiny.json", "parent": null},
+    {"id": "spr_shiny_star", "kind": "object", "type": "sprite", "path": "objects/sprite/spr_shiny_star.json", "parent": null},
+    {"id": "ptc_shiny_stars", "kind": "object", "type": "particle", "path": "objects/particle/ptc_shiny_stars.json", "parent": null},
+    {"id": "anim_shiny_star", "kind": "object", "type": "animation", "path": "objects/animation/anim_shiny_star.json", "parent": "ptc_shiny_stars"}
   ]
 }

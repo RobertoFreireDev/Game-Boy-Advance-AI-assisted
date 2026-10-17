@@ -5,6 +5,7 @@
 // With `passes` 2 or more the list of species repeats (a second game mode with the same monsters):
 // the entry shown is pass x species count + species, the pass is kept in `pass_var`, and the passes
 // after the first are locked as a whole until `pass_unlock_var` reaches `pass_unlock_at`.
+// A species whose slot of `shiny_var` is set shimmers through the rainbow (unless it is locked).
 #include "species_select.h"
 #include "behavior_params.h"
 #include <tonc_memdef.h>
@@ -14,6 +15,7 @@
 #include "engine/core.h"
 #include "engine/actions.h"
 #include "engine/sprites.h"
+#include "engine/shiny.h"
 
 enum { ST_SHOWN, ST_PHASE, ST_TIMER, ST_DIR, ST_PICKED };
 enum { PH_IDLE, PH_OUT, PH_IN };
@@ -114,6 +116,9 @@ void bhv_species_select_update(Actor *a, const void *params) {
     const SpeciesData *sp = species_at((s32)st[ST_SHOWN]);
     if (!sp || !sp->portrait) return;
     s32 bob = (fx_sin_deg((s32)(core_frame() * 6 % 360)) * p->bob) >> FX_SHIFT;
-    sprites_queue(sp->portrait, 0, a, off - sp->portrait->width / 2, bob - sp->portrait->height / 2, 0,
-                  locked(p, (s32)st[ST_SHOWN]) ? p->locked_palette : NULL);
+    const PaletteData *pal = NULL;                  // a locked one is a silhouette, a shiny one shimmers
+    if (locked(p, (s32)st[ST_SHOWN])) pal = p->locked_palette;
+    else if (p->shiny_var >= 0 && vars_get(vars_slot(p->shiny_var, (s32)st[ST_SHOWN] % n)))
+        pal = shiny_palette(sp->portrait->palette);
+    sprites_queue(sp->portrait, 0, a, off - sp->portrait->width / 2, bob - sp->portrait->height / 2, 0, pal);
 }

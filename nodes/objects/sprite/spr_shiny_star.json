@@ -1,0 +1,52 @@
+{
+  "id": "spr_shiny_star",
+  "kind": "object",
+  "type": "sprite",
+  "name": "Shiny star",
+  "notes": "A 4-point twinkle that grows from a dot to a big star: white middle, yellow arms (the move effects' palette). Sprays out from behind the new shiny monster on the shiny screen.",
+  "palette": "pal_fx",
+  "width": 8,
+  "height": 8,
+  "frames": {
+    "dot": [
+      "........",
+      "........",
+      "........",
+      "...2....",
+      "........",
+      "........",
+      "........",
+      "........"
+    ],
+    "small": [
+      "........",
+      "........",
+      "...3....",
+      "..323...",
+      "...3....",
+      "........",
+      "........",
+      "........"
+    ],
+    "medium": [
+      "........",
+      "...3....",
+      "...3....",
+      ".33233..",
+      "...3....",
+      "...3....",
+      "........",
+      "........"
+    ],
+    "big": [
+      "...3....",
+      "...3....",
+      "..323...",
+      "3322233.",
+      "..323...",
+      "...3....",
+      "...3....",
+      "........"
+    ]
+  }
+}

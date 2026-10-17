@@ -12,6 +12,7 @@
 #include "engine/ui.h"
 #include "engine/physics.h"
 #include "engine/sprites.h"
+#include "engine/shiny.h"
 #include "engine/particles.h"
 #include "engine/floattext.h"
 
@@ -31,6 +32,7 @@ typedef struct {
     s16 hp, hp_max;             // wild monsters (the player's live in game variables)
     u8 level, status, team, buff;
     u8 home;                    // 1: it lives in its home world (home_var = its type): stronger
+    u8 shiny;                   // 1: its species is shiny (shiny_var): stronger, rainbow colors
     u16 status_ticks, status_clock;     // status_clock: poison's second; paralysis' sparks tick
     u16 tox_step, buff_ticks;
     const MoveData *buff_move;  // the self move whose buff it has (a defense buff's amount and colors)
@@ -68,8 +70,10 @@ static s32 var_or_0(s16 var) {
     return var >= 0 ? vars_get(var) : 0;
 }
 
-// The colors it flashes when a move hits it: its own (wild monsters: red), else the game's (white).
-static const PaletteData *hit_palette(const Params_monster *p) {
+// The colors it flashes when a move hits it: its own (wild monsters: red), else the game's (white);
+// a shiny one's own when it has them (red: they show over its rainbow).
+static const PaletteData *hit_palette(const Params_monster *p, const Monster *m) {
+    if (p && m && m->shiny && p->shiny_flash_palette) return p->shiny_flash_palette;
     return p && p->flash_palette ? p->flash_palette : g_game.battle->flash_palette;
 }
 
@@ -286,7 +290,7 @@ static void hurt(Actor *a, s32 amount) {
     if (!p || !m || amount <= 0 || !actor_alive(a)) return;
     tag_off(a, m);
     // Every blow flashes it (a move's or poison's; wild monsters blink red), a killing one too.
-    actor_flash(a, hit_palette(p), p->flash_ticks, p->flashes);
+    actor_flash(a, hit_palette(p, m), p->flash_ticks, m->shiny && p->shiny_flashes ? p->shiny_flashes : p->flashes);
     s32 hp = hp_of(p, m) - amount;
     if (hp < 0) hp = 0;
     if (p->hp_var >= 0) vars_set(p->hp_var, hp);
@@ -546,7 +550,7 @@ static void buff_update(Actor *a, const Params_monster *p, Monster *m) {
     if (m->buff == BUFF_DEFENSE) defense_look(a, m);
     if (m->buff_ticks > 1) { m->buff_ticks--; return; }
     if (m->buff == BUFF_DEFENSE) {                      // it stayed solid: nothing else to undo
-        if (a->flash_pal == m->buff_move->buff_palette) { a->flash = 0; a->flash_pal = hit_palette(p); }
+        if (a->flash_pal == m->buff_move->buff_palette) { a->flash = 0; a->flash_pal = hit_palette(p, m); }
         m->buff = 0;
         m->buff_ticks = 0;
         return;
@@ -580,6 +584,15 @@ static const SpeciesData *pick_species(const Params_monster *p) {
     return p->species;
 }
 
+// 1 when its species' slot of shiny_var (one flag per species, in nodes.json order) is set.
+static int is_shiny(const Params_monster *p, const SpeciesData *sp) {
+    if (p->shiny_var < 0) return 0;
+    const BattleData *b = g_game.battle;
+    for (int i = 0; i < b->species_count; i++)
+        if (b->species[i] == sp) return vars_get(vars_slot(p->shiny_var, i)) != 0;
+    return 0;
+}
+
 void bhv_monster_init(Actor *a, const void *params) {
     const Params_monster *p = params;
     Monster *m = &s_mon[actor_index(a)];
@@ -593,15 +606,19 @@ void bhv_monster_init(Actor *a, const void *params) {
     m->team = a->type == NT_PLAYER ? TEAM_PLAYER : TEAM_WILD;
     m->level = (u8)(p->level_var >= 0 ? vars_get(p->level_var) : p->level);
     m->hp = m->hp_max = (s16)p->hp;
+    m->shiny = (u8)is_shiny(p, sp);
     // The player's monster at the start of a run (its max HP still the starting value): the
-    // species' extra starting hit points, on the max and the HP alike.
-    if (sp->hp_bonus && p->hp_var >= 0 && p->hp_max_var >= 0
+    // species' extra starting hit points, then a shiny one's shiny_hp % more of that, on the max
+    // and the HP alike.
+    if ((sp->hp_bonus || (m->shiny && p->shiny_hp)) && p->hp_var >= 0 && p->hp_max_var >= 0
         && vars_get(p->hp_max_var) == g_var_initial[p->hp_max_var]) {
-        s32 add = (vars_get(p->hp_max_var) * sp->hp_bonus + 50) / 100;
+        s32 max = vars_get(p->hp_max_var);
+        s32 add = (max * sp->hp_bonus + 50) / 100;
+        if (m->shiny) add += ((max + add) * p->shiny_hp + 50) / 100;
         vars_add(p->hp_max_var, add);
         vars_add(p->hp_var, add);
     }
-    m->power = (u16)p->power;
+    m->power = (u16)(p->power + (m->shiny ? p->shiny_power : 0));
     // At home (the world's type is its own): faster, quicker to recharge (and harder hitting, in monster_power).
     m->home = p->home_var >= 0 && vars_get(p->home_var) == sp->type;
     m->pace = sp->speed;
@@ -613,7 +630,13 @@ void bhv_monster_init(Actor *a, const void *params) {
     actor_set_body(a, sp->body);
     if (!p->walls) a->collides &= (u16)~(1u << CAT_TILES);   // walks through solid tiles (a dark arena edge)
     if (p->alpha) a->pal = sp->alpha_palette;
-    a->flash_pal = hit_palette(p);
+    if (m->shiny) {                     // every animation shimmers through the rainbow (not its moves)
+        const AnimationData *an = sp->body->anims[sp->body->default_slot];
+        const PaletteData *own = a->pal ? a->pal : an ? an->sprite->palette : NULL;
+        const PaletteData *sh = shiny_palette(own);
+        if (sh) a->pal = sh;
+    }
+    a->flash_pal = hit_palette(p, m);
     if (m->home) scripts_start(p->on_home, a);
 }
 
@@ -646,7 +669,7 @@ void bhv_monster_update(Actor *a, const void *params) {
             a->flash_pal = g_game.battle->par_palette;
             a->flash = FLASH_TICKS;
         } else if (a->flash == 0) {
-            a->flash_pal = hit_palette(p);
+            a->flash_pal = hit_palette(p, m);
         }
         if (m->status_ticks && --m->status_ticks == 0) m->status = STATUS_NONE;
     }

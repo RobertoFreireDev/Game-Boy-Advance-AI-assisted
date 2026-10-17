@@ -20,6 +20,7 @@
 #define MAX_FLOAT_TEXTS 8       // floating words at once (damage numbers, MISS, LV UP!)
 #define MAX_PINNED_TEXTS 8      // words pinned over actors at once (monsters' level tags)
 #define MAX_ZONES       12      // move zones on the ground at once (fire, acid, falling rocks)
+#define MAX_SHINY       6       // rainbow-shimmering palette copies at once (shiny monsters: one per palette shown)
 #define MOVE_HIT_MARGIN 2       // pixels: a move hurts every monster its effect's picture comes this close to
 
 #endif

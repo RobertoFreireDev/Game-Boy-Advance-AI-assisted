@@ -98,7 +98,7 @@ All monsters, names, sprites, tiles and music are **original**. The style may ev
 - Run music: a separate original, upbeat loop (same channel setup, faster ~155 BPM). A short jingle plays on level-up and when a new move unlocks.
 
 **End conditions:**
-- **Victory:** all 25 enemies defeated → "YOU SURVIVED!" screen with final time, level and kills, plus **NEW MONSTER: <name>** (with a jingle) when the win unlocked one (section 3.1) → press Start → Menu.
+- **Victory:** all 25 enemies defeated → "YOU SURVIVED!" screen with final time, level and kills, plus **NEW MONSTER: <name>** (with a jingle) when the win unlocked one (section 3.1) → press Start → Menu (or first the shiny screen, when the win made a monster shiny: section 7.5).
 - **Game Over:** player HP = 0 → player sprite blinks and fades → "GAME OVER" → after 3 s (or Start) → Menu.
 
 **Pause:** Start during the run pauses (shows level, XP, kills, timer, and which moves are unlocked). Start again resumes.
@@ -402,6 +402,16 @@ Five items lie on the ground, one of each kind. Each run every item is at a rand
 The items share the move effects' palette, drawn like the monsters (dark outline, lit from the top-left), and bob over a small shadow with a twinkle so they stand out on the grass.
 
 **Waves mode drops:** the waves mode has no items on the ground at the start. Instead, every wave monster that faints (the boss too) has a **25% chance to drop one of these 5 items**, picked at random, with the same look, words and boost as above. Each item drops **at most 3 times per run**: a faint that rolls an item already dropped 3 times drops nothing, so drops get rarer late in the run. The item appears at the monster's feet; a monster that fainted in the arena's dark edge (where the player can't walk) leaves it on the nearest spot of lit floor instead. Only the player can pick it up, and it stays until picked up or the run ends. Its boost adds to the level-up card of the same kind (e.g. a Power Gem card and a dropped Power Gem make +20% damage).
+
+### 7.5 Shiny monsters
+
+There are **18 different runs**: the 9 monsters' classic runs and their 9 waves runs (the 18 menu entries). **Every 5 different runs won make one monster shiny**, and the count starts over at 0. Winning a run already counted since the last shiny counts nothing; once a monster becomes shiny, every run can count again toward the next one.
+
+- **Which monster:** the one that won the 5th run, if it isn't shiny yet; otherwise a random monster that isn't. Never the same monster twice, until all 9 are shiny; after that, wins count nothing more.
+- **Stronger:** a shiny monster's moves hit **10% harder** (power 100% → 110%, before floor items, cards and the home world) and it starts every run with **20% more HP** (60 → 72; Furrbit's 72 → 86). In both modes.
+- **Looks:** wherever it shows (every animation in the run, the menu portrait, the victory screens), it **shimmers through the rainbow**: 8 hues, a new one every 4 frames (the whole rainbow about twice a second), each color half its own and half the hue, lighter colors a little further along the rainbow (a sheen), the dark outline kept. Its moves' effects keep their colors. When a wild monster's move hurts it, it blinks **red 3 times** (like the wild monsters) instead of the shimmer, so every hit is easy to see.
+- **The shiny screen:** after the victory screen of the win that made a monster shiny, START opens **A SHINY MONSTER!**: the monster's portrait shimmering in a night sky with stars spraying out, its name (`<NAME> NOW SHINES!`) and its bonuses, with a sparkling jingle. Only then is it made shiny and saved. START goes back to the menu. Wins that make no monster shiny go straight back to the menu as before.
+- Saved on the cartridge; clearing the saved progress makes every monster plain again and forgets the runs counted.
 
 ---
 

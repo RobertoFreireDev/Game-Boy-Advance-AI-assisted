@@ -251,14 +251,33 @@ function bgr555(hex) {
 }
 const rgbCss = c => `rgb(${c[0]},${c[1]},${c[2]})`;
 // palId may be "pal_ui@2@#f8d038": that palette with color 2 changed (a menu text's letters, like
-// the recolored copies codegen makes).
+// the recolored copies codegen makes), or "pal_mon_1@shiny@3": its shiny copy at hue step 3.
 function palColors(palId) {
   const at = String(palId || "").split("@");
   const p = NODES[at[0]];
   const cols = (p && Array.isArray(p.colors)) ? p.colors.map(q15) : [];
   while (cols.length < 16) cols.push([255, 0, 255]);
+  if (at.length === 3 && at[1] === "shiny") return shinyColors(cols, +at[2], p ? p.colors.length : 16);
   if (at.length === 3) cols[+at[1]] = q15(at[2]);
   return cols;
+}
+// A shiny monster's colors at hue step k (0-7), exactly as src/engine/shiny.c works them out: each
+// color half its own, half the fully bright rainbow hue k x 45 degrees, plus a lead of its
+// brightness x 8 units (of 1536 around the rainbow) so lighter colors run ahead; the darkest keep theirs.
+const SHINY_STEP = 4, SHINY_HUES = 8;
+const shinyHue = tick => Math.floor(tick / SHINY_STEP) & (SHINY_HUES - 1);
+function shinyColors(cols, k, count) {
+  return cols.map((c, i) => {
+    if (i === 0 || i >= count) return c;
+    const [r, g, b] = c.map(v => v >> 3);
+    const y = (r * 77 + g * 150 + b * 29) >> 8;
+    if (y < 6) return c;
+    let hh = k * (1536 / SHINY_HUES) + y * 8;
+    if (hh >= 1536) hh -= 1536;
+    const up = (31 * (hh & 255)) >> 8, dn = 31 - up;
+    const rgb = [[31, up, 0], [dn, 31, 0], [0, 31, up], [0, dn, 31], [up, 0, 31], [31, 0, dn]][hh >> 8];
+    return [r, g, b].map((v, j) => { const m = (v + rgb[j]) >> 1; return (m << 3) | (m >> 2); });
+  });
 }
 const PIX = ".123456789abcdef";
 const _pixCache = new Map();
@@ -283,10 +302,11 @@ function pixelsCanvas(rows, palId, paper) {
   _pixCache.set(key, c);
   return c;
 }
+// palOverride: another palette, or "@shiny@k" for the sprite's own palette's shiny copy.
 function frameCanvas(spriteId, frame, palOverride) {
   const s = NODES[spriteId];
   if (!s || !s.frames || !s.frames[frame]) return null;
-  return pixelsCanvas(s.frames[frame], palOverride || s.palette);
+  return pixelsCanvas(s.frames[frame], palOverride && palOverride[0] === "@" ? s.palette + palOverride : (palOverride || s.palette));
 }
 // Draw a (1x) canvas at x,y with flips; ctx already scaled by zoom if needed.
 function blit(ctx, src, x, y, flipX, flipY) {
@@ -1411,8 +1431,21 @@ function speedCard(id) {
 PREVIEW.species = (id, n) => {
   const out = [];
   const port = NODES[n.portrait];
-  const pc = port ? bigImage(frameCanvas(n.portrait, Object.keys(port.frames || {})[0]), 3) : h("span", { class: "small" }, "(no portrait)");
-  const st = { hitbox: false, origin: false, alpha: false, left: false };
+  const st = { hitbox: false, origin: false, alpha: false, shiny: false, left: false };
+  // Its colors now: its own, the Alpha's, and either of them shimmering when 'Shiny colors' is on.
+  const palNow = () => st.shiny ? (st.alpha && n.alpha_palette ? n.alpha_palette : "") + "@shiny@" + shinyHue(clock.tick)
+                                : (st.alpha ? n.alpha_palette : null);
+  let pc = h("span", { class: "small" }, "(no portrait)");
+  if (port && port.width) {
+    const f0 = Object.keys(port.frames || {})[0];
+    const [c, ctx] = zoomCanvas(port.width, port.height, 3);
+    live((tick, steps) => {
+      if (!c.isConnected && steps) return;            // the first call draws it before it is on the page
+      ctx.clearRect(0, 0, port.width, port.height);
+      ctx.drawImage(frameCanvas(n.portrait, f0, st.shiny ? "@shiny@" + shinyHue(tick) : null), 0, 0);
+    });
+    pc = c;
+  }
   const b = NODES[n.body] || {};
   let slot = b.default_animation || "idle";
   const tabs = h("div", { class: "toolbar" });
@@ -1421,9 +1454,9 @@ PREVIEW.species = (id, n) => {
   out.push(card(`${n.title || id} — ${String(n.monster_type || "").toUpperCase()} type`,
     h("div", { style: "display:flex;gap:18px;flex-wrap:wrap;align-items:flex-start" },
       h("div", { class: "frame" }, pc, h("div", { class: "cap" }, "menu portrait")),
-      h("div", {}, tabs, h("div", { class: "toolbar" }, playButtons(), toggle("Alpha colors", st, "alpha", () => {}), toggle("Face left", st, "left", () => {}), toggle("Hitbox", st, "hitbox", () => {})),
-        h("div", { class: "stage" }, bodyStage(n.body, () => slot, { state: st, facingLeft: () => st.left, pal: () => st.alpha ? n.alpha_palette : null })),
-        h("div", { class: "small" }, "In the world (body ", nodeLink(n.body), "). 'Alpha colors' shows how it looks as the Alpha."),
+      h("div", {}, tabs, h("div", { class: "toolbar" }, playButtons(), toggle("Alpha colors", st, "alpha", () => {}), toggle("Shiny colors", st, "shiny", () => {}), toggle("Face left", st, "left", () => {}), toggle("Hitbox", st, "hitbox", () => {})),
+        h("div", { class: "stage" }, bodyStage(n.body, () => slot, { state: st, facingLeft: () => st.left, pal: palNow })),
+        h("div", { class: "small" }, "In the world (body ", nodeLink(n.body), "). 'Alpha colors' shows how it looks as the Alpha. 'Shiny colors' shows it once it is shiny (the player's monster after 5 different runs won, see the 'shiny' variable): every animation and the menu portrait shimmer through 8 rainbow hues, a new one every 4 ticks, half and half with its own colors (lighter colors a little further along the rainbow, the outline kept dark), exactly as the GBA draws it. A shiny monster's moves hit 10% harder, it starts each run with 20% more HP and a hit makes it blink red."),
         n.hp_bonus ? h("div", { class: "small" }, h("b", {}, `+${n.hp_bonus}% starting HP`),
           " when the player plays it: added to the player's starting max HP and HP at the start of every run (wild ones are not affected).") : null,
         (n.power || 100) !== 100 ? h("div", { class: "small" }, h("b", {}, `Moves hit at ${n.power}% power`),
@@ -1434,7 +1467,7 @@ PREVIEW.species = (id, n) => {
           `: every move aimed at it has ${n.evasion} points less accuracy (a 100% move hits ${100 - n.evasion}%), the player's and wild ones alike, in every mode; ground zones and status-only moves still never miss.`) : null,
         n.double_hit ? h("div", { class: "small" }, h("b", {}, `${n.double_hit}% chance to hit twice`),
           `: each time one of its damaging moves lands (not a ground zone), every monster it hit that still stands takes the same blow again 12 ticks (0.2 s) later (same damage, never a miss, its own number, flash and hit sound), and ${((BATTLE.texts || {}).double || {}).text || "2X"} floats up over its head; the player's, wild ones and the Alpha alike, in every mode.`) : null))));
-  out.push(compassCard(n.body, () => st.alpha ? n.alpha_palette : null));
+  out.push(compassCard(n.body, palNow));
   out.push(card("Moves", (n.moves || []).map((m, i) => {
     const mv = NODES[m] || {};
     return h("div", { class: "bhv" }, h("div", { class: "bn" }, SLOT_KEYS[i] + " · ", nodeLink(m)),

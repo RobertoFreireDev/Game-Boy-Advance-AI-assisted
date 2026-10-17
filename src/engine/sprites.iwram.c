@@ -86,6 +86,12 @@ int sprites_palette(const PaletteData *p) {
     return b;
 }
 
+int sprites_palette_bank(const PaletteData *p) {
+    for (int i = 0; i < s_pal_count; i++)
+        if (s_pals[i] == p) return i;
+    return -1;
+}
+
 int sprites_upload(const u32 *tiles, int count) {
     if (s_next_tile + count > STREAM_BASE) return -1;
     int base = s_next_tile;

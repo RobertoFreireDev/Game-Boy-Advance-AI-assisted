@@ -688,7 +688,11 @@ Every channel in a pattern has the same number of rows. Missing channels are sil
   recharges `home_charge` % sooner and runs `on_home` when it appears; `walls` false = it walks through
   solid tiles (wave monsters crossing an arena's dark edge that holds the player in); the player's
   `xp_grow` makes each level cost more than the last and `level_by_level` gains one level per tick, so an
-  `on_level_up` that opens a level-up menu shows it once per level; the shared combat code is
+  `on_level_up` that opens a level-up menu shows it once per level; a shiny one: `shiny_var` is a list
+  variable with a flag per species, and a monster whose species' flag is set shimmers through the rainbow
+  in every animation (`shiny.c`; not its moves' effects), hits `shiny_power` % harder, starts a run with
+  `shiny_hp` % more HP (the player's) and flashes `shiny_flash_palette` `shiny_flashes` times when hit (the
+  validator counts its palette banks both ways: plain, or shiny copy + shiny flash); the shared combat code is
   `src/behaviors/monster.c` + `moves.c`),
   `monster_ai` (wander at home, hostile near the player with a cap, attack with move 1, go home; a
   sleeping boss that with `moves` 3 also uses moves 2 and 3, each on its own recharge (`moves_charge` % of
@@ -705,7 +709,8 @@ Every channel in a pattern has the same number of rows. Missing channels are sil
   `species_select` (the picker's bobbing portrait, Left / Right; species past `unlocked_var` show as a
   silhouette and can't be picked; `passes` 2 shows the whole list again for a second game mode, the pass
   in `pass_var`, `entry_var` = pass x species count + species for per-entry lists, the later passes locked
-  as a whole until `pass_unlock_var` reaches `pass_unlock_at`), `drop_in` (a logo or layer that
+  as a whole until `pass_unlock_var` reaches `pass_unlock_at`; a species flagged in `shiny_var` shimmers
+  unless it is locked), `drop_in` (a logo or layer that
   falls in and bounces). Add more as games need them.
 - Prefer a new reusable behavior over custom code.
 
@@ -766,6 +771,8 @@ src/engine/
 ├── sprites.iwram.c/.h OAM shadow buffer and OBJ VRAM allocation, per-actor colors (flash, Alpha),
 │                      a queue of extra sprites behaviors draw (portraits, crowns, shadows); big
 │                      sheets stream (only the frames on screen sit in VRAM, see the VRAM plan)
+├── shiny.c/.h     rainbow-shimmering RAM copies of palettes (a shiny monster, MAX_SHINY at once): 8 hues,
+│                  a new one every 4 ticks, written into their OBJ palette banks in VBlank
 ├── audio.c/.h     PSG driver: music sequencer + sfx
 ├── ui.c/.h        text, hud, menus (incl. upgrade cards), dialogs
 ├── actions.c/.h   action list interpreter
@@ -812,7 +819,7 @@ frames.
   `*.iwram.c` (done for actor, physics, anim, sprites and the `swarm`, `projectile` and `health`
   behaviors after profiling hordes of 60+ monsters, and `monster_ai` after profiling Monster
   Survival). IWRAM is 32 KB shared with the `*.iwram.c` code of the behaviors the game uses,
-  **every plain `static` variable** and the stack (Monster Survival: ~29.4 KB used, ~2.7 KB left for
+  **every plain `static` variable**, the game variables and the stack (Monster Survival: ~29.6 KB used, ~2.5 KB left for
   the stack, of which its busiest scenes use ~1.1 KB); keep it lean. The linker doesn't count
   the stack: `build.py` fails when less than 2 KB is left. Pools that aren't hot go in EWRAM
   (`EWRAM_BSS`).
@@ -908,7 +915,7 @@ frames.
 | player, enemy, npc, prop, platform, pickup, trigger | Body preview, hitbox, **logic list** (each behavior: plain description + params), sounds with play buttons, path preview for `follow_path`, zone for triggers. |
 | hud, menu, dialog | Rendered inside a 240×160 GBA screen with the real font and icons. HUD uses variables' initial values; dialog has prev/next line; menu shows the cursor on each option (upgrade menus show sample cards). |
 | upgrade | Its card on the level-up menu with prev/next level, the text per level as wrapped on the GBA, the evolution recipe and what picking it does. |
-| species | Portrait, the body's animations (with an Alpha-colors toggle) and its 8 directions, its 3 moves, cry player, type matchups and the full type chart. |
+| species | Portrait, the body's animations (with Alpha-colors and Shiny-colors toggles: the shimmer computed exactly like `shiny.c`) and its 8 directions, its 3 moves, cry player, type matchups and the full type chart. |
 | move | What it does in plain words (with its 3 animation steps), a live pixel diagram of what it hurts (the user facing right, the travel picture and the effect playing in their 3 steps where the engine puts them, a caption naming the step, the orange area = its picture + the margin along each particle's real flight), its effect playing live, sound, a paralyzing move's paralyzed look (live), and its multiplier against each type. |
 | sfx, music | **Audio player**: play/stop/loop + visual (step list for sfx; tracker grid per channel with playhead for music). Web Audio synth approximating the PSG: square with duty, 4-bit wave, noise, 0–15 volume. |
 

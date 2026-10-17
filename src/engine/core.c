@@ -17,6 +17,7 @@
 #include "camera.h"
 #include "bg.h"
 #include "sprites.h"
+#include "shiny.h"
 #include "audio.h"
 #include "ui.h"
 #include "save.h"
@@ -62,6 +63,7 @@ void core_run(void) {
         // 1. VBlank: show what the previous frame prepared.
         VBlankIntrWait();
         sprites_vblank();
+        shiny_vblank();
         bg_vblank();
         scene_vblank();
         s_frame++;

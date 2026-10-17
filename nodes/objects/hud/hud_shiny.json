@@ -1,0 +1,46 @@
+{
+  "id": "hud_shiny",
+  "kind": "object",
+  "type": "hud",
+  "name": "Shiny monster text",
+  "notes": "A SHINY MONSTER! at the top, the monster's name under its portrait (new_shiny) with what being shiny gives it: its moves hit 10% harder and it starts every run with 20% more HP. A blinking PRESS START at the bottom.",
+  "font": "font_default",
+  "elements": [
+    {
+      "kind": "text",
+      "x": 120,
+      "y": 16,
+      "text": "A SHINY MONSTER!",
+      "align": "center"
+    },
+    {
+      "kind": "text",
+      "x": 120,
+      "y": 112,
+      "text": "{new_shiny.name} NOW SHINES!",
+      "align": "center"
+    },
+    {
+      "kind": "text",
+      "x": 120,
+      "y": 128,
+      "text": "MOVES +10% POWER",
+      "align": "center"
+    },
+    {
+      "kind": "text",
+      "x": 120,
+      "y": 136,
+      "text": "STARTING HP +20%",
+      "align": "center"
+    },
+    {
+      "kind": "text",
+      "x": 120,
+      "y": 152,
+      "text": "PRESS START",
+      "align": "center",
+      "blink": 30
+    }
+  ]
+}

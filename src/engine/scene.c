@@ -10,6 +10,7 @@
 #include "camera.h"
 #include "bg.h"
 #include "sprites.h"
+#include "shiny.h"
 #include "audio.h"
 #include "ui.h"
 #include "floattext.h"
@@ -92,6 +93,7 @@ static void load_scene(s16 node) {
     ftext_reset();
     ui_reset();
     sprites_reset();
+    shiny_reset();
     bg_reset(sc->backdrop);
     s_scene = sc;
     s_scene_node = node;

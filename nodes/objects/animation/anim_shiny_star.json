@@ -1,0 +1,32 @@
+{
+  "id": "anim_shiny_star",
+  "kind": "object",
+  "type": "animation",
+  "name": "Shiny star twinkle",
+  "notes": "Grows from a dot to a big star as it flies out (so it is biggest once it is out from behind the monster's portrait), then shrinks away. 30 ticks: the particle's whole life.",
+  "sprite": "spr_shiny_star",
+  "loop": false,
+  "frames": [
+    {
+      "frame": "dot",
+      "ticks": 6
+    },
+    {
+      "frame": "small",
+      "ticks": 6
+    },
+    {
+      "frame": "medium",
+      "ticks": 6
+    },
+    {
+      "frame": "big",
+      "ticks": 8
+    },
+    {
+      "frame": "small",
+      "ticks": 4
+    }
+  ],
+  "events": []
+}
