@@ -156,7 +156,7 @@
         "name": "boost_power",
         "type": "int",
         "initial": 0,
-        "notes": "Extra damage percent of all the player's moves, from the Power Gem (+10). Back to 0 each run."
+        "notes": "Extra damage percent of all the player's moves, from the Power Gem (+10 for the floor item, +3 for each waves level-up card). Back to 0 each run."
       },
       {
         "name": "boost_aim",
@@ -168,7 +168,7 @@
         "name": "boost_dodge",
         "type": "int",
         "initial": 0,
-        "notes": "Accuracy points taken off wild monsters' moves aimed at the player, from the Mist Orb (+10: they miss 10% more). Back to 0 each run."
+        "notes": "Accuracy points taken off wild monsters' moves aimed at the player, from the Mist Orb (+10 for the floor item: they miss 10% more; +5 for each waves level-up card). Back to 0 each run."
       },
       {
         "name": "boost_charge",

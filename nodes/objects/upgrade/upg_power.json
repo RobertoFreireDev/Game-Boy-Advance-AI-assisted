@@ -3,24 +3,24 @@
   "kind": "object",
   "type": "upgrade",
   "name": "Power Gem",
-  "notes": "Power Gem: +10% damage for all the player's moves, up to 5 times (+50%). Adds 10 to boost_power (the same boost the classic run's floor Power Gem gives). Offered on the waves mode's level-up menu (menu_power); its level is kept in 'up_power' (back to 0 each run).",
+  "notes": "Power Gem: +3% damage for all the player's moves, up to 5 times (+15%). Adds 3 to boost_power (the classic run's floor Power Gem adds 10 to the same boost). Offered on the waves mode's level-up menu (menu_power); its level is kept in 'up_power' (back to 0 each run).",
   "category": "item",
   "title": "POWER GEM",
   "icon": "icon_upg_power",
   "var": "up_power",
   "max_level": 5,
   "descriptions": [
-    "ALL YOUR MOVES HIT 10% HARDER.",
-    "ALL YOUR MOVES HIT 10% HARDER (+20% IN ALL)",
-    "ALL YOUR MOVES HIT 10% HARDER (+30% IN ALL)",
-    "ALL YOUR MOVES HIT 10% HARDER (+40% IN ALL)",
-    "ALL YOUR MOVES HIT 10% HARDER (+50% IN ALL)"
+    "ALL YOUR MOVES HIT 3% HARDER.",
+    "ALL YOUR MOVES HIT 3% HARDER (+6% IN ALL)",
+    "ALL YOUR MOVES HIT 3% HARDER (+9% IN ALL)",
+    "ALL YOUR MOVES HIT 3% HARDER (+12% IN ALL)",
+    "ALL YOUR MOVES HIT 3% HARDER (+15% IN ALL)"
   ],
   "on_pick": [
     {
       "do": "add_var",
       "var": "boost_power",
-      "value": 10
+      "value": 3
     }
   ],
   "children": [
