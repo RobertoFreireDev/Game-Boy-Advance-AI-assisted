@@ -468,7 +468,9 @@ groups them for humans. **What an actor does comes only from its `logic` list.**
   power × (1 + 0.15 × (level − 1)) × multiplier × user power % (`power` + its `power_var`) × its species' `power` %, rounded, at
   least 1 (a wild monster with `level_var` reads its level every tick: a boss that grows); a hit flashes the
   target (`flash_palette`, white, or the monster behavior's own `flash_palette`) `flashes` times for
-  `flash_ticks` frames each, with gaps as long (default once for 4: wild monsters blink red 3 times), runs
+  `flash_ticks` frames each, with gaps as long (default once for 4: wild monsters blink red 3 times; poison and
+  toxic damage flash it too, a killing blow's flashes play out before the fainting monster blinks out, and a
+  paralyzed monster's yellow flicker waits until they are over), runs
   its `on_hurt` (the player's shakes the screen 1 px) and pushes it 2 px away (less when a wall or another
   solid monster is in the way). A camera shake never goes past the map's edge, and a smaller shake doesn't
   cut a bigger one short.

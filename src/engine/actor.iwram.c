@@ -289,13 +289,28 @@ void actor_touch(Actor *a, Actor *other) {
     }
 }
 
+// One tick of its flash: it counts down, and once it is over the next one of a series (a hit's
+// blink-blink-blink) starts after a gap as long as a flash.
+static inline void flash_tick(Actor *a) {
+    if (a->flash) {
+        a->flash--;
+    } else if (a->flash_more && ++a->flash_gap >= a->flash_len) {
+        a->flash_more--;
+        a->flash_gap = 0;
+        a->flash = a->flash_len;
+    }
+}
+
 void actor_update_all(void) {
     for (int n = 0; n < MAX_ACTORS; n++) {
         Actor *a = &g_actors[n];
         if (!a->active) continue;
         if (a->flags & ACTOR_DYING) {
+            if (a->flash || a->flash_more) {    // the killing blow's flashes play out first
+                flash_tick(a);
+                continue;
+            }
             if (a->blink) a->blink--;       // a death that blinks out (set after actor_die)
-            if (a->flash) a->flash--;
             if (a->die_timer == 0 || --a->die_timer == 0) actor_destroy(a);
             continue;
         }
@@ -311,7 +326,7 @@ void actor_update_all(void) {
             continue;
         }
         if (a->blink) a->blink--;
-        if (a->flash) a->flash--;
+        flash_tick(a);
         if (a->anim_lock) a->anim_lock--;
         if (a->stun) a->stun--;
     }

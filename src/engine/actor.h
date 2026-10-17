@@ -37,7 +37,8 @@ typedef struct Actor {
     u8 turn;                        // ticks show_x / show_y have waited to follow look_x / look_y
     u16 turn_at;                    // frame (low 16 bits) the art last turned
     u8 flash;                       // > 0: drawn with flash_pal for this many more ticks
-    s8 draw_dx;                     // drawn this many px right of its x (a paralyzed monster trembles)
+    u8 flash_more, flash_len, flash_gap;    // flashes still to come after it, ticks each lasts, ticks of the gap so far
+    s8 draw_dx;                    // drawn this many px right of its x (a paralyzed monster trembles)
     const PaletteData *pal;         // drawn with these colors instead of its sprite's (NULL = own)
     const PaletteData *flash_pal;   // colors of a short flash (a hit)
     u8 on_ground, was_on_ground;    // standing on something now / last frame
@@ -105,8 +106,18 @@ int actor_has_slot(const Actor *a, u8 slot);
 void actor_sound(const Actor *a, u8 event);
 // The first live player actor, or NULL.
 Actor *actor_player(void);
-// Start dying: stay = 1 plays the death in place, 0 pops up and falls off the screen.
+// Start dying: stay = 1 plays the death in place, 0 pops up and falls off the screen. A flash
+// still playing (a hit's) plays out before its blink and die_timer start counting down.
 void actor_die(Actor *a, int stay);
+// Flash in other colors (a hit): `times` flashes of `ticks` ticks each, with gaps as long between
+// them. The flashes show through a blink.
+static inline void actor_flash(Actor *a, const PaletteData *pal, int ticks, int times) {
+    a->flash_pal = pal;
+    a->flash = (u8)ticks;
+    a->flash_more = (u8)(ticks > 0 && times > 1 ? times - 1 : 0);
+    a->flash_len = (u8)ticks;
+    a->flash_gap = 0;
+}
 // True if the actor exists and is not dying.
 int actor_alive(const Actor *a);
 // Position of the behavior in the actor's logic list, or -1.

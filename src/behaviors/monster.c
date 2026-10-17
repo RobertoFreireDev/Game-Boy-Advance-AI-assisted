@@ -15,13 +15,13 @@
 #include "engine/particles.h"
 #include "engine/floattext.h"
 
-#define FLASH_TICKS   4         // the paralysis flicker and the faint flash (a hit uses the params)
+#define FLASH_TICKS   4         // the paralysis flicker (a hit uses the params)
 #define PAR_TREMBLE   1         // px a paralyzed monster trembles sideways (every 2 frames)
 #define PUSH_PX       2         // knockback when hit
 #define STATUS_EVERY  60        // poison hurts once a second
 #define REGEN_EVERY   60        // a healing species (regen) heals once a second
 #define DOUBLE_DELAY  12        // a double hit's second blow lands this many ticks after the first
-#define FAINT_TICKS   30        // a wild monster flashes and blinks out
+#define FAINT_TICKS   30        // a wild monster blinks out (after the killing blow's flashes)
 #define PLAYER_FAINT  120
 
 enum { WALK_LEFT, WALK_RIGHT, WALK_UP, WALK_DOWN };
@@ -31,7 +31,6 @@ typedef struct {
     s16 hp, hp_max;             // wild monsters (the player's live in game variables)
     u8 level, status, team, buff;
     u8 home;                    // 1: it lives in its home world (home_var = its type): stronger
-    u8 flashes, flash_gap;      // a hit's flashes still to come, ticks since the last one ended
     u16 status_ticks, status_clock;     // status_clock: poison's second; paralysis' sparks tick
     u16 tox_step, buff_ticks;
     u16 power;
@@ -276,8 +275,7 @@ static void faint(Actor *a, const Params_monster *p, Monster *m) {
     actor_die(a, 1);
     a->flags &= (u8)~ACTOR_HIDDEN;
     a->die_timer = m->team == TEAM_PLAYER ? PLAYER_FAINT : FAINT_TICKS;
-    a->blink = a->die_timer;            // blinks out
-    a->flash = FLASH_TICKS;
+    a->blink = a->die_timer;            // blinks out, once the killing blow's flashes are over
 }
 
 static void hurt(Actor *a, s32 amount) {
@@ -285,6 +283,8 @@ static void hurt(Actor *a, s32 amount) {
     Monster *m = mon(a);
     if (!p || !m || amount <= 0 || !actor_alive(a)) return;
     tag_off(a, m);
+    // Every blow flashes it (a move's or poison's; wild monsters blink red), a killing one too.
+    actor_flash(a, hit_palette(p), p->flash_ticks, p->flashes);
     s32 hp = hp_of(p, m) - amount;
     if (hp < 0) hp = 0;
     if (p->hp_var >= 0) vars_set(p->hp_var, hp);
@@ -434,10 +434,6 @@ int monster_hit(Actor *t, const MonsterHit *h) {
         if (pct > 100) { if (h->blow != BLOW_SECOND) say(t, BT_SUPER, NULL, 1 + up); result = HIT_SUPER; }
         else if (pct < 100) { if (h->blow != BLOW_SECOND) say(t, BT_WEAK, NULL, 1 + up); result = HIT_WEAK; }
         else result = HIT_NORMAL;
-        t->flash_pal = hit_palette(tp);
-        t->flash = (u8)tp->flash_ticks;
-        m->flashes = (u8)(tp->flash_ticks > 0 && tp->flashes > 1 ? tp->flashes - 1 : 0);
-        m->flash_gap = 0;
         push(t, h->from_x, h->from_y, PUSH_PX);
         scripts_start(tp->on_hurt, t);
         hurt(t, d);
@@ -612,12 +608,6 @@ void bhv_monster_update(Actor *a, const void *params) {
         land_again(a, m);
         if (!actor_alive(a)) return;
     }
-    if (m->flashes && a->flash == 0 && ++m->flash_gap >= p->flash_ticks) {   // a hit's next flash
-        m->flashes--;
-        m->flash_gap = 0;
-        a->flash_pal = hit_palette(p);
-        a->flash = (u8)(p->flash_ticks + 1);       // counted down at the end of this tick
-    }
     if (m->status != STATUS_NONE) {
         if (m->status == STATUS_PSN || m->status == STATUS_TOX) {
             if (++m->status_clock >= STATUS_EVERY) {    // poison: 1 a second; toxic: 1, 2, 3...
@@ -628,7 +618,8 @@ void bhv_monster_update(Actor *a, const void *params) {
                 if (!actor_alive(a)) return;
             }
         }
-        if (m->status == STATUS_PAR && (core_frame() & 7) == 0) {     // flickers yellow
+        // Flickers yellow, but never over a hit's flashes (they take the yellow's place until they're over).
+        if (m->status == STATUS_PAR && (core_frame() & 7) == 0 && !a->flash && !a->flash_more) {
             a->flash_pal = g_game.battle->par_palette;
             a->flash = FLASH_TICKS;
         } else if (a->flash == 0) {
